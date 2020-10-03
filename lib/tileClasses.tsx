@@ -30,78 +30,87 @@ class TileData {
         }
     }
 
+    getAllSurroundingTiles(containingSet: Array<Array<TileData>>) {
+        const coords = this.getCoords(containingSet)
+        if (!coords) return [
+            [null, null, null],
+            [null, null, null],
+            [null, null, null],
+        ]
+
+        function getNearByTile(xd, yd) {
+            return containingSet[coords.y + yd] && containingSet[coords.y + yd][coords.x + xd] ? containingSet[coords.y + yd][coords.x + xd] : null
+        }
+
+        return [
+            [getNearByTile(-1, -1), getNearByTile(0, -1), getNearByTile(1, -1)],
+            [getNearByTile(-1, 0), null, getNearByTile(1, 0)],
+            [getNearByTile(-1, 1), getNearByTile(0, 1), getNearByTile(1, 1)],
+        ]
+
+    }
+
+
     plot(canvas: HTMLCanvasElement, containingSet: Array<Array<TileData>>) {
         const ctx = canvas.getContext('2d');
         ctx.fillStyle = this.color;
         ctx.fillRect(0, 0, 100, 100);
 
         if (!containingSet) { return }
-        const { tileBelow, tileAbove, tileBefore, tileAfter } = this.getSurroundingTiles(containingSet)
+        const surrounding = this.getAllSurroundingTiles(containingSet)
+
         let havePlottedConnectingRoad = false
+        surrounding.forEach((row, rowIndex) => {
+            row.forEach((tile, tileIndex) => {
+                if (!tile) { return }
+                const tileX = tileIndex - 1, tileY = rowIndex - 1;
+                const isCorner = tileX * tileY !== 0
 
-        if (tileBelow) {
-            ctx.fillStyle = tileBelow.color;
-            ctx.fillRect(10, 90, 80, 10);
+                const cornerSize = 5
+                const sideSize = 5
 
-            if (this.road && tileBelow.road) {
-                ctx.fillStyle = "brown";
-                ctx.lineWidth = 5;
-                ctx.moveTo(50,50);
-                ctx.lineTo(50,100);
-                ctx.stroke()
-                havePlottedConnectingRoad=true
-            }
-        }
+                ctx.fillStyle = tile.color;
 
-        if (tileAbove) {
-            ctx.fillStyle = tileAbove.color;
-            ctx.fillRect(10, 0, 80, 10);
+                if (isCorner) {
+                    ctx.fillRect(tileX == 1 ? (100 - cornerSize) : 0, tileY == 1 ? (100 - cornerSize) : 0, cornerSize, cornerSize);
+                } else {
+                    let sideX, sideY, sideWidth, sideHeight;
 
-            if (this.road && tileAbove.road) {
-                ctx.fillStyle = "brown";
-                ctx.lineWidth = 5;
-                ctx.moveTo(50,50);
-                ctx.lineTo(50,0);
-                ctx.stroke()
-                havePlottedConnectingRoad=true
-            }
-        }
+                    sideX = tileX == 0
+                        ? cornerSize
+                        : tileX == -1
+                            ? 0 : (100-sideSize);
 
-        if (tileBefore) {
-            ctx.fillStyle = tileBefore.color;
-            ctx.fillRect(0, 10, 10, 80);
+                    sideY = tileY == 0
+                        ? cornerSize
+                        : tileY == -1
+                            ? 0 : (100-sideSize);
 
-            if (this.road && tileBefore.road) {
-                ctx.fillStyle = "brown";
-                ctx.lineWidth = 5;
-                ctx.moveTo(50,50);
-                ctx.lineTo(0,50);
-                ctx.stroke()
-                havePlottedConnectingRoad=true
-            }
-        }
+                    sideWidth =  tileX == 0 ? (100 - 2*cornerSize) : sideSize;
+                    sideHeight =  tileY == 0 ? (100 - 2*cornerSize) : sideSize;
 
-        if (tileAfter) {
-            ctx.fillStyle = tileAfter.color;
-            ctx.fillRect(90, 10, 10, 80);
+                    ctx.fillRect(sideX, sideY, sideWidth, sideHeight);
+                }
 
-            if (this.road && tileAfter.road) {
-                ctx.fillStyle = "brown";
-                ctx.lineWidth = 5;
-                ctx.moveTo(50,50);
-                ctx.lineTo(100,50);
-                ctx.stroke()
-                havePlottedConnectingRoad=true
-            }
-        }
+                if (this.road && tile.road) {
+                    ctx.strokeStyle = "brown";
+                    ctx.lineWidth = 5;
+                    ctx.moveTo(50, 50);
+                    ctx.lineTo(50 + tileX * 60, 50 + tileY * 60);
+                    ctx.stroke()
+                    havePlottedConnectingRoad = true
+                }
+            })
+        })
+
 
         if (this.road && !havePlottedConnectingRoad) {
-            ctx.fillStyle = "brown";
+            ctx.strokeStyle = "brown";
             ctx.lineWidth = 5;
-            ctx.moveTo(40,40);
-            ctx.lineTo(60,60);
-            ctx.moveTo(40,60);
-            ctx.lineTo(60,40);
+            ctx.moveTo(40, 40);
+            ctx.lineTo(60, 60);
+            ctx.moveTo(40, 60);
+            ctx.lineTo(60, 40);
             ctx.stroke()
         }
 

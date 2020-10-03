@@ -1,5 +1,6 @@
 import React from 'react'
 import Tile from '../components/Tile'
+import styles from './tile.module.css'
 
 import { TileData } from '../lib/tileClasses.tsx'
 
@@ -17,14 +18,14 @@ export default class TileBoard extends React.Component {
                 ],
                 [
                     new TileData('red'),
-                    new TileData('red'),
+                    new TileData('yellow'),
                     new TileData('green'),
                     new TileData('blue'),
                 ],
                 [
                     new TileData('red'),
                     new TileData('red'),
-                    new TileData('green'),
+                    new TileData('white'),
                     new TileData('blue'),
                 ],
                 [
@@ -42,17 +43,21 @@ export default class TileBoard extends React.Component {
     handleTileClick(x, y) {
         console.log('click', x, y)
         this.setState(state => {
-            state.tiles[y][x].color = 'black'
+
+            state.tiles[y][x].color = state.tiles[y][x].color == 'black' ? 'white' : 'black';
             return {tiles: state.tiles}
         })
     }
 
     renderTile(x, y) {
+        const {tiles} = this.state
         return <Tile
             clickHandler={() => { this.handleTileClick(x, y) }}
-            tileData={this.state.tiles[y][x]}
+            tileData={tiles[y][x]}
+            containingSet = {tiles}
             key={`${x},${y}`} />;
     }
+
     renderTileRow(y) {
         return this.state.tiles[y].map((tile, index) => this.renderTile(index, y))
     }
@@ -61,7 +66,7 @@ export default class TileBoard extends React.Component {
 
         return this.state.tiles.map((row, index) => {
             return (
-                <div key={index}>
+                <div key={index} className={styles.row}>
                     {this.renderTileRow(index)}
                 </div>
             )

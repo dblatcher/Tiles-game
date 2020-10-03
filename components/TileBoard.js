@@ -12,20 +12,20 @@ export default class TileBoard extends React.Component {
             tiles: [
                 [
                     new TileData('red'),
-                    new TileData('red'),
+                    new TileData('red',true),
                     new TileData('green'),
+                    new TileData('blue',true),
+                ],
+                [
+                    new TileData('red'),
+                    new TileData('yellow',true),
+                    new TileData('green',true),
                     new TileData('blue'),
                 ],
                 [
                     new TileData('red'),
-                    new TileData('yellow'),
-                    new TileData('green'),
-                    new TileData('blue'),
-                ],
-                [
                     new TileData('red'),
-                    new TileData('red'),
-                    new TileData('white'),
+                    new TileData('white',true),
                     new TileData('blue'),
                 ],
                 [
@@ -41,9 +41,7 @@ export default class TileBoard extends React.Component {
     }
 
     handleTileClick(x, y) {
-        console.log('click', x, y)
         this.setState(state => {
-
             state.tiles[y][x].color = state.tiles[y][x].color == 'black' ? 'white' : 'black';
             return {tiles: state.tiles}
         })

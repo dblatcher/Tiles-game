@@ -1,9 +1,48 @@
+function hexToRgb(hex: string) {
+    if (typeof hex !== 'string') { return null }
+    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, function (m, r, g, b) {
+        return r + r + g + g + b + b;
+    });
+
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+}
+
+class TileColorScheme {
+    color1: string;
+    color2: string;
+    constructor(color1: string, color2: string) {
+        this.color1 = color1;
+        this.color2 = color2;
+    }
+
+    get rgb1() { return hexToRgb(this.color1) }
+    get rgb2() { return hexToRgb(this.color2) }
+}
+
+const tileColorSchemes = {
+    desert: new TileColorScheme('#ea5', '#661'),
+    grass: new TileColorScheme('#6b5', '#ea5'),
+    ice: new TileColorScheme('#fff', '#88f'),
+    void: new TileColorScheme('#000', '#000'),
+}
+
 class TileData {
-    color: string;
+    colorScheme: TileColorScheme;
     road: Boolean;
-    constructor(color: string, road: Boolean = false) {
-        this.color = color;
-        this.road = road;
+    canvasHeight:number;
+    canvasWidth:number;
+    constructor(colorScheme, options:Object={}) {
+        this.colorScheme = tileColorSchemes[colorScheme] || tileColorSchemes.void
+        this.road = !!options.road;
+        this.canvasHeight = 100;
+        this.canvasWidth = 100;
     }
 
     getCoords(containingSet: Array<Array<TileData>>) {
@@ -17,17 +56,6 @@ class TileData {
             }
         }
         return null
-    }
-
-    getSurroundingTiles(containingSet: Array<Array<TileData>>) {
-        const coords = this.getCoords(containingSet)
-        if (!coords) return { tileBelow: null, tileAbove: null, tileBefore: null, tileAfter: null }
-        return {
-            tileBelow: containingSet[coords.y + 1] && containingSet[coords.y + 1][coords.x] ? containingSet[coords.y + 1][coords.x] : null,
-            tileAbove: containingSet[coords.y - 1] && containingSet[coords.y - 1][coords.x] ? containingSet[coords.y - 1][coords.x] : null,
-            tileBefore: containingSet[coords.y][coords.x - 1] ? containingSet[coords.y][coords.x - 1] : null,
-            tileAfter: containingSet[coords.y][coords.x + 1] ? containingSet[coords.y][coords.x + 1] : null,
-        }
     }
 
     getAllSurroundingTiles(containingSet: Array<Array<TileData>>) {
@@ -50,11 +78,14 @@ class TileData {
 
     }
 
+    changeColorScheme(colorScheme: string) {
+        this.colorScheme = tileColorSchemes[colorScheme] || tileColorSchemes.void
+    }
 
     plot(canvas: HTMLCanvasElement, containingSet: Array<Array<TileData>>) {
         const ctx = canvas.getContext('2d');
-        ctx.fillStyle = this.color;
-        ctx.fillRect(0, 0, 100, 100);
+
+        TileData.makeGroundPattern(ctx, 0, 0, 100, 100, this.colorScheme)
 
         if (!containingSet) { return }
         const surrounding = this.getAllSurroundingTiles(containingSet)
@@ -69,30 +100,45 @@ class TileData {
                 const cornerSize = 5
                 const sideSize = 5
 
-                ctx.fillStyle = tile.color;
+                ctx.fillStyle = tile.colorScheme.color1;
 
                 if (isCorner) {
-                    ctx.fillRect(tileX == 1 ? (100 - cornerSize) : 0, tileY == 1 ? (100 - cornerSize) : 0, cornerSize, cornerSize);
+                    TileData.makeGroundPattern(
+                        ctx,
+                        tileX == 1 ? (100 - cornerSize) : 0,
+                        tileY == 1 ? (100 - cornerSize) : 0,
+                        cornerSize,
+                        cornerSize,
+                        tile.colorScheme,
+                        {dust:true}
+                    )
                 } else {
                     let sideX, sideY, sideWidth, sideHeight;
 
                     sideX = tileX == 0
                         ? cornerSize
                         : tileX == -1
-                            ? 0 : (100-sideSize);
+                            ? 0 : (100 - sideSize);
 
                     sideY = tileY == 0
                         ? cornerSize
                         : tileY == -1
-                            ? 0 : (100-sideSize);
+                            ? 0 : (100 - sideSize);
 
-                    sideWidth =  tileX == 0 ? (100 - 2*cornerSize) : sideSize;
-                    sideHeight =  tileY == 0 ? (100 - 2*cornerSize) : sideSize;
+                    sideWidth = tileX == 0 ? (100 - 2 * cornerSize) : sideSize;
+                    sideHeight = tileY == 0 ? (100 - 2 * cornerSize) : sideSize;
 
-                    ctx.fillRect(sideX, sideY, sideWidth, sideHeight);
+
+                    TileData.makeGroundPattern(
+                        ctx,
+                        sideX, sideY, sideWidth, sideHeight,
+                        tile.colorScheme,
+                        {dust:true}
+                    )
+
                 }
 
-                if (this.road && tile.road) {
+                if (this.road && tile.road && !isCorner) {
                     ctx.strokeStyle = "brown";
                     ctx.lineWidth = 5;
                     ctx.moveTo(50, 50);
@@ -114,6 +160,35 @@ class TileData {
             ctx.stroke()
         }
 
+    }
+
+    static makeGroundPattern(ctx, x, y, width: number, height: number, colorScheme: TileColorScheme, options:object={}) {
+
+        let imgData = ctx.createImageData(width, height);
+        let i;
+
+        const { rgb1, rgb2 } = colorScheme;
+
+        if (rgb1) {
+            for (i = 0; i < imgData.data.length; i += 4) {
+                imgData.data[i] = rgb1.r
+                imgData.data[i + 1] = rgb1.g
+                imgData.data[i + 2] = rgb1.b
+                imgData.data[i + 3] = 255
+            }
+        }
+
+        if (rgb2) {
+            for (i = 0; i < imgData.data.length; i += 28) {
+                imgData.data[i] = rgb2.r
+                imgData.data[i + 1] = rgb2.g
+                imgData.data[i + 2] = rgb2.b
+                imgData.data[i + 3] = 255
+            }
+        }
+
+        ctx.putImageData(imgData, x, y)
+        return imgData
     }
 }
 

@@ -11,28 +11,28 @@ export default class TileBoard extends React.Component {
         this.state = {
             tiles: [
                 [
-                    new TileData('red'),
-                    new TileData('red',true),
-                    new TileData('green'),
-                    new TileData('blue',true),
+                    new TileData('desert'),
+                    new TileData('desert',{road:true}),
+                    new TileData('desert'),
+                    new TileData('desert'),
                 ],
                 [
-                    new TileData('red',true),
-                    new TileData('yellow',true),
-                    new TileData('green',true),
-                    new TileData('blue'),
+                    new TileData('desert'),
+                    new TileData('desert',{road:true}),
+                    new TileData('desert'),
+                    new TileData('desert'),
                 ],
                 [
-                    new TileData('red',true),
-                    new TileData('red'),
-                    new TileData('white'),
-                    new TileData('blue'),
+                    new TileData('desert'),
+                    new TileData('desert',{road:true}),
+                    new TileData('desert'),
+                    new TileData('desert'),
                 ],
                 [
-                    new TileData('red'),
-                    new TileData('blue'),
-                    new TileData('green',true),
-                    new TileData('blue'),
+                    new TileData('desert'),
+                    new TileData('desert'),
+                    new TileData('desert'),
+                    new TileData('desert'),
                 ],
             ],
         };
@@ -42,17 +42,17 @@ export default class TileBoard extends React.Component {
 
     handleTileClick(x, y) {
         this.setState(state => {
-            state.tiles[y][x].color = state.tiles[y][x].color == 'black' ? 'white' : 'black';
-            return {tiles: state.tiles}
+            state.tiles[y][x].changeColorScheme('grass')
+            return { tiles: state.tiles }
         })
     }
 
     renderTile(x, y) {
-        const {tiles} = this.state
+        const { tiles } = this.state
         return <Tile
             clickHandler={() => { this.handleTileClick(x, y) }}
             tileData={tiles[y][x]}
-            containingSet = {tiles}
+            containingSet={tiles}
             key={`${x},${y}`} />;
     }
 

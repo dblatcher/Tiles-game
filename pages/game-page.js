@@ -9,7 +9,6 @@ export default class GamePage extends React.Component {
     render() {
         return (
             <Layout>
-                <p>hi</p>
                 <TileBoard/>
             </Layout>
         )

@@ -61,22 +61,48 @@ export default class TileBoard extends React.Component {
         this.setState(state => {
         //    state.tiles[y][x].changeColorScheme(randomColorSchemeName())
             state.tiles[y][x].road = !state.tiles[y][x].road
+            this.plotTile(x,y)
+            
             return { tiles: state.tiles }
         })
     }
 
     componentDidMount() {
-        this.plot()
+        this.plotAll()
     }
 
     componentDidUpdate() {
-        this.plot()
+        // this.plotAll()
     }
 
-    plot() {
+    plotTile(x,y) {
         const {tileWidth, tileHeight,rows,columns} = this.props
         const {tiles} = this.state
+        const ctx = this.canvasRef.current.getContext('2d')
 
+        const tile = tiles[y][x]
+
+        tile.getPlotFunction(tiles)(ctx, x * tileWidth, y * tileHeight)
+
+        function plotAdjacentTile(x2,y2) {
+            if (!tiles[y2] || !tiles[y2][x2]) {return}
+            tiles[y2][x2].getPlotFunction(tiles)(ctx, x2 * tileWidth, y2 * tileHeight)
+        }
+
+        plotAdjacentTile(x-1,y-1);
+        plotAdjacentTile(x,y-1);
+        plotAdjacentTile(x+1,y-1);
+        plotAdjacentTile(x-1,y);
+        plotAdjacentTile(x+1,y);
+        plotAdjacentTile(x-1,y+1);
+        plotAdjacentTile(x,y+1);
+        plotAdjacentTile(x+1,y+1);
+
+    }
+
+    plotAll() {
+        const {tileWidth, tileHeight,rows,columns} = this.props
+        const {tiles} = this.state
         const ctx = this.canvasRef.current.getContext('2d')
 
         ctx.fillStyle = 'black'

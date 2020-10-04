@@ -1,5 +1,4 @@
 import React from 'react'
-import Tile from '../components/Tile'
 import styles from './tile.module.css'
 
 import { TileData, tileColorSchemes } from '../lib/tileClasses.tsx'
@@ -11,22 +10,20 @@ function randomColorSchemeName() {
     return colorSchemeNames[colorIndex]
 }
 
-function makeTileSet(w,h) {
+function makeTileSet(columns, rows, tileWidth = 100, tileHeight = 100) {
     function makeRow() {
         let row = []
-        for (let i = 0; i<w; i++) {
-            row.push (new TileData({
+        for (let i = 0; i < columns; i++) {
+            row.push(new TileData({
                 colorScheme: randomColorSchemeName(),
-                canvasWidth: 50,
-                canvasHeight: 50,
-
+                tileHeight, tileWidth
             }))
         }
         return row
     }
 
     let grid = []
-    for (let i = 0; i<h; i++) {
+    for (let i = 0; i < rows; i++) {
         grid.push(makeRow())
     }
     return grid
@@ -38,41 +35,74 @@ export default class TileBoard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            tiles: makeTileSet(6,120),
+            tiles: makeTileSet(props.columns, props.rows, props.tileWidth, props.tileHeight),
         };
 
+        this.state.tiles[3][3].road = true
+        this.state.tiles[4][3].road = true
+        this.state.tiles[5][3].road = true
+        
+        this.state.tiles[6][8].road = true
+
+
+        this.canvasRef = React.createRef();
         this.handleTileClick = this.handleTileClick.bind(this)
+        this.handleClick = this.handleClick.bind(this)
+    }
+
+    handleClick(event) {
+        const { clientX, clientY } = event
+        const { offsetLeft, offsetTop } = this.canvasRef.current
+        const { tileWidth, tileHeight } = this.props
+        let x = Math.floor ( (clientX - offsetLeft) / tileWidth  )
+        let y = Math.floor ( (clientY - offsetTop) / tileHeight  )
+        this.handleTileClick(x,y)
     }
 
     handleTileClick(x, y) {
         this.setState(state => {
-            state.tiles[y][x].changeColorScheme(randomColorSchemeName())
+        //    state.tiles[y][x].changeColorScheme(randomColorSchemeName())
             state.tiles[y][x].road = !state.tiles[y][x].road
             return { tiles: state.tiles }
         })
     }
 
-    renderTile(x, y) {
-        const { tiles } = this.state
-        return <Tile
-            clickHandler={() => { this.handleTileClick(x, y) }}
-            tileData={tiles[y][x]}
-            surroundings = {TileData.getSurroundingTiles(x,y,tiles)}
-            key={`${x},${y}`} />;
+    componentDidMount() {
+        this.plot()
     }
 
-    renderTileRow(y) {
-        return this.state.tiles[y].map((tile, index) => this.renderTile(index, y))
+    componentDidUpdate() {
+        this.plot()
+    }
+
+    plot() {
+        const {tileWidth, tileHeight,rows,columns} = this.props
+        const {tiles} = this.state
+
+        const ctx = this.canvasRef.current.getContext('2d')
+
+        ctx.fillStyle = 'black'
+        ctx.fillRect (0,0,columns*tileWidth, rows*tileHeight)
+
+        tiles.forEach((row, index1) => {
+            const rowPlotFunctions = row.map(tile => tile.getPlotFunction(tiles))
+            rowPlotFunctions.forEach((plotFunc, index2) => {
+                plotFunc(ctx, index2 * tileWidth, index1 * tileHeight)
+            })
+        })
     }
 
     render() {
+        const { tileWidth, tileHeight, columns, rows } = this.props
 
-        return this.state.tiles.map((row, index) => {
-            return (
-                <div key={index} className={styles.row}>
-                    {this.renderTileRow(index)}
-                </div>
-            )
-        })
+        return (
+            <canvas onClick={this.handleClick}
+                ref={this.canvasRef}
+                width={columns * tileWidth}
+                height={rows * tileHeight}
+            ></canvas>
+        )
     }
+
+
 }

@@ -9,8 +9,8 @@ export default class Tile extends React.Component {
     }
     
     plot() {
-        const{tileData, containingSet} = this.props
-        tileData.plot(this.canvasRef.current, containingSet)
+        const{tileData, surroundings} = this.props
+        tileData.plot(this.canvasRef.current, surroundings)
     }
 
     componentDidMount() {

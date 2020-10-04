@@ -2,39 +2,38 @@ import React from 'react'
 import Tile from '../components/Tile'
 import styles from './tile.module.css'
 
-import { TileData } from '../lib/tileClasses.tsx'
+import { TileData, tileColorSchemes } from '../lib/tileClasses.tsx'
+
+
+function randomColorSchemeName() {
+    const colorSchemeNames = Object.keys(tileColorSchemes)
+    const colorIndex = Math.floor(Math.random() * colorSchemeNames.length)
+    return colorSchemeNames[colorIndex]
+}
+
+function makeTileSet(w,h) {
+    function makeRow() {
+        let row = []
+        for (let i = 0; i<w; i++) {
+            row.push (new TileData(randomColorSchemeName(),{}))
+        }
+        return row
+    }
+
+    let grid = []
+    for (let i = 0; i<h; i++) {
+        grid.push(makeRow())
+    }
+    return grid
+}
+
 
 export default class TileBoard extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            tiles: [
-                [
-                    new TileData('desert'),
-                    new TileData('desert',{road:true}),
-                    new TileData('desert'),
-                    new TileData('desert'),
-                ],
-                [
-                    new TileData('desert'),
-                    new TileData('desert',{road:true}),
-                    new TileData('desert'),
-                    new TileData('desert'),
-                ],
-                [
-                    new TileData('desert'),
-                    new TileData('desert',{road:true}),
-                    new TileData('desert'),
-                    new TileData('desert'),
-                ],
-                [
-                    new TileData('desert'),
-                    new TileData('desert'),
-                    new TileData('desert'),
-                    new TileData('desert'),
-                ],
-            ],
+            tiles: makeTileSet(6,120),
         };
 
         this.handleTileClick = this.handleTileClick.bind(this)
@@ -42,7 +41,7 @@ export default class TileBoard extends React.Component {
 
     handleTileClick(x, y) {
         this.setState(state => {
-            state.tiles[y][x].changeColorScheme('grass')
+            state.tiles[y][x].changeColorScheme(randomColorSchemeName())
             return { tiles: state.tiles }
         })
     }
@@ -52,7 +51,7 @@ export default class TileBoard extends React.Component {
         return <Tile
             clickHandler={() => { this.handleTileClick(x, y) }}
             tileData={tiles[y][x]}
-            containingSet={tiles}
+            surroundings = {TileData.getSurroundingTiles(x,y,tiles)}
             key={`${x},${y}`} />;
     }
 

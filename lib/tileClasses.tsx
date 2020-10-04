@@ -58,37 +58,25 @@ class TileData {
         return null
     }
 
-    getAllSurroundingTiles(containingSet: Array<Array<TileData>>) {
-        const coords = this.getCoords(containingSet)
-        if (!coords) return [
-            [null, null, null],
-            [null, null, null],
-            [null, null, null],
-        ]
-
-        function getNearByTile(xd, yd) {
-            return containingSet[coords.y + yd] && containingSet[coords.y + yd][coords.x + xd] ? containingSet[coords.y + yd][coords.x + xd] : null
-        }
-
-        return [
-            [getNearByTile(-1, -1), getNearByTile(0, -1), getNearByTile(1, -1)],
-            [getNearByTile(-1, 0), null, getNearByTile(1, 0)],
-            [getNearByTile(-1, 1), getNearByTile(0, 1), getNearByTile(1, 1)],
-        ]
-
-    }
-
     changeColorScheme(colorScheme: string) {
         this.colorScheme = tileColorSchemes[colorScheme] || tileColorSchemes.void
     }
 
-    plot(canvas: HTMLCanvasElement, containingSet: Array<Array<TileData>>) {
+    plotGround (ctx, x, y, width: number, height: number, colorScheme: TileColorScheme) {
+        ctx.fillStyle = colorScheme.color1
+        ctx.fillRect(x,y,width,height)
+
+        ctx.fillStyle = colorScheme.color2
+
+        ctx.fillRect(x+width/4,y+height/4,width/2,height/2)
+
+    }
+
+    plot(canvas: HTMLCanvasElement, surrounding: Array<Array<TileData>>) {
         const ctx = canvas.getContext('2d');
 
-        TileData.makeGroundPattern(ctx, 0, 0, 100, 100, this.colorScheme)
+        this.plotGround(ctx, 0, 0, 100, 100, this.colorScheme)
 
-        if (!containingSet) { return }
-        const surrounding = this.getAllSurroundingTiles(containingSet)
 
         let havePlottedConnectingRoad = false
         surrounding.forEach((row, rowIndex) => {
@@ -103,14 +91,13 @@ class TileData {
                 ctx.fillStyle = tile.colorScheme.color1;
 
                 if (isCorner) {
-                    TileData.makeGroundPattern(
+                    this.plotGround (
                         ctx,
                         tileX == 1 ? (100 - cornerSize) : 0,
                         tileY == 1 ? (100 - cornerSize) : 0,
                         cornerSize,
                         cornerSize,
                         tile.colorScheme,
-                        {dust:true}
                     )
                 } else {
                     let sideX, sideY, sideWidth, sideHeight;
@@ -129,11 +116,10 @@ class TileData {
                     sideHeight = tileY == 0 ? (100 - 2 * cornerSize) : sideSize;
 
 
-                    TileData.makeGroundPattern(
+                    this.plotGround (
                         ctx,
                         sideX, sideY, sideWidth, sideHeight,
-                        tile.colorScheme,
-                        {dust:true}
+                        tile.colorScheme
                     )
 
                 }
@@ -162,34 +148,19 @@ class TileData {
 
     }
 
-    static makeGroundPattern(ctx, x, y, width: number, height: number, colorScheme: TileColorScheme, options:object={}) {
+    static getSurroundingTiles(x:number, y:number, containingSet:Array<Array<TileData>>) {
+        const coords = {x,y}
 
-        let imgData = ctx.createImageData(width, height);
-        let i;
-
-        const { rgb1, rgb2 } = colorScheme;
-
-        if (rgb1) {
-            for (i = 0; i < imgData.data.length; i += 4) {
-                imgData.data[i] = rgb1.r
-                imgData.data[i + 1] = rgb1.g
-                imgData.data[i + 2] = rgb1.b
-                imgData.data[i + 3] = 255
-            }
+        function getNearByTile(xd, yd) {
+            return containingSet[coords.y + yd] && containingSet[coords.y + yd][coords.x + xd] ? containingSet[coords.y + yd][coords.x + xd] : null
         }
 
-        if (rgb2) {
-            for (i = 0; i < imgData.data.length; i += 28) {
-                imgData.data[i] = rgb2.r
-                imgData.data[i + 1] = rgb2.g
-                imgData.data[i + 2] = rgb2.b
-                imgData.data[i + 3] = 255
-            }
-        }
-
-        ctx.putImageData(imgData, x, y)
-        return imgData
+        return [
+            [getNearByTile(-1, -1), getNearByTile(0, -1), getNearByTile(1, -1)],
+            [getNearByTile(-1, 0), null, getNearByTile(1, 0)],
+            [getNearByTile(-1, 1), getNearByTile(0, 1), getNearByTile(1, 1)],
+        ]
     }
 }
 
-export { TileData }
+export { TileData, tileColorSchemes }

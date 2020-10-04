@@ -63,7 +63,7 @@ class TileData {
         this.colorScheme = tileColorSchemes[colorScheme] || tileColorSchemes.void
     }
 
-    plotRoad(ctx, x:number, y:number, surroundingTiles: Array<Array<TileData>>) {
+    plotRoad(ctx, x: number, y: number, surroundingTiles: Array<Array<TileData>>) {
         const { colorScheme, tileWidth, tileHeight } = this
         let noConnectingSquares = true
 
@@ -117,13 +117,31 @@ class TileData {
         }
     }
 
-    plotBackground (ctx, x:number, y:number, surroundingTiles: Array<Array<TileData>>) {
+    plotBackground(ctx, x: number, y: number, surroundingTiles: Array<Array<TileData>>) {
         const { colorScheme, tileWidth, tileHeight } = this
         ctx.fillStyle = colorScheme.color1;
         ctx.fillRect(x, y, tileWidth, tileHeight)
 
-        ctx.fillStyle = colorScheme.color2;
 
+
+        var imgData = ctx.createImageData(tileWidth, tileHeight);
+        var i;
+        for (i = 0; i < imgData.data.length; i += 4) {
+            
+            if (i%60 == 0 ) {
+                imgData.data[i + 0] = colorScheme.rgb2.r;
+                imgData.data[i + 1] = colorScheme.rgb2.g;
+                imgData.data[i + 2] = colorScheme.rgb2.b;
+                imgData.data[i + 3] = 255;
+            } else {
+                imgData.data[i + 0] = colorScheme.rgb1.r;
+                imgData.data[i + 1] = colorScheme.rgb1.g;
+                imgData.data[i + 2] = colorScheme.rgb1.b;
+                imgData.data[i + 3] = 255;
+            }
+        }
+
+        ctx.putImageData(imgData,x,y)
     }
 
     getPlotFunction(containingSet: Array<Array<TileData>>) {
@@ -132,7 +150,7 @@ class TileData {
         const surroundingTiles = TileData.getSurroundingTiles(coords, containingSet)
 
         return function (ctx, x, y) {
-            thisTile.plotBackground (ctx, x, y,surroundingTiles)
+            thisTile.plotBackground(ctx, x, y, surroundingTiles)
 
             if (thisTile.road) {
                 thisTile.plotRoad(ctx, x, y, surroundingTiles)

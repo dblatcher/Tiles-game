@@ -1,6 +1,4 @@
 import React from 'react'
-import styles from './tile.module.css'
-
 import { TileData, tileColorSchemes } from '../lib/tileClasses.tsx'
 
 

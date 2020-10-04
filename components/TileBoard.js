@@ -15,7 +15,12 @@ function makeTileSet(w,h) {
     function makeRow() {
         let row = []
         for (let i = 0; i<w; i++) {
-            row.push (new TileData(randomColorSchemeName(),{}))
+            row.push (new TileData({
+                colorScheme: randomColorSchemeName(),
+                canvasWidth: 50,
+                canvasHeight: 50,
+
+            }))
         }
         return row
     }
@@ -42,6 +47,7 @@ export default class TileBoard extends React.Component {
     handleTileClick(x, y) {
         this.setState(state => {
             state.tiles[y][x].changeColorScheme(randomColorSchemeName())
+            state.tiles[y][x].road = !state.tiles[y][x].road
             return { tiles: state.tiles }
         })
     }

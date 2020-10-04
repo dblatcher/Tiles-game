@@ -30,19 +30,20 @@ const tileColorSchemes = {
     desert: new TileColorScheme('#ea5', '#661'),
     grass: new TileColorScheme('#6b5', '#ea5'),
     ice: new TileColorScheme('#fff', '#88f'),
+    tundra: new TileColorScheme('#dfd', '#eee'),
     void: new TileColorScheme('#000', '#000'),
 }
 
 class TileData {
     colorScheme: TileColorScheme;
     road: Boolean;
-    canvasHeight:number;
-    canvasWidth:number;
-    constructor(colorScheme, options:Object={}) {
-        this.colorScheme = tileColorSchemes[colorScheme] || tileColorSchemes.void
+    canvasHeight: number;
+    canvasWidth: number;
+    constructor(options: Object = {}) {
+        this.colorScheme = tileColorSchemes[options.colorScheme] || tileColorSchemes.void
         this.road = !!options.road;
-        this.canvasHeight = 100;
-        this.canvasWidth = 100;
+        this.canvasHeight = options.canvasHeight || 100;
+        this.canvasWidth = options.canvasWidth || 100;
     }
 
     getCoords(containingSet: Array<Array<TileData>>) {
@@ -62,23 +63,22 @@ class TileData {
         this.colorScheme = tileColorSchemes[colorScheme] || tileColorSchemes.void
     }
 
-    plotGround (ctx, x, y, width: number, height: number, colorScheme: TileColorScheme) {
+    plotGround(ctx, x, y, width: number, height: number, colorScheme: TileColorScheme) {
         ctx.fillStyle = colorScheme.color1
-        ctx.fillRect(x,y,width,height)
+        ctx.fillRect(x, y, width, height)
 
         ctx.fillStyle = colorScheme.color2
-
-        ctx.fillRect(x+width/4,y+height/4,width/2,height/2)
-
+        ctx.fillRect(x + width * (3 / 8), y + height * (3 / 8), width * (1 / 4), height * (1 / 4))
     }
 
     plot(canvas: HTMLCanvasElement, surrounding: Array<Array<TileData>>) {
         const ctx = canvas.getContext('2d');
-
-        this.plotGround(ctx, 0, 0, 100, 100, this.colorScheme)
-
-
+        const { canvasHeight, canvasWidth, colorScheme } = this;
+        this.plotGround(ctx, 0, 0, canvasWidth, canvasHeight, colorScheme)
+        let roadWidth = canvasWidth / 20
         let havePlottedConnectingRoad = false
+
+
         surrounding.forEach((row, rowIndex) => {
             row.forEach((tile, tileIndex) => {
                 if (!tile) { return }
@@ -88,13 +88,12 @@ class TileData {
                 const cornerSize = 5
                 const sideSize = 5
 
-                ctx.fillStyle = tile.colorScheme.color1;
 
                 if (isCorner) {
-                    this.plotGround (
+                    this.plotGround(
                         ctx,
-                        tileX == 1 ? (100 - cornerSize) : 0,
-                        tileY == 1 ? (100 - cornerSize) : 0,
+                        tileX == 1 ? (canvasWidth - cornerSize) : 0,
+                        tileY == 1 ? (canvasHeight - cornerSize) : 0,
                         cornerSize,
                         cornerSize,
                         tile.colorScheme,
@@ -105,18 +104,18 @@ class TileData {
                     sideX = tileX == 0
                         ? cornerSize
                         : tileX == -1
-                            ? 0 : (100 - sideSize);
+                            ? 0 : (canvasWidth - sideSize);
 
                     sideY = tileY == 0
                         ? cornerSize
                         : tileY == -1
-                            ? 0 : (100 - sideSize);
+                            ? 0 : (canvasHeight - sideSize);
 
-                    sideWidth = tileX == 0 ? (100 - 2 * cornerSize) : sideSize;
-                    sideHeight = tileY == 0 ? (100 - 2 * cornerSize) : sideSize;
+                    sideWidth = tileX == 0 ? (canvasWidth - 2 * cornerSize) : sideSize;
+                    sideHeight = tileY == 0 ? (canvasHeight - 2 * cornerSize) : sideSize;
 
 
-                    this.plotGround (
+                    this.plotGround(
                         ctx,
                         sideX, sideY, sideWidth, sideHeight,
                         tile.colorScheme
@@ -126,9 +125,9 @@ class TileData {
 
                 if (this.road && tile.road && !isCorner) {
                     ctx.strokeStyle = "brown";
-                    ctx.lineWidth = 5;
-                    ctx.moveTo(50, 50);
-                    ctx.lineTo(50 + tileX * 60, 50 + tileY * 60);
+                    ctx.lineWidth = roadWidth;
+                    ctx.moveTo(canvasWidth / 2, canvasHeight / 2);
+                    ctx.lineTo((canvasWidth / 2) + (tileX * canvasWidth / 2), (canvasHeight / 2) + (tileY * canvasHeight / 2));
                     ctx.stroke()
                     havePlottedConnectingRoad = true
                 }
@@ -137,19 +136,20 @@ class TileData {
 
 
         if (this.road && !havePlottedConnectingRoad) {
+            console.log('drawing x', havePlottedConnectingRoad)
             ctx.strokeStyle = "brown";
-            ctx.lineWidth = 5;
-            ctx.moveTo(40, 40);
-            ctx.lineTo(60, 60);
-            ctx.moveTo(40, 60);
-            ctx.lineTo(60, 40);
+            ctx.lineWidth = roadWidth;
+            ctx.moveTo((canvasWidth / 2)-roadWidth*5, (canvasHeight / 2)-roadWidth*5);
+            ctx.lineTo((canvasWidth / 2)+roadWidth*5, (canvasHeight / 2)+roadWidth*5);
+            ctx.moveTo((canvasWidth / 2)-roadWidth*5, (canvasHeight / 2)+roadWidth*5);
+            ctx.lineTo((canvasWidth / 2)+roadWidth*5, (canvasHeight / 2)-roadWidth*5);
             ctx.stroke()
         }
 
     }
 
-    static getSurroundingTiles(x:number, y:number, containingSet:Array<Array<TileData>>) {
-        const coords = {x,y}
+    static getSurroundingTiles(x: number, y: number, containingSet: Array<Array<TileData>>) {
+        const coords = { x, y }
 
         function getNearByTile(xd, yd) {
             return containingSet[coords.y + yd] && containingSet[coords.y + yd][coords.x + xd] ? containingSet[coords.y + yd][coords.x + xd] : null

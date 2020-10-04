@@ -17,13 +17,44 @@ function hexToRgb(hex: string) {
 class TileColorScheme {
     color1: string;
     color2: string;
+    backgroundImgData: object;
     constructor(color1: string, color2: string) {
         this.color1 = color1;
         this.color2 = color2;
+        this.backgroundImgData = {};
     }
 
     get rgb1() { return hexToRgb(this.color1) }
     get rgb2() { return hexToRgb(this.color2) }
+
+    getBackgroundImageData(ctx, tileWidth, tileHeight) {
+
+        const dimKey = `${tileWidth}x${tileHeight}`
+
+        if (this.backgroundImgData[dimKey]) { return this.backgroundImgData[dimKey] }
+
+
+        var imgData = ctx.createImageData(tileWidth, tileHeight);
+        var i;
+        for (i = 0; i < imgData.data.length; i += 4) {
+
+            if (i % 60 == 0) {
+                imgData.data[i + 0] = this.rgb2.r;
+                imgData.data[i + 1] = this.rgb2.g;
+                imgData.data[i + 2] = this.rgb2.b;
+                imgData.data[i + 3] = 255;
+            } else {
+                imgData.data[i + 0] = this.rgb1.r;
+                imgData.data[i + 1] = this.rgb1.g;
+                imgData.data[i + 2] = this.rgb1.b;
+                imgData.data[i + 3] = 255;
+            }
+        }
+
+        this.backgroundImgData[dimKey] = imgData
+        return imgData
+
+    }
 }
 
 const tileColorSchemes = {
@@ -123,25 +154,8 @@ class TileData {
         ctx.fillRect(x, y, tileWidth, tileHeight)
 
 
-
-        var imgData = ctx.createImageData(tileWidth, tileHeight);
-        var i;
-        for (i = 0; i < imgData.data.length; i += 4) {
-            
-            if (i%60 == 0 ) {
-                imgData.data[i + 0] = colorScheme.rgb2.r;
-                imgData.data[i + 1] = colorScheme.rgb2.g;
-                imgData.data[i + 2] = colorScheme.rgb2.b;
-                imgData.data[i + 3] = 255;
-            } else {
-                imgData.data[i + 0] = colorScheme.rgb1.r;
-                imgData.data[i + 1] = colorScheme.rgb1.g;
-                imgData.data[i + 2] = colorScheme.rgb1.b;
-                imgData.data[i + 3] = 255;
-            }
-        }
-
-        ctx.putImageData(imgData,x,y)
+        const imgData = colorScheme.getBackgroundImageData(ctx, tileWidth, tileWidth)
+        ctx.putImageData(imgData, x, y)
     }
 
     getPlotFunction(containingSet: Array<Array<TileData>>) {

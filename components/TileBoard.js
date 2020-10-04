@@ -52,8 +52,10 @@ export default class TileBoard extends React.Component {
         const { clientX, clientY } = event
         const { offsetLeft, offsetTop } = this.canvasRef.current
         const { tileWidth, tileHeight } = this.props
-        let x = Math.floor ( (clientX - offsetLeft) / tileWidth  )
-        let y = Math.floor ( (clientY - offsetTop) / tileHeight  )
+        const {scrollX, scrollY} = window
+
+        let x = Math.floor ( (clientX - offsetLeft + scrollX) / tileWidth  )
+        let y = Math.floor ( (clientY - offsetTop + scrollY) / tileHeight  )
         this.handleTileClick(x,y)
     }
 

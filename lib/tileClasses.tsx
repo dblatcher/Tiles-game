@@ -63,15 +63,20 @@ class TileData {
         this.colorScheme = tileColorSchemes[colorScheme] || tileColorSchemes.void
     }
 
-    plotRoad(ctx, x, y, surroundingTiles: Array<Array<TileData>>) {
+    plotRoad(ctx, x:number, y:number, surroundingTiles: Array<Array<TileData>>) {
         const { colorScheme, tileWidth, tileHeight } = this
         let noConnectingSquares = true
-        ctx.lineWidth = 2
-        ctx.strokeStyle = "#FF0000"
 
         function drawConnectingRoad(toX, toY) {
             noConnectingSquares = false
             ctx.beginPath()
+            ctx.lineWidth = 6
+            ctx.strokeStyle = "#000"
+            ctx.moveTo(x + tileWidth / 2, y + tileHeight / 2)
+            ctx.lineTo(toX, toY)
+            ctx.stroke()
+            ctx.lineWidth = 4
+            ctx.strokeStyle = "#aaaa50"
             ctx.moveTo(x + tileWidth / 2, y + tileHeight / 2)
             ctx.lineTo(toX, toY)
             ctx.stroke()
@@ -95,6 +100,15 @@ class TileData {
 
         if (noConnectingSquares) {
             ctx.beginPath()
+            ctx.lineWidth = 6
+            ctx.strokeStyle = "#000"
+            ctx.moveTo((x + tileWidth / 2) - tileWidth / 6, (y + tileHeight / 2) - tileHeight / 6)
+            ctx.lineTo((x + tileWidth / 2) + tileWidth / 6, (y + tileHeight / 2) + tileHeight / 6)
+            ctx.moveTo((x + tileWidth / 2) + tileWidth / 6, (y + tileHeight / 2) - tileHeight / 6)
+            ctx.lineTo((x + tileWidth / 2) - tileWidth / 6, (y + tileHeight / 2) + tileHeight / 6)
+            ctx.stroke()
+            ctx.lineWidth = 4
+            ctx.strokeStyle = "#aaaa50"
             ctx.moveTo((x + tileWidth / 2) - tileWidth / 6, (y + tileHeight / 2) - tileHeight / 6)
             ctx.lineTo((x + tileWidth / 2) + tileWidth / 6, (y + tileHeight / 2) + tileHeight / 6)
             ctx.moveTo((x + tileWidth / 2) + tileWidth / 6, (y + tileHeight / 2) - tileHeight / 6)
@@ -103,16 +117,22 @@ class TileData {
         }
     }
 
+    plotBackground (ctx, x:number, y:number, surroundingTiles: Array<Array<TileData>>) {
+        const { colorScheme, tileWidth, tileHeight } = this
+        ctx.fillStyle = colorScheme.color1;
+        ctx.fillRect(x, y, tileWidth, tileHeight)
+
+        ctx.fillStyle = colorScheme.color2;
+
+    }
+
     getPlotFunction(containingSet: Array<Array<TileData>>) {
         const thisTile = this;
-        const { colorScheme, tileWidth, tileHeight } = this
-
-        const coords = this.getCoords(containingSet)
+        const coords = thisTile.getCoords(containingSet)
         const surroundingTiles = TileData.getSurroundingTiles(coords, containingSet)
 
         return function (ctx, x, y) {
-            ctx.fillStyle = colorScheme.color1;
-            ctx.fillRect(x, y, tileWidth, tileHeight)
+            thisTile.plotBackground (ctx, x, y,surroundingTiles)
 
             if (thisTile.road) {
                 thisTile.plotRoad(ctx, x, y, surroundingTiles)

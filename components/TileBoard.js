@@ -38,9 +38,9 @@ export default class TileBoard extends React.Component {
 
         this.state.tiles[3][3].road = true
         this.state.tiles[4][3].road = true
-        this.state.tiles[5][3].road = true
+        this.state.tiles[4][3].road = true
         
-        this.state.tiles[6][8].road = true
+        this.state.tiles[2][1].road = true
 
 
         this.canvasRef = React.createRef();

@@ -71,13 +71,47 @@ class TileData {
         ctx.fillRect(x + width * (3 / 8), y + height * (3 / 8), width * (1 / 4), height * (1 / 4))
     }
 
-    plot(canvas: HTMLCanvasElement, surrounding: Array<Array<TileData>>) {
-        const ctx = canvas.getContext('2d');
-        const { canvasHeight, canvasWidth, colorScheme } = this;
-        this.plotGround(ctx, 0, 0, canvasWidth, canvasHeight, colorScheme)
+    plotRoad(ctx, surrounding) {
+        if (!this.road) {return}
+
+        console.log('plot road', this.colorScheme)
+        const { canvasHeight, canvasWidth } = this;
         let roadWidth = canvasWidth / 20
         let havePlottedConnectingRoad = false
 
+        surrounding.forEach((row, rowIndex) => {
+            row.forEach((tile, tileIndex) => {
+
+                if (!tile || !tile.road) {return}
+                const tileX = tileIndex - 1, tileY = rowIndex - 1;
+                const isCorner = tileX * tileY !== 0
+                if (isCorner) {return}
+                ctx.strokeStyle = "brown";
+                ctx.lineWidth = roadWidth;
+                ctx.moveTo(canvasWidth / 2, canvasHeight / 2);
+                ctx.lineTo((canvasWidth / 2) + (tileX * canvasWidth / 2), (canvasHeight / 2) + (tileY * canvasHeight / 2));
+                ctx.stroke()
+                havePlottedConnectingRoad = true
+                console.log('drawing line',tileX,tileY, Date.now())
+
+            })
+        })
+
+        if (this.road && !havePlottedConnectingRoad) {
+            console.log('drawing x', havePlottedConnectingRoad, Date.now())
+            ctx.strokeStyle = "brown";
+            ctx.lineWidth = roadWidth;
+            ctx.moveTo((canvasWidth / 2)-roadWidth*4, (canvasHeight / 2)-roadWidth*4);
+            ctx.lineTo((canvasWidth / 2)+roadWidth*4, (canvasHeight / 2)+roadWidth*4);
+            ctx.moveTo((canvasWidth / 2)-roadWidth*4, (canvasHeight / 2)+roadWidth*4);
+            ctx.lineTo((canvasWidth / 2)+roadWidth*4, (canvasHeight / 2)-roadWidth*4);
+            ctx.stroke()
+        }
+
+    }
+
+    plotEdges(ctx, surrounding) {
+        const { canvasHeight, canvasWidth, colorScheme } = this;
 
         surrounding.forEach((row, rowIndex) => {
             row.forEach((tile, tileIndex) => {
@@ -122,30 +156,21 @@ class TileData {
                     )
 
                 }
-
-                if (this.road && tile.road && !isCorner) {
-                    ctx.strokeStyle = "brown";
-                    ctx.lineWidth = roadWidth;
-                    ctx.moveTo(canvasWidth / 2, canvasHeight / 2);
-                    ctx.lineTo((canvasWidth / 2) + (tileX * canvasWidth / 2), (canvasHeight / 2) + (tileY * canvasHeight / 2));
-                    ctx.stroke()
-                    havePlottedConnectingRoad = true
-                }
             })
         })
 
 
-        if (this.road && !havePlottedConnectingRoad) {
-            console.log('drawing x', havePlottedConnectingRoad)
-            ctx.strokeStyle = "brown";
-            ctx.lineWidth = roadWidth;
-            ctx.moveTo((canvasWidth / 2)-roadWidth*5, (canvasHeight / 2)-roadWidth*5);
-            ctx.lineTo((canvasWidth / 2)+roadWidth*5, (canvasHeight / 2)+roadWidth*5);
-            ctx.moveTo((canvasWidth / 2)-roadWidth*5, (canvasHeight / 2)+roadWidth*5);
-            ctx.lineTo((canvasWidth / 2)+roadWidth*5, (canvasHeight / 2)-roadWidth*5);
-            ctx.stroke()
-        }
 
+    }
+
+    plot(canvas: HTMLCanvasElement, surrounding: Array<Array<TileData>>) {
+        const ctx = canvas.getContext('2d');
+        const { canvasHeight, canvasWidth, colorScheme } = this;
+        this.plotGround(ctx, 0, 0, canvasWidth, canvasHeight, colorScheme)
+
+        this.plotEdges(ctx, surrounding)
+
+        this.plotRoad(ctx, surrounding)
     }
 
     static getSurroundingTiles(x: number, y: number, containingSet: Array<Array<TileData>>) {

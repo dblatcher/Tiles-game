@@ -29,16 +29,16 @@ class TileColorScheme {
 
     getBackgroundImageData(ctx, tileWidth, tileHeight) {
 
-        const dimKey = `${tileWidth}x${tileHeight}`
+        const dimKey = `Background ${tileWidth}x${tileHeight}`
 
         if (this.backgroundImgData[dimKey]) { return this.backgroundImgData[dimKey] }
+        let imgData = ctx.createImageData(tileWidth, tileHeight);
+        let i;
+        const dotInterval = 2 + Math.floor(tileWidth / 7.25)
 
-
-        var imgData = ctx.createImageData(tileWidth, tileHeight);
-        var i;
         for (i = 0; i < imgData.data.length; i += 4) {
 
-            if (i % 60 == 0) {
+            if (i % (dotInterval * 4) == 0) {
                 imgData.data[i + 0] = this.rgb2.r;
                 imgData.data[i + 1] = this.rgb2.g;
                 imgData.data[i + 2] = this.rgb2.b;
@@ -55,14 +55,50 @@ class TileColorScheme {
         return imgData
 
     }
+
+    getEdgeImageData(ctx, tileWidth, tileHeight, otherColor, vertical = false) {
+
+        const dimKey = `HorizontalEdge-${vertical ? 'vertical' : 'horizontal'}-${otherColor.toString()} ${tileWidth}x${tileHeight}`
+        if (this.backgroundImgData[dimKey]) { return this.backgroundImgData[dimKey] }
+
+        const otherRgb = hexToRgb(otherColor)
+
+        let imgData = ctx.createImageData(tileWidth / (vertical ? 1 : 20), tileHeight / (vertical ? 20 : 1));
+        let i;
+        const dotInterval = 2
+
+        for (i = 0; i < imgData.data.length; i += 4) {
+
+            if (i % (dotInterval * 4) == 0) {
+                imgData.data[i + 0] = otherRgb.r;
+                imgData.data[i + 1] = otherRgb.g;
+                imgData.data[i + 2] = otherRgb.b;
+                imgData.data[i + 3] = 255;
+            } else {
+                imgData.data[i + 0] = this.rgb1.r;
+                imgData.data[i + 1] = this.rgb1.g;
+                imgData.data[i + 2] = this.rgb1.b;
+                imgData.data[i + 3] = 255;
+            }
+        }
+
+        this.backgroundImgData[dimKey] = imgData
+        return imgData
+
+    }
+
 }
 
 const tileColorSchemes = {
+
+    // red: new TileColorScheme('#F00', 'A00'),
+    // blue: new TileColorScheme('#00F', '00A'),
+
     desert: new TileColorScheme('#ea5', '#661'),
     grass: new TileColorScheme('#6b5', '#ea5'),
     ice: new TileColorScheme('#fff', '#88f'),
-    tundra: new TileColorScheme('#dfd', '#eee'),
-    void: new TileColorScheme('#000', '#000'),
+    tundra: new TileColorScheme('#999', '#0d9'),
+    void: new TileColorScheme('#000', '#FFF'),
 }
 
 class TileData {
@@ -156,6 +192,29 @@ class TileData {
 
         const imgData = colorScheme.getBackgroundImageData(ctx, tileWidth, tileWidth)
         ctx.putImageData(imgData, x, y)
+
+        const tileToLeft = surroundingTiles[1][0]
+        const tileToRight = surroundingTiles[1][2]
+        const tileAbove = surroundingTiles[0][1]
+        const tileBelow = surroundingTiles[2][1]
+        let edgeImg
+        if (tileToLeft && tileToLeft.colorScheme != this.colorScheme) {
+            edgeImg = this.colorScheme.getEdgeImageData(ctx, tileWidth, tileWidth, tileToLeft.colorScheme.color1)
+            ctx.putImageData(edgeImg, x, y)
+        }
+        if (tileAbove && tileAbove.colorScheme != this.colorScheme) {
+            edgeImg = this.colorScheme.getEdgeImageData(ctx, tileWidth, tileWidth, tileAbove.colorScheme.color1, true)
+            ctx.putImageData(edgeImg, x, y)
+        }
+        if (tileToRight && tileToRight.colorScheme != this.colorScheme) {
+            edgeImg = this.colorScheme.getEdgeImageData(ctx, tileWidth, tileWidth, tileToRight.colorScheme.color1)
+            ctx.putImageData(edgeImg, x + tileWidth - edgeImg.width, y)
+        }
+        if (tileBelow && tileBelow.colorScheme != this.colorScheme) {
+            edgeImg = this.colorScheme.getEdgeImageData(ctx, tileWidth, tileWidth, tileBelow.colorScheme.color1, true)
+            ctx.putImageData(edgeImg, x, y + tileHeight - edgeImg.height)
+        }
+
     }
 
     getPlotFunction(containingSet: Array<Array<TileData>>) {

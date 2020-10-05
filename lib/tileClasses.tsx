@@ -34,7 +34,7 @@ class TileColorScheme {
         if (this.backgroundImgData[dimKey]) { return this.backgroundImgData[dimKey] }
         let imgData = ctx.createImageData(tileWidth, tileHeight);
         let i;
-        const dotInterval = 2 + Math.floor(tileWidth / 7.25)
+        const dotInterval =  Math.floor( 5.5 + tileWidth/3.215)
 
         for (i = 0; i < imgData.data.length; i += 4) {
 
@@ -217,17 +217,52 @@ class TileData {
 
     }
 
+    plotSprite (ctx, x: number, y: number, sprite) {
+        const spriteWidth = 20
+        const spriteHeight = 20
+        let copy = ctx.getImageData(x, y, this.tileWidth, this.tileHeight)
+        let spritePixel, index
+
+        const xOffset = (this.tileWidth - spriteWidth) / 2
+        const yOffset = (this.tileHeight - spriteHeight) / 2
+
+        for (let r = 0; r < spriteHeight; r++) {
+            for (let c = 0; c < spriteWidth; c++) {
+
+                index = (r * spriteWidth * 4) + c * 4
+                spritePixel = {
+                    r: sprite.data[index],
+                    g: sprite.data[index + 1],
+                    b: sprite.data[index + 2],
+                    a: sprite.data[index + 3],
+                }
+                if (spritePixel.a == 0) { continue }
+
+                let correspondingIndex = 4 * ( (r + yOffset) * this.tileWidth  + c + xOffset)
+
+                copy.data[correspondingIndex] = spritePixel.r;
+                copy.data[correspondingIndex + 1] = spritePixel.g;
+                copy.data[correspondingIndex + 2] = spritePixel.b;
+            }
+        }
+        ctx.putImageData(copy, x, y)
+    }
+
     getPlotFunction(containingSet: Array<Array<TileData>>) {
         const thisTile = this;
         const coords = thisTile.getCoords(containingSet)
         const surroundingTiles = TileData.getSurroundingTiles(coords, containingSet)
 
-        return function (ctx, x, y) {
+        return function (ctx, x, y, spriteData) {
+
             thisTile.plotBackground(ctx, x, y, surroundingTiles)
 
             if (thisTile.road) {
                 thisTile.plotRoad(ctx, x, y, surroundingTiles)
             }
+
+            const sprite = spriteData[11]
+            thisTile.plotSprite(ctx,x,y,sprite)
 
         }
     }

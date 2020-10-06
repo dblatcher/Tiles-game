@@ -6,14 +6,26 @@
 .tile {
     display: inline-flex;
     flex-direction: column;
+    position: relative;
     width: 4rem;
     height: 4rem;
     border: 1px solid black;
     margin: 0;
     padding: 0;
     font-size: x-small;
-    .tree {
-        background-image: url('/spriteSheet.png');
+}
 
-    }
+@mixin spriteHolder {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-repeat: no-repeat;
+}
+
+.treeSprite {
+    @include spriteHolder();
 }

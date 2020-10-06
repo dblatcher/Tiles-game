@@ -1,0 +1,14 @@
+.row {
+    display: flex;
+    justify-content: center;
+}
+
+.tile {
+    display: inline-flex;
+    width: 4rem;
+    height: 4rem;
+    border: 1px solid black;
+    margin: 0;
+    padding: 0;
+    font-size: x-small;
+}

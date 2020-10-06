@@ -33,14 +33,14 @@ function randomTerrainType() {
     return terrainTypes[terrainNames[nameIndex]]
 }
 
-function makeMapSquareMatrix(columns, rows) {
+function makeMapSquareMatrix(columns, rows, treeChance) {
     function makeRow(rowIndex) {
         let row = []
         for (let i = 0; i < columns; i++) {
             row.push(new MapSquare({
                 terrain: randomTerrainType(),
                 road: false,
-                tree: Math.random() > .5
+                tree: Math.random() < treeChance
             },i, rowIndex))
         }
         return row
@@ -59,20 +59,41 @@ export default class TileBoard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            mapSquareMatrix: makeMapSquareMatrix(props.columns, props.rows),
+            mapSquareMatrix: makeMapSquareMatrix(props.columns, props.rows,.8),
             spriteData: [],
         };
 
         this.handleClick = this.handleClick.bind(this)
     }
 
-    handleClick(event) {
-        console.log(event)
+    handleClick(mapSquare) {
+
+        this.setState(state => {
+            mapSquare.tree = !mapSquare.tree
+            return state
+        })
+
+    }
+
+    getAdjacentSquares(x,y) {
+        const {mapSquareMatrix} = this.state
+        return {
+            below:  mapSquareMatrix[y+1] && mapSquareMatrix[y+1][x] ? mapSquareMatrix[y+1][x] : null,
+            above:  mapSquareMatrix[y-1] && mapSquareMatrix[y-1][x] ? mapSquareMatrix[y-1][x] : null,
+            before: mapSquareMatrix[y] && mapSquareMatrix[y][x-1] ? mapSquareMatrix[y][x-1] : null,
+            after:  mapSquareMatrix[y] && mapSquareMatrix[y][x+1] ? mapSquareMatrix[y][x+1] : null,
+        }
     }
 
     render() {
 
-        const renderTile = mapSquare => {return <Tile mapSquare={mapSquare} key={`${mapSquare.x},${mapSquare.y}`}/> }
+        const renderTile = mapSquare => { return (
+            <Tile key={`${mapSquare.x},${mapSquare.y}`}
+            handleClick = {()=>{this.handleClick(mapSquare)}}
+            mapSquare={mapSquare}
+            adjacentSquares={this.getAdjacentSquares(mapSquare.x,mapSquare.y)}/> 
+        )}
+
         const renderRow  = (row, y) => {return (
             <div className={styles.row} key={`row ${y}`}>
                 {row.map(mapSquare => renderTile(mapSquare))}

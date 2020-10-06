@@ -9,7 +9,7 @@ export default class GamePage extends React.Component {
     render() {
         return (
             <Layout>
-                <TileBoard rows={5} columns={5}/>
+                <TileBoard rows={208} columns={8}/>
             </Layout>
         )
     }

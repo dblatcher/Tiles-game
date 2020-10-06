@@ -1,12 +1,13 @@
 import React from 'react';
 
 import Tile from './Tile'
-import styles from './tile.module.css'
+import styles from './tile.module.scss'
 
 class MapSquare {
     constructor(input,x,y) {
         this.terrain = input.terrain
         this.road = !!input.road
+        this.tree = !!input.tree
 
         this.x=x
         this.y=y
@@ -38,7 +39,8 @@ function makeMapSquareMatrix(columns, rows) {
         for (let i = 0; i < columns; i++) {
             row.push(new MapSquare({
                 terrain: randomTerrainType(),
-                road: false
+                road: false,
+                tree: Math.random() > .5
             },i, rowIndex))
         }
         return row

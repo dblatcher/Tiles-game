@@ -33,14 +33,14 @@ function randomTerrainType() {
     return terrainTypes[terrainNames[nameIndex]]
 }
 
-function makeMapSquareMatrix(columns, rows, treeChance) {
+function makeMapSquareMatrix(columns, rows, treeChance=0, roadChance=0) {
     function makeRow(rowIndex) {
         let row = []
         for (let i = 0; i < columns; i++) {
             row.push(new MapSquare({
                 terrain: randomTerrainType(),
-                road: false,
-                tree: Math.random() < treeChance
+                tree: Math.random() < treeChance,
+                road: Math.random() < roadChance,
             },i, rowIndex))
         }
         return row
@@ -59,7 +59,7 @@ export default class TileBoard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            mapSquareMatrix: makeMapSquareMatrix(props.columns, props.rows,.8),
+            mapSquareMatrix: makeMapSquareMatrix(props.columns, props.rows,.1, .65),
             spriteData: [],
         };
 

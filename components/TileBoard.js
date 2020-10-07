@@ -59,7 +59,7 @@ export default class TileBoard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            mapSquareMatrix: makeMapSquareMatrix(props.columns, props.rows,.1, .65),
+            mapSquareMatrix: makeMapSquareMatrix(props.columns, props.rows,.1, .05),
             spriteData: [],
         };
 
@@ -69,7 +69,7 @@ export default class TileBoard extends React.Component {
     handleClick(mapSquare) {
 
         this.setState(state => {
-            mapSquare.tree = !mapSquare.tree
+            mapSquare.road = !mapSquare.road
             return state
         })
 

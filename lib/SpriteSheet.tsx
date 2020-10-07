@@ -63,7 +63,7 @@ const trees = new SpriteSheet('trees', {
 
 const roads = new SpriteSheet('roads', {
     cols: 3,
-    rows: 4,
+    rows: 6,
     css: {
         backgroundImage: 'url(./roads.png)'
     },
@@ -87,10 +87,18 @@ const roads = new SpriteSheet('roads', {
             case "0101": return [1, 2];
             case "1001": return [2, 2];
 
-            case "0110": return [0, 3]
-            case "1010": return [1, 3]
-            case "1111": return [2, 3];
-            default: return [2, 3]
+            case "0110": return [0, 3];
+            case "1010": return [1, 3];
+            
+            case "1110": return [0,4];
+            case "1111": return [1,4];
+            case "1011": return [2,4];
+            
+            case "1101": return [0,5];
+            case "0111": return [1,5];
+
+
+            default: return [1, 4]
         }
     }
 })

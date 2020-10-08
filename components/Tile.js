@@ -18,7 +18,7 @@ export default class Tile extends React.Component {
         const { mapSquare, handleClick } = this.props
 
         return (
-            <figure className={styles.tile} onClick={handleClick}>
+            <figure className={styles.tile} onClick={handleClick || function(){} }>
                 <p>{mapSquare.terrain.name}</p>
                 {mapSquare.road ? this.renderSprite(spriteSheets.roads) : (null)}
                 {mapSquare.tree ? this.renderSprite(spriteSheets.trees) : (null)}

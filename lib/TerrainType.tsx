@@ -1,15 +1,33 @@
 class TerrainType {
     name: string
+    css: object
     constructor (name, config = {}) {
         this.name = name
+        this.css = config.css
     }
 }
 
 const terrainTypes = {
-    grass: new TerrainType('grass',{}),
-    desert: new TerrainType('desert',{}),
-    plain: new TerrainType('plain',{}),
-    swamp: new TerrainType('swamp',{}),
+    grass: new TerrainType('grass',{
+        css: {
+            background: 'greenyellow',
+        }
+    }),
+    desert: new TerrainType('desert',{
+        css: {
+            background: 'khaki',
+        }
+    }),
+    plain: new TerrainType('plain',{
+        css: {
+            background: 'burlywood',
+        }
+    }),
+    swamp: new TerrainType('swamp',{
+        css: {
+            background: 'rosybrown',
+        }
+    }),
 }
 
 function randomTerrainType() {

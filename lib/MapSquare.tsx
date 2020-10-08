@@ -15,6 +15,16 @@ class MapSquare {
         this.y = y
     }
 
+    get css() {
+        return this.terrain.css || {}
+    }
+
+    get description() {
+        return this.tree 
+        ? this.terrain.name  + " with trees"
+        : this.terrain.name
+    }
+
     static makeRandomGrid(columns, rows, treeChance = 0, roadChance = 0) {
         const squareFunction = (x, y) => new MapSquare({
             terrain: randomTerrainType(),

@@ -14,9 +14,17 @@ export default class GameContainer extends React.Component {
             // mapSquareMatrix: MapSquare.makeRandomGrid(props.columns, props.rows, .5,.5),
             // mapSquareMatrix: MapSquare.makeGridOf(props.columns, props.rows, {terrain: terrainTypes.grass, road:true, tree:true}),
             mapGrid: MapSquare.makeGrid(16, 16, function (x, y) {
+
+                const terrain = y > 5
+                    ? terrainTypes.swamp
+                    : x > 4
+                        ? terrainTypes.grass
+                        : terrainTypes.plain;
+
                 return new MapSquare({
-                    terrain: y > 3 ? terrainTypes.desert : terrainTypes.grass,
+                    terrain,
                     tree: x > 2 && y % x != 2,
+                    road: x == 6 || y == 8,
                 }, x, y)
             }),
             selectedSquare: null,

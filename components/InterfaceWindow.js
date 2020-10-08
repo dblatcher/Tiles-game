@@ -10,9 +10,10 @@ export default class InterfaceWindow extends React.Component {
 
         return (<>
             <p>interface window</p>
-            { selectedSquare ? (
+            { selectedSquare ? (<>
                 <Tile mapSquare={selectedSquare}/>
-            ) : ( null)
+                <p>{selectedSquare.description}</p>
+            </>) : ( null)
             }
         </>)
     }

@@ -18,10 +18,10 @@ export default class Tile extends React.Component {
         const { mapSquare, handleClick, isSelected } = this.props
 
         return (
-            <figure 
-            className={ isSelected ? styles.selectedTile: styles.tile} 
-            onClick={handleClick || function(){} }>
-                <p>{mapSquare.terrain.name}</p>
+            <figure
+                style={mapSquare.css || {}}
+                className={isSelected ? styles.selectedTile : styles.tile}
+                onClick={handleClick || function () { }}>
                 {mapSquare.road ? this.renderSprite(spriteSheets.roads) : (null)}
                 {mapSquare.tree ? this.renderSprite(spriteSheets.trees) : (null)}
             </figure>

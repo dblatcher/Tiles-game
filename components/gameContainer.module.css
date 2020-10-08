@@ -8,7 +8,6 @@
     height: 30rem;
     overflow: scroll;
     border: .5rem outset blue;
-    padding: .5rem;
     box-sizing: border-box;
     flex-basis: 30rem;
     flex-shrink: 0;

@@ -3,64 +3,16 @@ import React from 'react';
 import Tile from './Tile'
 import styles from './tile.module.scss'
 
-class MapSquare {
-    constructor(input,x,y) {
-        this.terrain = input.terrain
-        this.road = !!input.road
-        this.tree = !!input.tree
-
-        this.x=x
-        this.y=y
-    }
-}
-
-class TerrainType {
-    constructor (name, config = {}) {
-        this.name = name
-    }
-}
-
-const terrainTypes = {
-    grass: new TerrainType('grass',{}),
-    desert: new TerrainType('desert',{}),
-    plain: new TerrainType('plain',{}),
-    swamp: new TerrainType('swamp',{}),
-}
-
-function randomTerrainType() {
-    const terrainNames = Object.keys(terrainTypes)
-    const nameIndex = Math.floor(Math.random() * terrainNames.length)
-    return terrainTypes[terrainNames[nameIndex]]
-}
-
-function makeMapSquareMatrix(columns, rows, treeChance=0, roadChance=0) {
-    function makeRow(rowIndex) {
-        let row = []
-        for (let i = 0; i < columns; i++) {
-            row.push(new MapSquare({
-                terrain: randomTerrainType(),
-                tree: Math.random() < treeChance,
-                road: Math.random() < roadChance,
-            },i, rowIndex))
-        }
-        return row
-    }
-
-    let grid = []
-    for (let i = 0; i < rows; i++) {
-        grid.push(makeRow(i))
-    }
-    return grid
-}
+import {MapSquare, terrainTypes } from '../lib/MapSquare.tsx'
 
 
 export default class TileBoard extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            mapSquareMatrix: makeMapSquareMatrix(props.columns, props.rows,.1, .05),
-            spriteData: [],
+        this.state = {  
+            // mapSquareMatrix: MapSquare.makeRandomGrid(props.columns, props.rows, .5,.5),
+            mapSquareMatrix: MapSquare.makeGridOf(props.columns, props.rows, {terrain: terrainTypes.grass, road:true}),
         };
 
         this.handleClick = this.handleClick.bind(this)

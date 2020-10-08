@@ -1,6 +1,9 @@
 import React from 'react'
 import TileBoard from './TileBoard'
+import InterfaceWindow from './InterfaceWindow'
 import {MapSquare, terrainTypes } from '../lib/MapSquare.tsx'
+import styles from './gameContainer.module.css'
+
 
 export default class GameContainer extends React.Component {
 
@@ -9,7 +12,7 @@ export default class GameContainer extends React.Component {
         this.state = {  
             // mapSquareMatrix: MapSquare.makeRandomGrid(props.columns, props.rows, .5,.5),
             // mapSquareMatrix: MapSquare.makeGridOf(props.columns, props.rows, {terrain: terrainTypes.grass, road:true, tree:true}),
-            mapGrid: MapSquare.makeGrid(8,8, function(x,y) {
+            mapGrid: MapSquare.makeGrid(16,16, function(x,y) {
                 return new MapSquare({
                     terrain: y > 3 ? terrainTypes.desert : terrainTypes.grass,
                     tree: x > 2 && y%x != 2, 
@@ -32,9 +35,15 @@ export default class GameContainer extends React.Component {
         const {mapGrid} = this.state
 
         return (
-            <TileBoard mapGrid={mapGrid} handleMapSquareClick={this.handleMapSquareClick}/>
+
+            <div className={styles.gameHolder}>
+                <article className={styles.tileBoardHolder} >
+                    <TileBoard mapGrid={mapGrid} handleMapSquareClick={this.handleMapSquareClick}/>
+                </article>
+                <article className={styles.interfaceWindowHolder} >
+                    <InterfaceWindow/>
+                </article>
+            </div>
         )
-
     }
-
 }

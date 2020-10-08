@@ -15,10 +15,12 @@ export default class Tile extends React.Component {
     }
 
     render() {
-        const { mapSquare, handleClick } = this.props
+        const { mapSquare, handleClick, isSelected } = this.props
 
         return (
-            <figure className={styles.tile} onClick={handleClick || function(){} }>
+            <figure 
+            className={ isSelected ? styles.selectedTile: styles.tile} 
+            onClick={handleClick || function(){} }>
                 <p>{mapSquare.terrain.name}</p>
                 {mapSquare.road ? this.renderSprite(spriteSheets.roads) : (null)}
                 {mapSquare.tree ? this.renderSprite(spriteSheets.trees) : (null)}

@@ -35,10 +35,13 @@ const trees = new SpriteSheet('trees', {
     },
     getRightFrame(adjacents) {
         let bitString = ''
-        bitString += adjacents.before && adjacents.before.tree ? "1" : "0";
-        bitString += adjacents.after && adjacents.after.tree ? "1" : "0";
-        bitString += adjacents.above && adjacents.above.tree ? "1" : "0";
-        bitString += adjacents.below && adjacents.below.tree ? "1" : "0";
+
+        if (adjacents) {
+            bitString += adjacents.before && adjacents.before.tree ? "1" : "0";
+            bitString += adjacents.after && adjacents.after.tree ? "1" : "0";
+            bitString += adjacents.above && adjacents.above.tree ? "1" : "0";
+            bitString += adjacents.below && adjacents.below.tree ? "1" : "0";
+        } 
 
         switch (bitString) {
             case "0000": return [0, 0];
@@ -69,10 +72,13 @@ const roads = new SpriteSheet('roads', {
     },
     getRightFrame(adjacents) {
         let bitString = ''
-        bitString += adjacents.before && adjacents.before.road ? "1" : "0";
-        bitString += adjacents.after && adjacents.after.road ? "1" : "0";
-        bitString += adjacents.above && adjacents.above.road ? "1" : "0";
-        bitString += adjacents.below && adjacents.below.road ? "1" : "0";
+
+        if (adjacents) {
+            bitString += adjacents.before && adjacents.before.road ? "1" : "0";
+            bitString += adjacents.after && adjacents.after.road ? "1" : "0";
+            bitString += adjacents.above && adjacents.above.road ? "1" : "0";
+            bitString += adjacents.below && adjacents.below.road ? "1" : "0";
+        }
 
         switch (bitString) {
             case "0000": return [0, 0];

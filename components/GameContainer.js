@@ -18,6 +18,7 @@ export default class GameContainer extends React.Component {
                     tree: x > 2 && y%x != 2, 
                 },x,y)
             }),
+            selectedSquare: null,
         };
 
        this.handleMapSquareClick = this.handleMapSquareClick.bind(this)
@@ -26,22 +27,26 @@ export default class GameContainer extends React.Component {
 
     handleMapSquareClick(mapSquare) {
         this.setState(state => {
-            mapSquare.tree = !mapSquare.tree
-            return {mapGrid: state.mapGrid}
+            // mapSquare.tree = !mapSquare.tree
+            
+            return {
+                mapGrid: state.mapGrid,
+                selectedSquare: state.selectedSquare === mapSquare ? null : mapSquare
+            }
         })
     }
 
     render() {
-        const {mapGrid} = this.state
+        const {mapGrid, selectedSquare} = this.state
 
         return (
 
             <div className={styles.gameHolder}>
                 <article className={styles.tileBoardHolder} >
-                    <TileBoard mapGrid={mapGrid} handleMapSquareClick={this.handleMapSquareClick}/>
+                    <TileBoard mapGrid={mapGrid} handleMapSquareClick={this.handleMapSquareClick} selectedSquare={selectedSquare}/>
                 </article>
                 <article className={styles.interfaceWindowHolder} >
-                    <InterfaceWindow/>
+                    <InterfaceWindow selectedSquare={selectedSquare}/>
                 </article>
             </div>
         )

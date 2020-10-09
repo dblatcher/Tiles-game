@@ -3,6 +3,7 @@ import TileBoard from './TileBoard'
 import InterfaceWindow from './InterfaceWindow'
 import { MapSquare } from '../lib/MapSquare.tsx'
 import { terrainTypes } from '../lib/TerrainType.tsx'
+import {unitTypes, Unit} from '../lib/Unit.tsx'
 import styles from './gameContainer.module.css'
 
 
@@ -28,6 +29,10 @@ export default class GameContainer extends React.Component {
                 }, x, y)
             }),
             selectedSquare: null,
+            units: [
+                new Unit( unitTypes.worker, {x:2, y:3}),
+                new Unit( unitTypes.knight, {x:3, y:3}),
+            ]
         };
 
         this.handleMapSquareClick = this.handleMapSquareClick.bind(this)
@@ -46,13 +51,17 @@ export default class GameContainer extends React.Component {
     }
 
     render() {
-        const { mapGrid, selectedSquare } = this.state
+        const { mapGrid, selectedSquare, units } = this.state
 
         return (
 
             <div className={styles.gameHolder}>
                 <article className={styles.tileBoardHolder} >
-                    <TileBoard mapGrid={mapGrid} handleMapSquareClick={this.handleMapSquareClick} selectedSquare={selectedSquare} />
+                    <TileBoard 
+                    units={units}
+                    mapGrid={mapGrid} 
+                    handleMapSquareClick={this.handleMapSquareClick} 
+                    selectedSquare={selectedSquare} />
                 </article>
                 <article className={styles.interfaceWindowHolder} >
                     <InterfaceWindow selectedSquare={selectedSquare} />

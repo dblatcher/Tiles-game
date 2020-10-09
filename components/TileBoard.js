@@ -1,9 +1,9 @@
 import React from 'react';
 
 import Tile from './Tile'
+import UnitFigure from './UnitFigure'
 import styles from './tile.module.scss'
 
-import {MapSquare, terrainTypes } from '../lib/MapSquare.tsx'
 
 
 export default class TileBoard extends React.Component {
@@ -37,10 +37,11 @@ export default class TileBoard extends React.Component {
     )}
 
     render() {
-        const {mapGrid} = this.props
+        const {mapGrid, units} = this.props
         return (
-            <section>
+            <section style={{position:'relative'}}>
                 {mapGrid.map((row,index) => this.renderRow(row,index))}
+                {units.map ((unit, index) => (<UnitFigure unit={unit} key={"unit#"+index}/>))}
             </section>
         )
     }

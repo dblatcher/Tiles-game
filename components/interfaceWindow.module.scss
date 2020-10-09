@@ -1,0 +1,16 @@
+
+.infoRow {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 4rem;
+    margin-bottom: .25rem;
+}
+
+.infoList {
+    padding-left: .25rem;
+}
+
+.infoLine {
+    margin: 0;
+}

@@ -33,17 +33,17 @@ export default class GameContainer extends React.Component {
                 new Unit(unitTypes.worker, factions[0], { x: 2, y: 3 }),
                 new Unit(unitTypes.knight, factions[0], { x: 3, y: 3 }),
                 new Unit(unitTypes.knight, factions[1], { x: 3, y: 5 }),
-            ]
+            ],
+            selectedUnit: null,
         };
 
         this.handleMapSquareClick = this.handleMapSquareClick.bind(this)
+        this.handleUnitFigureClick = this.handleUnitFigureClick.bind(this)
     }
 
 
     handleMapSquareClick(mapSquare) {
         this.setState(state => {
-            // mapSquare.tree = !mapSquare.tree
-
             return {
                 mapGrid: state.mapGrid,
                 selectedSquare: state.selectedSquare === mapSquare ? null : mapSquare
@@ -51,8 +51,17 @@ export default class GameContainer extends React.Component {
         })
     }
 
+    handleUnitFigureClick(unit) {
+        this.setState(state => {
+            return {
+                units: state.units,
+                selectedUnit: state.selectedUnit === unit ? null : unit
+            }
+        })
+    }
+
     render() {
-        const { mapGrid, selectedSquare, units } = this.state
+        const { mapGrid, selectedSquare, units, selectedUnit } = this.state
 
         return (
 
@@ -62,10 +71,14 @@ export default class GameContainer extends React.Component {
                         units={units}
                         mapGrid={mapGrid}
                         handleMapSquareClick={this.handleMapSquareClick}
-                        selectedSquare={selectedSquare} />
+                        handleUnitFigureClick={this.handleUnitFigureClick}
+                        selectedSquare={selectedSquare}
+                        selectedUnit={selectedUnit} />
                 </article>
                 <article className={styles.interfaceWindowHolder} >
-                    <InterfaceWindow selectedSquare={selectedSquare} />
+                    <InterfaceWindow
+                     selectedUnit={selectedUnit} 
+                     selectedSquare={selectedSquare} />
                 </article>
             </div>
         )

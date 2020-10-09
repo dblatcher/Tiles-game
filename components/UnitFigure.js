@@ -7,19 +7,21 @@ export default class UnitFigure extends react.Component {
 
 
     render() {
-        const { unit } = this.props
+        const { unit, handleClick, isSelected, inInfoRow } = this.props
 
         const figureStyle = {
-            left: `${unit.x * 4}rem`,
-            top: `${unit.y * 4}rem`,
-            backgroundImage: `radial-gradient(${unit.faction.color} 55%, rgba(0,0,0,0) 65%`,
+            left: inInfoRow ? 'unset' : `${unit.x * 4}rem`,
+            top:  inInfoRow ? 'unset' : `${unit.y * 4}rem`,
+            backgroundImage: isSelected 
+            ? `radial-gradient(${unit.faction.color} 85%, rgba(0,0,0,0) 85%`
+            : `radial-gradient(${unit.faction.color} 55%, rgba(0,0,0,0) 65%`
         }
 
         return (
             <figure
                 style={figureStyle}
-                className={styles.holder}>
-
+                className={inInfoRow ? styles.infoRowHolder :styles.holder}
+                onClick={handleClick || function () { }}>
                 <i
                     style={spriteSheets.units.getStyleForFrameCalled(unit.type.name)}
                     className={styles.sprite}>

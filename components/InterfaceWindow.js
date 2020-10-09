@@ -8,7 +8,7 @@ export default class InterfaceWindow extends React.Component {
 
     render() {
 
-        const { selectedSquare, selectedUnit } = this.props;
+        const { selectedSquare, selectedUnit, handleEndOfTurn } = this.props;
 
         return (<>
             <section className={styles.infoRow}>
@@ -28,10 +28,16 @@ export default class InterfaceWindow extends React.Component {
 
                     <div className={styles.infoList}>
                         <p className={styles.infoLine}>{`${selectedUnit.faction.name} ${selectedUnit.type.name}`}</p>
+                        <p className={styles.infoLine}>{`${selectedUnit.remainingMoves}/${selectedUnit.type.moves} movement`}</p>
                         <p className={styles.infoLine}>{`[${selectedUnit.x},${selectedUnit.y}]`}</p>
                     </div>
                 </>) : (null)}
             </section>
+
+            <section>
+                <button onClick={this.props.handleEndOfTurn}>End of turn</button>
+            </section>
+
         </>)
     }
 }

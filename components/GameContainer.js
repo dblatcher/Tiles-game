@@ -35,28 +35,50 @@ export default class GameContainer extends React.Component {
                 new Unit(unitTypes.knight, factions[1], { x: 3, y: 5 }),
             ],
             selectedUnit: null,
+            activeFaction: factions[0],
         };
 
         this.handleMapSquareClick = this.handleMapSquareClick.bind(this)
         this.handleUnitFigureClick = this.handleUnitFigureClick.bind(this)
+        this.handleEndOfTurn = this.handleEndOfTurn.bind(this)
     }
 
 
     handleMapSquareClick(mapSquare) {
         this.setState(state => {
-            return {
-                mapGrid: state.mapGrid,
-                selectedSquare: state.selectedSquare === mapSquare ? null : mapSquare
+            if (state.selectedUnit && state.selectedUnit.faction === state.activeFaction ) {
+                state.selectedUnit.attemptMoveTo(mapSquare)
             }
+            return state;
         })
     }
 
     handleUnitFigureClick(unit) {
         this.setState(state => {
-            return {
-                units: state.units,
-                selectedUnit: state.selectedUnit === unit ? null : unit
+            if (unit === state.selectedUnit) {
+                state.selectedUnit = null
+            } else {
+                if (unit.faction === state.activeFaction) {
+                    state.selectedUnit = unit
+                }
             }
+            return state
+        })
+    }
+
+    handleEndOfTurn() {
+        this.setState( state =>{
+
+            state.units.forEach(unit => {
+                if (unit.faction === state.activeFaction) {
+                    unit.refresh()
+                }
+            })
+            const activeFactionIndex = factions.indexOf(state.activeFaction)
+            state.activeFaction = factions[activeFactionIndex+1] || factions[0]
+            state.selectedUnit = state.units.filter(unit => unit.faction === state.activeFaction)[0] || null
+
+            return state
         })
     }
 
@@ -77,8 +99,9 @@ export default class GameContainer extends React.Component {
                 </article>
                 <article className={styles.interfaceWindowHolder} >
                     <InterfaceWindow
-                     selectedUnit={selectedUnit} 
-                     selectedSquare={selectedSquare} />
+                        selectedUnit={selectedUnit}
+                        selectedSquare={selectedSquare} 
+                        handleEndOfTurn={this.handleEndOfTurn}/>
                 </article>
             </div>
         )

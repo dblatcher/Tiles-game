@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './tile.module.scss'
-import { spriteSheets, SpriteSheet } from '../lib/SpriteSheet.tsx'
+import { spriteSheets } from '../lib/SpriteSheet.tsx'
 
 
 export default class Tile extends React.Component {
@@ -10,7 +10,7 @@ export default class Tile extends React.Component {
         return (
             <div
                 className={styles.spriteHolder}
-                style={SpriteSheet.getStyle(spriteSheet, adjacentSquares)}
+                style={spriteSheet.getStyleFromAdjacentSquares(adjacentSquares)}
             ></div>)
     }
 

@@ -11,7 +11,8 @@ export default class UnitFigure extends react.Component {
 
         const figureStyle = {
             left: `${unit.x * 4}rem`,
-            top:  `${unit.y * 4}rem`,
+            top: `${unit.y * 4}rem`,
+            backgroundImage: `radial-gradient(${unit.faction.color} 55%, rgba(0,0,0,0) 65%`,
         }
 
         return (

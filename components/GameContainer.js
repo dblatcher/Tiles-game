@@ -3,7 +3,7 @@ import TileBoard from './TileBoard'
 import InterfaceWindow from './InterfaceWindow'
 import { MapSquare } from '../lib/MapSquare.tsx'
 import { terrainTypes } from '../lib/TerrainType.tsx'
-import {unitTypes, Unit} from '../lib/Unit.tsx'
+import { unitTypes, Unit, factions } from '../lib/Unit.tsx'
 import styles from './gameContainer.module.css'
 
 
@@ -30,8 +30,9 @@ export default class GameContainer extends React.Component {
             }),
             selectedSquare: null,
             units: [
-                new Unit( unitTypes.worker, {x:2, y:3}),
-                new Unit( unitTypes.knight, {x:3, y:3}),
+                new Unit(unitTypes.worker, factions[0], { x: 2, y: 3 }),
+                new Unit(unitTypes.knight, factions[0], { x: 3, y: 3 }),
+                new Unit(unitTypes.knight, factions[1], { x: 3, y: 5 }),
             ]
         };
 
@@ -57,11 +58,11 @@ export default class GameContainer extends React.Component {
 
             <div className={styles.gameHolder}>
                 <article className={styles.tileBoardHolder} >
-                    <TileBoard 
-                    units={units}
-                    mapGrid={mapGrid} 
-                    handleMapSquareClick={this.handleMapSquareClick} 
-                    selectedSquare={selectedSquare} />
+                    <TileBoard
+                        units={units}
+                        mapGrid={mapGrid}
+                        handleMapSquareClick={this.handleMapSquareClick}
+                        selectedSquare={selectedSquare} />
                 </article>
                 <article className={styles.interfaceWindowHolder} >
                     <InterfaceWindow selectedSquare={selectedSquare} />

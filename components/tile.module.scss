@@ -4,7 +4,7 @@
 }
 
 
-@mixin tile {
+.tile {
     display: inline-flex;
     flex-direction: column;
     position: relative;
@@ -16,13 +16,12 @@
     flex-shrink: 0;
 }
 
-.tile {
-    @include tile();
+.selected {
+    filter: brightness(1.5) hue-rotate(30deg);
 }
 
-.selectedTile {
-    @include tile();
-    filter: brightness(1.5) hue-rotate(30deg);
+.hovered {
+    filter: brightness(1.75) hue-rotate(90deg);
 }
 
 .spriteHolder {

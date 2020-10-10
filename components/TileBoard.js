@@ -20,11 +20,12 @@ export default class TileBoard extends React.Component {
 
 
     renderTile(mapSquare) {
-        const { handleMapSquareClick, selectedSquare } = this.props;
+        const { handleMapSquareClick, selectedSquare, selectedUnit } = this.props;
         return (
             <Tile key={`${mapSquare.x},${mapSquare.y}`}
                 handleClick={() => { handleMapSquareClick(mapSquare) }}
                 mapSquare={mapSquare}
+                selectedUnit={selectedUnit}
                 isSelected={mapSquare === selectedSquare}
                 adjacentSquares={this.getAdjacentSquares(mapSquare.x, mapSquare.y)} />
         )

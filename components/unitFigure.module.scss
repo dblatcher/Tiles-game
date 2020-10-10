@@ -1,17 +1,38 @@
-.holder {
-    position: absolute;
+.figure {
     width: 4rem;
     height: 4rem;
     margin: 0;
-    top:0;
-    left: 0;
 }
 
-.infoRowHolder {
+.onMap {
+    position: absolute;
+    top:0;
+    left: 0;
+
+    transition: left .5s, top .5s;
+}
+
+.inInfoRow {
     position: relative;
-    width: 4rem;
-    height: 4rem;
-    margin: 0;
+}
+
+@keyframes flash {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+  }
+
+.selected {
+    animation-name: flash;
+    animation-direction: alternate;
+    animation-duration: .5s;
+    animation-iteration-count: infinite;
 }
 
 .sprite {

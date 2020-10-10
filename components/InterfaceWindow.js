@@ -11,7 +11,7 @@ export default class InterfaceWindow extends React.Component {
         const { selectedSquare, selectedUnit, handleInterfaceButton } = this.props;
 
         return (<>
-            <section className={styles.infoRow}>
+            {/* <section className={styles.infoRow}>
                 {selectedSquare ? (<>
                     <Tile mapSquare={selectedSquare} />
 
@@ -20,9 +20,12 @@ export default class InterfaceWindow extends React.Component {
                         <p className={styles.infoLine}>{`[${selectedSquare.x},${selectedSquare.y}]`}</p>
                     </div>
                 </>) : (null)}
-            </section>
+            </section> */}
 
-            <section className={styles.infoRow}>
+            <section
+                className={styles.infoRow}
+                onClick={() => { handleInterfaceButton('CENTER_MAP', selectedUnit) }}
+            >
                 {selectedUnit ? (<>
                     <UnitFigure unit={selectedUnit} inInfoRow />
 
@@ -35,12 +38,12 @@ export default class InterfaceWindow extends React.Component {
             </section>
 
             <section>
-                <button onClick={() => {handleInterfaceButton('PREVIOUS_UNIT')}}>previous unit</button>
-                <button onClick={() => {handleInterfaceButton('NEXT_UNIT')}}>Next unit</button>
+                <button onClick={() => { handleInterfaceButton('PREVIOUS_UNIT') }}>previous unit</button>
+                <button onClick={() => { handleInterfaceButton('NEXT_UNIT') }}>Next unit</button>
             </section>
 
             <section>
-                <button onClick={() => {handleInterfaceButton('END_OF_TURN')}}>End of turn</button>
+                <button onClick={() => { handleInterfaceButton('END_OF_TURN') }}>End of turn</button>
             </section>
 
         </>)

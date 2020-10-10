@@ -25,10 +25,6 @@ class Faction {
     }
 }
 
-const factions = [
-    new Faction('Crimsonia', { color: 'crimson' }),
-    new Faction('Azula', { color: 'blue' }),
-]
 
 class Unit {
     type: UnitType;
@@ -65,4 +61,4 @@ class Unit {
     }
 }
 
-export { UnitType, unitTypes, Unit, factions }
+export { UnitType, unitTypes, Unit, Faction }

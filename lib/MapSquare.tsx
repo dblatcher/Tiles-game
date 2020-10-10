@@ -20,9 +20,15 @@ class MapSquare {
     }
 
     get description() {
-        return this.tree 
-        ? this.terrain.name  + " with trees"
-        : this.terrain.name
+        return this.tree
+            ? this.terrain.name + " with trees"
+            : this.terrain.name
+    }
+
+    get movementCost() {
+        return this.tree
+            ? this.terrain.movementCost + 2
+            : this.terrain.movementCost
     }
 
     static makeRandomGrid(columns, rows, treeChance = 0, roadChance = 0) {
@@ -55,7 +61,6 @@ class MapSquare {
         return grid
     }
 }
-
 
 
 export { MapSquare }

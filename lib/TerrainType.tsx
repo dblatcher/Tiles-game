@@ -1,9 +1,11 @@
 class TerrainType {
     name: string
     css: object
+    movementCost: number
     constructor (name, config = {}) {
         this.name = name
         this.css = config.css
+        this.movementCost = config.movementCost || 3
     }
 }
 
@@ -21,9 +23,11 @@ const terrainTypes = {
     plain: new TerrainType('plain',{
         css: {
             background: 'burlywood',
+            backgroundImage: 'repeating-linear-gradient(0deg, transparent -.1rem, black .5rem)'
         }
     }),
     swamp: new TerrainType('swamp',{
+        movementCost: 4,
         css: {
             background: 'rosybrown',
         }

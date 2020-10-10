@@ -5,7 +5,7 @@ class UnitType {
     constructor(name: string, config = {}) {
         this.name = name;
         this.spriteFrameName = config.spriteFrameName || name;
-        this.moves = config.moves || 3;
+        this.moves = config.moves || 6;
     }
 
 }
@@ -38,22 +38,6 @@ class Unit {
         this.x = config.x;
         this.y = config.y;
         this.remainingMoves = type.moves;
-    }
-
-    attemptMoveTo(target) {
-        if (this.remainingMoves < 1) {
-            console.log('NO MOVES LEFT')
-            return
-        }
-
-        if (!this.isInRangeOf(target)) {
-            console.log('TOO FAR')
-            return
-        }
-
-        this.remainingMoves = this.remainingMoves - 1
-        this.x = target.x
-        this.y = target.y
     }
 
     refresh() {

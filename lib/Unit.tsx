@@ -40,24 +40,28 @@ class Unit {
         this.remainingMoves = type.moves;
     }
 
-    attemptMoveTo(mapSquare) {
+    attemptMoveTo(target) {
         if (this.remainingMoves < 1) {
             console.log('NO MOVES LEFT')
             return
         }
 
-        if (Math.abs(this.x - mapSquare.x) > 1 || Math.abs(this.y - mapSquare.y) > 1) {
+        if (!this.isInRangeOf(target)) {
             console.log('TOO FAR')
             return
         }
 
         this.remainingMoves = this.remainingMoves - 1
-        this.x = mapSquare.x
-        this.y = mapSquare.y
+        this.x = target.x
+        this.y = target.y
     }
 
     refresh() {
         this.remainingMoves = this.type.moves
+    }
+
+    isInRangeOf(target) {
+        return !(Math.abs(this.x - target.x) > 1 || Math.abs(this.y - target.y) > 1)
     }
 }
 

@@ -18,6 +18,17 @@ export default class TileBoard extends React.Component {
         }
     }
 
+    getStackedUnits(currentUnit) {
+        const { units, selectedUnit } = this.props
+        return units
+            .filter(unit => currentUnit.x == unit.x && unit.y == currentUnit.y)
+            .reverse()
+            .sort((a, b) => {
+                if (a === selectedUnit) { return -1 }
+                if (b === selectedUnit) { return 1 }
+                return 0
+            })
+    }
 
     renderTile(mapSquare) {
         const { handleMapSquareClick, selectedSquare, selectedUnit } = this.props;
@@ -27,7 +38,8 @@ export default class TileBoard extends React.Component {
                 mapSquare={mapSquare}
                 selectedUnit={selectedUnit}
                 isSelected={mapSquare === selectedSquare}
-                adjacentSquares={this.getAdjacentSquares(mapSquare.x, mapSquare.y)} />
+                adjacentSquares={this.getAdjacentSquares(mapSquare.x, mapSquare.y)}
+            />
         )
     }
 
@@ -46,6 +58,7 @@ export default class TileBoard extends React.Component {
             unit={unit}
             key={"unit#" + index}
             isSelected={unit === selectedUnit}
+            stack={this.getStackedUnits(unit)}
         />)
     }
 

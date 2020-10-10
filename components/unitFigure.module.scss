@@ -28,7 +28,7 @@
     }
   }
 
-.selected {
+.flashing {
     animation-name: flash;
     animation-direction: alternate;
     animation-duration: .5s;
@@ -43,4 +43,12 @@
     width: 100%;
     height: 100%;
     display: block;
+}
+
+.selected {
+    z-index: 5;
+}
+
+.behind {
+    filter: brightness(.5);
 }

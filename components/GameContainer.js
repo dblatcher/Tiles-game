@@ -15,8 +15,8 @@ export default class GameContainer extends React.Component {
         super(props);
 
         const interfaceModeOptions = [
-            {value: "MOVE", description: "move units"},
-            {value: "VIEW", description: "examine map"},
+            { value: "MOVE", description: "move units" },
+            { value: "VIEW", description: "examine map" },
         ]
 
         this.state = Object.assign(makeGameState.test(), {
@@ -30,18 +30,19 @@ export default class GameContainer extends React.Component {
         this.handleUnitFigureClick = this.handleUnitFigureClick.bind(this)
         this.handleInterfaceButton = this.handleInterfaceButton.bind(this)
         this.changeMode = this.changeMode.bind(this)
+        this.handleTileHoverEnter = this.handleTileHoverEnter.bind(this)
     }
 
 
     handleMapSquareClick(mapSquare) {
         return this.setState(gameActions.handleMapSquareClick(mapSquare), () => {
-            if (this.state.interfaceMode === 'VIEW') {this.scrollToSelection()}
+            if (this.state.interfaceMode === 'VIEW') { this.scrollToSelection() }
         })
     }
 
     handleUnitFigureClick(unit) {
         return this.setState(gameActions.handleUnitClick(unit), () => {
-            if (this.state.interfaceMode === 'VIEW') {this.scrollToSelection()}
+            if (this.state.interfaceMode === 'VIEW') { this.scrollToSelection() }
         })
     }
 
@@ -63,9 +64,15 @@ export default class GameContainer extends React.Component {
         })
     }
 
-    scrollToSelection () {
+    handleTileHoverEnter(mapSquare) {
+        if (this.state.interfaceMode !== 'VIEW') {
+            this.setState({ selectedSquare: mapSquare })
+        }
+    }
+
+    scrollToSelection() {
         return this.scrollToSquare(
-            this.state.interfaceMode === 'MOVE' 
+            this.state.interfaceMode === 'MOVE'
                 ? this.state.selectedUnit
                 : this.state.selectedSquare
         );
@@ -92,6 +99,7 @@ export default class GameContainer extends React.Component {
                         mapGrid={mapGrid}
                         handleMapSquareClick={this.handleMapSquareClick}
                         handleUnitFigureClick={this.handleUnitFigureClick}
+                        handleTileHoverEnter={this.handleTileHoverEnter}
                         selectedSquare={selectedSquare}
                         selectedUnit={selectedUnit} />
                 </article>
@@ -99,11 +107,11 @@ export default class GameContainer extends React.Component {
                     <InterfaceWindow
                         selectedUnit={selectedUnit}
                         selectedSquare={selectedSquare}
-                        handleInterfaceButton={this.handleInterfaceButton} 
-                        changeMode={this.changeMode} 
+                        handleInterfaceButton={this.handleInterfaceButton}
+                        changeMode={this.changeMode}
                         interfaceMode={interfaceMode}
-                        interfaceModeOptions= {interfaceModeOptions}
-                        />
+                        interfaceModeOptions={interfaceModeOptions}
+                    />
                 </article>
             </div>
         )

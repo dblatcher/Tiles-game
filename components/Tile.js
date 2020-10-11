@@ -15,15 +15,18 @@ export default class Tile extends React.Component {
     }
 
     handleHover(wasEnterEvent) {
-        this.setState({
-            isHoveredOn: wasEnterEvent
+        const { inInfoRow, handleTileHoverEnter, mapSquare } = this.props
+        this.setState({ isHoveredOn: wasEnterEvent }, () => {
+            if (!inInfoRow && this.state.isHoveredOn && handleTileHoverEnter) {
+                handleTileHoverEnter(mapSquare)
+            }
         })
     }
 
     renderSprite(spriteSheet) {
         const { adjacentSquares, inInfoRow } = this.props
         let style = spriteSheet.getStyleFromAdjacentSquares(adjacentSquares)
-        if (inInfoRow) { style.top="0"} //override the top property used on spriteSheets.trees.css
+        if (inInfoRow) { style.top = "0" } //override the top property used on spriteSheets.trees.css
 
         return (
             <i
@@ -33,22 +36,22 @@ export default class Tile extends React.Component {
     }
 
     render() {
-        const { mapSquare, handleClick, isSelected, selectedUnit, inInfoRow} = this.props
-        const {isHoveredOn} =  this.state
-        const containsSelectedUnit = selectedUnit && (mapSquare.x === selectedUnit.x && mapSquare.y === selectedUnit.y  );
+        const { mapSquare, handleClick, isSelected, selectedUnit, inInfoRow } = this.props
+        const { isHoveredOn } = this.state
+        const containsSelectedUnit = selectedUnit && (mapSquare.x === selectedUnit.x && mapSquare.y === selectedUnit.y);
 
         let classList = [styles.tile]
-        if (isHoveredOn && !inInfoRow) {classList.push(styles.hovered)}
-        if (isSelected) {classList.push(styles.selected)}
+        if (isHoveredOn && !inInfoRow) { classList.push(styles.hovered) }
+        if (isSelected) { classList.push(styles.selected) }
 
         return (
             <figure
                 style={mapSquare.css || {}}
                 className={classList.join(" ")}
                 onClick={handleClick || function () { }}
-                onPointerEnter={ ()=>{this.handleHover(true)} }
-                onPointerLeave={ ()=>{this.handleHover(false)} }
-                >
+                onPointerEnter={() => { this.handleHover(true) }}
+                onPointerLeave={() => { this.handleHover(false) }}
+            >
                 {mapSquare.road ? this.renderSprite(spriteSheets.roads) : (null)}
                 {mapSquare.tree ? this.renderSprite(spriteSheets.trees) : (null)}
             </figure>

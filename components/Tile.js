@@ -36,14 +36,14 @@ export default class Tile extends React.Component {
     }
 
     render() {
-        const { mapSquare, handleClick, isSelected, selectedUnit, inInfoRow, squareSelectedUnitIsIn } = this.props
+        const { mapSquare, handleClick, isSelected, selectedUnit, inInfoRow, squareSelectedUnitIsIn, interfaceMode } = this.props
         const { isHoveredOn } = this.state
         const containsSelectedUnit = selectedUnit && (mapSquare.x === selectedUnit.x && mapSquare.y === selectedUnit.y);
         const selectedUnitCanMoveTo = selectedUnit && selectedUnit.canMoveTo(mapSquare, squareSelectedUnitIsIn);
 
         let classList = [styles.tile]
         if (isHoveredOn && !inInfoRow) { classList.push(styles.hovered) }
-        if (selectedUnitCanMoveTo && !inInfoRow) {classList.push(styles.inRange)} 
+        if (selectedUnitCanMoveTo && !inInfoRow && interfaceMode === 'MOVE') {classList.push(styles.inRange)} 
         if (isSelected || containsSelectedUnit) { classList.push(styles.selected) }
 
         return (

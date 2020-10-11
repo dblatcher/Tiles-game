@@ -31,10 +31,11 @@ export default class TileBoard extends React.Component {
     }
 
     renderTile(mapSquare) {
-        const { handleMapSquareClick, selectedSquare, selectedUnit, handleTileHoverEnter, mapGrid } = this.props;
+        const { handleMapSquareClick, selectedSquare, selectedUnit, handleTileHoverEnter, mapGrid, interfaceMode } = this.props;
         return (
             <Tile key={`${mapSquare.x},${mapSquare.y}`}
                 handleClick={() => { handleMapSquareClick(mapSquare) }}
+                interfaceMode={interfaceMode}
                 mapSquare={mapSquare}
                 selectedUnit={selectedUnit}
                 squareSelectedUnitIsIn = {selectedUnit ?  mapGrid[selectedUnit.y][selectedUnit.x] : null}

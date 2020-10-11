@@ -1,8 +1,9 @@
 import React from 'react'
 import TileBoard from './TileBoard'
 import InterfaceWindow from './InterfaceWindow'
-import styles from './gameContainer.module.css'
+import ModeButtons from './ModeButtons'
 
+import styles from './gameContainer.module.css'
 import gameActions from '../lib/gameActions'
 import makeGameState from '../lib/makeGameState'
 
@@ -53,7 +54,7 @@ export default class GameContainer extends React.Component {
             case "NEXT_UNIT": return this.setState(gameActions.selectNextUnit, this.scrollToSelection);
             case "PREVIOUS_UNIT": return this.setState(gameActions.selectPreviousUnit, this.scrollToSelection);
             case "CENTER_MAP": return this.scrollToSquare(input);
-            case "START_ORDER": return this.setState( gameActions.startCommand(input) )
+            case "START_ORDER": return this.setState(gameActions.startCommand(input))
             default: return console.warn(`unknown command: ${command}`, input)
         }
 
@@ -101,17 +102,20 @@ export default class GameContainer extends React.Component {
                         handleMapSquareClick={this.handleMapSquareClick}
                         handleUnitFigureClick={this.handleUnitFigureClick}
                         handleTileHoverEnter={this.handleTileHoverEnter}
+                        interfaceMode={interfaceMode}
                         selectedSquare={selectedSquare}
                         selectedUnit={selectedUnit} />
                 </article>
                 <article className={styles.interfaceWindowHolder} >
                     <InterfaceWindow
                         selectedUnit={selectedUnit}
-                        squareSelectedUnitIsIn = {selectedUnit ? mapGrid[selectedUnit.y][selectedUnit.x] : null}
+                        squareSelectedUnitIsIn={selectedUnit ? mapGrid[selectedUnit.y][selectedUnit.x] : null}
                         selectedSquare={selectedSquare}
                         handleInterfaceButton={this.handleInterfaceButton}
-                        changeMode={this.changeMode}
+                    />
+                    <ModeButtons
                         interfaceMode={interfaceMode}
+                        changeMode={this.changeMode}
                         interfaceModeOptions={interfaceModeOptions}
                     />
                 </article>

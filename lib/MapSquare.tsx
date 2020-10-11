@@ -25,6 +25,14 @@ class MapSquare {
             : this.terrain.name
     }
 
+    get infoList () {
+        return [
+            this.description,
+            `move cost: ${this.movementCost}${this.road ? ' (1 to road)' :''}`,
+            `[${this.x}, ${this.y}]`,
+        ]
+    }
+
     get movementCost() {
         return this.tree
             ? this.terrain.movementCost + 2

@@ -40,6 +40,15 @@ class Unit {
         this.remainingMoves = type.moves;
     }
 
+    get infoList () {
+
+        return [
+            `${this.faction.name} ${this.type.name}`,
+            `${this.remainingMoves}/${this.type.moves} movement`,
+            `[${this.x}, ${this.y}]`,
+        ]
+    }
+
     refresh() {
         this.remainingMoves = this.type.moves
     }

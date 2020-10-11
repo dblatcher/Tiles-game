@@ -2,7 +2,7 @@
 .infoRow {
     display: flex;
     justify-content: space-between;
-    margin-bottom: .25rem;
+    margin: .5rem 0;
 }
 
 .infoBlock {
@@ -13,9 +13,15 @@
 }
 
 .infoList {
-    padding-left: .25rem;
+    margin: 0;
+    list-style: none;
+    padding: 0.5rem;
+}
+
+.infoListRight {
+    text-align: right;
 }
 
 .infoLine {
-    margin: 0;
+    font-size: medium;
 }

@@ -13,39 +13,34 @@ export default class InterfaceWindow extends React.Component {
 
         return (<>
 
+            <section>
+                <button onClick={() => { handleInterfaceButton('PREVIOUS_UNIT') }}>previous unit</button>
+                <button onClick={() => { handleInterfaceButton('NEXT_UNIT') }}>Next unit</button>
+            </section>
+
             <section className={styles.infoRow}>
 
-                <article
-                    className={styles.infoRow}
-                    onClick={() => { handleInterfaceButton('CENTER_MAP', selectedUnit) }}
-                >
+                <article className={styles.infoBlock}
+                    onClick={() => { handleInterfaceButton('CENTER_MAP', selectedUnit) }}>
                     {selectedUnit ? (<>
                         <UnitFigure unit={selectedUnit} inInfoRow />
 
-                        <div className={styles.infoList}>
-                            <p className={styles.infoLine}>{`${selectedUnit.faction.name} ${selectedUnit.type.name}`}</p>
-                            <p className={styles.infoLine}>{`${selectedUnit.remainingMoves}/${selectedUnit.type.moves} movement`}</p>
-                            <p className={styles.infoLine}>{`[${selectedUnit.x},${selectedUnit.y}]`}</p>
-                        </div>
+                        <ul className={styles.infoList}>
+                            {selectedUnit.infoList.map((infoPoint, index) => <li className={styles.infoLine} key={`selectedUnitInfo#${index}`}>{infoPoint}</li>)}
+                        </ul>
                     </>) : (null)}
                 </article>
 
                 <article className={styles.infoBlock}>
                     {selectedSquare ? (<>
-                        <Tile mapSquare={selectedSquare} />
+                        <ul className={[styles.infoList, styles.infoListRight].join(" ")}>
+                            {selectedSquare.infoList.map((infoPoint, index) => <li className={styles.infoLine} key={`selectedSquaretInfo#${index}`}>{infoPoint}</li>)}
+                        </ul>
 
-                        <div className={styles.infoList}>
-                            <p className={styles.infoLine}>{selectedSquare.description}</p>
-                            <p className={styles.infoLine}>{`[${selectedSquare.x},${selectedSquare.y}]`}</p>
-                        </div>
+                        <Tile mapSquare={selectedSquare} inInfoRow />
                     </>) : (null)}
                 </article>
 
-            </section>
-
-            <section>
-                <button onClick={() => { handleInterfaceButton('PREVIOUS_UNIT') }}>previous unit</button>
-                <button onClick={() => { handleInterfaceButton('NEXT_UNIT') }}>Next unit</button>
             </section>
 
             <section>

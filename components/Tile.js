@@ -21,21 +21,24 @@ export default class Tile extends React.Component {
     }
 
     renderSprite(spriteSheet) {
-        const { adjacentSquares } = this.props
+        const { adjacentSquares, inInfoRow } = this.props
+        let style = spriteSheet.getStyleFromAdjacentSquares(adjacentSquares)
+        if (inInfoRow) { style.top="0"} //override the top property used on spriteSheets.trees.css
+
         return (
-            <div
+            <i
                 className={styles.spriteHolder}
-                style={spriteSheet.getStyleFromAdjacentSquares(adjacentSquares)}
-            ></div>)
+                style={style}
+            ></i>)
     }
 
     render() {
-        const { mapSquare, handleClick, isSelected, selectedUnit} = this.props
+        const { mapSquare, handleClick, isSelected, selectedUnit, inInfoRow} = this.props
         const {isHoveredOn} =  this.state
         const containsSelectedUnit = selectedUnit && (mapSquare.x === selectedUnit.x && mapSquare.y === selectedUnit.y  );
 
         let classList = [styles.tile]
-        if (isHoveredOn) {classList.push(styles.hovered)}
+        if (isHoveredOn && !inInfoRow) {classList.push(styles.hovered)}
         if (isSelected) {classList.push(styles.selected)}
 
         return (

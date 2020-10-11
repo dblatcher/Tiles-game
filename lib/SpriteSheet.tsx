@@ -55,6 +55,7 @@ const trees = new SpriteSheet('trees', {
         } 
 
         switch (bitString) {
+            case "": return [0, 0];
             case "0000": return [0, 0];
             case "0010": return [1, 0];
             case "0001": return [2, 0];

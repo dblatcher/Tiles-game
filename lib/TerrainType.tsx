@@ -18,6 +18,7 @@ const terrainTypes = {
     desert: new TerrainType('desert',{
         css: {
             background: 'khaki',
+            backgroundImage: 'repeating-radial-gradient(goldenrod, transparent 0.6px)'
         }
     }),
     plain: new TerrainType('plain',{
@@ -29,7 +30,8 @@ const terrainTypes = {
     swamp: new TerrainType('swamp',{
         movementCost: 4,
         css: {
-            background: 'rosybrown',
+            background: 'steelblue',
+            backgroundImage: 'repeating-radial-gradient(rosybrown, transparent 0.5px), repeating-linear-gradient(transparent 1.5px, green 2px)'
         }
     }),
 }

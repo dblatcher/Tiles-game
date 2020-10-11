@@ -11,7 +11,7 @@ class UnitType {
 }
 
 const unitTypes = {
-    knight: new UnitType('knight'),
+    knight: new UnitType('knight', { moves: 8 }),
     worker: new UnitType('worker'),
     spearman: new UnitType('spearman'),
 }
@@ -40,7 +40,7 @@ class Unit {
         this.remainingMoves = type.moves;
     }
 
-    get infoList () {
+    get infoList() {
 
         return [
             `${this.faction.name} ${this.type.name}`,
@@ -53,8 +53,19 @@ class Unit {
         this.remainingMoves = this.type.moves
     }
 
-    isInRangeOf(target) {
+    isAdajcentTo(target) {
         return !(Math.abs(this.x - target.x) > 1 || Math.abs(this.y - target.y) > 1)
+    }
+
+    canMoveTo(targetMapSquare, startingMapSquare = null) {
+
+        const movementCost = startingMapSquare && startingMapSquare.road && targetMapSquare.road
+            ? 1
+            : targetMapSquare.movementCost
+
+        return this.isAdajcentTo(targetMapSquare)
+            && !(targetMapSquare.x === this.x && targetMapSquare.y === this.y)
+            && (this.remainingMoves >= movementCost || this.remainingMoves === this.type.moves)
     }
 }
 

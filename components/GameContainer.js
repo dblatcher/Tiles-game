@@ -6,12 +6,22 @@ import styles from './gameContainer.module.css'
 import gameActions from '../lib/gameActions'
 import makeGameState from '../lib/makeGameState'
 
+
+
+
 export default class GameContainer extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = Object.assign(makeGameState.test(), {
 
+        const interfaceModeOptions = [
+            {value: "MOVE", description: "move units"},
+            {value: "VIEW", description: "examine map"},
+        ]
+
+        this.state = Object.assign(makeGameState.test(), {
+            interfaceMode: "MOVE",
+            interfaceModeOptions,
         });
 
         this.gameHolderElement = React.createRef()
@@ -19,6 +29,7 @@ export default class GameContainer extends React.Component {
         this.handleMapSquareClick = this.handleMapSquareClick.bind(this)
         this.handleUnitFigureClick = this.handleUnitFigureClick.bind(this)
         this.handleInterfaceButton = this.handleInterfaceButton.bind(this)
+        this.changeMode = this.changeMode.bind(this)
     }
 
 
@@ -43,6 +54,12 @@ export default class GameContainer extends React.Component {
 
     }
 
+    changeMode(newMode) {
+        this.setState({
+            interfaceMode: newMode
+        })
+    }
+
     scrollToSquare(target) {
         if (!target) { return false }
         const { x, y } = target
@@ -53,7 +70,7 @@ export default class GameContainer extends React.Component {
     }
 
     render() {
-        const { mapGrid, selectedSquare, units, selectedUnit } = this.state
+        const { mapGrid, selectedSquare, units, selectedUnit, interfaceMode, interfaceModeOptions } = this.state
 
         return (
 
@@ -71,7 +88,11 @@ export default class GameContainer extends React.Component {
                     <InterfaceWindow
                         selectedUnit={selectedUnit}
                         selectedSquare={selectedSquare}
-                        handleInterfaceButton={this.handleInterfaceButton} />
+                        handleInterfaceButton={this.handleInterfaceButton} 
+                        changeMode={this.changeMode} 
+                        interfaceMode={interfaceMode}
+                        interfaceModeOptions= {interfaceModeOptions}
+                        />
                 </article>
             </div>
         )

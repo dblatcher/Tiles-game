@@ -1,5 +1,6 @@
 import React from 'react'
 import Tile from './Tile'
+import ModeButtons from './ModeButtons'
 import UnitFigure from './UnitFigure'
 import styles from './interfaceWindow.module.scss'
 
@@ -8,7 +9,7 @@ export default class InterfaceWindow extends React.Component {
 
     render() {
 
-        const { selectedSquare, selectedUnit, handleInterfaceButton } = this.props;
+        const { selectedSquare, selectedUnit, handleInterfaceButton, interfaceMode, changeMode, interfaceModeOptions } = this.props;
 
         return (<>
             {/* <section className={styles.infoRow}>
@@ -46,6 +47,11 @@ export default class InterfaceWindow extends React.Component {
                 <button onClick={() => { handleInterfaceButton('END_OF_TURN') }}>End of turn</button>
             </section>
 
+            <ModeButtons
+                interfaceMode={interfaceMode}
+                changeMode={changeMode}
+                interfaceModeOptions={interfaceModeOptions}
+            />
         </>)
     }
 }

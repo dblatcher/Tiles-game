@@ -34,20 +34,23 @@ export default class GameContainer extends React.Component {
 
 
     handleMapSquareClick(mapSquare) {
-        return this.setState(gameActions.handleMapSquareClick(mapSquare))
+        return this.setState(gameActions.handleMapSquareClick(mapSquare), () => {
+            if (this.state.interfaceMode === 'VIEW') {this.scrollToSelection()}
+        })
     }
 
     handleUnitFigureClick(unit) {
-        return this.setState(gameActions.handleUnitClick(unit))
+        return this.setState(gameActions.handleUnitClick(unit), () => {
+            if (this.state.interfaceMode === 'VIEW') {this.scrollToSelection()}
+        })
     }
 
     handleInterfaceButton(command, input = {}) {
-        const centerOnSelectedUnit = () => this.scrollToSquare(this.state.selectedUnit);
 
         switch (command) {
-            case "END_OF_TURN": return this.setState(gameActions.endOfTurn, centerOnSelectedUnit);
-            case "NEXT_UNIT": return this.setState(gameActions.selectNextUnit, centerOnSelectedUnit);
-            case "PREVIOUS_UNIT": return this.setState(gameActions.selectPreviousUnit, centerOnSelectedUnit);
+            case "END_OF_TURN": return this.setState(gameActions.endOfTurn, this.scrollToSelection);
+            case "NEXT_UNIT": return this.setState(gameActions.selectNextUnit, this.scrollToSelection);
+            case "PREVIOUS_UNIT": return this.setState(gameActions.selectPreviousUnit, this.scrollToSelection);
             case "CENTER_MAP": return this.scrollToSquare(input);
             default: return console.warn(`unknown command: ${command}`)
         }
@@ -58,6 +61,14 @@ export default class GameContainer extends React.Component {
         this.setState({
             interfaceMode: newMode
         })
+    }
+
+    scrollToSelection () {
+        return this.scrollToSquare(
+            this.state.interfaceMode === 'MOVE' 
+                ? this.state.selectedUnit
+                : this.state.selectedSquare
+        );
     }
 
     scrollToSquare(target) {

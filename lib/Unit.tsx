@@ -10,13 +10,14 @@ class UnitType {
         this.spriteFrameName = config.spriteFrameName || name;
         this.moves = config.moves || 6;
         this.roadBuilding = config.roadBuilding || 0;
+        this.treeCutting = config.treeCutting || 0;
     }
 
 }
 
 const unitTypes = {
     knight: new UnitType('knight', { moves: 8 }),
-    worker: new UnitType('worker', { roadBuilding: 1 }),
+    worker: new UnitType('worker', { roadBuilding: 1, treeCutting:1 }),
     spearman: new UnitType('spearman'),
 }
 

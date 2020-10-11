@@ -107,6 +107,7 @@ export default class GameContainer extends React.Component {
                 <article className={styles.interfaceWindowHolder} >
                     <InterfaceWindow
                         selectedUnit={selectedUnit}
+                        squareSelectedUnitIsIn = {selectedUnit ? mapGrid[selectedUnit.y][selectedUnit.x] : null}
                         selectedSquare={selectedSquare}
                         handleInterfaceButton={this.handleInterfaceButton}
                         changeMode={this.changeMode}

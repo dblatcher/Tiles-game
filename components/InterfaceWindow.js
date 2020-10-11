@@ -10,10 +10,10 @@ export default class InterfaceWindow extends React.Component {
 
 
     renderOrderButtons() {
-        const { selectedUnit, handleInterfaceButton, interfaceMode } = this.props;
+        const { selectedUnit, handleInterfaceButton, interfaceMode, squareSelectedUnitIsIn } = this.props;
 
         const availableOrders = selectedUnit && !selectedUnit.onGoingOrder && interfaceMode === 'MOVE'
-            ? onGoingOrderTypes.filter(orderType => selectedUnit.type[orderType.requiredUnitSkill] > 0)
+            ? onGoingOrderTypes.filter(orderType => selectedUnit.type[orderType.requiredUnitSkill] > 0 && orderType.checkIsValidForSquare(squareSelectedUnitIsIn))
             : [];
 
         return availableOrders.map(orderType => (

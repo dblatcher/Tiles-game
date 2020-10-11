@@ -2,6 +2,7 @@ import React from 'react'
 import TileBoard from './TileBoard'
 import InterfaceWindow from './InterfaceWindow'
 import ModeButtons from './ModeButtons'
+import OrderButtons from './OrderButtons'
 
 import styles from './gameContainer.module.css'
 import gameActions from '../lib/gameActions'
@@ -109,8 +110,12 @@ export default class GameContainer extends React.Component {
                 <article className={styles.interfaceWindowHolder} >
                     <InterfaceWindow
                         selectedUnit={selectedUnit}
-                        squareSelectedUnitIsIn={selectedUnit ? mapGrid[selectedUnit.y][selectedUnit.x] : null}
                         selectedSquare={selectedSquare}
+                        handleInterfaceButton={this.handleInterfaceButton}
+                    />
+                    <OrderButtons
+                        selectedUnit={selectedUnit}
+                        squareSelectedUnitIsIn={selectedUnit ? mapGrid[selectedUnit.y][selectedUnit.x] : null}
                         handleInterfaceButton={this.handleInterfaceButton}
                     />
                     <ModeButtons

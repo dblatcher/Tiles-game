@@ -4,30 +4,10 @@ import Tile from './Tile'
 import UnitFigure from './UnitFigure'
 import styles from './interfaceWindow.module.scss'
 
-import { onGoingOrderTypes } from '../lib/OngoingOrder.tsx'
+
 
 export default class InterfaceWindow extends React.Component {
 
-
-    renderOrderButtons() {
-        const { selectedUnit, handleInterfaceButton, squareSelectedUnitIsIn } = this.props;
-
-        const availableOrders = selectedUnit && !selectedUnit.onGoingOrder 
-            ? onGoingOrderTypes.filter(orderType => selectedUnit.type[orderType.requiredUnitSkill] > 0 && orderType.checkIsValidForSquare(squareSelectedUnitIsIn))
-            : [];
-
-        return availableOrders.map(orderType => (
-            <button key={"order-" + orderType.name}
-                onClick={() => {
-                    handleInterfaceButton('START_ORDER', {
-                        orderType: orderType,
-                        unit: selectedUnit
-                    })
-                }}>
-                {orderType.name}
-            </button>
-        ))
-    }
 
     render() {
 
@@ -64,12 +44,6 @@ export default class InterfaceWindow extends React.Component {
                 </article>
 
             </section>
-
-            <section>
-                {this.renderOrderButtons()}
-                <button onClick={() => { handleInterfaceButton('END_OF_TURN') }}>End of turn</button>
-            </section>
-
         </>)
     }
 }

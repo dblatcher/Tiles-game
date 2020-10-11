@@ -45,6 +45,18 @@
     display: block;
 }
 
+.orderFlag {
+    position: absolute;
+    display: block;
+    margin: 0;
+    bottom: 0;
+    right: 0;
+    padding: .2rem;
+    font-size: large;
+    background-color: white;
+    color: black;
+}
+
 .selected {
     z-index: 5;
 }

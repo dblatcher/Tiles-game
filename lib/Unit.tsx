@@ -1,18 +1,22 @@
+import { OnGoingOrder } from "./OngoingOrder";
+
 class UnitType {
     name: string;
     spriteFrameName: string;
     moves: number;
+    roadBuilding: number;
     constructor(name: string, config = {}) {
         this.name = name;
         this.spriteFrameName = config.spriteFrameName || name;
         this.moves = config.moves || 6;
+        this.roadBuilding = config.roadBuilding || 0;
     }
 
 }
 
 const unitTypes = {
     knight: new UnitType('knight', { moves: 8 }),
-    worker: new UnitType('worker'),
+    worker: new UnitType('worker', { roadBuilding: 1 }),
     spearman: new UnitType('spearman'),
 }
 
@@ -32,25 +36,33 @@ class Unit {
     x: number;
     y: number;
     remainingMoves: number;
+    onGoingOrder: OnGoingOrder;
     constructor(type: UnitType, faction: Faction, config = {}) {
         this.type = type
         this.faction = faction
         this.x = config.x;
         this.y = config.y;
         this.remainingMoves = type.moves;
+        this.onGoingOrder = null;
     }
 
     get infoList() {
 
         return [
             `${this.faction.name} ${this.type.name}`,
-            `${this.remainingMoves}/${this.type.moves} movement`,
+            this.onGoingOrder
+                ? `${this.onGoingOrder.type.name}, ${this.onGoingOrder.timeRemaining} turns left`
+                : `${this.remainingMoves}/${this.type.moves} movement`,
             `[${this.x}, ${this.y}]`,
         ]
     }
 
     refresh() {
-        this.remainingMoves = this.type.moves
+        if (this.onGoingOrder) {
+            this.onGoingOrder.timeRemaining -= this.type[this.onGoingOrder.type.requiredUnitSkill]
+        } else {
+            this.remainingMoves = this.type.moves
+        }
     }
 
     isAdajcentTo(target) {

@@ -15,11 +15,13 @@ export default class UnitFigure extends react.Component {
 
         let figureClassList = [styles.figure]
         let spirteClassList = [styles.sprite]
+        let orderFlagClassList = [styles.orderFlag]
 
         figureClassList.push(inInfoRow ? styles.inInfoRow : styles.onMap)
         if (!inInfoRow && isSelected) {
             figureClassList.push(styles.selected)
             spirteClassList.push(styles.flashing, styles.selected)
+            orderFlagClassList.push(styles.selected)
         }
 
         if (placeInStack > 0) { spirteClassList.push(styles.behind) }
@@ -42,6 +44,14 @@ export default class UnitFigure extends react.Component {
                     style={spriteSheets.units.getStyleForFrameCalled(unit.type.name)}
                     className={spirteClassList.join(" ")}>
                 </i>
+
+                {unit.onGoingOrder
+                    ? <p className={orderFlagClassList.join(" ")}>
+                        <span>{unit.onGoingOrder.type.letterCode}</span>
+                        <span>{unit.onGoingOrder.timeRemaining}</span>
+                    </p>
+                    : null
+                }
             </figure>
         )
 

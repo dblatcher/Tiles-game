@@ -1,0 +1,39 @@
+@import '../styles/design.scss';
+
+.section {
+    display: flex;
+    justify-content: space-between;
+    margin: .5rem 0;
+}
+
+.subsection {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.button {
+    @include letterButton;
+    @include input;
+
+    margin: 0 .25rem;
+    &:first-child {
+        margin-left: 0;
+    }
+
+    &:last-child {
+        margin-right: 0;
+    }
+}
+
+.endButton {
+    font-variant: small-caps;
+    font-size: large;
+}
+
+.cancel {
+    @include cancelled;
+}  
+
+.disabled {
+    background-color: grey;
+}

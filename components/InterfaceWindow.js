@@ -15,11 +15,6 @@ export default class InterfaceWindow extends React.Component {
 
         return (<>
 
-            <section>
-                <button onClick={() => { handleInterfaceButton('PREVIOUS_UNIT') }}>previous unit</button>
-                <button onClick={() => { handleInterfaceButton('NEXT_UNIT') }}>Next unit</button>
-            </section>
-
             <section className={styles.infoRow}>
 
                 <article className={styles.infoBlock}

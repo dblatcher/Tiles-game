@@ -15,7 +15,7 @@ const terrainTypes = {
     grass: new TerrainType('grass',{
         css: {
             background: 'greenyellow',
-            backgroundImage: 'repeating-radial-gradient(green, transparent 0.6px)'
+            backgroundImage: 'repeating-radial-gradient(green, transparent 0.6px)',
         }
     }),
     desert: new TerrainType('desert',{
@@ -27,7 +27,7 @@ const terrainTypes = {
     plain: new TerrainType('plain',{
         css: {
             background: 'burlywood',
-            backgroundImage: 'repeating-linear-gradient(0deg, transparent -.1rem, black .5rem)'
+            backgroundImage: 'repeating-linear-gradient(0deg, transparent -.1rem, black .5rem)',
         }
     }),
     swamp: new TerrainType('swamp',{
@@ -42,7 +42,6 @@ const terrainTypes = {
        isWater: true,
        css: {
         background: 'lightseagreen',
-        backgroundImage: 'repeating-linear-gradient(0deg, transparent 16px, blue 24px, transparent 32px)',
        } 
     })
 }

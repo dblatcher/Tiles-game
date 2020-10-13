@@ -23,6 +23,15 @@ export default class Tile extends React.Component {
         })
     }
 
+    doesNeedCoastline() {
+        const { mapSquare, adjacentSquares } = this.props
+        if (!adjacentSquares) {return false}
+        for (let key in adjacentSquares) {
+            if ( adjacentSquares[key] && adjacentSquares[key].isWater != mapSquare.isWater) {return true}
+        }
+        return false
+    }
+
     renderSprite(spriteSheet) {
         const { adjacentSquares, inInfoRow } = this.props
         let style = spriteSheet.getStyleFromAdjacentSquares(adjacentSquares)
@@ -40,11 +49,14 @@ export default class Tile extends React.Component {
         const { isHoveredOn } = this.state
         const containsSelectedUnit = selectedUnit && (mapSquare.x === selectedUnit.x && mapSquare.y === selectedUnit.y);
         const selectedUnitCanMoveTo = selectedUnit && selectedUnit.canMoveTo(mapSquare, squareSelectedUnitIsIn);
+        const needsCoastLine = this.doesNeedCoastline()
 
         let classList = [styles.tile]
         if (isHoveredOn && !inInfoRow) { classList.push(styles.hovered) }
         if (selectedUnitCanMoveTo && !inInfoRow && interfaceMode === 'MOVE') {classList.push(styles.inRange)} 
         if (isSelected || containsSelectedUnit) { classList.push(styles.selected) }
+
+        
 
         return (
             <figure
@@ -54,6 +66,8 @@ export default class Tile extends React.Component {
                 onPointerEnter={() => { this.handleHover(true) }}
                 onPointerLeave={() => { this.handleHover(false) }}
             >
+                {needsCoastLine &&  mapSquare.isWater ? this.renderSprite(spriteSheets.coastlines) : (null)}
+                {needsCoastLine && !mapSquare.isWater ? this.renderSprite(spriteSheets.innerCoastlines) : (null)}
                 {mapSquare.road ? this.renderSprite(spriteSheets.roads) : (null)}
                 {mapSquare.tree ? this.renderSprite(spriteSheets.trees) : (null)}
             </figure>

@@ -34,9 +34,24 @@ export default function OrderButtons(props) {
             })
         : [];
 
+    const holdButtonIsDisabled = selectedUnit.onGoingOrder
+    const holdButtonStyles  = holdButtonIsDisabled 
+    ? [styles.button, styles.disabled] 
+    : [styles.button];
+    const holdButtonFunction = holdButtonIsDisabled
+        ? null
+        : () => { handleInterfaceButton('HOLD_UNIT') }
+
     return <section className={styles.section}>
 
         <section className={styles.subsection}>
+
+            <button
+                className={holdButtonStyles.join(" ")}
+                title={`hold unit`}
+                onClick={holdButtonFunction}>
+                H
+            </button>
             {availableOrders.map(availableOrder => (
                 <button className={availableOrder.buttonStyles.join(" ")}
                     key={"order-" + availableOrder.orderType.name}

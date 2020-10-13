@@ -13,8 +13,7 @@ export default class InterfaceWindow extends React.Component {
 
         const { selectedSquare, selectedUnit, handleInterfaceButton} = this.props;
 
-        return (<>
-
+        return (
             <section className={styles.infoRow}>
 
                 <article className={styles.infoBlock}
@@ -39,6 +38,6 @@ export default class InterfaceWindow extends React.Component {
                 </article>
 
             </section>
-        </>)
+        )
     }
 }

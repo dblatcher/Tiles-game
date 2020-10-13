@@ -33,8 +33,8 @@ const terrainTypes = {
     swamp: new TerrainType('swamp',{
         movementCost: 4,
         css: {
-            background: 'steelblue',
-            backgroundImage: 'repeating-radial-gradient(rosybrown, transparent 0.5px), repeating-linear-gradient(transparent 1.5px, green 2px)'
+            background: 'rosybrown',
+            backgroundImage: 'repeating-radial-gradient(green 7%, transparent 14%), repeating-linear-gradient(transparent 2%, steelblue 4%)'
         }
     }),
     ocean: new TerrainType('ocean',{

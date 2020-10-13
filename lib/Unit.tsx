@@ -58,14 +58,6 @@ class Unit {
         ]
     }
 
-    refresh() {
-        if (this.onGoingOrder) {
-            this.onGoingOrder.timeRemaining -= this.type[this.onGoingOrder.type.requiredUnitSkill]
-        } else {
-            this.remainingMoves = this.type.moves
-        }
-    }
-
     isAdajcentTo(target) {
         return !(Math.abs(this.x - target.x) > 1 || Math.abs(this.y - target.y) > 1)
     }

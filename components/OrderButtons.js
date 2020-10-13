@@ -18,7 +18,7 @@ export default function OrderButtons(props) {
                 if (isOnGoing) {
                     buttonStyles.push(styles.cancel)
                     onClickFunction = () => {
-                        handleInterfaceButton('CANCEL_ORDER', { orderType, unit: selectedUnit })
+                        handleInterfaceButton('CANCEL_ORDER')
                     }
                 }
                 else if (isDisabled) {
@@ -34,7 +34,7 @@ export default function OrderButtons(props) {
             })
         : [];
 
-    const holdButtonIsDisabled = selectedUnit.onGoingOrder
+    const holdButtonIsDisabled = selectedUnit.onGoingOrder || selectedUnit.remainingMoves === 0
     const holdButtonStyles  = holdButtonIsDisabled 
     ? [styles.button, styles.disabled] 
     : [styles.button];

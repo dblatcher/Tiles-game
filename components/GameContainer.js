@@ -51,11 +51,13 @@ export default class GameContainer extends React.Component {
     handleInterfaceButton(command, input = {}) {
 
         switch (command) {
-            case "END_OF_TURN": return this.setState(gameActions.endOfTurn, this.scrollToSelection);
-            case "NEXT_UNIT": return this.setState(gameActions.selectNextUnit, this.scrollToSelection);
-            case "PREVIOUS_UNIT": return this.setState(gameActions.selectPreviousUnit, this.scrollToSelection);
-            case "CENTER_MAP": return this.scrollToSquare(input);
-            case "START_ORDER": return this.setState(gameActions.startCommand(input))
+            case "END_OF_TURN":     return this.setState(gameActions.endOfTurn, this.scrollToSelection);
+            case "NEXT_UNIT":       return this.setState(gameActions.selectNextUnit, this.scrollToSelection);
+            case "PREVIOUS_UNIT":   return this.setState(gameActions.selectPreviousUnit, this.scrollToSelection);
+            case "HOLD_UNIT":       return this.setState(gameActions.holdUnit, this.scrollToSelection);
+            case "CENTER_MAP":      return this.scrollToSquare(input);
+            case "START_ORDER":     return this.setState(gameActions.startOrder(input))
+            case "CANCEL_ORDER":    return this.setState(gameActions.cancelOrder)
             default: return console.warn(`unknown command: ${command}`, input)
         }
 

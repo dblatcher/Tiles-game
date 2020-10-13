@@ -2,22 +2,22 @@ import React from 'react'
 import Tile from './Tile'
 
 import UnitFigure from './UnitFigure'
-import styles from './interfaceWindow.module.scss'
+import styles from './seletedUnitAndSquareInfo.module.scss'
 
 
 
-export default class InterfaceWindow extends React.Component {
+export default class SeletedUnitAndSquareInfo extends React.Component {
 
 
     render() {
 
-        const { selectedSquare, selectedUnit, handleInterfaceButton} = this.props;
+        const { selectedSquare, selectedUnit, scrollToSquare } = this.props;
 
         return (
             <section className={styles.infoRow}>
 
                 <article className={styles.infoBlock}
-                    onClick={() => { handleInterfaceButton('CENTER_MAP', selectedUnit) }}>
+                    onClick={() => { scrollToSquare(selectedUnit) }}>
                     {selectedUnit ? (<>
                         <UnitFigure unit={selectedUnit} inInfoRow />
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import TileBoard from './TileBoard'
-import InterfaceWindow from './InterfaceWindow'
+import SeletedUnitAndSquareInfo from './SeletedUnitAndSquareInfo'
 import ModeButtons from './ModeButtons'
 import OrderButtons from './OrderButtons'
 
@@ -30,9 +30,10 @@ export default class GameContainer extends React.Component {
 
         this.handleMapSquareClick = this.handleMapSquareClick.bind(this)
         this.handleUnitFigureClick = this.handleUnitFigureClick.bind(this)
-        this.handleInterfaceButton = this.handleInterfaceButton.bind(this)
+        this.handleOrderButton = this.handleOrderButton.bind(this)
         this.changeMode = this.changeMode.bind(this)
         this.handleTileHoverEnter = this.handleTileHoverEnter.bind(this)
+        this.scrollToSquare = this.scrollToSquare.bind(this)
     }
 
 
@@ -48,19 +49,19 @@ export default class GameContainer extends React.Component {
         })
     }
 
-    handleInterfaceButton(command, input = {}) {
-
+    handleOrderButton(command, input = {}) {
+        let commandFunction = state => state;
         switch (command) {
-            case "END_OF_TURN":     return this.setState(gameActions.endOfTurn, this.scrollToSelection);
-            case "NEXT_UNIT":       return this.setState(gameActions.selectNextUnit, this.scrollToSelection);
-            case "PREVIOUS_UNIT":   return this.setState(gameActions.selectPreviousUnit, this.scrollToSelection);
-            case "HOLD_UNIT":       return this.setState(gameActions.holdUnit, this.scrollToSelection);
-            case "CENTER_MAP":      return this.scrollToSquare(input);
-            case "START_ORDER":     return this.setState(gameActions.startOrder(input))
-            case "CANCEL_ORDER":    return this.setState(gameActions.cancelOrder)
-            default: return console.warn(`unknown command: ${command}`, input)
+            case "END_OF_TURN":     commandFunction = gameActions.endOfTurn; break;
+            case "NEXT_UNIT":       commandFunction = gameActions.selectNextUnit; break;
+            case "PREVIOUS_UNIT":   commandFunction = gameActions.selectPreviousUnit; break;
+            case "HOLD_UNIT":       commandFunction = gameActions.holdUnit;break;
+            case "START_ORDER":     commandFunction = gameActions.startOrder(input);break;
+            case "CANCEL_ORDER":    commandFunction = gameActions.cancelOrder; break;
+            default: console.warn(`unknown command: ${command}`, input)
         }
 
+        return this.setState(commandFunction, this.scrollToSelection)
     }
 
     changeMode(newMode) {
@@ -110,15 +111,15 @@ export default class GameContainer extends React.Component {
                         selectedUnit={selectedUnit} />
                 </article>
                 <article className={styles.interfaceWindowHolder} >
-                    <InterfaceWindow
+                    <SeletedUnitAndSquareInfo
                         selectedUnit={selectedUnit}
                         selectedSquare={selectedSquare}
-                        handleInterfaceButton={this.handleInterfaceButton}
+                        scrollToSquare={this.scrollToSquare}
                     />
                     <OrderButtons
                         selectedUnit={selectedUnit}
                         squareSelectedUnitIsIn={selectedUnit ? mapGrid[selectedUnit.y][selectedUnit.x] : null}
-                        handleInterfaceButton={this.handleInterfaceButton}
+                        handleOrderButton={this.handleOrderButton}
                     />
                     <ModeButtons
                         interfaceMode={interfaceMode}

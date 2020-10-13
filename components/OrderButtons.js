@@ -3,7 +3,7 @@ import { onGoingOrderTypes } from '../lib/OngoingOrder.tsx'
 import styles from './orderButtons.module.scss'
 
 export default function OrderButtons(props) {
-    const { selectedUnit, handleInterfaceButton, squareSelectedUnitIsIn } = props;
+    const { selectedUnit, handleOrderButton, squareSelectedUnitIsIn } = props;
 
     const availableOrders = selectedUnit
         ? onGoingOrderTypes
@@ -18,7 +18,7 @@ export default function OrderButtons(props) {
                 if (isOnGoing) {
                     buttonStyles.push(styles.cancel)
                     onClickFunction = () => {
-                        handleInterfaceButton('CANCEL_ORDER')
+                        handleOrderButton('CANCEL_ORDER')
                     }
                 }
                 else if (isDisabled) {
@@ -26,7 +26,7 @@ export default function OrderButtons(props) {
                 }
                 else {
                     onClickFunction = () => {
-                        handleInterfaceButton('START_ORDER', { orderType, unit: selectedUnit })
+                        handleOrderButton('START_ORDER', { orderType, unit: selectedUnit })
                     }
                 }
 
@@ -40,7 +40,7 @@ export default function OrderButtons(props) {
     : [styles.button];
     const holdButtonFunction = holdButtonIsDisabled
         ? null
-        : () => { handleInterfaceButton('HOLD_UNIT') }
+        : () => { handleOrderButton('HOLD_UNIT') }
 
     return <section className={styles.section}>
 
@@ -66,21 +66,21 @@ export default function OrderButtons(props) {
             <button
                 className={styles.button}
                 title={`previous unit`}
-                onClick={() => { handleInterfaceButton('PREVIOUS_UNIT') }}>
+                onClick={() => { handleOrderButton('PREVIOUS_UNIT') }}>
                 &lt;
             </button>
 
             <button
                 className={styles.button}
                 title={`Next unit`}
-                onClick={() => { handleInterfaceButton('NEXT_UNIT') }}>
+                onClick={() => { handleOrderButton('NEXT_UNIT') }}>
                 &gt;
             </button>
 
             <button
                 className={[styles.button, styles.endButton].join(" ")}
                 title={`End of turn`}
-                onClick={() => { handleInterfaceButton('END_OF_TURN') }}>
+                onClick={() => { handleOrderButton('END_OF_TURN') }}>
                 end
             </button>
         </section>

@@ -64,6 +64,8 @@ class Unit {
 
     canMoveTo(targetMapSquare, startingMapSquare = null) {
 
+        if (targetMapSquare.isWater) {return false}
+
         const movementCost = startingMapSquare && startingMapSquare.road && targetMapSquare.road
             ? 1
             : targetMapSquare.movementCost

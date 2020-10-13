@@ -2,10 +2,12 @@ class TerrainType {
     name: string
     css: object
     movementCost: number
+    isWater: boolean
     constructor (name, config = {}) {
         this.name = name
         this.css = config.css
         this.movementCost = config.movementCost || 3
+        this.isWater = config.isWater || false
     }
 }
 
@@ -13,6 +15,7 @@ const terrainTypes = {
     grass: new TerrainType('grass',{
         css: {
             background: 'greenyellow',
+            backgroundImage: 'repeating-radial-gradient(green, transparent 0.6px)'
         }
     }),
     desert: new TerrainType('desert',{
@@ -34,6 +37,14 @@ const terrainTypes = {
             backgroundImage: 'repeating-radial-gradient(rosybrown, transparent 0.5px), repeating-linear-gradient(transparent 1.5px, green 2px)'
         }
     }),
+    ocean: new TerrainType('ocean',{
+       movementCost:2,
+       isWater: true,
+       css: {
+        background: 'lightseagreen',
+        backgroundImage: 'repeating-linear-gradient(0deg, transparent 16px, blue 24px, transparent 32px)',
+       } 
+    })
 }
 
 function randomTerrainType() {

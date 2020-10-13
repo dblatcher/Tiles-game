@@ -39,6 +39,10 @@ class MapSquare {
             : this.terrain.movementCost
     }
 
+    get isWater() {
+        return this.terrain.isWater
+    }
+
     static makeRandomGrid(columns, rows, treeChance = 0, roadChance = 0) {
         const squareFunction = (x, y) => new MapSquare({
             terrain: randomTerrainType(),

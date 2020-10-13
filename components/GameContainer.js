@@ -6,7 +6,6 @@ import OrderButtons from './OrderButtons'
 
 import styles from './gameContainer.module.css'
 import gameActions from '../lib/gameActions'
-import makeGameState from '../lib/makeGameState'
 
 
 
@@ -21,7 +20,7 @@ export default class GameContainer extends React.Component {
             { value: "VIEW", description: "examine map" },
         ]
 
-        this.state = Object.assign(makeGameState.test(), {
+        this.state = Object.assign(props.startingGameState, {
             interfaceMode: "MOVE",
             interfaceModeOptions,
         });

@@ -34,10 +34,10 @@ export default function OrderButtons(props) {
             })
         : [];
 
-    const holdButtonIsDisabled = selectedUnit.onGoingOrder || selectedUnit.remainingMoves === 0
-    const holdButtonStyles  = holdButtonIsDisabled 
-    ? [styles.button, styles.disabled] 
-    : [styles.button];
+    const holdButtonIsDisabled = selectedUnit && (selectedUnit.onGoingOrder || selectedUnit.remainingMoves) === 0
+    const holdButtonStyles = holdButtonIsDisabled
+        ? [styles.button, styles.disabled]
+        : [styles.button];
     const holdButtonFunction = holdButtonIsDisabled
         ? null
         : () => { handleOrderButton('HOLD_UNIT') }
@@ -46,12 +46,14 @@ export default function OrderButtons(props) {
 
         <section className={styles.subsection}>
 
-            <button
-                className={holdButtonStyles.join(" ")}
-                title={`hold unit`}
-                onClick={holdButtonFunction}>
-                H
-            </button>
+            {selectedUnit ? (
+                <button
+                    className={holdButtonStyles.join(" ")}
+                    title={`hold unit`}
+                    onClick={holdButtonFunction}>
+                    H
+                </button>
+            ) : (null)}
             {availableOrders.map(availableOrder => (
                 <button className={availableOrder.buttonStyles.join(" ")}
                     key={"order-" + availableOrder.orderType.name}

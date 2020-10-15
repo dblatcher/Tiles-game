@@ -44,6 +44,11 @@ export default class GameContainer extends React.Component {
     }
 
     handleUnitFigureClick(unit) {
+
+        if (this.state.fallenUnits.includes(unit)) {
+            return this.handleMapSquareClick(this.state.mapGrid[unit.y][unit.x])
+        }
+
         return this.setState(gameActions.handleUnitClick(unit), () => {
             if (this.state.interfaceMode === 'VIEW') { this.scrollToSelection() }
         })
@@ -58,6 +63,7 @@ export default class GameContainer extends React.Component {
             case "HOLD_UNIT":       commandFunction = gameActions.holdUnit;break;
             case "START_ORDER":     commandFunction = gameActions.startOrder(input);break;
             case "CANCEL_ORDER":    commandFunction = gameActions.cancelOrder; break;
+            case "TEST_KILL":       commandFunction = gameActions.killUnit(input); break;
             default: console.warn(`unknown command: ${command}`, input)
         }
 
@@ -111,6 +117,9 @@ export default class GameContainer extends React.Component {
                         selectedUnit={selectedUnit} 
                         fallenUnits={fallenUnits}/>
                 </article>
+
+                <button onClick={()=>{this.handleOrderButton('TEST_KILL',{unit: units[0]})}}>test kill command</button>
+
                 <article className={styles.interfaceWindowHolder} >
                     <SeletedUnitAndSquareInfo
                         selectedUnit={selectedUnit}

@@ -68,11 +68,11 @@ export default class TileBoard extends React.Component {
     }
 
     render() {
-        const { mapGrid, units } = this.props
+        const { mapGrid, units, fallenUnits } = this.props
         return (
             <section style={{ position: 'relative' }}>
                 {mapGrid.map((row, index) => this.renderRow(row, index))}
-                {units.map((unit, index) => this.renderUnit(unit, index))}
+                {[].concat(units, fallenUnits).map((unit, index) => this.renderUnit(unit, index))}
             </section>
         )
     }

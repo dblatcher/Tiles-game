@@ -14,21 +14,21 @@ export default class UnitFigure extends react.Component {
             : stack ? stack.indexOf(unit) : 0
 
         let figureClassList = [styles.figure]
-        let spirteClassList = [styles.sprite]
+        let spriteClassList = [styles.sprite]
         let orderFlagClassList = [styles.orderFlag]
 
-        figureClassList.push(inInfoRow ? styles.inInfoRow : styles.onMap)
+        figureClassList.push(inInfoRow ? styles.figureInInfoRow : styles.figureOnMap)
         if (!inInfoRow && isSelected) {
-            figureClassList.push(styles.selected)
-            spirteClassList.push(styles.flashing, styles.selected)
-            orderFlagClassList.push(styles.selected)
+            figureClassList.push(styles.topOfStack)
+            spriteClassList.push(styles.flashingSprite, styles.topOfStack)
+            orderFlagClassList.push(styles.topOfStack)
         }
 
         if (isFallen) {
-            spirteClassList.push(styles.fallen)
+            spriteClassList.push(styles.fallenSprite)
         }
 
-        if (placeInStack > 0) { spirteClassList.push(styles.behind) }
+        if (placeInStack > 0) { spriteClassList.push(styles.behind) }
 
         const figureStyle = {
             left: inInfoRow ? 'unset' : `${unit.x * 4}rem`,
@@ -38,7 +38,8 @@ export default class UnitFigure extends react.Component {
             : placeInStack === 0
                 ? `radial-gradient(${unit.faction.color} 55%, rgba(0,0,0,0) 65%)`
                 : `radial-gradient(${unit.faction.color} 45%, rgba(0,0,0,0) 55%)`,
-            transform: `translate(${-Math.min(placeInStack, 5) * 8}px, ${-Math.min(placeInStack, 5) * 2}px)`
+            transform: `translate(${-Math.min(placeInStack, 5) * 8}px, ${-Math.min(placeInStack, 5) * 2}px)`,
+            pointerEvents: isFallen ? 'none' : 'unset',
         }
 
         return (
@@ -48,7 +49,7 @@ export default class UnitFigure extends react.Component {
                 onClick={handleClick || function () { }}>
                 <i
                     style={spriteSheets.units.getStyleForFrameCalled(unit.type.name)}
-                    className={spirteClassList.join(" ")}>
+                    className={spriteClassList.join(" ")}>
                 </i>
 
                 {unit.onGoingOrder

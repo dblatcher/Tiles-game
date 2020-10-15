@@ -35,6 +35,45 @@
     animation-iteration-count: infinite;
 }
 
+@keyframes fall {
+
+    0% {
+        transform: rotate(0deg);
+        left: 0;
+        top: 0;
+        opacity: 1;
+    }
+    15% {
+        left: 20%;
+        top: -25%;
+        opacity: 1;
+    }
+    65% {
+        transform: rotate(90deg);
+        left: 80%;
+        top: 15%;
+        opacity: .8;
+    }
+    100% {
+        transform: rotate(90deg);
+        left: 80%;
+        top: 15%;
+        opacity: 0;
+    }
+
+}
+
+.fallen {
+    transition: none;
+    transform: rotate(90deg);
+    left: 80%;
+    top: 15%;
+    opacity: 0.5;
+    animation-name: fall;
+    animation-direction: forward;
+    animation-duration: 1s;
+}
+
 .sprite {
     position: absolute;
     margin: 0;

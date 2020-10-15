@@ -7,7 +7,7 @@ export default class UnitFigure extends react.Component {
 
 
     render() {
-        const { unit, handleClick, isSelected, inInfoRow, stack } = this.props
+        const { unit, handleClick, isSelected, inInfoRow, stack, isFallen } = this.props
 
         const placeInStack = inInfoRow
             ? 0
@@ -24,12 +24,18 @@ export default class UnitFigure extends react.Component {
             orderFlagClassList.push(styles.selected)
         }
 
+        if (isFallen) {
+            spirteClassList.push(styles.fallen)
+        }
+
         if (placeInStack > 0) { spirteClassList.push(styles.behind) }
 
         const figureStyle = {
             left: inInfoRow ? 'unset' : `${unit.x * 4}rem`,
             top: inInfoRow ? 'unset' : `${unit.y * 4}rem`,
-            backgroundImage: placeInStack === 0
+            backgroundImage: isFallen 
+            ? ''
+            : placeInStack === 0
                 ? `radial-gradient(${unit.faction.color} 55%, rgba(0,0,0,0) 65%)`
                 : `radial-gradient(${unit.faction.color} 45%, rgba(0,0,0,0) 55%)`,
             transform: `translate(${-Math.min(placeInStack, 5) * 8}px, ${-Math.min(placeInStack, 5) * 2}px)`

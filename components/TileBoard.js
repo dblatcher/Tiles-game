@@ -55,12 +55,14 @@ export default class TileBoard extends React.Component {
     }
 
     renderUnit(unit, index) {
-        const { handleUnitFigureClick, selectedUnit } = this.props;
+        const { handleUnitFigureClick, selectedUnit, fallenUnits } = this.props;
+
         return (<UnitFigure
             handleClick={() => { handleUnitFigureClick(unit) }}
             unit={unit}
             key={"unit#" + index}
             isSelected={unit === selectedUnit}
+            isFallen = {fallenUnits &&  fallenUnits.includes (unit) }
             stack={this.getStackedUnits(unit)}
         />)
     }

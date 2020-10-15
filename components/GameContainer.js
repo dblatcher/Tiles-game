@@ -23,6 +23,7 @@ export default class GameContainer extends React.Component {
         this.state = Object.assign(props.startingGameState, {
             interfaceMode: "MOVE",
             interfaceModeOptions,
+            fallenUnits: [],
         });
 
         this.gameHolderElement = React.createRef()
@@ -93,7 +94,7 @@ export default class GameContainer extends React.Component {
     }
 
     render() {
-        const { mapGrid, selectedSquare, units, selectedUnit, interfaceMode, interfaceModeOptions } = this.state
+        const { mapGrid, selectedSquare, units, selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits } = this.state
 
         return (
 
@@ -107,7 +108,8 @@ export default class GameContainer extends React.Component {
                         handleTileHoverEnter={this.handleTileHoverEnter}
                         interfaceMode={interfaceMode}
                         selectedSquare={selectedSquare}
-                        selectedUnit={selectedUnit} />
+                        selectedUnit={selectedUnit} 
+                        fallenUnits={fallenUnits}/>
                 </article>
                 <article className={styles.interfaceWindowHolder} >
                     <SeletedUnitAndSquareInfo

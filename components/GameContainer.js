@@ -1,6 +1,7 @@
 import React from 'react'
 import TileBoard from './TileBoard'
 import SeletedUnitAndSquareInfo from './SeletedUnitAndSquareInfo'
+import BattleDialogue from './BattleDialogue'
 import ModeButtons from './ModeButtons'
 import OrderButtons from './OrderButtons'
 
@@ -24,6 +25,7 @@ export default class GameContainer extends React.Component {
             interfaceMode: "MOVE",
             interfaceModeOptions,
             fallenUnits: [],
+            pendingBattle: null,
         });
 
         this.gameHolderElement = React.createRef()
@@ -34,17 +36,19 @@ export default class GameContainer extends React.Component {
         this.changeMode = this.changeMode.bind(this)
         this.handleTileHoverEnter = this.handleTileHoverEnter.bind(this)
         this.scrollToSquare = this.scrollToSquare.bind(this)
+        this.cancelBattle = this.cancelBattle.bind(this)
     }
 
 
     handleMapSquareClick(mapSquare) {
+        if (this.state.pendingBattle) {return false}
         return this.setState(gameActions.handleMapSquareClick(mapSquare), () => {
             if (this.state.interfaceMode === 'VIEW') { this.scrollToSelection() }
         })
     }
 
     handleUnitFigureClick(unit) {
-
+        if (this.state.pendingBattle) {return false}
         if (this.state.fallenUnits.includes(unit)) {
             return this.handleMapSquareClick(this.state.mapGrid[unit.y][unit.x])
         }
@@ -55,6 +59,7 @@ export default class GameContainer extends React.Component {
     }
 
     handleOrderButton(command, input = {}) {
+        if (this.state.pendingBattle) {return false}
         let commandFunction = state => state;
         switch (command) {
             case "END_OF_TURN":     commandFunction = gameActions.endOfTurn; break;
@@ -71,6 +76,7 @@ export default class GameContainer extends React.Component {
     }
 
     changeMode(newMode) {
+        if (this.state.pendingBattle) {return false}
         this.setState({
             interfaceMode: newMode
         })
@@ -99,12 +105,19 @@ export default class GameContainer extends React.Component {
         this.gameHolderElement.current.scrollTo(pixelX, pixelY)
     }
 
+    cancelBattle() {
+        this.setState({pendingBattle: null})
+    }
+
     render() {
-        const { mapGrid, selectedSquare, units, selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits } = this.state
+        const { mapGrid, selectedSquare, units, selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits, pendingBattle } = this.state
 
         return (
 
             <div className={styles.gameHolder}>
+
+                {pendingBattle ? <BattleDialogue battle={pendingBattle} cancelBattle={this.cancelBattle}/> : null}
+
                 <article className={styles.tileBoardHolder} ref={this.gameHolderElement}>
                     <TileBoard
                         units={units}

@@ -1,0 +1,12 @@
+@import '../styles/design.scss';
+
+.dialogueHolder {
+    @include dialogueHolder();  
+    width: 20rem;
+    min-height: 10rem;
+}
+
+.dialogueFrame {
+    padding: .5rem;
+    background-color: white;
+}

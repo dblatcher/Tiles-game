@@ -5,20 +5,25 @@ class UnitType {
     spriteFrameName: string;
     moves: number;
     roadBuilding: number;
+    treeCutting: number;
+    attack: number;
+    defend: number;
     constructor(name: string, config = {}) {
         this.name = name;
         this.spriteFrameName = config.spriteFrameName || name;
         this.moves = config.moves || 6;
         this.roadBuilding = config.roadBuilding || 0;
         this.treeCutting = config.treeCutting || 0;
+        this.attack= config.attack || 1;
+        this.defend= config.defend || 1;
     }
 
 }
 
 const unitTypes = {
-    knight: new UnitType('knight', { moves: 8 }),
+    knight: new UnitType('knight', { moves: 8, attack:4 }),
     worker: new UnitType('worker', { roadBuilding: 1, treeCutting:1 }),
-    spearman: new UnitType('spearman'),
+    spearman: new UnitType('spearman',{defend:3}),
 }
 
 class Faction {

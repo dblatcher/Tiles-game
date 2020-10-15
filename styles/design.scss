@@ -35,5 +35,21 @@ $focus-color: green;
     &:focus {
         outline: $focus-color 2px ridge;
     }
+}
 
+@mixin dialogueHolder {
+    position: absolute;
+    z-index: 100;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 100%;
+
+
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    background-color: white;
+    padding: .5rem;
+    border: 5px double black;
 }

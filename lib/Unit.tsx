@@ -14,7 +14,7 @@ class UnitType {
         this.moves = config.moves || 6;
         this.roadBuilding = config.roadBuilding || 0;
         this.treeCutting = config.treeCutting || 0;
-        this.attack= config.attack || 1;
+        this.attack= config.attack || 0;
         this.defend= config.defend || 1;
     }
 
@@ -22,8 +22,8 @@ class UnitType {
 
 const unitTypes = {
     knight: new UnitType('knight', { moves: 8, attack:4 }),
-    worker: new UnitType('worker', { roadBuilding: 1, treeCutting:1 }),
-    spearman: new UnitType('spearman',{defend:3}),
+    worker: new UnitType('worker', { roadBuilding: 1, treeCutting:1, }),
+    spearman: new UnitType('spearman',{defend:3, attack:1 }),
 }
 
 class Faction {

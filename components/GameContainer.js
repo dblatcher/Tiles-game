@@ -2,6 +2,7 @@ import React from 'react'
 import TileBoard from './TileBoard'
 import SeletedUnitAndSquareInfo from './SeletedUnitAndSquareInfo'
 import BattleDialogue from './BattleDialogue'
+import MessageDialoge from './MessageDialogue'
 import ModeButtons from './ModeButtons'
 import OrderButtons from './OrderButtons'
 
@@ -26,6 +27,7 @@ export default class GameContainer extends React.Component {
             interfaceModeOptions,
             fallenUnits: [],
             pendingBattle: null,
+            pendingMessage: null,
         });
 
         this.gameHolderElement = React.createRef()
@@ -36,19 +38,19 @@ export default class GameContainer extends React.Component {
         this.changeMode = this.changeMode.bind(this)
         this.handleTileHoverEnter = this.handleTileHoverEnter.bind(this)
         this.scrollToSquare = this.scrollToSquare.bind(this)
-        this.cancelBattle = this.cancelBattle.bind(this)
+        this.handleDialogueButton = this.handleDialogueButton.bind(this)
     }
 
 
     handleMapSquareClick(mapSquare) {
-        if (this.state.pendingBattle) { return false }
+        if (this.state.pendingBattle || this.state.pendingMessage) { return false }
         return this.setState(gameActions.handleMapSquareClick(mapSquare), () => {
             if (this.state.interfaceMode === 'VIEW') { this.scrollToSelection() }
         })
     }
 
     handleUnitFigureClick(unit) {
-        if (this.state.pendingBattle) { return false }
+        if (this.state.pendingBattle || this.state.pendingMessage) { return false }
         if (this.state.fallenUnits.includes(unit)) {
             return this.handleMapSquareClick(this.state.mapGrid[unit.y][unit.x])
         }
@@ -59,9 +61,7 @@ export default class GameContainer extends React.Component {
     }
 
     handleOrderButton(command, input = {}) {
-        if (this.state.pendingBattle && (command !== "CANCEL_BATTLE" && command !== "RESOLVE_BATTLE")) {
-            return false
-        }
+        if (this.state.pendingBattle || this.state.pendingMessage) { return false }
         let commandFunction = state => state;
         switch (command) {
             case "END_OF_TURN": commandFunction = gameActions.endOfTurn; break;
@@ -70,8 +70,19 @@ export default class GameContainer extends React.Component {
             case "HOLD_UNIT": commandFunction = gameActions.holdUnit; break;
             case "START_ORDER": commandFunction = gameActions.startOrder(input); break;
             case "CANCEL_ORDER": commandFunction = gameActions.cancelOrder; break;
+            default:
+                console.warn(`unknown command: ${command}`, input); return
+        }
+
+        return this.setState(commandFunction, this.scrollToSelection)
+    }
+
+    handleDialogueButton (command, input = {}) {
+        let commandFunction = state => state;
+        switch (command) {
             case "CANCEL_BATTLE": commandFunction = gameActions.cancelBattle; break;
             case "RESOLVE_BATTLE": commandFunction = gameActions.resolveBattle; break;
+            case "ACKNOWLEDGE_MESSAGE": commandFunction = gameActions.acknowledgeMessage(input); break;
             default:
                 console.warn(`unknown command: ${command}`, input); return
         }
@@ -80,7 +91,7 @@ export default class GameContainer extends React.Component {
     }
 
     changeMode(newMode) {
-        if (this.state.pendingBattle) { return false }
+        if (this.state.pendingBattle || this.state.pendingMessage) { return false }
         this.setState({
             interfaceMode: newMode
         })
@@ -109,12 +120,9 @@ export default class GameContainer extends React.Component {
         this.gameHolderElement.current.scrollTo(pixelX, pixelY)
     }
 
-    cancelBattle() {
-        this.setState({ pendingBattle: null })
-    }
 
     render() {
-        const { mapGrid, selectedSquare, units, selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits, pendingBattle } = this.state
+        const { mapGrid, selectedSquare, units, selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits, pendingBattle,pendingMessage } = this.state
 
         return (
 
@@ -123,8 +131,14 @@ export default class GameContainer extends React.Component {
                 {pendingBattle
                     ? <BattleDialogue
                         battle={pendingBattle}
-                        cancelBattle={() => this.handleOrderButton('CANCEL_BATTLE', {})}
-                        confirmBattle={() => this.handleOrderButton('RESOLVE_BATTLE', {})} />
+                        cancelBattle={() => this.handleDialogueButton('CANCEL_BATTLE', {})}
+                        confirmBattle={() => this.handleDialogueButton('RESOLVE_BATTLE', {})} />
+                    : null}
+
+                {pendingMessage
+                    ? <MessageDialoge
+                        message={pendingMessage}
+                        acknowledgeMessage={() => this.handleDialogueButton('ACKNOWLEDGE_MESSAGE', {})} />
                     : null}
 
                 <article className={styles.tileBoardHolder} ref={this.gameHolderElement}>

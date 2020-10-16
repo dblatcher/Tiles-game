@@ -1,4 +1,4 @@
-import styles from './battleDialogue.module.scss'
+import styles from './dialogue.module.scss'
 
 export default class BattleDialogue extends React.Component {
 

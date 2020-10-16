@@ -41,14 +41,14 @@ export default class GameContainer extends React.Component {
 
 
     handleMapSquareClick(mapSquare) {
-        if (this.state.pendingBattle) {return false}
+        if (this.state.pendingBattle) { return false }
         return this.setState(gameActions.handleMapSquareClick(mapSquare), () => {
             if (this.state.interfaceMode === 'VIEW') { this.scrollToSelection() }
         })
     }
 
     handleUnitFigureClick(unit) {
-        if (this.state.pendingBattle) {return false}
+        if (this.state.pendingBattle) { return false }
         if (this.state.fallenUnits.includes(unit)) {
             return this.handleMapSquareClick(this.state.mapGrid[unit.y][unit.x])
         }
@@ -59,24 +59,28 @@ export default class GameContainer extends React.Component {
     }
 
     handleOrderButton(command, input = {}) {
-        if (this.state.pendingBattle) {return false}
+        if (this.state.pendingBattle && (command !== "CANCEL_BATTLE" && command !== "RESOLVE_BATTLE")) {
+            return false
+        }
         let commandFunction = state => state;
         switch (command) {
-            case "END_OF_TURN":     commandFunction = gameActions.endOfTurn; break;
-            case "NEXT_UNIT":       commandFunction = gameActions.selectNextUnit; break;
-            case "PREVIOUS_UNIT":   commandFunction = gameActions.selectPreviousUnit; break;
-            case "HOLD_UNIT":       commandFunction = gameActions.holdUnit;break;
-            case "START_ORDER":     commandFunction = gameActions.startOrder(input);break;
-            case "CANCEL_ORDER":    commandFunction = gameActions.cancelOrder; break;
-            case "TEST_KILL":       commandFunction = gameActions.killUnit(input); break;
-            default: console.warn(`unknown command: ${command}`, input)
+            case "END_OF_TURN": commandFunction = gameActions.endOfTurn; break;
+            case "NEXT_UNIT": commandFunction = gameActions.selectNextUnit; break;
+            case "PREVIOUS_UNIT": commandFunction = gameActions.selectPreviousUnit; break;
+            case "HOLD_UNIT": commandFunction = gameActions.holdUnit; break;
+            case "START_ORDER": commandFunction = gameActions.startOrder(input); break;
+            case "CANCEL_ORDER": commandFunction = gameActions.cancelOrder; break;
+            case "CANCEL_BATTLE": commandFunction = gameActions.cancelBattle; break;
+            case "RESOLVE_BATTLE": commandFunction = gameActions.resolveBattle; break;
+            default:
+                console.warn(`unknown command: ${command}`, input); return
         }
 
         return this.setState(commandFunction, this.scrollToSelection)
     }
 
     changeMode(newMode) {
-        if (this.state.pendingBattle) {return false}
+        if (this.state.pendingBattle) { return false }
         this.setState({
             interfaceMode: newMode
         })
@@ -106,7 +110,7 @@ export default class GameContainer extends React.Component {
     }
 
     cancelBattle() {
-        this.setState({pendingBattle: null})
+        this.setState({ pendingBattle: null })
     }
 
     render() {
@@ -116,7 +120,12 @@ export default class GameContainer extends React.Component {
 
             <div className={styles.gameHolder}>
 
-                {pendingBattle ? <BattleDialogue battle={pendingBattle} cancelBattle={this.cancelBattle}/> : null}
+                {pendingBattle
+                    ? <BattleDialogue
+                        battle={pendingBattle}
+                        cancelBattle={() => this.handleOrderButton('CANCEL_BATTLE', {})}
+                        confirmBattle={() => this.handleOrderButton('RESOLVE_BATTLE', {})} />
+                    : null}
 
                 <article className={styles.tileBoardHolder} ref={this.gameHolderElement}>
                     <TileBoard
@@ -127,11 +136,9 @@ export default class GameContainer extends React.Component {
                         handleTileHoverEnter={this.handleTileHoverEnter}
                         interfaceMode={interfaceMode}
                         selectedSquare={selectedSquare}
-                        selectedUnit={selectedUnit} 
-                        fallenUnits={fallenUnits}/>
+                        selectedUnit={selectedUnit}
+                        fallenUnits={fallenUnits} />
                 </article>
-
-                <button onClick={()=>{this.handleOrderButton('TEST_KILL',{unit: units[0]})}}>test kill command</button>
 
                 <article className={styles.interfaceWindowHolder} >
                     <SeletedUnitAndSquareInfo

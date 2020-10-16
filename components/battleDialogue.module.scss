@@ -2,11 +2,11 @@
 
 .dialogueHolder {
     @include dialogueHolder();  
-    width: 20rem;
-    min-height: 10rem;
 }
 
 .dialogueFrame {
     padding: .5rem;
+    border: 5px double black;
+    background-clip: border-box;
     background-color: white;
 }

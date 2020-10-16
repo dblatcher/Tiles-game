@@ -10,3 +10,48 @@
     background-clip: border-box;
     background-color: white;
 }
+
+.buttonRow {
+    display: flex;
+    justify-content: space-around;
+    margin: .5rem 0;
+}
+
+.button {
+    @include input;
+    font-size: large;
+}
+
+
+.unitRow {
+    display: flex;
+    justify-content: center;
+    min-width: 24rem;
+    margin: .5rem 0;
+}
+
+.unitBlock {
+    display: flex;
+    align-items: flex-start;
+    
+
+    &:last-child {
+        justify-content: flex-end;
+    }
+}
+
+.scoreSummary {
+
+    p {
+        margin: 0;
+        font-size: small;
+
+        &:first-child {
+            font-weight: bold;
+        }
+
+        &:last-child {
+            border-top: 1px solid black
+        }
+    }
+}

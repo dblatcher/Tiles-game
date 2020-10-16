@@ -13,9 +13,9 @@ export default class BattleDialogue extends React.Component {
                 <p>{text}</p>
 
 
-
-                <button onClick={acknowledgeMessage}>ok</button>
-                
+                <div className={styles.buttonRow}>
+                    <button className={styles.button} onClick={acknowledgeMessage}>ok</button>
+                </div>
             </div>
         </aside>
         )

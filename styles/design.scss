@@ -32,6 +32,11 @@ $focus-color: green;
     border-radius: 0;
     border: 1px solid black;
 
+    transition: transform .5s;
+    &:hover {
+        transform: scale(1.1);
+    }
+
     &:focus {
         outline: $focus-color 2px ridge;
     }
@@ -45,9 +50,6 @@ $focus-color: green;
     margin: 0;
     width: 100%;
     height: 100%;
-    
-
-
     display: flex;
     justify-content: center;
     align-items: center;

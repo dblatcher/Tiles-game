@@ -6,7 +6,7 @@ import MessageDialoge from './MessageDialogue'
 import ModeButtons from './ModeButtons'
 import OrderButtons from './OrderButtons'
 
-import styles from './gameContainer.module.css'
+import styles from './gameContainer.module.scss'
 import gameActions from '../lib/gameActions'
 
 
@@ -31,6 +31,7 @@ export default class GameContainer extends React.Component {
         });
 
         this.gameHolderElement = React.createRef()
+        this.interfaceWindowElement = React.createRef()
 
         this.handleMapSquareClick = this.handleMapSquareClick.bind(this)
         this.handleOrderButton = this.handleOrderButton.bind(this)
@@ -110,9 +111,17 @@ export default class GameContainer extends React.Component {
         if (!target) { return false }
         const { x, y } = target
 
-        let pixelX = (x * 4 * 16) - this.gameHolderElement.current.clientWidth / 2 + (2 * 16)
-        let pixelY = (y * 4 * 16) - this.gameHolderElement.current.clientHeight / 2 + (2 * 16)
-        this.gameHolderElement.current.scrollTo(pixelX, pixelY)
+//to do - support left aligned interface window 
+        const tileSize = (4 * 16)
+        const leftBorderSize = (1* 16)
+        const topBorderSize = this.interfaceWindowElement.current 
+            ? this.interfaceWindowElement.current.offsetHeight 
+            : (12* 16);
+
+
+        let pixelX = (x * tileSize) - window.innerWidth/2 + leftBorderSize + tileSize/2
+        let pixelY = (y * tileSize) - window.innerHeight/2 + topBorderSize + tileSize/2
+        window.scrollTo(pixelX, pixelY)
     }
 
 
@@ -121,7 +130,7 @@ export default class GameContainer extends React.Component {
 
         return (
 
-            <div className={styles.gameHolder}>
+            <>
 
                 {pendingBattle
                     ? <BattleDialogue
@@ -148,7 +157,7 @@ export default class GameContainer extends React.Component {
                         fallenUnits={fallenUnits} />
                 </article>
 
-                <article className={styles.interfaceWindowHolder} >
+                <article className={styles.interfaceWindowHolder} ref={this.interfaceWindowElement} >
                     <SeletedUnitAndSquareInfo
                         selectedUnit={selectedUnit}
                         selectedSquare={selectedSquare}
@@ -165,7 +174,7 @@ export default class GameContainer extends React.Component {
                         interfaceModeOptions={interfaceModeOptions}
                     />
                 </article>
-            </div>
+            </>
         )
     }
 }

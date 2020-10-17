@@ -3,27 +3,11 @@
     padding: 0 1rem;
     margin: 3rem auto 6rem;
   }
-
-  .gamePageContainer {
-    padding: 0 1rem;
-    margin: 1rem auto 2rem;
-  }
   
   .header {
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-
-  .gamePageHeader {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .gamePageHeader h2 {
-    margin: 0;
   }
   
   .headerImage {

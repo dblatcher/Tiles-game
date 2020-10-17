@@ -43,7 +43,7 @@ $focus-color: green;
 }
 
 @mixin dialogueHolder {
-    position: absolute;
+    position: fixed;
     z-index: 100;
     left: 0%;
     top: 0%;

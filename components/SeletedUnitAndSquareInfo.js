@@ -29,11 +29,11 @@ export default class SeletedUnitAndSquareInfo extends React.Component {
 
                 <article className={styles.infoBlock}>
                     {selectedSquare ? (<>
-                        <ul className={[styles.infoList, styles.infoListRight].join(" ")}>
+                        <Tile mapSquare={selectedSquare} inInfoRow />
+                        <ul className={styles.infoList}>
                             {selectedSquare.infoList.map((infoPoint, index) => <li className={styles.infoLine} key={`selectedSquaretInfo#${index}`}>{infoPoint}</li>)}
                         </ul>
 
-                        <Tile mapSquare={selectedSquare} inInfoRow />
                     </>) : (null)}
                 </article>
 

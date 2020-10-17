@@ -5,56 +5,58 @@ import Link from 'next/link'
 
 export const siteTitle = 'Tiles App'
 
-export default function Layout({ children, home, gamePage }) {
+export function standardHead() {
     return (
-        <div className={gamePage ? styles.gamePageContainer : styles.container}>
-            <Head>
-                <link rel="icon" href="/favicon.ico" />
-                <meta
-                    name="description"
-                    content="Tiles App"
-                />
-                <meta name="og:title" content={siteTitle} />
-            </Head>
+        <Head>
+            <link rel="icon" href="/favicon.ico" />
+            <meta
+                name="description"
+                content="Tiles App"
+            />
+            <meta name="og:title" content={siteTitle} />
+        </Head>
+    )
+}
 
-            {gamePage ? (
-                <header className={styles.gamePageHeader}>
-                    <h2>
-                        {siteTitle}
-                    </h2>
-                        <Link href="/">
-                            <a>← Back to home</a>
-                        </Link>
-                </header>
-            ) : (
-                    <header className={styles.header}>
-                        {home ? (
-                            <>
-                                <h1>{siteTitle}</h1>
-                            </>
-                        ) : (
-                                <>
-                                    <h2>
-                                        <Link href="/">
-                                            <a>{siteTitle}</a>
-                                        </Link>
-                                    </h2>
-                                </>
-                            )}
-                    </header>
-                )
-            }
+export default function Layout({ children, home, gamePage }) {
+
+    if (gamePage) {
+        return <>
+            {standardHead()}
+            {children}
+        </>
+    }
+
+
+    return (
+        <div className={styles.container}>
+            {standardHead()}
+
+            <header className={styles.header}>
+                {home ? (
+                    <>
+                        <h1>{siteTitle}</h1>
+                    </>
+                ) : (
+                        <>
+                            <h2>
+                                <Link href="/">
+                                    <a>{siteTitle}</a>
+                                </Link>
+                            </h2>
+                        </>
+                    )}
+            </header>
 
             <main className={styles.main}>{children}</main>
-            {
-                !home && !gamePage && (
-                    <div className={styles.backToHome}>
-                        <Link href="/">
-                            <a>← Back to home</a>
-                        </Link>
-                    </div>
-                )
-            }
+
+            { !home && (
+                <div className={styles.backToHome}>
+                    <Link href="/">
+                        <a>← Back to home</a>
+                    </Link>
+                </div>
+            )}
         </div >
     )
 }

@@ -1,0 +1,25 @@
+$interfaceWindowHeight: 11rem;
+$windowPadding : 1rem;
+
+
+.gameHolder {
+    display: flex;
+    flex-flow: column-reverse;
+    justify-content: space-between;
+    position: relative;
+}
+
+.tileBoardHolder {
+    padding: ($interfaceWindowHeight + $windowPadding) $windowPadding $windowPadding $windowPadding;
+}
+
+.interfaceWindowHolder {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: white;
+    width: 100%;
+    height: $interfaceWindowHeight;
+    z-index: 100;
+    padding: 0 $windowPadding $windowPadding $windowPadding;
+}

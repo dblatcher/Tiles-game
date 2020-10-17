@@ -17,23 +17,7 @@
 }
 
 .selected {
-    &::before {
-        content: '';
-        z-index: 7;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translateX(-50%) translateY(-50%);
-
-        margin: 0;
-        padding: 0;
-        width: 4rem;
-        height: 4rem;
-        box-sizing: border-box;
-        border-radius: 25%;
-        border: 2px solid red;
-        filter: none;
-    }
+    filter: brightness(1.75);
 }
 
 .hovered {

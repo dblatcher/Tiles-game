@@ -55,10 +55,12 @@ export default class TileBoard extends React.Component {
     }
 
     renderUnit(unit, index) {
-        const { handleUnitFigureClick, selectedUnit, fallenUnits } = this.props;
+        const { handleMapSquareClick, selectedUnit, fallenUnits, mapGrid } = this.props;
+
+        const squareUnitIsOn = mapGrid[unit.y][unit.x]
 
         return (<UnitFigure
-            handleClick={() => { handleUnitFigureClick(unit) }}
+            handleClick={() => { handleMapSquareClick(squareUnitIsOn) }}
             unit={unit}
             key={"unit#" + index}
             isSelected={unit === selectedUnit}

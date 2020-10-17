@@ -52,11 +52,22 @@ export default class Tile extends React.Component {
         const needsCoastLine = this.doesNeedCoastline()
 
         let classList = [styles.tile]
-        if (isHoveredOn && !inInfoRow) { classList.push(styles.hovered) }
-        if (selectedUnitCanMoveTo && !inInfoRow && interfaceMode === 'MOVE') {classList.push(styles.inRange)} 
-        if (isSelected || containsSelectedUnit) { classList.push(styles.selected) }
 
-        
+        if (!inInfoRow) {
+            if (interfaceMode === 'VIEW') {
+                if (isSelected ) { classList.push(styles.selected) }
+            } else if (interfaceMode === 'MOVE') {
+                if (selectedUnitCanMoveTo ) {classList.push(styles.inRange)} 
+                if (isHoveredOn && selectedUnitCanMoveTo) { classList.push(styles.inRangeHovered) }
+
+                if (isHoveredOn && !selectedUnitCanMoveTo) { classList.push(styles.hovered) }
+            } 
+
+        }
+
+
+
+
 
         return (
             <figure

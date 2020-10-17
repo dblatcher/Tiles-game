@@ -33,7 +33,6 @@ export default class GameContainer extends React.Component {
         this.gameHolderElement = React.createRef()
 
         this.handleMapSquareClick = this.handleMapSquareClick.bind(this)
-        this.handleUnitFigureClick = this.handleUnitFigureClick.bind(this)
         this.handleOrderButton = this.handleOrderButton.bind(this)
         this.changeMode = this.changeMode.bind(this)
         this.handleTileHoverEnter = this.handleTileHoverEnter.bind(this)
@@ -44,21 +43,17 @@ export default class GameContainer extends React.Component {
 
     handleMapSquareClick(mapSquare) {
         if (this.state.pendingBattle || this.state.pendingMessage) { return false }
+
+        if (this.state.selectedUnit && this.state.interfaceMode === 'MOVE' && !this.state.selectedUnit.isAdjacentTo(mapSquare)) {
+            return this.scrollToSquare(mapSquare)
+        }
+
         return this.setState(gameActions.handleMapSquareClick(mapSquare), () => {
             if (this.state.interfaceMode === 'VIEW') { this.scrollToSelection() }
         })
+
     }
 
-    handleUnitFigureClick(unit) {
-        if (this.state.pendingBattle || this.state.pendingMessage) { return false }
-        if (this.state.fallenUnits.includes(unit)) {
-            return this.handleMapSquareClick(this.state.mapGrid[unit.y][unit.x])
-        }
-
-        return this.setState(gameActions.handleUnitClick(unit), () => {
-            if (this.state.interfaceMode === 'VIEW') { this.scrollToSelection() }
-        })
-    }
 
     handleOrderButton(command, input = {}) {
         if (this.state.pendingBattle || this.state.pendingMessage) { return false }
@@ -87,7 +82,7 @@ export default class GameContainer extends React.Component {
                 console.warn(`unknown command: ${command}`, input); return
         }
 
-        return this.setState(commandFunction, this.scrollToSelection)
+        return this.setState(commandFunction)
     }
 
     changeMode(newMode) {
@@ -146,7 +141,6 @@ export default class GameContainer extends React.Component {
                         units={units}
                         mapGrid={mapGrid}
                         handleMapSquareClick={this.handleMapSquareClick}
-                        handleUnitFigureClick={this.handleUnitFigureClick}
                         handleTileHoverEnter={this.handleTileHoverEnter}
                         interfaceMode={interfaceMode}
                         selectedSquare={selectedSquare}

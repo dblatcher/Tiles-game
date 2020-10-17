@@ -63,7 +63,7 @@ class Unit {
         ]
     }
 
-    isAdajcentTo(target) {
+    isAdjacentTo(target) {
         return !(Math.abs(this.x - target.x) > 1 || Math.abs(this.y - target.y) > 1)
     }
 
@@ -75,7 +75,7 @@ class Unit {
             ? 1
             : targetMapSquare.movementCost
 
-        return this.isAdajcentTo(targetMapSquare)
+        return this.isAdjacentTo(targetMapSquare)
             && !(targetMapSquare.x === this.x && targetMapSquare.y === this.y)
             && (this.remainingMoves >= movementCost || this.remainingMoves === this.type.moves)
     }

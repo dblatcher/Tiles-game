@@ -38,7 +38,7 @@ export default class TileBoard extends React.Component {
                 interfaceMode={interfaceMode}
                 mapSquare={mapSquare}
                 selectedUnit={selectedUnit}
-                squareSelectedUnitIsIn = {selectedUnit ?  mapGrid[selectedUnit.y][selectedUnit.x] : null}
+                squareSelectedUnitIsIn={selectedUnit ? mapGrid[selectedUnit.y][selectedUnit.x] : null}
                 isSelected={mapSquare === selectedSquare}
                 handleTileHoverEnter={handleTileHoverEnter}
                 adjacentSquares={this.getAdjacentSquares(mapSquare.x, mapSquare.y)}
@@ -55,16 +55,19 @@ export default class TileBoard extends React.Component {
     }
 
     renderUnit(unit, index) {
-        const { handleMapSquareClick, selectedUnit, fallenUnits, mapGrid } = this.props;
+        const { handleMapSquareClick, selectedUnit, fallenUnits, mapGrid, unitWithMenuOpen, handleOrderButton } = this.props;
 
         const squareUnitIsOn = mapGrid[unit.y][unit.x]
 
         return (<UnitFigure
             handleClick={() => { handleMapSquareClick(squareUnitIsOn) }}
+            squareUnitIsOn={squareUnitIsOn}
             unit={unit}
+            handleOrderButton={handleOrderButton}
+            menuIsOpen={unit === unitWithMenuOpen}
             key={"unit#" + index}
             isSelected={unit === selectedUnit}
-            isFallen = {fallenUnits &&  fallenUnits.includes (unit) }
+            isFallen={fallenUnits && fallenUnits.includes(unit)}
             stack={this.getStackedUnits(unit)}
         />)
     }

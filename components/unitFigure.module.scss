@@ -89,3 +89,11 @@
 .behind {
     filter: brightness(.5);
 }
+
+.contextMenu {
+    background-color: white;
+    padding: .5rem;
+    position: absolute;
+    left: 8rem;
+    z-index: 15;
+}

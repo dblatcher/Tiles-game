@@ -1,13 +1,29 @@
-import react from 'react'
 import React from 'react'
+
+import OrderButtons from './OrderButtons'
+
 import styles from './unitFigure.module.scss'
 import { spriteSheets } from '../lib/SpriteSheet.tsx'
 
-export default class UnitFigure extends react.Component {
+export default class UnitFigure extends React.Component {
 
+    renderUnitMenu() {
+
+        const { unit, handleOrderButton, squareUnitIsOn } = this.props
+
+        return (
+            <nav className={styles.contextMenu}>
+                <OrderButtons
+                    unitContextMenu={true}
+                    selectedUnit={unit}
+                    squareSelectedUnitIsIn={squareUnitIsOn}
+                    handleOrderButton={handleOrderButton} />
+            </nav>
+        )
+    }
 
     render() {
-        const { unit, handleClick, isSelected, inInfoRow, stack, isFallen } = this.props
+        const { unit, handleClick, isSelected, inInfoRow, stack, isFallen, menuIsOpen } = this.props
 
         const placeInStack = inInfoRow
             ? 0
@@ -33,11 +49,11 @@ export default class UnitFigure extends react.Component {
         const figureStyle = {
             left: inInfoRow ? 'unset' : `${unit.x * 4}rem`,
             top: inInfoRow ? 'unset' : `${unit.y * 4}rem`,
-            backgroundImage: isFallen 
-            ? ''
-            : placeInStack === 0
-                ? `radial-gradient(${unit.faction.color} 55%, rgba(0,0,0,0) 65%)`
-                : `radial-gradient(${unit.faction.color} 45%, rgba(0,0,0,0) 55%)`,
+            backgroundImage: isFallen
+                ? ''
+                : placeInStack === 0
+                    ? `radial-gradient(${unit.faction.color} 55%, rgba(0,0,0,0) 65%)`
+                    : `radial-gradient(${unit.faction.color} 45%, rgba(0,0,0,0) 55%)`,
             transform: `translate(${-Math.min(placeInStack, 5) * 8}px, ${-Math.min(placeInStack, 5) * 2}px)`,
             pointerEvents: isFallen ? 'none' : 'unset',
         }
@@ -46,10 +62,12 @@ export default class UnitFigure extends react.Component {
             <figure
                 style={figureStyle}
                 className={figureClassList.join(" ")}
-                onClick={handleClick || function () { }}>
+                >
                 <i
                     style={spriteSheets.units.getStyleForFrameCalled(unit.type.name)}
-                    className={spriteClassList.join(" ")}>
+                    className={spriteClassList.join(" ")}
+                    onClick={handleClick || function () { }}
+                    >
                 </i>
 
                 {unit.onGoingOrder
@@ -59,6 +77,8 @@ export default class UnitFigure extends react.Component {
                     </p>
                     : null
                 }
+
+                {menuIsOpen && isSelected ? this.renderUnitMenu() : null}
             </figure>
         )
 

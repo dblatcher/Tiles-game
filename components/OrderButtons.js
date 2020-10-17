@@ -3,7 +3,7 @@ import { onGoingOrderTypes } from '../lib/OngoingOrder.tsx'
 import styles from './orderButtons.module.scss'
 
 export default function OrderButtons(props) {
-    const { selectedUnit, handleOrderButton, squareSelectedUnitIsIn } = props;
+    const { selectedUnit, handleOrderButton, squareSelectedUnitIsIn, unitContextMenu } = props;
 
     const availableOrders = selectedUnit
         ? onGoingOrderTypes
@@ -17,17 +17,13 @@ export default function OrderButtons(props) {
 
                 if (isOnGoing) {
                     buttonStyles.push(styles.cancel)
-                    onClickFunction = () => {
-                        handleOrderButton('CANCEL_ORDER')
-                    }
+                    onClickFunction = () => { handleOrderButton('CANCEL_ORDER') }
                 }
                 else if (isDisabled) {
                     buttonStyles.push(styles.disabled)
                 }
                 else {
-                    onClickFunction = () => {
-                        handleOrderButton('START_ORDER', { orderType, unit: selectedUnit })
-                    }
+                    onClickFunction = () => { handleOrderButton('START_ORDER', { orderType, unit: selectedUnit }) }
                 }
 
                 return { orderType, buttonStyles, isDisabled, isOnGoing, onClickFunction }
@@ -42,7 +38,7 @@ export default function OrderButtons(props) {
         ? null
         : () => { handleOrderButton('HOLD_UNIT') }
 
-    return <section className={styles.section}>
+    return <section className={unitContextMenu ? {} : styles.section}>
 
         <section className={styles.subsection}>
 
@@ -64,27 +60,30 @@ export default function OrderButtons(props) {
             ))}
         </section>
 
-        <section className={styles.subsection}>
-            <button
-                className={styles.button}
-                title={`previous unit`}
-                onClick={() => { handleOrderButton('PREVIOUS_UNIT') }}>
-                &lt;
-            </button>
+        {!unitContextMenu ? (
+            <section className={styles.subsection}>
+                <button
+                    className={styles.button}
+                    title={`previous unit`}
+                    onClick={() => { handleOrderButton('PREVIOUS_UNIT') }}>
+                    &lt;
+                </button>
 
-            <button
-                className={styles.button}
-                title={`Next unit`}
-                onClick={() => { handleOrderButton('NEXT_UNIT') }}>
-                &gt;
-            </button>
+                <button
+                    className={styles.button}
+                    title={`Next unit`}
+                    onClick={() => { handleOrderButton('NEXT_UNIT') }}>
+                    &gt;
+                </button>
 
-            <button
-                className={[styles.button, styles.endButton].join(" ")}
-                title={`End of turn`}
-                onClick={() => { handleOrderButton('END_OF_TURN') }}>
-                end
-            </button>
-        </section>
+                <button
+                    className={[styles.button, styles.endButton].join(" ")}
+                    title={`End of turn`}
+                    onClick={() => { handleOrderButton('END_OF_TURN') }}>
+                    end
+                </button>
+            </section>
+        ) : null}
+
     </section>
 }

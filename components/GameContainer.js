@@ -23,6 +23,8 @@ export default class GameContainer extends React.Component {
         ]
 
         this.state = Object.assign(props.startingGameState, {
+            selectedSquare: null,
+            unitWithMenuOpen: null,
             interfaceMode: "MOVE",
             interfaceModeOptions,
             fallenUnits: [],
@@ -43,6 +45,7 @@ export default class GameContainer extends React.Component {
 
 
     handleMapSquareClick(mapSquare) {
+        console.log('handleMapSquareClick', mapSquare)
         if (this.state.pendingBattle || this.state.pendingMessage) { return false }
 
         if (this.state.selectedUnit && this.state.interfaceMode === 'MOVE' && !this.state.selectedUnit.isAdjacentTo(mapSquare)) {
@@ -60,12 +63,12 @@ export default class GameContainer extends React.Component {
         if (this.state.pendingBattle || this.state.pendingMessage) { return false }
         let commandFunction = state => state;
         switch (command) {
-            case "END_OF_TURN": commandFunction = gameActions.endOfTurn; break;
-            case "NEXT_UNIT": commandFunction = gameActions.selectNextUnit; break;
-            case "PREVIOUS_UNIT": commandFunction = gameActions.selectPreviousUnit; break;
-            case "HOLD_UNIT": commandFunction = gameActions.holdUnit; break;
-            case "START_ORDER": commandFunction = gameActions.startOrder(input); break;
-            case "CANCEL_ORDER": commandFunction = gameActions.cancelOrder; break;
+            case "END_OF_TURN":     commandFunction = gameActions.endOfTurn; break;
+            case "NEXT_UNIT":       commandFunction = gameActions.selectNextUnit; break;
+            case "PREVIOUS_UNIT":   commandFunction = gameActions.selectPreviousUnit; break;
+            case "HOLD_UNIT":       commandFunction = gameActions.holdUnit; break;
+            case "START_ORDER":     commandFunction = gameActions.startOrder(input); break;
+            case "CANCEL_ORDER":    commandFunction = gameActions.cancelOrder; break;
             default:
                 console.warn(`unknown command: ${command}`, input); return
         }
@@ -76,8 +79,8 @@ export default class GameContainer extends React.Component {
     handleDialogueButton (command, input = {}) {
         let commandFunction = state => state;
         switch (command) {
-            case "CANCEL_BATTLE": commandFunction = gameActions.cancelBattle; break;
-            case "RESOLVE_BATTLE": commandFunction = gameActions.resolveBattle; break;
+            case "CANCEL_BATTLE":       commandFunction = gameActions.cancelBattle; break;
+            case "RESOLVE_BATTLE":      commandFunction = gameActions.resolveBattle; break;
             case "ACKNOWLEDGE_MESSAGE": commandFunction = gameActions.acknowledgeMessage(input); break;
             default:
                 console.warn(`unknown command: ${command}`, input); return
@@ -126,12 +129,11 @@ export default class GameContainer extends React.Component {
 
 
     render() {
-        const { mapGrid, selectedSquare, units, selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits, pendingBattle,pendingMessage } = this.state
+        const { mapGrid, selectedSquare, units, selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits, pendingBattle,pendingMessage, unitWithMenuOpen } = this.state
 
         return (
 
             <>
-
                 {pendingBattle
                     ? <BattleDialogue
                         battle={pendingBattle}
@@ -148,9 +150,11 @@ export default class GameContainer extends React.Component {
                 <article className={styles.tileBoardHolder} ref={this.gameHolderElement}>
                     <TileBoard
                         units={units}
+                        unitWithMenuOpen={unitWithMenuOpen}
                         mapGrid={mapGrid}
                         handleMapSquareClick={this.handleMapSquareClick}
                         handleTileHoverEnter={this.handleTileHoverEnter}
+                        handleOrderButton={this.handleOrderButton}
                         interfaceMode={interfaceMode}
                         selectedSquare={selectedSquare}
                         selectedUnit={selectedUnit}

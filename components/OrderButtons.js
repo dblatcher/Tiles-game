@@ -11,12 +11,12 @@ export default function OrderButtons(props) {
             .map(orderType => {
 
                 const isDisabled = !orderType.checkIsValidForSquare(squareSelectedUnitIsIn) || selectedUnit.remainingMoves === 0
-                const isOnGoing = selectedUnit.onGoingOrder && selectedUnit.onGoingOrder.type == orderType
+                const isCancel = !orderType.cannotCancel &&  selectedUnit.onGoingOrder && selectedUnit.onGoingOrder.type == orderType
                 let buttonStyles = [styles.button]
                 let onClickFunction;
 
-                if (isOnGoing) {
-                    buttonStyles.push(styles.cancel)
+                if (isCancel) {
+                    buttonStyles.push(styles.buttonCancel)
                     onClickFunction = () => { handleOrderButton('CANCEL_ORDER') }
                 }
                 else if (isDisabled) {
@@ -26,7 +26,7 @@ export default function OrderButtons(props) {
                     onClickFunction = () => { handleOrderButton('START_ORDER', { orderType, unit: selectedUnit }) }
                 }
 
-                return { orderType, buttonStyles, isDisabled, isOnGoing, onClickFunction }
+                return { orderType, buttonStyles, onClickFunction }
             })
         : [];
 

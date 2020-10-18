@@ -51,6 +51,10 @@ $dialogueDropShadowFilter: drop-shadow(3px 6px 2px black);
             transform: none;
         };
     }
+
+    &Cancel {
+        @include cancelled()
+    }
 }
 
 

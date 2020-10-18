@@ -13,7 +13,7 @@
 
 .button {
     @include letterButton;
-    @include input; // adds .buttonDisabled subclass
+    @include input; // adds .buttonDisabled and .buttonCancel subclass
 
     margin: 0 .25rem;
     &:first-child {
@@ -29,7 +29,3 @@
     font-variant: small-caps;
     font-size: large;
 }
-
-.cancel {
-    @include cancelled;
-}  

@@ -6,6 +6,7 @@ class OnGoingOrderType {
     checkIsValidForSquare: Function;
     timeTaken: number;
     noFlag: boolean;
+    cannotCancel: boolean;
 
     constructor(name, applyOutcome, checkIsValidForSquare, config = {}) {
         this.name = name
@@ -16,6 +17,7 @@ class OnGoingOrderType {
         this.letterCode = config.letterCode || name[0]
         this.timeTaken = config.timeTaken || 3
         this.noFlag = !!config.noFlag || false
+        this.cannotCancel = !!config.cannotCancel || false
     }
 
     canUnitUse(unit) {
@@ -32,6 +34,7 @@ const onGoingOrderTypes = [
             timeTaken: 1,
             letterCode: 'H',
             noFlag:true,
+            cannotCancel: true,
         }),
     new OnGoingOrderType('Build Road',
         mapSquare => { mapSquare.road = true },

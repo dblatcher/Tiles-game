@@ -5,10 +5,7 @@
 }
 
 .dialogueFrame {
-    padding: .5rem;
-    border: 5px double black;
-    background-clip: border-box;
-    background-color: white;
+    @include dialogueBox();
 }
 
 .buttonRow {

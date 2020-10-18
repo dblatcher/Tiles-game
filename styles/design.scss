@@ -1,5 +1,7 @@
 $focus-color: green;
 
+$dialogueDropShadowFilter: drop-shadow(3px 6px 2px black);
+
 @mixin letterButton {
     cursor: pointer;
     position: relative;
@@ -42,6 +44,12 @@ $focus-color: green;
     }
 }
 
+@mixin dialogueBox {
+    padding: .5rem;
+    background-color: white;
+    filter: $dialogueDropShadowFilter;
+}
+
 @mixin dialogueHolder {
     position: fixed;
     z-index: 100;
@@ -53,6 +61,23 @@ $focus-color: green;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba($color: #000000, $alpha: .4);
+    background-color: rgba($color: #000000, $alpha: .25);
     padding: .5rem;
+}
+
+@mixin boxTail($color, $width, $height) {
+    &::before {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 0;
+        display: block;
+        background-color: transparent;
+        left: -$width;
+        top: 0;
+        border-color: $color $color $color transparent;
+        border-style: solid;
+        border-width: $height 0 0 $width;
+        box-sizing: border-box;
+    }
 }

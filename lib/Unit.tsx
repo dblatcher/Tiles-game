@@ -59,10 +59,10 @@ class Unit {
 
         return [
             `${this.faction.name} ${this.type.name}`,
+            `Att:${this.type.attack} Def:${this.type.defend}`,
             this.onGoingOrder
                 ? `${this.onGoingOrder.type.name}, ${this.onGoingOrder.timeRemaining} turns left`
                 : `${this.remainingMoves}/${this.type.moves} movement`,
-            `[${this.x}, ${this.y}]`,
         ]
     }
 

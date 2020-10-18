@@ -8,6 +8,7 @@ import TurnButtons from './TurnButtons'
 
 import styles from './gameContainer.module.scss'
 import gameActions from '../lib/gameActions'
+import PickUnitDialogue from './PickUnitDialogue'
 
 
 
@@ -28,6 +29,7 @@ export default class GameContainer extends React.Component {
             interfaceMode: "MOVE",
             interfaceModeOptions,
             fallenUnits: [],
+            unitPickDialogueChoices: [],
             pendingBattle: null,
             pendingMessage: null,
         });
@@ -43,9 +45,13 @@ export default class GameContainer extends React.Component {
         this.handleDialogueButton = this.handleDialogueButton.bind(this)
     }
 
+    get hasOpenDialogue() {
+        const { pendingBattle, pendingMessage, unitPickDialogueChoices } = this.state;
+        return pendingBattle || pendingMessage || unitPickDialogueChoices.length > 0
+    }
 
     handleMapSquareClick(mapSquare) {
-        if (this.state.pendingBattle || this.state.pendingMessage) { return false }
+        if (this.hasOpenDialogue) { return false }
 
         if (this.state.selectedUnit && this.state.interfaceMode === 'MOVE' && !this.state.selectedUnit.isAdjacentTo(mapSquare)) {
             return this.scrollToSquare(mapSquare)
@@ -59,7 +65,7 @@ export default class GameContainer extends React.Component {
 
 
     handleOrderButton(command, input = {}) {
-        if (this.state.pendingBattle || this.state.pendingMessage) { return false }
+        if (this.hasOpenDialogue) { return false }
         let commandFunction = state => state;
         switch (command) {
             case "END_OF_TURN": commandFunction = gameActions.endOfTurn; break;
@@ -80,6 +86,7 @@ export default class GameContainer extends React.Component {
             case "CANCEL_BATTLE": commandFunction = gameActions.cancelBattle; break;
             case "RESOLVE_BATTLE": commandFunction = gameActions.resolveBattle; break;
             case "ACKNOWLEDGE_MESSAGE": commandFunction = gameActions.acknowledgeMessage(input); break;
+            case "PICK_UNIT": commandFunction = gameActions.pickUnit(input); break;
             default:
                 console.warn(`unknown command: ${command}`, input); return
         }
@@ -127,7 +134,7 @@ export default class GameContainer extends React.Component {
 
 
     render() {
-        const { mapGrid, selectedSquare, units, selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits, pendingBattle, pendingMessage, unitWithMenuOpen } = this.state
+        const { mapGrid, selectedSquare, units, selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits, pendingBattle, pendingMessage, unitWithMenuOpen, unitPickDialogueChoices } = this.state
 
         return (
 
@@ -145,6 +152,12 @@ export default class GameContainer extends React.Component {
                         acknowledgeMessage={() => this.handleDialogueButton('ACKNOWLEDGE_MESSAGE', {})} />
                     : null}
 
+                {unitPickDialogueChoices.length > 0
+                    ? <PickUnitDialogue
+                        units={unitPickDialogueChoices}
+                        handleDialogueButton={this.handleDialogueButton} />
+                    : null}
+
                 <main className={styles.tileBoardHolder} ref={this.gameHolderElement}>
                     <TileBoard
                         units={units}
@@ -156,7 +169,9 @@ export default class GameContainer extends React.Component {
                         interfaceMode={interfaceMode}
                         selectedSquare={selectedSquare}
                         selectedUnit={selectedUnit}
-                        fallenUnits={fallenUnits} />
+                        fallenUnits={fallenUnits}
+                        gameHasOpenDialogue={this.hasOpenDialogue}
+                    />
                 </main>
 
                 <aside className={styles.upperInterfaceWindow} ref={this.upperWindowElement} >

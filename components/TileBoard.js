@@ -31,7 +31,7 @@ export default class TileBoard extends React.Component {
     }
 
     renderTile(mapSquare) {
-        const { handleMapSquareClick, selectedSquare, selectedUnit, handleTileHoverEnter, mapGrid, interfaceMode } = this.props;
+        const { handleMapSquareClick, selectedSquare, selectedUnit, handleTileHoverEnter, mapGrid, interfaceMode, gameHasOpenDialogue } = this.props;
         return (
             <Tile key={`${mapSquare.x},${mapSquare.y}`}
                 handleClick={() => { handleMapSquareClick(mapSquare) }}
@@ -42,6 +42,7 @@ export default class TileBoard extends React.Component {
                 isSelected={mapSquare === selectedSquare}
                 handleTileHoverEnter={handleTileHoverEnter}
                 adjacentSquares={this.getAdjacentSquares(mapSquare.x, mapSquare.y)}
+                gameHasOpenDialogue={gameHasOpenDialogue}
             />
         )
     }

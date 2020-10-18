@@ -45,7 +45,7 @@ export default class Tile extends React.Component {
     }
 
     render() {
-        const { mapSquare, handleClick, isSelected, selectedUnit, inInfoRow, squareSelectedUnitIsIn, interfaceMode } = this.props
+        const { mapSquare, handleClick, isSelected, selectedUnit, inInfoRow, squareSelectedUnitIsIn, interfaceMode, gameHasOpenDialogue } = this.props
         const { isHoveredOn } = this.state
         const containsSelectedUnit = selectedUnit && (mapSquare.x === selectedUnit.x && mapSquare.y === selectedUnit.y);
         const selectedUnitCanMoveTo = selectedUnit && selectedUnit.canMoveTo(mapSquare, squareSelectedUnitIsIn);
@@ -57,16 +57,13 @@ export default class Tile extends React.Component {
             if (interfaceMode === 'VIEW') {
                 if (isSelected ) { classList.push(styles.selected) }
             } else if (interfaceMode === 'MOVE') {
-                if (selectedUnitCanMoveTo ) {classList.push(styles.inRange)} 
-                if (isHoveredOn && selectedUnitCanMoveTo) { classList.push(styles.inRangeHovered) }
+                if (!gameHasOpenDialogue && selectedUnitCanMoveTo ) {classList.push(styles.inRange)} 
 
-                if (isHoveredOn && !selectedUnitCanMoveTo) { classList.push(styles.hovered) }
+                if (!gameHasOpenDialogue && isHoveredOn && selectedUnitCanMoveTo) { classList.push(styles.inRangeHovered) }
+                if (!gameHasOpenDialogue && isHoveredOn && !selectedUnitCanMoveTo) { classList.push(styles.hovered) }
             } 
 
         }
-
-
-
 
 
         return (

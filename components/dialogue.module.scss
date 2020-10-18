@@ -8,6 +8,16 @@
     @include dialogueBox();
 }
 
+.pickUnitsDialogue {
+    @include dialogueBox();
+    max-height: 24rem;
+    overflow-y: auto;
+
+    .unitBlock:not(:last-child) {
+        margin-bottom: .5rem;
+    }
+}
+
 .buttonRow {
     display: flex;
     justify-content: space-around;
@@ -28,12 +38,12 @@
 }
 
 .unitBlock {
+    cursor: pointer;
     display: flex;
-    align-items: flex-start;
-    
+    align-items: center;
 
-    &:last-child {
-        justify-content: flex-end;
+    ul {
+        margin: 0;
     }
 }
 

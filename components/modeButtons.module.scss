@@ -1,0 +1,14 @@
+@import '../styles/design.scss';
+
+.button {
+    @include input;
+    font-size: large;
+    text-align: center;
+    padding: .5rem;
+    min-width: 5rem;
+}
+
+.holder {
+    margin-left: auto;
+    padding-right: .5rem;
+}

@@ -1,40 +1,33 @@
+import styles from './modeButtons.module.scss'
+
 export default class ModeButtons extends React.Component {
 
 
     constructor(props) {
         super(props);
-        this.state = {
-            currentMode: props.interfaceMode
-        };
 
-        this.handleInputSelect = this.handleInputSelect.bind(this);
+        this.handleModeButton = this.handleModeButton.bind(this);
     }
 
 
-    handleInputSelect(event) {
-        this.setState({ currentMode: event.target.value }, () => {
-            this.props.changeMode(this.state.currentMode)
-        });
-    }
+    handleModeButton() {
+        const { interfaceModeOptions, changeMode, interfaceMode } = this.props
 
-    renderOption(option) {
-        const { value, description } = option
-        const { currentMode } = this.state
-        const inputId = "mode-" + value
-        return (
-            <span key={inputId}>
-                <input type="checkbox" id={inputId} value={value} checked={currentMode == value} onChange={this.handleInputSelect} />
-                <label htmlFor={inputId}>{description}</label>
-            </span>
-        )
+        let indexOfCurrentMode = interfaceModeOptions.map(option=>option.value).indexOf(interfaceMode)
+        let nextOption = interfaceModeOptions[indexOfCurrentMode+1] || interfaceModeOptions[0]
 
+        changeMode(nextOption.value)
     }
 
     render() {
-        const { interfaceModeOptions } = this.props
+        const { interfaceModeOptions, changeMode, interfaceMode } = this.props
 
-        return <section>
-            {interfaceModeOptions.map(option => this.renderOption(option) )}
+        const currentOption = interfaceModeOptions.filter(option => option.value == interfaceMode)[0]
+
+        return <section className={styles.holder}>
+            <div className={styles.button} onClick={this.handleModeButton}>
+                {currentOption.description}
+            </div>
         </section>
     }
 

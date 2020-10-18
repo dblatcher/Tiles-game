@@ -1,10 +1,10 @@
-$interfaceWindowHeight: 6rem;
+$interfaceWindowHeight: 5rem;
 $lowerWindowHeight: 5rem;
 $windowPadding : .5rem;
 
 @mixin interfaceWindow {
     position: fixed;
-    background-color: white;
+    background-color: rgba(white, .5);
     z-index: 100;
 }
 
@@ -17,7 +17,7 @@ $windowPadding : .5rem;
     top: 0;
     left: 0;
     width: 100%;
-    padding: 0 $windowPadding $windowPadding $windowPadding;
+    padding: $windowPadding;
     height: $interfaceWindowHeight;
 
     display: flex;

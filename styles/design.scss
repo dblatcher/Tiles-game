@@ -33,8 +33,9 @@ $dialogueDropShadowFilter: drop-shadow(3px 6px 2px black);
 
     border-radius: 0;
     border: 1px solid black;
-
     transition: transform .5s;
+    cursor: pointer;
+
     &:hover {
         transform: scale(1.1);
     }

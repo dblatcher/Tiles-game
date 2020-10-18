@@ -1,0 +1,18 @@
+@import '../styles/design.scss';
+
+.contextMenu {
+    @include dialogueBox();
+    position: absolute;
+    left: 8rem;
+    z-index: 15; 
+    @include boxTail(white, 5rem, 2rem);
+
+    .button:not(:last-child) {
+        margin-bottom: .5rem;
+    }
+}
+
+.button {
+    @include letterButton;
+    @include input; // adds .buttonDisabled and .buttonCancel subclass
+}

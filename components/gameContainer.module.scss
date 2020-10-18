@@ -1,13 +1,11 @@
 $interfaceWindowHeight: 6rem;
-$lowerWindowHeight: 4rem;
+$lowerWindowHeight: 5rem;
 $windowPadding : .5rem;
 
-
-.gameHolder {
-    display: flex;
-    flex-flow: column-reverse;
-    justify-content: space-between;
-    position: relative;
+@mixin interfaceWindow {
+    position: fixed;
+    background-color: white;
+    z-index: 100;
 }
 
 .tileBoardHolder {
@@ -15,22 +13,21 @@ $windowPadding : .5rem;
 }
 
 .upperInterfaceWindow {
-    position: fixed;
+    @include interfaceWindow();
     top: 0;
     left: 0;
-    background-color: white;
     width: 100%;
-    height: $interfaceWindowHeight;
-    z-index: 100;
     padding: 0 $windowPadding $windowPadding $windowPadding;
+    height: $interfaceWindowHeight;
+
+    display: flex;
+    align-items: center;
 }
 
 .lowerInterfaceWindow {
-    position: fixed;
+    @include interfaceWindow();
     bottom: 0;
     right: 0;
-    background-color: white;
-    height: $lowerWindowHeight;
-    z-index: 100;
     padding:  $windowPadding;
+    height: $lowerWindowHeight;
 }

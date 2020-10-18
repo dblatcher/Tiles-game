@@ -1,0 +1,19 @@
+@import '../styles/design.scss';
+
+.turnButtonsMenu {
+    display: flex;
+    height: 100%;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 10rem;
+}
+
+.button {
+    @include letterButton;
+    @include input; // adds .buttonDisabled and .buttonCancel subclass
+}
+
+.endButton {
+    font-variant: small-caps;
+    font-size: large;
+}

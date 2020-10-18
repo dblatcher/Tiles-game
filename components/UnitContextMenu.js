@@ -1,8 +1,8 @@
 import { onGoingOrderTypes } from '../lib/OngoingOrder.tsx'
 
-import styles from './orderButtons.module.scss'
+import styles from './unitContextMenu.module.scss'
 
-export default function UnitContextMenu(props) {
+export default function UnitContextenu(props) {
     const { selectedUnit, handleOrderButton, squareSelectedUnitIsIn } = props;
 
     const availableOrders = selectedUnit
@@ -11,7 +11,7 @@ export default function UnitContextMenu(props) {
             .map(orderType => {
 
                 const isDisabled = !orderType.checkIsValidForSquare(squareSelectedUnitIsIn) || selectedUnit.remainingMoves === 0
-                const isCancel = !orderType.cannotCancel &&  selectedUnit.onGoingOrder && selectedUnit.onGoingOrder.type == orderType
+                const isCancel = !orderType.cannotCancel && selectedUnit.onGoingOrder && selectedUnit.onGoingOrder.type == orderType
                 let buttonStyles = [styles.button]
                 let onClickFunction;
 
@@ -31,18 +31,13 @@ export default function UnitContextMenu(props) {
         : [];
 
     return <nav className={styles.contextMenu}>
-
-        <section className={styles.subsection}>
-
-            {availableOrders.map(availableOrder => (
-                <button className={availableOrder.buttonStyles.join(" ")}
-                    key={"order-" + availableOrder.orderType.name}
-                    title={availableOrder.orderType.name}
-                    onClick={availableOrder.onClickFunction}>
-                    {availableOrder.orderType.letterCode}
-                </button>
-            ))}
-        </section>
-
+        {availableOrders.map(availableOrder => (
+            <button className={availableOrder.buttonStyles.join(" ")}
+                key={"order-" + availableOrder.orderType.name}
+                title={availableOrder.orderType.name}
+                onClick={availableOrder.onClickFunction}>
+                {availableOrder.orderType.letterCode}
+            </button>
+        ))}
     </nav>
 }

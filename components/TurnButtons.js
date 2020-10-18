@@ -1,5 +1,5 @@
 
-import styles from './orderButtons.module.scss'
+import styles from './turnButtons.module.scss'
 
 export default function TurnButtons(props) {
     const { handleOrderButton } = props;

@@ -45,7 +45,6 @@ export default class GameContainer extends React.Component {
 
 
     handleMapSquareClick(mapSquare) {
-        console.log('handleMapSquareClick', mapSquare)
         if (this.state.pendingBattle || this.state.pendingMessage) { return false }
 
         if (this.state.selectedUnit && this.state.interfaceMode === 'MOVE' && !this.state.selectedUnit.isAdjacentTo(mapSquare)) {

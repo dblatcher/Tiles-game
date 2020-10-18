@@ -54,14 +54,15 @@ export default class TileBoard extends React.Component {
         )
     }
 
-    renderUnit(unit, index) {
-        const { handleMapSquareClick, selectedUnit, fallenUnits, mapGrid, unitWithMenuOpen, handleOrderButton } = this.props;
+    renderUnit(unit) {
+        const { handleMapSquareClick, selectedUnit, fallenUnits, mapGrid, unitWithMenuOpen, handleOrderButton, interfaceMode } = this.props;
 
         const squareUnitIsOn = mapGrid[unit.y][unit.x]
 
         return (<UnitFigure
             handleClick={() => { handleMapSquareClick(squareUnitIsOn) }}
             squareUnitIsOn={squareUnitIsOn}
+            interfaceMode={interfaceMode}
             unit={unit}
             handleOrderButton={handleOrderButton}
             menuIsOpen={unit === unitWithMenuOpen}
@@ -77,7 +78,7 @@ export default class TileBoard extends React.Component {
         return (
             <section style={{ position: 'relative' }}>
                 {mapGrid.map((row, index) => this.renderRow(row, index))}
-                {[].concat(units, fallenUnits).map((unit, index) => this.renderUnit(unit, index))}
+                {[].concat(units, fallenUnits).map(unit => this.renderUnit(unit))}
             </section>
         )
     }

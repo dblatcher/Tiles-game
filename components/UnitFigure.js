@@ -23,7 +23,7 @@ export default class UnitFigure extends React.Component {
     }
 
     render() {
-        const { unit, handleClick, isSelected, inInfoRow, stack, isFallen, menuIsOpen } = this.props
+        const { unit, handleClick, isSelected, inInfoRow, stack, isFallen, menuIsOpen, interfaceMode } = this.props
 
         const placeInStack = inInfoRow
             ? 0
@@ -78,7 +78,7 @@ export default class UnitFigure extends React.Component {
                     : null
                 }
 
-                {menuIsOpen && isSelected ? this.renderUnitMenu() : null}
+                {menuIsOpen && isSelected && interfaceMode==='MOVE' ? this.renderUnitMenu() : null}
             </figure>
         )
 

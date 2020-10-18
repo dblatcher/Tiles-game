@@ -35,6 +35,7 @@ class Faction {
     }
 }
 
+let unitIndexNumber = 0
 
 class Unit {
     type: UnitType;
@@ -43,6 +44,7 @@ class Unit {
     y: number;
     remainingMoves: number;
     onGoingOrder: OnGoingOrder;
+    indexNumber: number;
     constructor(type: UnitType, faction: Faction, config = {}) {
         this.type = type
         this.faction = faction
@@ -50,6 +52,7 @@ class Unit {
         this.y = config.y;
         this.remainingMoves = type.moves;
         this.onGoingOrder = null;
+        this.indexNumber = unitIndexNumber++
     }
 
     get infoList() {

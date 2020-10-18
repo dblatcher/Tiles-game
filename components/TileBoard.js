@@ -65,7 +65,7 @@ export default class TileBoard extends React.Component {
             unit={unit}
             handleOrderButton={handleOrderButton}
             menuIsOpen={unit === unitWithMenuOpen}
-            key={"unit#" + index}
+            key={"unit#" + unit.indexNumber}
             isSelected={unit === selectedUnit}
             isFallen={fallenUnits && fallenUnits.includes(unit)}
             stack={this.getStackedUnits(unit)}

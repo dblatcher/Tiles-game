@@ -4,7 +4,7 @@ import SeletedUnitAndSquareInfo from './SeletedUnitAndSquareInfo'
 import BattleDialogue from './BattleDialogue'
 import MessageDialoge from './MessageDialogue'
 import ModeButtons from './ModeButtons'
-import OrderButtons from './OrderButtons'
+import TurnButtons from './TurnButtons'
 
 import styles from './gameContainer.module.scss'
 import gameActions from '../lib/gameActions'
@@ -165,7 +165,7 @@ export default class GameContainer extends React.Component {
                         selectedSquare={selectedSquare}
                         scrollToSquare={this.scrollToSquare}
                     />
-                    <OrderButtons
+                    <TurnButtons
                         selectedUnit={selectedUnit}
                         squareSelectedUnitIsIn={selectedUnit ? mapGrid[selectedUnit.y][selectedUnit.x] : null}
                         handleOrderButton={this.handleOrderButton}

@@ -91,13 +91,3 @@
 .behind {
     filter: brightness(.5);
 }
-
-.contextMenu {
-    @include dialogueBox();
-    position: absolute;
-    left: 8rem;
-    z-index: 15; 
-    min-height: 4rem;
-
-    @include boxTail(white, 5rem, 2rem);
-}

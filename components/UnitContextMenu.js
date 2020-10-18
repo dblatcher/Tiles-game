@@ -2,8 +2,8 @@ import { onGoingOrderTypes } from '../lib/OngoingOrder.tsx'
 
 import styles from './orderButtons.module.scss'
 
-export default function OrderButtons(props) {
-    const { selectedUnit, handleOrderButton, squareSelectedUnitIsIn, unitContextMenu } = props;
+export default function UnitContextMenu(props) {
+    const { selectedUnit, handleOrderButton, squareSelectedUnitIsIn } = props;
 
     const availableOrders = selectedUnit
         ? onGoingOrderTypes
@@ -30,7 +30,7 @@ export default function OrderButtons(props) {
             })
         : [];
 
-    return <section className={unitContextMenu ? {} : styles.section}>
+    return <nav className={styles.contextMenu}>
 
         <section className={styles.subsection}>
 
@@ -44,30 +44,5 @@ export default function OrderButtons(props) {
             ))}
         </section>
 
-        {!unitContextMenu ? (
-            <section className={styles.subsection}>
-                <button
-                    className={styles.button}
-                    title={`previous unit`}
-                    onClick={() => { handleOrderButton('PREVIOUS_UNIT') }}>
-                    &lt;
-                </button>
-
-                <button
-                    className={styles.button}
-                    title={`Next unit`}
-                    onClick={() => { handleOrderButton('NEXT_UNIT') }}>
-                    &gt;
-                </button>
-
-                <button
-                    className={[styles.button, styles.endButton].join(" ")}
-                    title={`End of turn`}
-                    onClick={() => { handleOrderButton('END_OF_TURN') }}>
-                    end
-                </button>
-            </section>
-        ) : null}
-
-    </section>
+    </nav>
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import OrderButtons from './OrderButtons'
+import UnitContextMenu from './UnitContextMenu'
 
 import styles from './unitFigure.module.scss'
 import { spriteSheets } from '../lib/SpriteSheet.tsx'
@@ -8,17 +8,12 @@ import { spriteSheets } from '../lib/SpriteSheet.tsx'
 export default class UnitFigure extends React.Component {
 
     renderUnitMenu() {
-
         const { unit, handleOrderButton, squareUnitIsOn } = this.props
-
         return (
-            <nav className={styles.contextMenu}>
-                <OrderButtons
-                    unitContextMenu={true}
-                    selectedUnit={unit}
-                    squareSelectedUnitIsIn={squareUnitIsOn}
-                    handleOrderButton={handleOrderButton} />
-            </nav>
+            <UnitContextMenu
+                selectedUnit={unit}
+                squareSelectedUnitIsIn={squareUnitIsOn}
+                handleOrderButton={handleOrderButton} />
         )
     }
 
@@ -62,12 +57,12 @@ export default class UnitFigure extends React.Component {
             <figure
                 style={figureStyle}
                 className={figureClassList.join(" ")}
-                >
+            >
                 <i
                     style={spriteSheets.units.getStyleForFrameCalled(unit.type.name)}
                     className={spriteClassList.join(" ")}
                     onClick={handleClick || function () { }}
-                    >
+                >
                 </i>
 
                 {unit.onGoingOrder && !unit.onGoingOrder.type.noFlag
@@ -78,7 +73,7 @@ export default class UnitFigure extends React.Component {
                     : null
                 }
 
-                {menuIsOpen && isSelected && interfaceMode==='MOVE' ? this.renderUnitMenu() : null}
+                {menuIsOpen && isSelected && interfaceMode === 'MOVE' ? this.renderUnitMenu() : null}
             </figure>
         )
 

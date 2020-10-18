@@ -1,5 +1,6 @@
-$interfaceWindowHeight: 11rem;
-$windowPadding : 1rem;
+$interfaceWindowHeight: 6rem;
+$lowerWindowHeight: 4rem;
+$windowPadding : .5rem;
 
 
 .gameHolder {
@@ -10,10 +11,10 @@ $windowPadding : 1rem;
 }
 
 .tileBoardHolder {
-    padding: ($interfaceWindowHeight + $windowPadding) $windowPadding $windowPadding $windowPadding;
+    padding: ($interfaceWindowHeight + $windowPadding) $windowPadding ($lowerWindowHeight + $windowPadding )$windowPadding;
 }
 
-.interfaceWindowHolder {
+.upperInterfaceWindow {
     position: fixed;
     top: 0;
     left: 0;
@@ -22,4 +23,14 @@ $windowPadding : 1rem;
     height: $interfaceWindowHeight;
     z-index: 100;
     padding: 0 $windowPadding $windowPadding $windowPadding;
+}
+
+.lowerInterfaceWindow {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    background-color: white;
+    height: $lowerWindowHeight;
+    z-index: 100;
+    padding:  $windowPadding;
 }

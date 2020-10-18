@@ -2,13 +2,11 @@
 import styles from './orderButtons.module.scss'
 
 export default function TurnButtons(props) {
-    const { handleOrderButton, unitContextMenu } = props;
+    const { handleOrderButton } = props;
 
 
-    return <section className={unitContextMenu ? {} : styles.section}>
-
-
-        <section className={styles.subsection}>
+    return (
+        <section className={styles.turnButtonsMenu}>
             <button
                 className={styles.button}
                 title={`previous unit`}
@@ -30,7 +28,5 @@ export default function TurnButtons(props) {
                 end
             </button>
         </section>
-
-
-    </section>
+    )
 }

@@ -33,7 +33,7 @@ export default class GameContainer extends React.Component {
         });
 
         this.gameHolderElement = React.createRef()
-        this.interfaceWindowElement = React.createRef()
+        this.upperWindowElement = React.createRef()
 
         this.handleMapSquareClick = this.handleMapSquareClick.bind(this)
         this.handleOrderButton = this.handleOrderButton.bind(this)
@@ -62,11 +62,11 @@ export default class GameContainer extends React.Component {
         if (this.state.pendingBattle || this.state.pendingMessage) { return false }
         let commandFunction = state => state;
         switch (command) {
-            case "END_OF_TURN":     commandFunction = gameActions.endOfTurn; break;
-            case "NEXT_UNIT":       commandFunction = gameActions.selectNextUnit; break;
-            case "PREVIOUS_UNIT":   commandFunction = gameActions.selectPreviousUnit; break;
-            case "START_ORDER":     commandFunction = gameActions.startOrder(input); break;
-            case "CANCEL_ORDER":    commandFunction = gameActions.cancelOrder; break;
+            case "END_OF_TURN": commandFunction = gameActions.endOfTurn; break;
+            case "NEXT_UNIT": commandFunction = gameActions.selectNextUnit; break;
+            case "PREVIOUS_UNIT": commandFunction = gameActions.selectPreviousUnit; break;
+            case "START_ORDER": commandFunction = gameActions.startOrder(input); break;
+            case "CANCEL_ORDER": commandFunction = gameActions.cancelOrder; break;
             default:
                 console.warn(`unknown command: ${command}`, input); return
         }
@@ -74,11 +74,11 @@ export default class GameContainer extends React.Component {
         return this.setState(commandFunction, this.scrollToSelection)
     }
 
-    handleDialogueButton (command, input = {}) {
+    handleDialogueButton(command, input = {}) {
         let commandFunction = state => state;
         switch (command) {
-            case "CANCEL_BATTLE":       commandFunction = gameActions.cancelBattle; break;
-            case "RESOLVE_BATTLE":      commandFunction = gameActions.resolveBattle; break;
+            case "CANCEL_BATTLE": commandFunction = gameActions.cancelBattle; break;
+            case "RESOLVE_BATTLE": commandFunction = gameActions.resolveBattle; break;
             case "ACKNOWLEDGE_MESSAGE": commandFunction = gameActions.acknowledgeMessage(input); break;
             default:
                 console.warn(`unknown command: ${command}`, input); return
@@ -112,22 +112,22 @@ export default class GameContainer extends React.Component {
         if (!target) { return false }
         const { x, y } = target
 
-//to do - support left aligned interface window 
+        //to do - support left aligned interface window 
         const tileSize = (4 * 16)
-        const leftBorderSize = (1* 16)
-        const topBorderSize = this.interfaceWindowElement.current 
-            ? this.interfaceWindowElement.current.offsetHeight 
-            : (12* 16);
+        const leftBorderSize = (1 * 16)
+        const topBorderSize = this.upperWindowElement.current
+            ? this.upperWindowElement.current.offsetHeight
+            : (12 * 16);
 
 
-        let pixelX = (x * tileSize) - window.innerWidth/2 + leftBorderSize + tileSize/2
-        let pixelY = (y * tileSize) - window.innerHeight/2 + topBorderSize + tileSize/2
+        let pixelX = (x * tileSize) - window.innerWidth / 2 + leftBorderSize + tileSize / 2
+        let pixelY = (y * tileSize) - window.innerHeight / 2 + topBorderSize + tileSize / 2
         window.scrollTo(pixelX, pixelY)
     }
 
 
     render() {
-        const { mapGrid, selectedSquare, units, selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits, pendingBattle,pendingMessage, unitWithMenuOpen } = this.state
+        const { mapGrid, selectedSquare, units, selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits, pendingBattle, pendingMessage, unitWithMenuOpen } = this.state
 
         return (
 
@@ -145,7 +145,7 @@ export default class GameContainer extends React.Component {
                         acknowledgeMessage={() => this.handleDialogueButton('ACKNOWLEDGE_MESSAGE', {})} />
                     : null}
 
-                <article className={styles.tileBoardHolder} ref={this.gameHolderElement}>
+                <main className={styles.tileBoardHolder} ref={this.gameHolderElement}>
                     <TileBoard
                         units={units}
                         unitWithMenuOpen={unitWithMenuOpen}
@@ -157,25 +157,30 @@ export default class GameContainer extends React.Component {
                         selectedSquare={selectedSquare}
                         selectedUnit={selectedUnit}
                         fallenUnits={fallenUnits} />
-                </article>
+                </main>
 
-                <article className={styles.interfaceWindowHolder} ref={this.interfaceWindowElement} >
+                <aside className={styles.upperInterfaceWindow} ref={this.upperWindowElement} >
                     <SeletedUnitAndSquareInfo
                         selectedUnit={selectedUnit}
                         selectedSquare={selectedSquare}
                         scrollToSquare={this.scrollToSquare}
                     />
-                    <TurnButtons
-                        selectedUnit={selectedUnit}
-                        squareSelectedUnitIsIn={selectedUnit ? mapGrid[selectedUnit.y][selectedUnit.x] : null}
-                        handleOrderButton={this.handleOrderButton}
-                    />
+
                     <ModeButtons
                         interfaceMode={interfaceMode}
                         changeMode={this.changeMode}
                         interfaceModeOptions={interfaceModeOptions}
                     />
-                </article>
+                </aside>
+
+                <aside className={styles.lowerInterfaceWindow} >
+                    <TurnButtons
+                        selectedUnit={selectedUnit}
+                        squareSelectedUnitIsIn={selectedUnit ? mapGrid[selectedUnit.y][selectedUnit.x] : null}
+                        handleOrderButton={this.handleOrderButton}
+                    />
+                </aside>
+
             </>
         )
     }

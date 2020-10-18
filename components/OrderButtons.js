@@ -7,10 +7,10 @@ export default function OrderButtons(props) {
 
     const availableOrders = selectedUnit
         ? onGoingOrderTypes
-            .filter(orderType => selectedUnit.type[orderType.requiredUnitSkill] > 0)
+            .filter(orderType => orderType.canUnitUse(selectedUnit))
             .map(orderType => {
 
-                const isDisabled = !orderType.checkIsValidForSquare(squareSelectedUnitIsIn)
+                const isDisabled = !orderType.checkIsValidForSquare(squareSelectedUnitIsIn) || selectedUnit.remainingMoves === 0
                 const isOnGoing = selectedUnit.onGoingOrder && selectedUnit.onGoingOrder.type == orderType
                 let buttonStyles = [styles.button]
                 let onClickFunction;
@@ -20,7 +20,7 @@ export default function OrderButtons(props) {
                     onClickFunction = () => { handleOrderButton('CANCEL_ORDER') }
                 }
                 else if (isDisabled) {
-                    buttonStyles.push(styles.disabled)
+                    buttonStyles.push(styles.buttonDisabled)
                 }
                 else {
                     onClickFunction = () => { handleOrderButton('START_ORDER', { orderType, unit: selectedUnit }) }
@@ -30,26 +30,10 @@ export default function OrderButtons(props) {
             })
         : [];
 
-    const holdButtonIsDisabled = selectedUnit && (selectedUnit.onGoingOrder || selectedUnit.remainingMoves) === 0
-    const holdButtonStyles = holdButtonIsDisabled
-        ? [styles.button, styles.disabled]
-        : [styles.button];
-    const holdButtonFunction = holdButtonIsDisabled
-        ? null
-        : () => { handleOrderButton('HOLD_UNIT') }
-
     return <section className={unitContextMenu ? {} : styles.section}>
 
         <section className={styles.subsection}>
 
-            {selectedUnit ? (
-                <button
-                    className={holdButtonStyles.join(" ")}
-                    title={`hold unit`}
-                    onClick={holdButtonFunction}>
-                    H
-                </button>
-            ) : (null)}
             {availableOrders.map(availableOrder => (
                 <button className={availableOrder.buttonStyles.join(" ")}
                     key={"order-" + availableOrder.orderType.name}

@@ -42,7 +42,17 @@ $dialogueDropShadowFilter: drop-shadow(3px 6px 2px black);
     &:focus {
         outline: $focus-color 2px ridge;
     }
+
+    &Disabled {
+        background-color: gray;
+        cursor: not-allowed;
+
+        &:hover {
+            transform: none;
+        };
+    }
 }
+
 
 @mixin dialogueBox {
     padding: .5rem;

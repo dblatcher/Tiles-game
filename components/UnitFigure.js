@@ -70,7 +70,7 @@ export default class UnitFigure extends React.Component {
                     >
                 </i>
 
-                {unit.onGoingOrder
+                {unit.onGoingOrder && !unit.onGoingOrder.type.noFlag
                     ? <p className={orderFlagClassList.join(" ")}>
                         <span>{unit.onGoingOrder.type.letterCode}</span>
                         <span>{unit.onGoingOrder.timeRemaining}</span>

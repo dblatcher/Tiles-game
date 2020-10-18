@@ -65,7 +65,6 @@ export default class GameContainer extends React.Component {
             case "END_OF_TURN":     commandFunction = gameActions.endOfTurn; break;
             case "NEXT_UNIT":       commandFunction = gameActions.selectNextUnit; break;
             case "PREVIOUS_UNIT":   commandFunction = gameActions.selectPreviousUnit; break;
-            case "HOLD_UNIT":       commandFunction = gameActions.holdUnit; break;
             case "START_ORDER":     commandFunction = gameActions.startOrder(input); break;
             case "CANCEL_ORDER":    commandFunction = gameActions.cancelOrder; break;
             default:

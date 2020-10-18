@@ -13,7 +13,7 @@
 
 .button {
     @include letterButton;
-    @include input;
+    @include input; // adds .buttonDisabled subclass
 
     margin: 0 .25rem;
     &:first-child {
@@ -33,7 +33,3 @@
 .cancel {
     @include cancelled;
 }  
-
-.disabled {
-    background-color: grey;
-}

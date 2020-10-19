@@ -134,7 +134,9 @@ export default class GameContainer extends React.Component {
 
 
     render() {
-        const { mapGrid, selectedSquare, units, selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits, pendingBattle, pendingMessage, unitWithMenuOpen, unitPickDialogueChoices } = this.state
+        const { mapGrid, selectedSquare, units, towns,
+            selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits, 
+            pendingBattle, pendingMessage, unitWithMenuOpen, unitPickDialogueChoices } = this.state
 
         return (
 
@@ -161,6 +163,7 @@ export default class GameContainer extends React.Component {
                 <main className={styles.tileBoardHolder} ref={this.gameHolderElement}>
                     <TileBoard
                         units={units}
+                        towns={towns}
                         unitWithMenuOpen={unitWithMenuOpen}
                         mapGrid={mapGrid}
                         handleMapSquareClick={this.handleMapSquareClick}

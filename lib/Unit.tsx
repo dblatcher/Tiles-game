@@ -1,4 +1,5 @@
 import { OnGoingOrder } from "./OngoingOrder";
+import { Faction } from "./Faction";
 
 class UnitType {
     name: string;
@@ -14,26 +15,19 @@ class UnitType {
         this.moves = config.moves || 6;
         this.roadBuilding = config.roadBuilding || 0;
         this.treeCutting = config.treeCutting || 0;
-        this.attack= config.attack || 0;
-        this.defend= config.defend || 1;
+        this.attack = config.attack || 0;
+        this.defend = config.defend || 1;
     }
 
 }
 
 const unitTypes = {
-    knight: new UnitType('knight', { moves: 8, attack:4 }),
-    worker: new UnitType('worker', { roadBuilding: 1, treeCutting:1, }),
-    spearman: new UnitType('spearman',{defend:3, attack:1 }),
+    knight: new UnitType('knight', { moves: 8, attack: 4 }),
+    worker: new UnitType('worker', { roadBuilding: 1, treeCutting: 1, }),
+    spearman: new UnitType('spearman', { defend: 3, attack: 1 }),
 }
 
-class Faction {
-    name: string;
-    color: string;
-    constructor(name: string, config = {}) {
-        this.name = name;
-        this.color = config.color || "#FFF";
-    }
-}
+
 
 let unitIndexNumber = 0
 
@@ -72,7 +66,7 @@ class Unit {
 
     canMoveTo(targetMapSquare, startingMapSquare = null) {
 
-        if (targetMapSquare.isWater) {return false}
+        if (targetMapSquare.isWater) { return false }
 
         const movementCost = startingMapSquare && startingMapSquare.road && targetMapSquare.road
             ? 1
@@ -84,4 +78,4 @@ class Unit {
     }
 }
 
-export { UnitType, unitTypes, Unit, Faction }
+export { UnitType, unitTypes, Unit }

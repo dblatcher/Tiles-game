@@ -1,5 +1,5 @@
-import {Unit} from './Unit';
-import {MapSquare} from './MapSquare';
+import { Unit } from './Unit';
+import { MapSquare } from './MapSquare';
 
 
 class Battle {
@@ -42,4 +42,4 @@ class Battle {
 
 }
 
-export {Battle}
+export { Battle }

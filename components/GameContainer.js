@@ -9,6 +9,7 @@ import TurnButtons from './TurnButtons'
 import styles from './gameContainer.module.scss'
 import gameActions from '../lib/gameActions'
 import PickUnitDialogue from './PickUnitDialogue'
+import TownView from './TownView'
 
 
 
@@ -30,6 +31,7 @@ export default class GameContainer extends React.Component {
             interfaceModeOptions,
             fallenUnits: [],
             unitPickDialogueChoices: [],
+            openTown: null,
             pendingBattle: null,
             pendingMessage: null,
         });
@@ -43,11 +45,18 @@ export default class GameContainer extends React.Component {
         this.handleTileHoverEnter = this.handleTileHoverEnter.bind(this)
         this.scrollToSquare = this.scrollToSquare.bind(this)
         this.handleDialogueButton = this.handleDialogueButton.bind(this)
+        this.closeTownView = this.closeTownView.bind(this)
     }
 
     get hasOpenDialogue() {
         const { pendingBattle, pendingMessage, unitPickDialogueChoices } = this.state;
         return pendingBattle || pendingMessage || unitPickDialogueChoices.length > 0
+    }
+
+    closeTownView() {
+        this.setState({
+            openTown: null
+        })
     }
 
     handleMapSquareClick(mapSquare) {
@@ -136,7 +145,15 @@ export default class GameContainer extends React.Component {
     render() {
         const { mapGrid, selectedSquare, units, towns,
             selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits, 
-            pendingBattle, pendingMessage, unitWithMenuOpen, unitPickDialogueChoices } = this.state
+            pendingBattle, pendingMessage, unitWithMenuOpen, unitPickDialogueChoices, openTown } = this.state
+
+        if (openTown) { return (
+            <TownView 
+            town={openTown} 
+            closeTownView={this.closeTownView} 
+            mapGrid={mapGrid}
+            units={units}/>
+        )}
 
         return (
 

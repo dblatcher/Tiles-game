@@ -30,6 +30,7 @@ export default class TownFigure extends React.Component {
 
         return (
             <figure
+                onClick={handleClick}
                 style={figureStyle}
                 className={figureClassList.join(" ")}
             >

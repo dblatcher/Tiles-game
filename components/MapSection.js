@@ -1,13 +1,12 @@
 import React from 'react';
 
 import Tile from './Tile'
-import UnitFigure from './UnitFigure'
 import styles from './tile.module.scss'
 import TownFigure from './TownFigure';
 
 
 
-export default class TileBoard extends React.Component {
+export default class MapSection extends React.Component {
 
     getAdjacentSquares(x, y) {
         const { mapGrid } = this.props
@@ -32,18 +31,14 @@ export default class TileBoard extends React.Component {
     }
 
     renderTile(mapSquare) {
-        const { handleMapSquareClick, selectedSquare, selectedUnit, handleTileHoverEnter, mapGrid, interfaceMode, gameHasOpenDialogue } = this.props;
+        const { handleMapSquareClick, selectedSquare, handleTileHoverEnter, xStart, yStart } = this.props;
         return (
             <Tile key={`${mapSquare.x},${mapSquare.y}`}
                 handleClick={() => { handleMapSquareClick(mapSquare) }}
-                interfaceMode={interfaceMode}
                 mapSquare={mapSquare}
-                selectedUnit={selectedUnit}
-                squareSelectedUnitIsIn={selectedUnit ? mapGrid[selectedUnit.y][selectedUnit.x] : null}
                 isSelected={mapSquare === selectedSquare}
                 handleTileHoverEnter={handleTileHoverEnter}
                 adjacentSquares={this.getAdjacentSquares(mapSquare.x, mapSquare.y)}
-                gameHasOpenDialogue={gameHasOpenDialogue}
             />
         )
     }
@@ -56,24 +51,7 @@ export default class TileBoard extends React.Component {
         )
     }
 
-    renderUnit(unit) {
-        const { handleMapSquareClick, selectedUnit, fallenUnits, mapGrid, unitWithMenuOpen, handleOrderButton, interfaceMode } = this.props;
 
-        const squareUnitIsOn = mapGrid[unit.y][unit.x]
-
-        return (<UnitFigure
-            handleClick={() => { handleMapSquareClick(squareUnitIsOn) }}
-            squareUnitIsOn={squareUnitIsOn}
-            interfaceMode={interfaceMode}
-            unit={unit}
-            handleOrderButton={handleOrderButton}
-            menuIsOpen={unit === unitWithMenuOpen}
-            key={"unit#" + unit.indexNumber}
-            isSelected={unit === selectedUnit}
-            isFallen={fallenUnits && fallenUnits.includes(unit)}
-            stack={this.getStackedUnits(unit)}
-        />)
-    }
 
     renderTown (town) {
         const { handleMapSquareClick, mapGrid } = this.props;
@@ -87,12 +65,11 @@ export default class TileBoard extends React.Component {
     }
 
     render() {
-        const { mapGrid, units=[], fallenUnits=[], towns=[] } = this.props
+        const { mapGrid, town} = this.props
         return (
             <section style={{ position: 'relative' }}>
                 {mapGrid.map((row, index) => this.renderRow(row, index))}
-                {[].concat(units, fallenUnits).map(unit => this.renderUnit(unit))}
-                {towns.map(town => this.renderTown(town))}
+                {this.renderTown(town)}
             </section>
         )
     }

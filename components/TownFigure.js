@@ -5,12 +5,12 @@ import { spriteSheets } from '../lib/SpriteSheet.tsx'
 export default class TownFigure extends React.Component {
 
     render() {
-        const { town, handleClick, inInfoRow, isFallen } = this.props
+        const { town, handleClick, isFallen, onMapSection, xPlacement=0, yPlacement=0 } = this.props
 
         let figureClassList = [styles.figure]
         let spriteClassList = [styles.sprite]
 
-        figureClassList.push(inInfoRow ? styles.figureInInfoRow : styles.figureOnMap)
+        figureClassList.push(styles.figureOnMap)
 
 
         if (isFallen) {
@@ -18,8 +18,8 @@ export default class TownFigure extends React.Component {
         }
 
         const figureStyle = {
-            left: inInfoRow ? 'unset' : `${town.x * 4}rem`,
-            top: inInfoRow ? 'unset' : `${town.y * 4}rem`,
+            left: onMapSection ? `${xPlacement*4}rem` : `${town.x * 4}rem`,
+            top:  onMapSection ? `${yPlacement*4}rem` : `${town.y * 4}rem`,
             pointerEvents: isFallen ? 'none' : 'unset',
         }
         

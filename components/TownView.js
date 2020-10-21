@@ -1,4 +1,3 @@
-import VoidMapSquare from "../lib/VoidMapSquare.tsx";
 import MapSection from "./MapSection";
 
 
@@ -11,8 +10,9 @@ export default class TownView extends React.Component {
     }
 
     handleMapSquareClick(mapSquare) {
-        const { town } = this.props
-        console.log({ mapSquare, town })
+        const { town, handleTownAction } = this.props
+
+        return handleTownAction('MAP_CLICK', {mapSquare, town})
     }
 
     render() {
@@ -28,6 +28,17 @@ export default class TownView extends React.Component {
                     xStart={town.x - 2} yStart={town.y - 2}
                     xSpan={5} ySpan={5}
                     town={town} mapGrid={mapGrid} />
+
+                <p>Food store: {town.foodStore}</p>
+
+                <p>citizens</p>
+                <ol>
+                    {town.citizens.map((citizen, index) => {
+                        return (
+                        <li key={`citizen-${index}`}>{citizen.job.name}</li>
+                        )
+                    })}
+                </ol>
             </main>
         )
     }

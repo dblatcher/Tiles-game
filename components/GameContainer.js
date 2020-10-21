@@ -8,6 +8,7 @@ import TurnButtons from './TurnButtons'
 
 import styles from './gameContainer.module.scss'
 import gameActions from '../lib/gameActions'
+import townActions from '../lib/townActions'
 import PickUnitDialogue from './PickUnitDialogue'
 import TownView from './TownView'
 
@@ -39,13 +40,14 @@ export default class GameContainer extends React.Component {
         this.gameHolderElement = React.createRef()
         this.upperWindowElement = React.createRef()
 
-        this.handleMapSquareClick = this.handleMapSquareClick.bind(this)
-        this.handleOrderButton = this.handleOrderButton.bind(this)
         this.changeMode = this.changeMode.bind(this)
-        this.handleTileHoverEnter = this.handleTileHoverEnter.bind(this)
         this.scrollToSquare = this.scrollToSquare.bind(this)
-        this.handleDialogueButton = this.handleDialogueButton.bind(this)
         this.closeTownView = this.closeTownView.bind(this)
+        this.handleMapSquareClick = this.handleMapSquareClick.bind(this)
+        this.handleTownAction = this.handleTownAction.bind(this)
+        this.handleOrderButton = this.handleOrderButton.bind(this)
+        this.handleTileHoverEnter = this.handleTileHoverEnter.bind(this)
+        this.handleDialogueButton = this.handleDialogueButton.bind(this)
     }
 
     get hasOpenDialogue() {
@@ -103,6 +105,17 @@ export default class GameContainer extends React.Component {
         return this.setState(commandFunction)
     }
 
+    handleTownAction(command, input = {}) {
+        let commandFunction = state => state;
+        switch (command) {
+            case 'MAP_CLICK': commandFunction = townActions.mapClick(input); break;
+            default:
+                console.warn(`unknown town command: ${command}`, input); return
+        }
+
+        return this.setState(commandFunction)
+    }
+
     changeMode(newMode) {
         if (this.state.pendingBattle || this.state.pendingMessage) { return false }
         this.setState({
@@ -151,6 +164,7 @@ export default class GameContainer extends React.Component {
             <TownView 
             town={openTown} 
             closeTownView={this.closeTownView} 
+            handleTownAction={this.handleTownAction}
             mapGrid={mapGrid}
             units={units}/>
         )}

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Tile from './Tile'
-import styles from './tile.module.scss'
+import tileStyles from './tile.module.scss'
 import TownFigure from './TownFigure';
 
 import VoidMapSquare from "../lib/VoidMapSquare.tsx";
@@ -18,7 +18,7 @@ export default class MapSection extends React.Component {
         }
     }
 
-    renderEmptyTile (x,y) {
+    renderEmptyTile(x, y) {
         return <Tile key={`${x},${y}`} mapSquare={new VoidMapSquare(x, y)} />
     }
 
@@ -26,7 +26,7 @@ export default class MapSection extends React.Component {
         const { handleMapSquareClick, selectedSquare, handleTileHoverEnter, xStart, xSpan, yStart, ySpan } = this.props;
         if (mapSquare.x < xStart || mapSquare.x > xStart + xSpan - 1) { return null }
 
-        const isCorner = (mapSquare.x === xStart || mapSquare.x === xStart+xSpan-1) && (mapSquare.y === yStart || mapSquare.y === yStart+ySpan-1)
+        const isCorner = (mapSquare.x === xStart || mapSquare.x === xStart + xSpan - 1) && (mapSquare.y === yStart || mapSquare.y === yStart + ySpan - 1)
 
         if (isCorner && excludeCorners) {
             return this.renderEmptyTile(mapSquare.x, mapSquare.y)
@@ -47,10 +47,10 @@ export default class MapSection extends React.Component {
         const { xStart, xSpan } = this.props
         let emptyTiles = []
         for (let x = xStart; x < xStart + xSpan; x++) {
-            emptyTiles.push(this.renderEmptyTile(x,y))
+            emptyTiles.push(this.renderEmptyTile(x, y))
         }
         return (
-            <div className={styles.row} key={`row ${y}`}>{emptyTiles}</div>
+            <div className={tileStyles.row} key={`row ${y}`}>{emptyTiles}</div>
         )
     }
 
@@ -63,22 +63,46 @@ export default class MapSection extends React.Component {
 
         if (xStart < 0) {
             for (emptyTileX = xStart; emptyTileX < 0; emptyTileX++) {
-                tiles.unshift(this.renderEmptyTile(emptyTileX,y))
+                tiles.unshift(this.renderEmptyTile(emptyTileX, y))
             }
         }
 
         if (xStart + xSpan >= mapGrid[y].length) {
             for (emptyTileX = mapGrid[y].length; emptyTileX < xStart + xSpan; emptyTileX++) {
-                tiles.push(this.renderEmptyTile(emptyTileX,y))
+                tiles.push(this.renderEmptyTile(emptyTileX, y))
             }
         }
 
         return (
-            <div className={styles.row} key={`row ${y}`}>{tiles}</div>
+            <div className={tileStyles.row} key={`row ${y}`}>{tiles}</div>
         )
     }
 
 
+
+    renderCitizen(citizen, index) {
+        const { yStart, xStart, handleMapSquareClick } = this.props
+
+        const xPlacement = citizen.mapSquare.x - xStart
+        const yPlacement = citizen.mapSquare.y - yStart
+
+        const iconStyle = {
+            position: 'absolute',
+            left: `${xPlacement * 4 * 16}px`,
+            top: `${yPlacement * 4 * 16}px`,
+            width: '4rem',
+            height: '4rem',
+            display: 'inline-block',
+            border: '3px dotted red',
+            color: "white",
+        }
+
+        return <i style={iconStyle}
+            onClick={handleMapSquareClick ? () => { handleMapSquareClick(citizen.mapSquare) } : null}
+            key={`citizenIcon-${index}`}>
+            citizen
+        </i>
+    }
 
     renderTown(town) {
         const { ySpan, xSpan } = this.props;
@@ -111,6 +135,10 @@ export default class MapSection extends React.Component {
             }
         }
 
+        let citizensOnMap = town.citizens
+            .filter(citizen => citizen.mapSquare)
+            .map((citizen, index) => this.renderCitizen(citizen, index))
+
         return (
             <section style={{ position: 'relative' }}>
 
@@ -119,6 +147,8 @@ export default class MapSection extends React.Component {
                 {emptyRowsBelow}
 
                 {this.renderTown(town)}
+
+                {citizensOnMap}
             </section>
         )
     }

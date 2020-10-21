@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Tile from './Tile'
-import tileStyles from './tile.module.scss'
+import styles from './mapSection.module.scss'
 import TownFigure from './TownFigure';
 
 import VoidMapSquare from "../lib/VoidMapSquare.tsx";
@@ -50,7 +50,7 @@ export default class MapSection extends React.Component {
             emptyTiles.push(this.renderEmptyTile(x, y))
         }
         return (
-            <div className={tileStyles.row} key={`row ${y}`}>{emptyTiles}</div>
+            <div className={styles.row} key={`row ${y}`}>{emptyTiles}</div>
         )
     }
 
@@ -74,7 +74,7 @@ export default class MapSection extends React.Component {
         }
 
         return (
-            <div className={tileStyles.row} key={`row ${y}`}>{tiles}</div>
+            <div className={styles.row} key={`row ${y}`}>{tiles}</div>
         )
     }
 
@@ -86,22 +86,22 @@ export default class MapSection extends React.Component {
         const xPlacement = citizen.mapSquare.x - xStart
         const yPlacement = citizen.mapSquare.y - yStart
 
-        const iconStyle = {
-            position: 'absolute',
+        const figureStyle = {
             left: `${xPlacement * 4 * 16}px`,
             top: `${yPlacement * 4 * 16}px`,
-            width: '4rem',
-            height: '4rem',
-            display: 'inline-block',
-            border: '3px dotted red',
-            color: "white",
         }
 
-        return <i style={iconStyle}
-            onClick={handleMapSquareClick ? () => { handleMapSquareClick(citizen.mapSquare) } : null}
-            key={`citizenIcon-${index}`}>
-            citizen
-        </i>
+        return (
+            <figure
+                style={figureStyle}
+                className={styles.citizenFigure}
+                onClick={handleMapSquareClick ? () => { handleMapSquareClick(citizen.mapSquare) } : null}
+                key={`citizenIcon-${index}`}>
+                <p className={styles.yieldLine}>{`F${citizen.output.foodYield}`}</p>
+                <p className={styles.yieldLine}>{`P${citizen.output.productionYield}`}</p>
+                <p className={styles.yieldLine}>{`T${citizen.output.tradeYield}`}</p>
+            </figure>
+        )
     }
 
     renderTown(town) {

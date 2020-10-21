@@ -5,7 +5,7 @@ import { spriteSheets } from '../lib/SpriteSheet.tsx'
 export default class TownFigure extends React.Component {
 
     render() {
-        const { town, handleClick, isFallen, onMapSection, xPlacement=0, yPlacement=0 } = this.props
+        const { town, handleClick, isFallen, onMapSection, xPlacement = 0, yPlacement = 0 } = this.props
 
         let figureClassList = [styles.figure]
         let spriteClassList = [styles.sprite]
@@ -18,11 +18,11 @@ export default class TownFigure extends React.Component {
         }
 
         const figureStyle = {
-            left: onMapSection ? `${xPlacement*4}rem` : `${town.x * 4}rem`,
-            top:  onMapSection ? `${yPlacement*4}rem` : `${town.y * 4}rem`,
+            left: onMapSection ? `${xPlacement * 4}rem` : `${town.x * 4}rem`,
+            top: onMapSection ? `${yPlacement * 4}rem` : `${town.y * 4}rem`,
             pointerEvents: isFallen ? 'none' : 'unset',
         }
-        
+
         const spriteStyle = {
             backgroundColor: town.faction.color,
 
@@ -41,8 +41,17 @@ export default class TownFigure extends React.Component {
                 >
                 </i>
 
-                <span className={styles.caption}>{town.name}</span>
-                <span className={styles.populationNumber}>{town.population}</span>
+                {onMapSection
+                    ? <>
+                        <p className={styles.yieldLine}>{`F${town.mapSquare.foodYield}`}</p>
+                        <p className={styles.yieldLine}>{`P${town.mapSquare.productionYield}`}</p>
+                        <p className={styles.yieldLine}>{`T${town.mapSquare.tradeYield}`}</p>
+                    </>
+                    : <>
+                        <span className={styles.caption}>{town.name}</span>
+                        <span className={styles.populationNumber}>{town.population}</span>
+                    </>
+                }
             </figure>
         )
 

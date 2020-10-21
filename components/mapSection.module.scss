@@ -1,0 +1,20 @@
+.row {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.citizenFigure {
+    position: absolute;
+    width: 4rem;
+    height: 4rem;
+    display: inline-block;
+    border: 3px dotted red;
+    color: white;
+    margin: 0;
+}
+
+.yieldLine {
+    margin: 0;
+    color: white;
+    font-size: medium;
+}

@@ -72,7 +72,7 @@ export default class MapSection extends React.Component {
 
 
     renderTown(town) {
-        const { handleMapSquareClick, ySpan, xSpan } = this.props;
+        const { ySpan, xSpan } = this.props;
 
         return (
             <TownFigure town={town}

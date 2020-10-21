@@ -43,11 +43,6 @@ const terrainTypes = {
        css: {
         background: 'lightseagreen',
        } 
-    }),
-    void: new TerrainType('void', {
-        css: {
-            background: 'black',
-        }
     })
 }
 

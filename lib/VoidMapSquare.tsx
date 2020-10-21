@@ -1,9 +1,14 @@
 import { MapSquare } from "./MapSquare.tsx";
-import { terrainTypes } from "./TerrainType.tsx";
+import {TerrainType } from "./TerrainType.tsx";
 
+const voidTerrain = new TerrainType('void', {
+    css: {
+        background: 'transparent',
+    }
+})
 
 export default class VoidMapSquare extends MapSquare {
     constructor(x,y) {
-        super({terrain:terrainTypes.void },x,y);
+        super({terrain:voidTerrain },x,y);
     }
 }

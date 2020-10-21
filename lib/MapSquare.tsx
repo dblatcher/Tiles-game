@@ -25,10 +25,10 @@ class MapSquare {
             : this.terrain.name
     }
 
-    get infoList () {
+    get infoList() {
         return [
-            this.description,
-            `move cost: ${this.movementCost}${this.road ? ' (1 to road)' :''}`,
+            `${this.description}[F:${this.foodYield} P:${this.productionYield} T:${this.tradeYield}]`,
+            `move cost: ${this.movementCost}${this.road ? ' (1 to road)' : ''}`,
             `[${this.x}, ${this.y}]`,
         ]
     }
@@ -41,6 +41,18 @@ class MapSquare {
 
     get isWater() {
         return this.terrain.isWater
+    }
+
+    get foodYield() {
+        return Math.max(0, (this.terrain.foodYield) + (this.tree ? -1 : 0))
+    }
+
+    get productionYield() {
+        return Math.max(0, (this.terrain.productionYield) + (this.tree ? 1 : 0))
+    }
+
+    get tradeYield() {
+        return Math.max(0, (this.terrain.tradeYield) + (this.road ? 1 : 0))
     }
 
     static makeRandomGrid(columns, rows, treeChance = 0, roadChance = 0) {

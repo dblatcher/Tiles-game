@@ -46,11 +46,9 @@ class MapSquare {
     get foodYield() {
         return Math.max(0, (this.terrain.foodYield) + (this.tree ? -1 : 0))
     }
-
     get productionYield() {
         return Math.max(0, (this.terrain.productionYield) + (this.tree ? 1 : 0))
     }
-
     get tradeYield() {
         return Math.max(0, (this.terrain.tradeYield) + (this.road ? 1 : 0))
     }

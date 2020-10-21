@@ -1,10 +1,10 @@
 import { Faction } from './Faction'
-import { MapSquare} from './MapSquare'
+import { MapSquare } from './MapSquare'
 
 let townIndex = 0
 
 class CitizenJob {
-    name:string;
+    name: string;
     constructor(name) {
         this.name = name
     }
@@ -16,15 +16,15 @@ const citizenJobs = {
 }
 
 class Citizen {
-    mapSquare: MapSquare|null;
-    job:CitizenJob|null;
+    mapSquare: MapSquare | null;
+    job: CitizenJob | null;
 
-    constructor() {
-        this.mapSquare = null
-        this.job = citizenJobs.unemployed
+    constructor(mapSquare = null, job = citizenJobs.unemployed) {
+        this.mapSquare = mapSquare
+        this.job = job
     }
 
-    putToWorkInSquare(mapSquare:MapSquare) {
+    putToWorkInSquare(mapSquare: MapSquare) {
         this.mapSquare = mapSquare
         this.job = citizenJobs.worker
     }
@@ -33,37 +33,62 @@ class Citizen {
         this.mapSquare = null
         this.job = citizenJobs.unemployed
     }
+
+    get output() {
+        if (this.mapSquare) {
+            return {
+                foodYield: this.mapSquare.foodYield,
+                tradeYield: this.mapSquare.tradeYield,
+                productionYield: this.mapSquare.productionYield,
+            }
+        }
+
+        return {}
+    }
 }
 
 class Town {
     faction: Faction;
-    x: number;
-    y: number;
+    mapSquare: MapSquare;
     indexNumber: number;
     name: string;
     foodStore: number;
+    productionStore: number;
     citizens: Array<Citizen>;
-    constructor(faction: Faction, x: number, y: number, config: object = {}) {
+    constructor(faction: Faction, mapSquare:MapSquare, config: object = {}) {
         this.faction = faction;
-        this.x = x
-        this.y = y
+        this.mapSquare = mapSquare;
         this.indexNumber = ++townIndex
 
         this.name = config.name || `TOWN#${townIndex}-${faction.name}`
-        
+
         const population = config.population || 1
         this.citizens = []
-        
-        for (let i=0; i<population; i++){
+        for (let i = 0; i < population; i++) {
             this.citizens.push(new Citizen())
         }
-        
 
         this.foodStore = config.foodStore || 0
+        this.productionStore = config.productionStore || 0
     }
 
-    get population() {
-        return this.citizens.length
+    get x() { return this.mapSquare.x}
+    get y() { return this.mapSquare.y}
+    get population() { return this.citizens.length}
+
+    get output() {
+        let output = {
+            foodYield: this.mapSquare.foodYield,
+            productionYield: this.mapSquare.productionYield,
+            tradeYield: this.mapSquare.tradeYield
+        }
+        this.citizens.forEach(citizen => {
+            const { foodYield = 0, productionYield = 0, tradeYield = 0 } = citizen.output
+            output.foodYield += foodYield
+            output.productionYield += productionYield
+            output.tradeYield += tradeYield
+        })
+        return output
     }
 }
 

@@ -29,13 +29,16 @@ export default class TownView extends React.Component {
                     xSpan={5} ySpan={5}
                     town={town} mapGrid={mapGrid} />
 
-                <p>Food store: {town.foodStore}</p>
+                <p>Food store: {town.foodStore} {`(+${town.output.foodYield})`}</p>
+                <p>Production: {town.productionStore} {`(+${town.output.productionYield})`}</p>
 
                 <p>citizens</p>
                 <ol>
                     {town.citizens.map((citizen, index) => {
                         return (
-                        <li key={`citizen-${index}`}>{citizen.job.name}</li>
+                        <li key={`citizen-${index}`}>
+                            {`${citizen.job.name}`}
+                        </li>
                         )
                     })}
                 </ol>

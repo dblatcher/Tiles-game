@@ -40,7 +40,8 @@ export default class TownView extends React.Component {
                     xSpan={5} ySpan={5}
                     town={town} mapGrid={mapGrid} />
 
-                <p>Food store: {town.foodStore} {`(+${town.output.foodYield})`}</p>
+                <p>{`Food store: ${town.foodStore}(${town.output.foodYield >= 0 ? '+':''}${town.output.foodYield})`}</p>
+                <p>{`${town.foodStoreRequiredForGrowth} needed to grow.`}</p>
                 <p>Production: {town.productionStore} {`(+${town.output.productionYield})`}</p>
 
             </main>

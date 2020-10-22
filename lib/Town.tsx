@@ -75,6 +75,7 @@ class Town {
     get x() { return this.mapSquare.x}
     get y() { return this.mapSquare.y}
     get population() { return this.citizens.length}
+    get foodStoreRequiredForGrowth() {return (this.population+1) * 10 }
 
     get output() {
         let output = {
@@ -88,8 +89,35 @@ class Town {
             output.productionYield += productionYield
             output.tradeYield += tradeYield
         })
+
+        output.foodYield -= this.population*2
+
         return output
     }
+
+
+
+    processTurn() {
+        let notices = []
+
+        this.foodStore += this.output.foodYield
+        this.productionStore += this.output.productionYield
+
+        if (this.foodStore < 0 && this.population > 1) {
+            this.citizens.pop()
+            notices.push(`Starvation in ${this.name}! Population reduced to ${this.population}.`)
+        }
+
+        if (this.foodStore >= this.foodStoreRequiredForGrowth) {
+            this.citizens.push(new Citizen())
+            this.foodStore = 0
+            notices.push(`${this.name} has grown to a population of ${this.population}.`)
+        }
+
+        this.foodStore = Math.max(0, this.foodStore)
+        return notices
+    }
+
 }
 
 

@@ -217,7 +217,7 @@ const units = new SpriteSheet ('units',{
     frameNames: {
         'shadow': [0,0],
         'person': [1,0],
-        'unemployed': [1,0],
+        'unemployed': [1,2],
         'worker': [0,2],
         'spearman': [1,1],
         'knight': [0,1],

@@ -4,7 +4,9 @@ import Tile from './Tile'
 import styles from './mapSection.module.scss'
 import TownFigure from './TownFigure';
 
+import { spriteSheets } from "../lib/SpriteSheet.tsx"
 import VoidMapSquare from "../lib/VoidMapSquare.tsx";
+
 
 export default class MapSection extends React.Component {
 
@@ -102,6 +104,10 @@ export default class MapSection extends React.Component {
                 onClick={handleMapSquareClick ? () => { handleMapSquareClick(citizen.mapSquare) } : null}
                 key={`citizenIcon-${index}`}>
 
+                <i className={styles.spriteOnMapSection}
+                    style={spriteSheets.units.getStyleForFrameCalled('worker')}
+                />
+
             </figure>
         )
     }
@@ -142,15 +148,14 @@ export default class MapSection extends React.Component {
             .map((citizen, index) => this.renderCitizen(citizen, index))
 
         return (
-            <section style={{ position: 'relative' }}>
-
-                {emptyRowsAbove}
-                {mapGrid.map((row, index) => this.renderRow(row, index))}
-                {emptyRowsBelow}
-
-                {this.renderTown(town)}
-
-                {citizensOnMap}
+            <section className={styles.container}>
+                <div className={styles.frame}>
+                    {emptyRowsAbove}
+                    {mapGrid.map((row, index) => this.renderRow(row, index))}
+                    {emptyRowsBelow}
+                    {this.renderTown(town)}
+                    {citizensOnMap}
+                </div>
             </section>
         )
     }

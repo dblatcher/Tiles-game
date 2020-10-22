@@ -1,5 +1,6 @@
 import MapSection from "./MapSection";
-
+import styles from "./townView.module.scss";
+import { spriteSheets } from "../lib/SpriteSheet.tsx"
 
 export default class TownView extends React.Component {
 
@@ -12,7 +13,7 @@ export default class TownView extends React.Component {
     handleMapSquareClick(mapSquare) {
         const { town, handleTownAction } = this.props
 
-        return handleTownAction('MAP_CLICK', {mapSquare, town})
+        return handleTownAction('MAP_CLICK', { mapSquare, town })
     }
 
     render() {
@@ -23,6 +24,16 @@ export default class TownView extends React.Component {
                 <button onClick={closeTownView}>close</button>
 
                 <h1>{town.name}</h1>
+                <div className={styles.citizenRow}>
+                    {town.citizens.map((citizen, index) => {
+                        return (
+                            <i key={`citizen-${index}`}
+                                className={styles.sprite}
+                                style={spriteSheets.units.getStyleForFrameCalled(citizen.job.name)}
+                            />
+                        )
+                    })}
+                </div>
                 <MapSection
                     handleMapSquareClick={this.handleMapSquareClick}
                     xStart={town.x - 2} yStart={town.y - 2}
@@ -32,16 +43,6 @@ export default class TownView extends React.Component {
                 <p>Food store: {town.foodStore} {`(+${town.output.foodYield})`}</p>
                 <p>Production: {town.productionStore} {`(+${town.output.productionYield})`}</p>
 
-                <p>citizens</p>
-                <ol>
-                    {town.citizens.map((citizen, index) => {
-                        return (
-                        <li key={`citizen-${index}`}>
-                            {`${citizen.job.name}`}
-                        </li>
-                        )
-                    })}
-                </ol>
             </main>
         )
     }

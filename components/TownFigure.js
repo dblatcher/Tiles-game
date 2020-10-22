@@ -42,11 +42,7 @@ export default class TownFigure extends React.Component {
                 </i>
 
                 {onMapSection
-                    ? <>
-                        <p className={styles.yieldLine}>{`F${town.mapSquare.foodYield}`}</p>
-                        <p className={styles.yieldLine}>{`P${town.mapSquare.productionYield}`}</p>
-                        <p className={styles.yieldLine}>{`T${town.mapSquare.tradeYield}`}</p>
-                    </>
+                    ? <></>
                     : <>
                         <span className={styles.caption}>{town.name}</span>
                         <span className={styles.populationNumber}>{town.population}</span>

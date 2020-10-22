@@ -23,7 +23,7 @@ export default class MapSection extends React.Component {
     }
 
     renderTile(mapSquare, excludeCorners) {
-        const { handleMapSquareClick, selectedSquare, handleTileHoverEnter, xStart, xSpan, yStart, ySpan } = this.props;
+        const { handleMapSquareClick, selectedSquare, handleTileHoverEnter, xStart, xSpan, yStart, ySpan, town } = this.props;
         if (mapSquare.x < xStart || mapSquare.x > xStart + xSpan - 1) { return null }
 
         const isCorner = (mapSquare.x === xStart || mapSquare.x === xStart + xSpan - 1) && (mapSquare.y === yStart || mapSquare.y === yStart + ySpan - 1)
@@ -32,12 +32,16 @@ export default class MapSection extends React.Component {
             return this.renderEmptyTile(mapSquare.x, mapSquare.y)
         }
 
+        const showYields = mapSquare === town.mapSquare
+            || town.citizens.filter(citizen => citizen.mapSquare === mapSquare)[0];
+
         return (
             <Tile key={`${mapSquare.x},${mapSquare.y}`}
                 handleClick={handleMapSquareClick ? () => { handleMapSquareClick(mapSquare) } : null}
                 mapSquare={mapSquare}
                 isSelected={mapSquare === selectedSquare}
                 handleTileHoverEnter={handleTileHoverEnter}
+                showYields={showYields}
                 adjacentSquares={this.getAdjacentSquares(mapSquare.x, mapSquare.y)}
             />
         )
@@ -97,9 +101,7 @@ export default class MapSection extends React.Component {
                 className={styles.citizenFigure}
                 onClick={handleMapSquareClick ? () => { handleMapSquareClick(citizen.mapSquare) } : null}
                 key={`citizenIcon-${index}`}>
-                <p className={styles.yieldLine}>{`F${citizen.output.foodYield}`}</p>
-                <p className={styles.yieldLine}>{`P${citizen.output.productionYield}`}</p>
-                <p className={styles.yieldLine}>{`T${citizen.output.tradeYield}`}</p>
+
             </figure>
         )
     }

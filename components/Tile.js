@@ -25,9 +25,9 @@ export default class Tile extends React.Component {
 
     doesNeedCoastline() {
         const { mapSquare, adjacentSquares } = this.props
-        if (!adjacentSquares) {return false}
+        if (!adjacentSquares) { return false }
         for (let key in adjacentSquares) {
-            if ( adjacentSquares[key] && adjacentSquares[key].isWater != mapSquare.isWater) {return true}
+            if (adjacentSquares[key] && adjacentSquares[key].isWater != mapSquare.isWater) { return true }
         }
         return false
     }
@@ -45,7 +45,7 @@ export default class Tile extends React.Component {
     }
 
     render() {
-        const { mapSquare, handleClick, isSelected, selectedUnit, inInfoRow, squareSelectedUnitIsIn, interfaceMode, gameHasOpenDialogue } = this.props
+        const { mapSquare, handleClick, isSelected, selectedUnit, inInfoRow, squareSelectedUnitIsIn, interfaceMode, gameHasOpenDialogue, showYields } = this.props
         const { isHoveredOn } = this.state
         const containsSelectedUnit = selectedUnit && (mapSquare.x === selectedUnit.x && mapSquare.y === selectedUnit.y);
         const selectedUnitCanMoveTo = selectedUnit && selectedUnit.canMoveTo(mapSquare, squareSelectedUnitIsIn);
@@ -55,13 +55,13 @@ export default class Tile extends React.Component {
 
         if (!inInfoRow) {
             if (interfaceMode === 'VIEW') {
-                if (isSelected ) { classList.push(styles.selected) }
+                if (isSelected) { classList.push(styles.selected) }
             } else if (interfaceMode === 'MOVE') {
-                if (!gameHasOpenDialogue && selectedUnitCanMoveTo ) {classList.push(styles.inRange)} 
+                if (!gameHasOpenDialogue && selectedUnitCanMoveTo) { classList.push(styles.inRange) }
 
                 if (!gameHasOpenDialogue && isHoveredOn && selectedUnitCanMoveTo) { classList.push(styles.inRangeHovered) }
                 if (!gameHasOpenDialogue && isHoveredOn && !selectedUnitCanMoveTo) { classList.push(styles.hovered) }
-            } 
+            }
 
         }
 
@@ -74,10 +74,19 @@ export default class Tile extends React.Component {
                 onPointerEnter={() => { this.handleHover(true) }}
                 onPointerLeave={() => { this.handleHover(false) }}
             >
-                {needsCoastLine &&  mapSquare.isWater ? this.renderSprite(spriteSheets.coastlines) : (null)}
+                {needsCoastLine && mapSquare.isWater ? this.renderSprite(spriteSheets.coastlines) : (null)}
                 {needsCoastLine && !mapSquare.isWater ? this.renderSprite(spriteSheets.innerCoastlines) : (null)}
                 {mapSquare.road ? this.renderSprite(spriteSheets.roads) : (null)}
                 {mapSquare.tree ? this.renderSprite(spriteSheets.trees) : (null)}
+
+                {showYields
+                    ? <>
+                        <p className={styles.yieldLine}>{`F${mapSquare.foodYield}`}</p>
+                        <p className={styles.yieldLine}>{`P${mapSquare.productionYield}`}</p>
+                        <p className={styles.yieldLine}>{`T${mapSquare.tradeYield}`}</p>
+                    </>
+                    : null}
+
             </figure>
         )
     }

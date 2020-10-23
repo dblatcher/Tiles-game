@@ -29,7 +29,7 @@ export default class TownView extends React.Component {
                     {town.citizens.map((citizen, index) => {
                         return (
                             <i key={`citizen-${index}`}
-                                className={styles.sprite}
+                                className={styles.citizenFigure}
                                 style={spriteSheets.units.getStyleForFrameCalled(citizen.job.name)}
                             />
                         )

@@ -1,4 +1,5 @@
 import { unitTypes } from '../lib/Unit.tsx'
+import { spriteSheets } from '../lib/SpriteSheet.tsx'
 import styles from './productionMenu.module.scss'
 
 export default class ProductionMenu extends React.Component {
@@ -11,10 +12,41 @@ export default class ProductionMenu extends React.Component {
 
         this.openList = this.openList.bind(this)
         this.closeList = this.closeList.bind(this)
+        this.handleProductionItemPick = this.handleProductionItemPick.bind(this)
     }
 
     openList() { return this.setState({ listIsOpen: true }) }
     closeList() { return this.setState({ listIsOpen: false }) }
+
+    renderUnitTypeOptions() {
+        const { town } = this.props
+        return Object.keys(unitTypes)
+            .map(key => unitTypes[key])
+            .map(unitType => {
+
+
+                return (
+                    <li key={`unitOption-${unitType.name}`}
+                        className={styles.productionItem}
+                        onClick={() => { this.handleProductionItemPick(unitType) }}>
+                        <figure className={styles.figure}>
+                            <i className={styles.sprite}
+                                style={spriteSheets.units.getStyleForFrameCalled(unitType.spriteFrameName)}></i>
+                        </figure>
+
+                        <span>{unitType.name}</span>
+                        <span>{`(${unitType.productionCost})`}</span>
+                        <span>{`${Math.ceil(unitType.productionCost / town.output.productionYield)} turns`}</span>
+                    </li>
+                )
+            })
+    }
+
+    handleProductionItemPick(item) {
+        const { handleTownAction, town } = this.props
+        this.setState({ listIsOpen: false })
+        return handleTownAction("PRODUCTION_PICK", { town, item })
+    }
 
     render() {
         const { handleTownAction, town } = this.props
@@ -25,9 +57,14 @@ export default class ProductionMenu extends React.Component {
         return (<>
             <section>
                 <p>
-                    <span>Production: {town.productionStore} {`(+${town.output.productionYield}) - `}</span>
-                    <span>producing: </span>
-                    <span>{town.isProducing ? town.isProducing.name : 'Nothing'}</span>
+                    {town.isProducing ?
+                        (
+                            <span>{`Producing ${town.isProducing.name}: ${town.productionStore} / ${town.isProducing.productionCost}`}</span>
+                        ) : (
+                            <span>Producing nothing</span>
+                        )
+                    }
+                    <span>{`(+${town.output.productionYield})`}</span>
                     <button onClick={this.openList}>change</button>
                 </p>
             </section>
@@ -38,6 +75,10 @@ export default class ProductionMenu extends React.Component {
                     <nav className={styles.menu}>
                         <button onClick={this.closeList}>close</button>
                         <h2>menu</h2>
+
+                        <ul className={styles.productionItemList}>
+                            {this.renderUnitTypeOptions()}
+                        </ul>
                     </nav>
                 </aside>
                 : null}

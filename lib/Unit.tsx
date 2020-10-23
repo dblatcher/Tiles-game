@@ -10,7 +10,7 @@ class UnitType {
     attack: number;
     defend: number;
     productionCost: number;
-    constructor(name: string, config = {}) {
+    constructor(name: string, config:any = {}) {
         this.name = name;
         this.spriteFrameName = config.spriteFrameName || name;
         this.moves = config.moves || 6;
@@ -41,7 +41,7 @@ class Unit {
     remainingMoves: number;
     onGoingOrder: OnGoingOrder;
     indexNumber: number;
-    constructor(type: UnitType, faction: Faction, config = {}) {
+    constructor(type: UnitType, faction: Faction, config:any = {}) {
         this.type = type
         this.faction = faction
         this.x = config.x;

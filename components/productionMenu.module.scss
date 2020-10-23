@@ -7,3 +7,28 @@
 .menu {
     @include dialogueBox();
 }
+
+.productionItemList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.productionItem {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid gray;
+    padding: .2rem 0;
+    cursor: pointer;
+}
+
+.figure {
+    @include figure();
+    height: 2rem;
+    width: 2rem;
+    position: relative;
+}
+
+.sprite {
+    @include sprite();
+}

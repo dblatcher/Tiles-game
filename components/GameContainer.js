@@ -108,7 +108,8 @@ export default class GameContainer extends React.Component {
     handleTownAction(command, input = {}) {
         let commandFunction = state => state;
         switch (command) {
-            case 'MAP_CLICK': commandFunction = townActions.mapClick(input); break;
+            case 'MAP_CLICK':       commandFunction = townActions.mapClick(input); break;
+            case 'PRODUCTION_PICK': commandFunction = townActions.productionPick(input); break;
             default:
                 console.warn(`unknown town command: ${command}`, input); return
         }

@@ -1,6 +1,7 @@
 import MapSection from "./MapSection";
 import styles from "./townView.module.scss";
 import { spriteSheets } from "../lib/SpriteSheet.tsx"
+import ProductionMenu from "./ProductionMenu";
 
 export default class TownView extends React.Component {
 
@@ -17,7 +18,7 @@ export default class TownView extends React.Component {
     }
 
     render() {
-        const { town, closeTownView, mapGrid } = this.props
+        const { town, closeTownView, mapGrid, handleTownAction } = this.props
 
         return (
             <main>
@@ -40,9 +41,18 @@ export default class TownView extends React.Component {
                     xSpan={5} ySpan={5}
                     town={town} mapGrid={mapGrid} />
 
-                <p>{`Food store: ${town.foodStore}(${town.output.foodYield >= 0 ? '+':''}${town.output.foodYield})`}</p>
-                <p>{`${town.foodStoreRequiredForGrowth} needed to grow.`}</p>
-                <p>Production: {town.productionStore} {`(+${town.output.productionYield})`}</p>
+
+                <p>
+                    <span>
+                        {`Food store: ${town.foodStore}(${town.output.foodYield >= 0 ? '+' : ''}${town.output.foodYield})`}
+                    </span>
+                    <span>
+                        {` - ${town.foodStoreRequiredForGrowth} needed to grow.`}
+                    </span>
+                </p>
+
+
+                <ProductionMenu handleTownAction={handleTownAction} town={town} />
 
             </main>
         )

@@ -1,0 +1,9 @@
+@import '../styles/design.scss';
+
+.menuHolder {
+    @include dialogueHolder();
+}
+
+.menu {
+    @include dialogueBox();
+}

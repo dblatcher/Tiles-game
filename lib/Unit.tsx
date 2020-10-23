@@ -9,6 +9,7 @@ class UnitType {
     treeCutting: number;
     attack: number;
     defend: number;
+    productionCost: number;
     constructor(name: string, config = {}) {
         this.name = name;
         this.spriteFrameName = config.spriteFrameName || name;
@@ -17,14 +18,15 @@ class UnitType {
         this.treeCutting = config.treeCutting || 0;
         this.attack = config.attack || 0;
         this.defend = config.defend || 1;
+        this.productionCost = config.productionCost || 10;
     }
 
 }
 
 const unitTypes = {
-    knight: new UnitType('knight', { moves: 8, attack: 4 }),
-    worker: new UnitType('worker', { roadBuilding: 1, treeCutting: 1, }),
-    spearman: new UnitType('spearman', { defend: 3, attack: 1 }),
+    knight: new UnitType('knight', { moves: 8, attack: 4, productionCost: 20 }),
+    worker: new UnitType('worker', { roadBuilding: 1, treeCutting: 1, productionCost: 10 }),
+    spearman: new UnitType('spearman', { defend: 3, attack: 1, productionCost: 15 }),
 }
 
 

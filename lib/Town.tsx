@@ -1,5 +1,6 @@
 import { Faction } from './Faction'
 import { MapSquare } from './MapSquare'
+import { UnitType, unitTypes } from './Unit'
 
 let townIndex = 0
 
@@ -54,6 +55,7 @@ class Town {
     name: string;
     foodStore: number;
     productionStore: number;
+    isProducing: UnitType | null;
     citizens: Array<Citizen>;
     constructor(faction: Faction, mapSquare:MapSquare, config: object = {}) {
         this.faction = faction;
@@ -70,6 +72,7 @@ class Town {
 
         this.foodStore = config.foodStore || 0
         this.productionStore = config.productionStore || 0
+        this.isProducing = config.isProducing || null
     }
 
     get x() { return this.mapSquare.x}

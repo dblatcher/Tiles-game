@@ -33,8 +33,7 @@ export default class GameContainer extends React.Component {
             fallenUnits: [],
             unitPickDialogueChoices: [],
             openTown: null,
-            pendingBattle: null,
-            pendingMessage: null,
+            pendingDialogues: [],
         });
 
         this.gameHolderElement = React.createRef()
@@ -51,8 +50,8 @@ export default class GameContainer extends React.Component {
     }
 
     get hasOpenDialogue() {
-        const { pendingBattle, pendingMessage, unitPickDialogueChoices } = this.state;
-        return pendingBattle || pendingMessage || unitPickDialogueChoices.length > 0
+        const { pendingDialogues, unitPickDialogueChoices } = this.state;
+        return  pendingDialogues.length > 0 || unitPickDialogueChoices.length > 0
     }
 
     closeTownView() {
@@ -108,7 +107,7 @@ export default class GameContainer extends React.Component {
     handleTownAction(command, input = {}) {
         let commandFunction = state => state;
         switch (command) {
-            case 'MAP_CLICK':       commandFunction = townActions.mapClick(input); break;
+            case 'MAP_CLICK': commandFunction = townActions.mapClick(input); break;
             case 'PRODUCTION_PICK': commandFunction = townActions.productionPick(input); break;
             default:
                 console.warn(`unknown town command: ${command}`, input); return
@@ -118,7 +117,7 @@ export default class GameContainer extends React.Component {
     }
 
     changeMode(newMode) {
-        if (this.state.pendingBattle || this.state.pendingMessage) { return false }
+        if (this.hasOpenDialogue) { return false }
         this.setState({
             interfaceMode: newMode
         })
@@ -155,35 +154,47 @@ export default class GameContainer extends React.Component {
         window.scrollTo(pixelX, pixelY)
     }
 
+    renderDialogue() {
+        const { pendingDialogues } = this.state
+
+        if (pendingDialogues[0].type === "Message") {
+            return <MessageDialoge
+                message={pendingDialogues[0]}
+                acknowledgeMessage={() => this.handleDialogueButton('ACKNOWLEDGE_MESSAGE', {})}
+            />
+        }
+
+        if (pendingDialogues[0].type === "Battle") {
+            return <BattleDialogue
+                battle={pendingDialogues[0]}
+                cancelBattle={() => this.handleDialogueButton('CANCEL_BATTLE', {})}
+                confirmBattle={() => this.handleDialogueButton('RESOLVE_BATTLE', {})}
+            />
+        }
+
+    }
 
     render() {
         const { mapGrid, selectedSquare, units, towns,
-            selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits, 
-            pendingBattle, pendingMessage, unitWithMenuOpen, unitPickDialogueChoices, openTown } = this.state
+            selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
+            pendingDialogues, unitWithMenuOpen, unitPickDialogueChoices, openTown } = this.state
 
-        if (openTown) { return (
-            <TownView 
-            town={openTown} 
-            closeTownView={this.closeTownView} 
-            handleTownAction={this.handleTownAction}
-            mapGrid={mapGrid}
-            units={units}/>
-        )}
+        if (openTown) {
+            return (
+                <TownView
+                    town={openTown}
+                    closeTownView={this.closeTownView}
+                    handleTownAction={this.handleTownAction}
+                    mapGrid={mapGrid}
+                    units={units} />
+            )
+        }
 
         return (
 
             <>
-                {pendingBattle
-                    ? <BattleDialogue
-                        battle={pendingBattle}
-                        cancelBattle={() => this.handleDialogueButton('CANCEL_BATTLE', {})}
-                        confirmBattle={() => this.handleDialogueButton('RESOLVE_BATTLE', {})} />
-                    : null}
-
-                {pendingMessage
-                    ? <MessageDialoge
-                        message={pendingMessage}
-                        acknowledgeMessage={() => this.handleDialogueButton('ACKNOWLEDGE_MESSAGE', {})} />
+                {pendingDialogues.length > 0
+                    ? this.renderDialogue()
                     : null}
 
                 {unitPickDialogueChoices.length > 0

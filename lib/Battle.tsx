@@ -15,6 +15,8 @@ class Battle {
         this.attackerWon = undefined
     }
 
+    get type() {return 'Battle'}
+
     get defendScore() {
         return this.defenders[0].type.defend
     }

@@ -8,7 +8,7 @@ class Message {
 
         this.text = text
     }
-
+    get type() {return 'Message'}
 }
 
 export {Message}

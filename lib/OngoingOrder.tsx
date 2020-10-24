@@ -7,6 +7,7 @@ class OnGoingOrderType {
     timeTaken: number;
     noFlag: boolean;
     cannotCancel: boolean;
+    specialCase: boolean;
 
     constructor(name, applyOutcome, checkIsValidForSquare, config = {}) {
         this.name = name
@@ -15,9 +16,10 @@ class OnGoingOrderType {
 
         this.requiredUnitSkill = config.requiredUnitSkill || false
         this.letterCode = config.letterCode || name[0]
-        this.timeTaken = config.timeTaken || 3
+        this.timeTaken = config.timeTaken || 1
         this.noFlag = !!config.noFlag || false
         this.cannotCancel = !!config.cannotCancel || false
+        this.specialCase  = !!config.specialCase || false
     }
 
     canUnitUse(unit) {
@@ -41,6 +43,7 @@ const onGoingOrderTypes = [
         mapSquare => !mapSquare.road,
         {
             requiredUnitSkill: 'roadBuilding',
+            timeTaken: 3,
             letterCode: 'R'
         }),
     new OnGoingOrderType('Cut Down Trees',
@@ -48,7 +51,16 @@ const onGoingOrderTypes = [
         mapSquare => mapSquare.tree,
         {
             requiredUnitSkill: 'treeCutting',
+            timeTaken: 3,
             letterCode: 'C',
+        }),
+    new OnGoingOrderType('Build Town',
+        mapSquare => {},
+        mapSquare => !mapSquare.terrain.isWater,
+        {
+            requiredUnitSkill: 'townBuilding',
+            letterCode: 'B',
+            specialCase: true,
         }),
 ]
 

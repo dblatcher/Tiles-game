@@ -7,6 +7,7 @@ class UnitType {
     moves: number;
     roadBuilding: number;
     treeCutting: number;
+    townBuilding: number;
     attack: number;
     defend: number;
     productionCost: number;
@@ -16,6 +17,7 @@ class UnitType {
         this.moves = config.moves || 6;
         this.roadBuilding = config.roadBuilding || 0;
         this.treeCutting = config.treeCutting || 0;
+        this.townBuilding = config.townBuilding || 0;
         this.attack = config.attack || 0;
         this.defend = config.defend || 1;
         this.productionCost = config.productionCost || 10;
@@ -25,7 +27,7 @@ class UnitType {
 
 const unitTypes = {
     knight: new UnitType('knight', { moves: 8, attack: 4, productionCost: 20 }),
-    worker: new UnitType('worker', { roadBuilding: 1, treeCutting: 1, productionCost: 10 }),
+    worker: new UnitType('worker', { roadBuilding: 1, treeCutting: 1, townBuilding:1, productionCost: 10 }),
     spearman: new UnitType('spearman', { defend: 3, attack: 1, productionCost: 15 }),
 }
 

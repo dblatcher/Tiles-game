@@ -2,7 +2,9 @@ import React from 'react'
 import TileBoard from './TileBoard'
 import SeletedUnitAndSquareInfo from './SeletedUnitAndSquareInfo'
 import BattleDialogue from './BattleDialogue'
-import MessageDialoge from './MessageDialogue'
+import MessageDialogue from './MessageDialogue'
+import TextQuestionDialogue from './TextQuestionDialogue'
+
 import ModeButtons from './ModeButtons'
 import TurnButtons from './TurnButtons'
 
@@ -51,7 +53,7 @@ export default class GameContainer extends React.Component {
 
     get hasOpenDialogue() {
         const { pendingDialogues, unitPickDialogueChoices } = this.state;
-        return  pendingDialogues.length > 0 || unitPickDialogueChoices.length > 0
+        return pendingDialogues.length > 0 || unitPickDialogueChoices.length > 0
     }
 
     closeTownView() {
@@ -97,8 +99,9 @@ export default class GameContainer extends React.Component {
             case "RESOLVE_BATTLE": commandFunction = gameActions.resolveBattle; break;
             case "ACKNOWLEDGE_MESSAGE": commandFunction = gameActions.acknowledgeMessage(input); break;
             case "PICK_UNIT": commandFunction = gameActions.pickUnit(input); break;
+            case "EXECUTE_STATE_FUNCTION": commandFunction = input; break
             default:
-                console.warn(`unknown command: ${command}`, input); return
+                console.warn(`unknown dialogue command: ${command}`, input); return
         }
 
         return this.setState(commandFunction)
@@ -158,7 +161,7 @@ export default class GameContainer extends React.Component {
         const { pendingDialogues } = this.state
 
         if (pendingDialogues[0].type === "Message") {
-            return <MessageDialoge
+            return <MessageDialogue
                 message={pendingDialogues[0]}
                 acknowledgeMessage={() => this.handleDialogueButton('ACKNOWLEDGE_MESSAGE', {})}
             />
@@ -169,6 +172,13 @@ export default class GameContainer extends React.Component {
                 battle={pendingDialogues[0]}
                 cancelBattle={() => this.handleDialogueButton('CANCEL_BATTLE', {})}
                 confirmBattle={() => this.handleDialogueButton('RESOLVE_BATTLE', {})}
+            />
+        }
+
+        if (pendingDialogues[0].type === "TextQuestion") {
+            return <TextQuestionDialogue
+                textQuestion={pendingDialogues[0]}
+                handleDialogueButton={this.handleDialogueButton}
             />
         }
 

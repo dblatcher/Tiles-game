@@ -121,6 +121,7 @@ class Town {
             notices.push(`${this.name} has finished building ${this.isProducing.name}`)
 
             //to do - have list of units maintained by town
+            // to do - reduce population if unit is 'settler' (has townBuilding > 0)
             // to do - add test for type of production item
             state.units.push(new Unit(this.isProducing, this.faction, {x:this.x, y:this.y}))
             this.productionStore = 0

@@ -1,25 +1,32 @@
 @import '../styles/design.scss';
 
-.menuHolder {
-    @include dialogueHolder();
-}
-
-.menu {
-    @include dialogueBox();
-}
-
 .productionItemList {
     list-style: none;
     margin: 0;
-    padding: 0;
+    padding: 1rem;
+
+    max-height: 24rem;
+    overflow-y: auto;
+    overflow-x: visible;
 }
 
 .productionItem {
+    @include input();
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     border-bottom: 1px solid gray;
-    padding: .2rem 0;
+    padding: .2rem;
+    min-width: 10rem;
     cursor: pointer;
+
+    &:not(:last-child) {
+        margin-bottom: .5rem;
+    }
+
+    span:last-child {
+        margin-left: auto;
+    }
 }
 
 .figure {
@@ -27,6 +34,7 @@
     height: 2rem;
     width: 2rem;
     position: relative;
+    margin-right: .5rem;
 }
 
 .sprite {

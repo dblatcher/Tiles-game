@@ -1,6 +1,7 @@
 import { unitTypes } from '../lib/Unit.tsx'
 import { spriteSheets } from '../lib/SpriteSheet.tsx'
 import styles from './productionMenu.module.scss'
+import dialogueStyles from './dialogue.module.scss'
 
 export default class ProductionMenu extends React.Component {
     constructor(props) {
@@ -34,8 +35,7 @@ export default class ProductionMenu extends React.Component {
                                 style={spriteSheets.units.getStyleForFrameCalled(unitType.spriteFrameName)}></i>
                         </figure>
 
-                        <span>{unitType.name}</span>
-                        <span>{`(${unitType.productionCost})`}</span>
+                        <span>{`${unitType.name}(${unitType.productionCost})`}</span>
                         <span>{`${Math.ceil(unitType.productionCost / town.output.productionYield)} turns`}</span>
                     </li>
                 )
@@ -70,15 +70,16 @@ export default class ProductionMenu extends React.Component {
             </section>
 
             {listIsOpen ?
-                <aside className={styles.menuHolder}>
+                <aside className={dialogueStyles.dialogueHolder}>
 
-                    <nav className={styles.menu}>
-                        <button onClick={this.closeList}>close</button>
-                        <h2>menu</h2>
-
+                    <nav className={dialogueStyles.dialogueFrame}>
                         <ul className={styles.productionItemList}>
                             {this.renderUnitTypeOptions()}
                         </ul>
+
+                        <div className={dialogueStyles.buttonRow}>
+                            <button className={dialogueStyles.button} onClick={this.closeList}>close</button>
+                        </div>
                     </nav>
                 </aside>
                 : null}

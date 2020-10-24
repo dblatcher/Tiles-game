@@ -2,6 +2,7 @@ import MapSection from "./MapSection";
 import styles from "./townView.module.scss";
 import { spriteSheets } from "../lib/SpriteSheet.tsx"
 import ProductionMenu from "./ProductionMenu";
+import Window from "./Window";
 
 export default class TownView extends React.Component {
 
@@ -21,15 +22,8 @@ export default class TownView extends React.Component {
         const { town, closeTownView, mapGrid, handleTownAction } = this.props
 
         return (
-            // to do - make window a reusable component 
-            <main className={styles.window}>
 
-                <header className={styles.header}>
-                    <h1>{town.name}</h1>
-                    <nav className={styles.buttonHolder}>
-                        <button className={styles.button} onClick={closeTownView}>close</button>
-                    </nav>
-                </header>
+            <Window title={town.name} buttons={[{text:'close', clickFunction:closeTownView}]}>
 
                 <div className={styles.citizenRow}>
                     {town.citizens.map((citizen, index) => {
@@ -60,7 +54,7 @@ export default class TownView extends React.Component {
 
                 <ProductionMenu handleTownAction={handleTownAction} town={town} />
 
-            </main>
+            </Window>
         )
     }
 }

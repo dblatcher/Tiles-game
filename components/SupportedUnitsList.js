@@ -16,8 +16,6 @@ export default function SupportedUnitsList (props) {
     const { town } = props
 
     return (
-    <section>
-        <h2>{`${town.supportedUnits.length} units supported`}</h2>
         <ul style={styles.list}>
             {town.supportedUnits.map(unit => (
                 <li key={unit.indexNumber} style={styles.item}>
@@ -25,7 +23,6 @@ export default function SupportedUnitsList (props) {
                 </li>
             ))}
         </ul>
-    </section>
     )
 
 }

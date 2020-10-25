@@ -25,37 +25,47 @@ export default class TownView extends React.Component {
 
         return (
 
-            <Window title={town.name} buttons={[{text:'close', clickFunction:closeTownView}]}>
+            <Window title={town.name} buttons={[{ text: 'close', clickFunction: closeTownView }]}>
 
-                <div className={styles.citizenRow}>
-                    {town.citizens.map((citizen, index) => {
-                        return (
-                            <i key={`citizen-${index}`}
-                                className={styles.citizenFigure}
-                                style={spriteSheets.units.getStyleForFrameCalled(citizen.job.name)}
-                            />
-                        )
-                    })}
+                <div className={styles.frame}>
+
+                    <section className={[styles.section, styles.black].join(" ")}>
+                        <div className={styles.citizenRow}>
+                            {town.citizens.map((citizen, index) => {
+                                return (
+                                    <i key={`citizen-${index}`}
+                                        className={styles.citizenFigure}
+                                        style={spriteSheets.units.getStyleForFrameCalled(citizen.job.name)}
+                                    />
+                                )
+                            })}
+                        </div>
+                        <MapSection
+                            handleMapSquareClick={this.handleMapSquareClick}
+                            xStart={town.x - 2} yStart={town.y - 2}
+                            xSpan={5} ySpan={5}
+                            town={town} mapGrid={mapGrid} />
+                    </section>
+
+                    <section className={styles.section}>
+                        <h2>Food store</h2>
+                        <p>
+                            <span>
+                                {`${town.foodStore}(${town.output.foodYield >= 0 ? '+' : ''}${town.output.foodYield})`}
+                            </span>
+                            <span>
+                                {` - ${town.foodStoreRequiredForGrowth} needed to grow.`}
+                            </span>
+                        </p>
+                        <h2>Production</h2>
+                        <ProductionMenu handleTownAction={handleTownAction} town={town} />
+                    </section>
+
+                    <section className={styles.section}>
+                        <h2>{`${town.supportedUnits.length} units supported`}</h2>
+                        <SupportedUnitsList town={town} />
+                    </section>
                 </div>
-                <MapSection
-                    handleMapSquareClick={this.handleMapSquareClick}
-                    xStart={town.x - 2} yStart={town.y - 2}
-                    xSpan={5} ySpan={5}
-                    town={town} mapGrid={mapGrid} />
-
-
-                <p>
-                    <span>
-                        {`Food store: ${town.foodStore}(${town.output.foodYield >= 0 ? '+' : ''}${town.output.foodYield})`}
-                    </span>
-                    <span>
-                        {` - ${town.foodStoreRequiredForGrowth} needed to grow.`}
-                    </span>
-                </p>
-
-                <ProductionMenu handleTownAction={handleTownAction} town={town} />
-                <SupportedUnitsList town={town}/>
-
             </Window>
         )
     }

@@ -1,6 +1,9 @@
 @import '../styles/design.scss';
 
 .window {
+    max-width: 50rem;
+    
+    margin: 0 auto ;
     padding: $windowPadding;
 }
 

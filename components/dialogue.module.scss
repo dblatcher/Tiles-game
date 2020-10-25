@@ -29,6 +29,17 @@
     font-size: large;
 }
 
+.headerRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    min-width: 18rem;
+    margin: 0 0 .5rem 0;
+
+    h2 {
+        margin: 0;
+    }
+}
 
 .unitRow {
     display: flex;

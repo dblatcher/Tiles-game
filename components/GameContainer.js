@@ -13,6 +13,7 @@ import gameActions from '../lib/gameActions'
 import townActions from '../lib/townActions'
 import PickUnitDialogue from './PickUnitDialogue'
 import TownView from './TownView'
+import MainMenu from './MainMenu'
 
 
 
@@ -36,6 +37,7 @@ export default class GameContainer extends React.Component {
             unitPickDialogueChoices: [],
             openTown: null,
             pendingDialogues: [],
+            mainMenuOpen: false,
         });
 
         this.gameHolderElement = React.createRef()
@@ -49,11 +51,18 @@ export default class GameContainer extends React.Component {
         this.handleOrderButton = this.handleOrderButton.bind(this)
         this.handleTileHoverEnter = this.handleTileHoverEnter.bind(this)
         this.handleDialogueButton = this.handleDialogueButton.bind(this)
+        this.toggleMainMenu = this.toggleMainMenu.bind(this)
     }
 
     get hasOpenDialogue() {
         const { pendingDialogues, unitPickDialogueChoices } = this.state;
         return pendingDialogues.length > 0 || unitPickDialogueChoices.length > 0
+    }
+
+    toggleMainMenu() {
+        this.setState(state => {
+            return { mainMenuOpen: !state.mainMenuOpen }
+        })
     }
 
     closeTownView() {
@@ -187,7 +196,7 @@ export default class GameContainer extends React.Component {
     render() {
         const { mapGrid, selectedSquare, units, towns,
             selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
-            pendingDialogues, unitWithMenuOpen, unitPickDialogueChoices, openTown } = this.state
+            pendingDialogues, unitWithMenuOpen, unitPickDialogueChoices, openTown, mainMenuOpen } = this.state
 
         if (openTown) {
             return (
@@ -236,6 +245,12 @@ export default class GameContainer extends React.Component {
                         selectedSquare={selectedSquare}
                         scrollToSquare={this.scrollToSquare}
                     />
+                    <div>
+                        <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
+                        onClick={this.toggleMainMenu}>
+                            {mainMenuOpen ? "menu_open" : "menu"}
+                        </i>
+                    </div>
                 </aside>
 
                 <aside className={styles.lowerInterfaceWindow} >
@@ -250,6 +265,8 @@ export default class GameContainer extends React.Component {
                         handleOrderButton={this.handleOrderButton}
                     />
                 </aside>
+
+                {mainMenuOpen ? <MainMenu toggle={this.toggleMainMenu}/> :null}
             </>
         )
     }

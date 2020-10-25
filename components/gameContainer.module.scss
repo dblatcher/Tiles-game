@@ -24,6 +24,14 @@ $lowerWindowHeight: 5rem;
 
     display: flex;
     align-items: center;
+
+    div:last-child {
+        margin-left: auto;
+    }
+}
+
+.menuButton {
+    cursor: pointer;
 }
 
 .lowerInterfaceWindow {

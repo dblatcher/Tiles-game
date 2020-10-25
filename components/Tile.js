@@ -45,6 +45,29 @@ export default class Tile extends React.Component {
             ></i>)
     }
 
+    renderYieldLines() {
+        const { mapSquare } = this.props
+
+        return <>
+            {mapSquare.foodYield ?
+                <p className={styles.yieldLine}>
+                    {mapSquare.foodYield} <SvgIcon iconName="food" color="white" />
+                </p>
+                : null}
+            {mapSquare.productionYield ?
+                <p className={styles.yieldLine}>
+                    {mapSquare.productionYield} <SvgIcon iconName="production" color="white" />
+                </p>
+                : null}
+
+            {mapSquare.tradeYield ?
+                <p className={styles.yieldLine}>
+                    {mapSquare.tradeYield} <SvgIcon iconName="trade" color="white" />
+                </p>
+                : null}
+        </>
+    }
+
     render() {
         const { mapSquare, handleClick, isSelected, selectedUnit, inInfoRow, squareSelectedUnitIsIn, interfaceMode, gameHasOpenDialogue, showYields } = this.props
         const { isHoveredOn } = this.state
@@ -80,22 +103,7 @@ export default class Tile extends React.Component {
                 {mapSquare.road ? this.renderSprite(spriteSheets.roads) : (null)}
                 {mapSquare.tree ? this.renderSprite(spriteSheets.trees) : (null)}
 
-                {showYields
-                    ? <>
-                        <p className={styles.yieldLine}>
-                            {mapSquare.foodYield}
-                            <SvgIcon iconName="food" color="white"/>
-                        </p>
-                        <p className={styles.yieldLine}>
-                            {mapSquare.productionYield}
-                            <SvgIcon iconName="production" color="white"/>
-                        </p>
-                        <p className={styles.yieldLine}>
-                            {mapSquare.tradeYield}
-                            <SvgIcon iconName="trade" color="white"/>
-                        </p>
-                    </>
-                    : null}
+                {showYields ? this.renderYieldLines() : null}
 
             </figure>
         )

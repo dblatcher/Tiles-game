@@ -236,22 +236,20 @@ export default class GameContainer extends React.Component {
                         selectedSquare={selectedSquare}
                         scrollToSquare={this.scrollToSquare}
                     />
+                </aside>
 
+                <aside className={styles.lowerInterfaceWindow} >
                     <ModeButtons
                         interfaceMode={interfaceMode}
                         changeMode={this.changeMode}
                         interfaceModeOptions={interfaceModeOptions}
                     />
-                </aside>
-
-                <aside className={styles.lowerInterfaceWindow} >
                     <TurnButtons
                         selectedUnit={selectedUnit}
                         squareSelectedUnitIsIn={selectedUnit ? mapGrid[selectedUnit.y][selectedUnit.x] : null}
                         handleOrderButton={this.handleOrderButton}
                     />
                 </aside>
-
             </>
         )
     }

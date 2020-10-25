@@ -28,6 +28,8 @@ $lowerWindowHeight: 5rem;
 
 .lowerInterfaceWindow {
     @include interfaceWindow();
+    display: flex;
+    align-items: center;
     bottom: 0;
     right: 0;
     padding:  $windowPadding;

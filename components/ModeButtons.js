@@ -20,7 +20,7 @@ export default class ModeButtons extends React.Component {
     }
 
     render() {
-        const { interfaceModeOptions, changeMode, interfaceMode } = this.props
+        const { interfaceModeOptions, interfaceMode } = this.props
 
         const currentOption = interfaceModeOptions.filter(option => option.value == interfaceMode)[0]
 

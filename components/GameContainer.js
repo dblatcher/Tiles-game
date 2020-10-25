@@ -14,6 +14,7 @@ import townActions from '../lib/townActions'
 import PickUnitDialogue from './PickUnitDialogue'
 import TownView from './TownView'
 import MainMenu from './MainMenu'
+import SvgIcon from './SvgIcon'
 
 
 
@@ -194,7 +195,7 @@ export default class GameContainer extends React.Component {
     }
 
     render() {
-        const { mapGrid, selectedSquare, units, towns,
+        const { mapGrid, selectedSquare, units, towns, activeFaction,
             selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
             pendingDialogues, unitWithMenuOpen, unitPickDialogueChoices, openTown, mainMenuOpen } = this.state
 
@@ -240,14 +241,22 @@ export default class GameContainer extends React.Component {
                 </main>
 
                 <aside className={styles.upperInterfaceWindow} ref={this.upperWindowElement} >
+
+                    <div>
+                        <p>{activeFaction.name}</p>
+                        <p><SvgIcon iconName="coins" />: {activeFaction.treasury}</p>
+                        <p><SvgIcon iconName="lightBulb" />: {activeFaction.research}</p>
+                    </div>
+
                     <SeletedUnitAndSquareInfo
                         selectedUnit={selectedUnit}
                         selectedSquare={selectedSquare}
                         scrollToSquare={this.scrollToSquare}
                     />
+
                     <div>
                         <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
-                        onClick={this.toggleMainMenu}>
+                            onClick={this.toggleMainMenu}>
                             {mainMenuOpen ? "menu_open" : "menu"}
                         </i>
                     </div>
@@ -266,7 +275,7 @@ export default class GameContainer extends React.Component {
                     />
                 </aside>
 
-                {mainMenuOpen ? <MainMenu toggle={this.toggleMainMenu}/> :null}
+                {mainMenuOpen ? <MainMenu toggle={this.toggleMainMenu} /> : null}
             </>
         )
     }

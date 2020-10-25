@@ -2,9 +2,13 @@
 class Faction {
     name: string;
     color: string;
-    constructor(name: string, config = {}) {
+    treasury: number;
+    research: number;
+    constructor(name: string, config: any = {}) {
         this.name = name;
         this.color = config.color || "#FFF";
+        this.treasury = config.treasury || 0
+        this.research = config.research || 0
     }
 }
 

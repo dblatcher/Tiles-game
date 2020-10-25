@@ -1,4 +1,5 @@
 import React from 'react'
+import SvgIcon from './SvgIcon'
 import styles from './tile.module.scss'
 import { spriteSheets } from '../lib/SpriteSheet.tsx'
 
@@ -81,9 +82,18 @@ export default class Tile extends React.Component {
 
                 {showYields
                     ? <>
-                        <p className={styles.yieldLine}>{`F${mapSquare.foodYield}`}</p>
-                        <p className={styles.yieldLine}>{`P${mapSquare.productionYield}`}</p>
-                        <p className={styles.yieldLine}>{`T${mapSquare.tradeYield}`}</p>
+                        <p className={styles.yieldLine}>
+                            {mapSquare.foodYield}
+                            <SvgIcon iconName="food" color="white"/>
+                        </p>
+                        <p className={styles.yieldLine}>
+                            {mapSquare.productionYield}
+                            <SvgIcon iconName="production" color="white"/>
+                        </p>
+                        <p className={styles.yieldLine}>
+                            {mapSquare.tradeYield}
+                            <SvgIcon iconName="trade" color="white"/>
+                        </p>
                     </>
                     : null}
 

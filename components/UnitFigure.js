@@ -47,8 +47,8 @@ export default class UnitFigure extends React.Component {
             backgroundImage: isFallen
                 ? ''
                 : placeInStack === 0
-                    ? `radial-gradient(${unit.faction.color} 55%, rgba(0,0,0,0) 65%)`
-                    : `radial-gradient(${unit.faction.color} 45%, rgba(0,0,0,0) 55%)`,
+                    ? `radial-gradient(${unit.faction.color} 65%, rgba(0,0,0,0) 65%)`
+                    : `radial-gradient(${unit.faction.color} 55%, rgba(0,0,0,0) 55%)`,
             transform: `translate(${-Math.min(placeInStack, 5) * 8}px, ${-Math.min(placeInStack, 5) * 2}px)`,
             pointerEvents: isFallen ? 'none' : 'unset',
         }

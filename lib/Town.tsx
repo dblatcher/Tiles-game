@@ -57,7 +57,8 @@ class Town {
     productionStore: number;
     isProducing: UnitType | null;
     citizens: Array<Citizen>;
-    constructor(faction: Faction, mapSquare:MapSquare, config: any = {}) {
+    supportedUnits: Array<Unit>;
+    constructor(faction: Faction, mapSquare: MapSquare, config: any = {}) {
         this.faction = faction;
         this.mapSquare = mapSquare;
         this.indexNumber = ++townIndex
@@ -73,12 +74,13 @@ class Town {
         this.foodStore = config.foodStore || 0
         this.productionStore = config.productionStore || 0
         this.isProducing = config.isProducing || null
+        this.supportedUnits = config.supportedUnits || []
     }
 
-    get x() { return this.mapSquare.x}
-    get y() { return this.mapSquare.y}
-    get population() { return this.citizens.length}
-    get foodStoreRequiredForGrowth() {return (this.population+1) * 10 }
+    get x() { return this.mapSquare.x }
+    get y() { return this.mapSquare.y }
+    get population() { return this.citizens.length }
+    get foodStoreRequiredForGrowth() { return (this.population + 1) * 10 }
 
     get output() {
         let output = {
@@ -93,7 +95,9 @@ class Town {
             output.tradeYield += tradeYield
         })
 
-        output.foodYield -= this.population*2
+
+        output.productionYield -= this.supportedUnits.length
+        output.foodYield -= this.population * 2
 
         return output
     }
@@ -117,17 +121,31 @@ class Town {
             notices.push(`${this.name} has grown to a population of ${this.population}.`)
         }
 
+        if (this.productionStore < 0 && this.supportedUnits.length > 1) {
+            let shortFall = 0 - this.productionStore
+
+            while (shortFall > 0 && this.supportedUnits.length > 0) {
+                notices.push(`${this.name} cannot support  ${this.supportedUnits[0].type.name}. Unit disbanded`)
+                state.units.splice(state.units.indexOf(this.supportedUnits[0]),1)
+                this.supportedUnits.shift()
+                shortFall--
+            }
+        }
+
         if (this.isProducing && this.productionStore >= this.isProducing.productionCost) {
             notices.push(`${this.name} has finished building ${this.isProducing.name}`)
 
             // to do - have list of units maintained by town
             // to do - reduce population if unit is 'settler' (has townBuilding > 0)
             // to do - add test for type of production item
-            state.units.push(new Unit(this.isProducing, this.faction, {x:this.x, y:this.y}))
+            const newUnit = new Unit(this.isProducing, this.faction, { x: this.x, y: this.y })
+            state.units.push(newUnit)
+            this.supportedUnits.push(newUnit)
             this.productionStore = 0
         }
 
         this.foodStore = Math.max(0, this.foodStore)
+        this.productionStore = Math.max(0, this.productionStore)
         return notices
     }
 

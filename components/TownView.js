@@ -1,8 +1,10 @@
 import MapSection from "./MapSection";
-import styles from "./townView.module.scss";
-import { spriteSheets } from "../lib/SpriteSheet.tsx"
 import ProductionMenu from "./ProductionMenu";
 import Window from "./Window";
+import SupportedUnitsList from "./SupportedUnitsList";
+
+import styles from "./townView.module.scss";
+import { spriteSheets } from "../lib/SpriteSheet.tsx"
 
 export default class TownView extends React.Component {
 
@@ -51,8 +53,8 @@ export default class TownView extends React.Component {
                     </span>
                 </p>
 
-
                 <ProductionMenu handleTownAction={handleTownAction} town={town} />
+                <SupportedUnitsList town={town}/>
 
             </Window>
         )

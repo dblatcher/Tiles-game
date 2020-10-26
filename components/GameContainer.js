@@ -14,6 +14,7 @@ import townActions from '../lib/townActions'
 import PickUnitDialogue from './PickUnitDialogue'
 import TownView from './TownView'
 import MainMenu from './MainMenu'
+import FactionWindow from './FactionWindow'
 
 
 
@@ -37,6 +38,7 @@ export default class GameContainer extends React.Component {
             fallenUnits: [],
             unitPickDialogueChoices: [],
             openTown: null,
+            factionWindowIsOpen: false,
             pendingDialogues: [],
             mainMenuOpen: false,
         });
@@ -53,6 +55,7 @@ export default class GameContainer extends React.Component {
         this.handleTileHoverEnter = this.handleTileHoverEnter.bind(this)
         this.handleDialogueButton = this.handleDialogueButton.bind(this)
         this.toggleMainMenu = this.toggleMainMenu.bind(this)
+        this.toggleFactionWindow = this.toggleFactionWindow.bind(this)
     }
 
     get hasOpenDialogue() {
@@ -63,6 +66,12 @@ export default class GameContainer extends React.Component {
     toggleMainMenu() {
         this.setState(state => {
             return { mainMenuOpen: !state.mainMenuOpen }
+        })
+    }
+
+    toggleFactionWindow() {
+        this.setState(state => {
+            return { factionWindowIsOpen: !state.factionWindowIsOpen }
         })
     }
 
@@ -197,7 +206,7 @@ export default class GameContainer extends React.Component {
     render() {
         const { mapGrid, selectedSquare, units, towns, activeFaction,
             selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
-            pendingDialogues, unitWithMenuOpen, unitPickDialogueChoices, openTown, mainMenuOpen } = this.state
+            pendingDialogues, unitWithMenuOpen, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen } = this.state
 
         if (openTown) {
             return (
@@ -207,6 +216,15 @@ export default class GameContainer extends React.Component {
                     handleTownAction={this.handleTownAction}
                     mapGrid={mapGrid}
                     units={units} />
+            )
+        }
+
+        if (factionWindowIsOpen) {
+            return (
+                <FactionWindow
+                 faction={activeFaction} 
+                 towns={towns}
+                 closeWindow={this.toggleFactionWindow}/>
             )
         }
 
@@ -244,7 +262,9 @@ export default class GameContainer extends React.Component {
                         selectedUnit={selectedUnit}
                         selectedSquare={selectedSquare}
                         scrollToSquare={this.scrollToSquare}
+                        toggleFactionWindow={this.toggleFactionWindow}
                         activeFaction={activeFaction}
+                        towns={towns}
                     />
 
                     <div>

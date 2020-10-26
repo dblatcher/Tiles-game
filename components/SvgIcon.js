@@ -73,9 +73,10 @@ export default function SvgIcon(props) {
     if (!icons[iconName]) { console.error(`SvgIcon component passed iconName (${iconName}) with no matching icon data.`) }
 
     return (
-        <svg className={className} style={iconStyle}
+        <svg className={className} 
+        style={iconStyle}
+        source="Font Awesome Free 5.15.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)"
             viewBox={icon.viewBox}>
-            <span style={{display: "none"}}>Font Awesome Free 5.15.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)</span>
             <path d={icon.path} />
         </svg>
     );

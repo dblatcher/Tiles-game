@@ -1,6 +1,6 @@
 import React from 'react'
 import TileBoard from './TileBoard'
-import SeletedUnitAndSquareInfo from './SeletedUnitAndSquareInfo'
+import InfoBar from './InfoBar'
 import BattleDialogue from './BattleDialogue'
 import MessageDialogue from './MessageDialogue'
 import TextQuestionDialogue from './TextQuestionDialogue'
@@ -14,7 +14,7 @@ import townActions from '../lib/townActions'
 import PickUnitDialogue from './PickUnitDialogue'
 import TownView from './TownView'
 import MainMenu from './MainMenu'
-import SvgIcon from './SvgIcon'
+
 
 
 
@@ -213,9 +213,7 @@ export default class GameContainer extends React.Component {
         return (
 
             <>
-                {pendingDialogues.length > 0
-                    ? this.renderDialogue()
-                    : null}
+                {pendingDialogues.length > 0 ? this.renderDialogue() : null}
 
                 {unitPickDialogueChoices.length > 0
                     ? <PickUnitDialogue
@@ -242,16 +240,11 @@ export default class GameContainer extends React.Component {
 
                 <aside className={styles.upperInterfaceWindow} ref={this.upperWindowElement} >
 
-                    <div>
-                        <p>{activeFaction.name}</p>
-                        <p><SvgIcon iconName="coins" />: {activeFaction.treasury}</p>
-                        <p><SvgIcon iconName="lightBulb" />: {activeFaction.research}</p>
-                    </div>
-
-                    <SeletedUnitAndSquareInfo
+                    <InfoBar
                         selectedUnit={selectedUnit}
                         selectedSquare={selectedSquare}
                         scrollToSquare={this.scrollToSquare}
+                        activeFaction={activeFaction}
                     />
 
                     <div>

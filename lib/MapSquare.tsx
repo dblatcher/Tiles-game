@@ -27,8 +27,8 @@ class MapSquare {
 
     get infoList() {
         return [
-            `${this.description}[F:${this.foodYield} P:${this.productionYield} T:${this.tradeYield}]`,
-            `move cost: ${this.movementCost}${this.road ? ' (1 to road)' : ''}`,
+            `${this.description}`,
+            `move: ${this.movementCost}`,
             `[${this.x}, ${this.y}]`,
         ]
     }

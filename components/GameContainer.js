@@ -129,28 +129,17 @@ export default class GameContainer extends React.Component {
     }
 
     handleTownAction(command, input = {}) {
-        let commandFunction = state => state;
-        switch (command) {
-            case 'MAP_CLICK': commandFunction = townActions.mapClick(input); break;
-            case 'PRODUCTION_PICK': commandFunction = townActions.productionPick(input); break;
-            default:
-                console.warn(`unknown town command: ${command}`, input); return
+        if (!townActions[command]) {
+            console.warn(`unknown town command: ${command}`, input); return
         }
-
-        return this.setState(commandFunction)
+        return this.setState(townActions[command](input))
     }
 
     handleFactionAction(command, input ={}) {
-        let commandFunction = state => state;
-        switch (command) {
-            case 'TEST': commandFunction = factionActions.test(input);break
-            case 'CHANGE_BUDGET': commandFunction = factionActions.CHANGE_BUDGET(input);break
-            case 'CHANGE_BUDGET_LOCKED': commandFunction = factionActions.CHANGE_BUDGET_LOCKED(input);break
-            default:
-                console.warn(`unknown faction command: ${command}`, input); return
+        if (!factionActions[command]) {
+            console.warn(`unknown faction command: ${command}`, input); return
         }
-
-        return this.setState(commandFunction)
+        return this.setState(factionActions[command](input))
     }
 
     changeMode(newMode) {

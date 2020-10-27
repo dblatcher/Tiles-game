@@ -25,12 +25,12 @@ export default class InfoBar extends React.Component {
                     <p>
                         <span><SvgIcon color="goldenrod" iconName="coins" />{activeFaction.treasury}</span>
                         <span>{`(${allocatedBudget.treasury >= 0 ? '+' : ''}${allocatedBudget.treasury})`}</span>
-                        <span>{`${activeFaction.budget.treasury*100}%`}</span>
+                        <span>{activeFaction.budget.displayPercentage.treasury}</span>
                     </p>
                     <p>
                         <span><SvgIcon color="skyblue" iconName="lightBulb" />{activeFaction.research}</span>
                         <span>{`(${allocatedBudget.research >= 0 ? '+' : ''}${allocatedBudget.research})`}</span>
-                        <span>{`${activeFaction.budget.research*100}%`}</span>
+                        <span>{activeFaction.budget.displayPercentage.research}</span>
                     </p>
 
                 </article>

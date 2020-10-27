@@ -1,21 +1,22 @@
 import React from 'react'
+
 import TileBoard from './TileBoard'
 import InfoBar from './InfoBar'
 import BattleDialogue from './BattleDialogue'
 import MessageDialogue from './MessageDialogue'
 import TextQuestionDialogue from './TextQuestionDialogue'
-
 import ModeButtons from './ModeButtons'
 import TurnButtons from './TurnButtons'
-
-import styles from './gameContainer.module.scss'
-import gameActions from '../lib/gameActions'
-import townActions from '../lib/townActions'
 import PickUnitDialogue from './PickUnitDialogue'
 import TownView from './TownView'
 import MainMenu from './MainMenu'
 import FactionWindow from './FactionWindow'
 
+import gameActions from '../lib/gameActions'
+import townActions from '../lib/townActions'
+import factionActions from '../lib/factionActions'
+
+import styles from './gameContainer.module.scss'
 
 
 
@@ -51,6 +52,7 @@ export default class GameContainer extends React.Component {
         this.closeTownView = this.closeTownView.bind(this)
         this.handleMapSquareClick = this.handleMapSquareClick.bind(this)
         this.handleTownAction = this.handleTownAction.bind(this)
+        this.handleFactionAction = this.handleFactionAction.bind(this)
         this.handleOrderButton = this.handleOrderButton.bind(this)
         this.handleTileHoverEnter = this.handleTileHoverEnter.bind(this)
         this.handleDialogueButton = this.handleDialogueButton.bind(this)
@@ -133,6 +135,18 @@ export default class GameContainer extends React.Component {
             case 'PRODUCTION_PICK': commandFunction = townActions.productionPick(input); break;
             default:
                 console.warn(`unknown town command: ${command}`, input); return
+        }
+
+        return this.setState(commandFunction)
+    }
+
+    handleFactionAction(command, input ={}) {
+        let commandFunction = state => state;
+        switch (command) {
+            case 'TEST': commandFunction = factionActions.test(input);break
+            case 'CHANGE_BUDGET': commandFunction = factionActions.CHANGE_BUDGET(input);break
+            default:
+                console.warn(`unknown faction command: ${command}`, input); return
         }
 
         return this.setState(commandFunction)
@@ -224,6 +238,7 @@ export default class GameContainer extends React.Component {
                 <FactionWindow
                  faction={activeFaction} 
                  towns={towns}
+                 handleFactionAction={this.handleFactionAction}
                  closeWindow={this.toggleFactionWindow}/>
             )
         }

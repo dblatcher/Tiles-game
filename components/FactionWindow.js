@@ -1,4 +1,5 @@
 import Window from "./Window";
+import SvgIcon from "./SvgIcon"
 
 export default class FactionWindow extends React.Component {
 
@@ -27,10 +28,18 @@ export default class FactionWindow extends React.Component {
         })
     }
 
-    render() {
-        const { faction, closeWindow, towns, handleFactionAction } = this.props
-        const allocatedBudget = faction.calcuateAllocatedBudget(towns.filter(town => town.faction === faction))
+    renderBudgetIcon(category) {
+        switch (category) {
+            case 'treasury': return <SvgIcon color="goldenrod" iconName="coins" />
+            case 'research': return <SvgIcon color="skyblue" iconName="lightBulb" />
+            case 'entertainment': return <SvgIcon color="red" iconName="cocktail" />
+            default: return (null)
+        }
+    }
 
+    render() {
+        const { faction, closeWindow, towns } = this.props
+        const allocatedBudget = faction.calcuateAllocatedBudget(towns.filter(town => town.faction === faction))
         const budgetKeys = Object.keys(faction.budget.store)
 
         return (
@@ -54,7 +63,7 @@ export default class FactionWindow extends React.Component {
                                     checked={faction.budget.locked[category]}
                                     onChange={event => this.handleLockEvent (event, category)} />
                                 </td>
-                                <td>{allocatedBudget[category]} / turn</td>
+                                <td style={{minWidth:'6rem', textAlign:'right'}}>{allocatedBudget[category]}{this.renderBudgetIcon(category)} / turn</td>
                             </tr>
                         ))}
 

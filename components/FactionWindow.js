@@ -1,23 +1,32 @@
 import Window from "./Window";
 
 export default class FactionWindow extends React.Component {
-    
+
     constructor(props) {
         super(props)
 
         this.handleRangeEvent = this.handleRangeEvent.bind(this)
+        this.handleLockEvent = this.handleLockEvent.bind(this)
     }
 
     handleRangeEvent(event, category) {
         const { faction, handleFactionAction } = this.props
-        handleFactionAction('CHANGE_BUDGET', { 
-            faction, 
-            category, 
-            value: (Number(event.target.value)/100).toPrecision(2) 
+        handleFactionAction('CHANGE_BUDGET', {
+            faction,
+            category,
+            value: (Number(event.target.value) / 100).toPrecision(2)
         })
-
     }
-    
+
+    handleLockEvent(event, category) {
+        const { faction, handleFactionAction } = this.props
+        handleFactionAction('CHANGE_BUDGET_LOCKED', {
+            faction,
+            category,
+            value: event.target.checked 
+        })
+    }
+
     render() {
         const { faction, closeWindow, towns, handleFactionAction } = this.props
         const allocatedBudget = faction.calcuateAllocatedBudget(towns.filter(town => town.faction === faction))
@@ -34,26 +43,23 @@ export default class FactionWindow extends React.Component {
                         {budgetKeys.map(category => (
                             <tr key={`row-${category}`}>
                                 <th>{category}</th>
-                                <td>{faction.budget.displayPercentage[category]}</td>
-                                <td>{allocatedBudget[category]} per turn</td>
-                                <td>[{faction.budget.locked[category] ? 'locked' : 'not locked'}]</td>
-                                <td >{faction.budget[category]}</td>
+                                <td style={{width:'3rem'}}>{faction.budget.displayPercentage[category]}</td>
+                                <td>
+                                    <input type="range" min="0" max="100"
+                                        onChange={event => this.handleRangeEvent(event, category)}
+                                        value={faction.budget[category] * 100} />
+                                </td>
+                                <td>
+                                    <input type="checkbox" 
+                                    checked={faction.budget.locked[category]}
+                                    onChange={event => this.handleLockEvent (event, category)} />
+                                </td>
+                                <td>{allocatedBudget[category]} / turn</td>
                             </tr>
                         ))}
-                        <tr>
-                            <td></td>
-                            <td>{faction.budget['treasury'] +faction.budget['research'] + faction.budget['entertainment']}</td>
-                        </tr>
+
                     </tbody>
                 </table>
-
-                {budgetKeys.map(category => (
-                    <div key={`range-${category}`}>
-                        <input type="range" min="0" max="100" 
-                        onChange={(event)=>this.handleRangeEvent(event,category)}
-                        value={faction.budget[category]*100}/>
-                    </div>
-                ))}
 
 
             </Window>

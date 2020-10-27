@@ -145,6 +145,7 @@ export default class GameContainer extends React.Component {
         switch (command) {
             case 'TEST': commandFunction = factionActions.test(input);break
             case 'CHANGE_BUDGET': commandFunction = factionActions.CHANGE_BUDGET(input);break
+            case 'CHANGE_BUDGET_LOCKED': commandFunction = factionActions.CHANGE_BUDGET_LOCKED(input);break
             default:
                 console.warn(`unknown faction command: ${command}`, input); return
         }

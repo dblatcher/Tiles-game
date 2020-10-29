@@ -1,5 +1,6 @@
 import { unitTypes } from '../lib/Unit.tsx'
 import { spriteSheets } from '../lib/SpriteSheet.tsx'
+import { getTurnsToComplete } from '../lib/utility'
 import styles from './productionMenu.module.scss'
 import dialogueStyles from './dialogue.module.scss'
 
@@ -25,6 +26,8 @@ export default class ProductionMenu extends React.Component {
             .map(key => unitTypes[key])
             .map(unitType => {
 
+                const remainingProduction = unitType.productionCost - town.productionStore
+                let turnsToComplete = getTurnsToComplete(remainingProduction, town.output.productionYield)
 
                 return (
                     <li key={`unitOption-${unitType.name}`}
@@ -36,7 +39,7 @@ export default class ProductionMenu extends React.Component {
                         </figure>
 
                         <span>{`${unitType.name}(${unitType.productionCost})`}</span>
-                        <span>{`${Math.ceil(unitType.productionCost / town.output.productionYield)} turns`}</span>
+                        <span>{`${turnsToComplete} turn${turnsToComplete == 1 ? '' : 's'}`}</span>
                     </li>
                 )
             })
@@ -49,24 +52,13 @@ export default class ProductionMenu extends React.Component {
     }
 
     render() {
-        const { handleTownAction, town } = this.props
+        const { town } = this.props
         const { listIsOpen } = this.state
-
-
 
         return (<>
             <section>
-                <p>
-                    {town.isProducing ?
-                        (
-                            <span>{`Producing ${town.isProducing.name}: ${town.productionStore} / ${town.isProducing.productionCost}`}</span>
-                        ) : (
-                            <span>Producing nothing</span>
-                        )
-                    }
-                    <span>{`(+${town.output.productionYield})`}</span>
-                    <button onClick={this.openList}>change</button>
-                </p>
+                <button className={styles.changeButton} onClick={this.openList}>change</button>
+                <span>{`Producing ${town.isProducing ? town.isProducing.name : 'nothing'}`}</span>
             </section>
 
             {listIsOpen ?

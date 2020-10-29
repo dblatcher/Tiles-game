@@ -1,0 +1,21 @@
+.box {
+    border: 1px solid black;
+    background-color: seashell;
+    position: relative;
+    display: inline-block;
+    align-self: start;
+    width: 10rem;
+}
+
+.row {
+    min-height: 1rem;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.label {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: rgba($color: #fff, $alpha: .5);
+}

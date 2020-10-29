@@ -5,28 +5,42 @@ import SupportedUnitsList from "./SupportedUnitsList";
 
 import styles from "./townView.module.scss";
 import { spriteSheets } from "../lib/SpriteSheet.tsx"
+import ProgressBox from "./ProgressBox";
+import { displayGain, getTurnsToComplete, pluralise } from '../lib/utility'
 
 export default class TownView extends React.Component {
 
     constructor(props) {
         super(props)
-
         this.handleMapSquareClick = this.handleMapSquareClick.bind(this)
     }
 
     handleMapSquareClick(mapSquare) {
         const { town, handleTownAction } = this.props
-
         return handleTownAction('MAP_CLICK', { mapSquare, town })
+    }
+
+    getFoodStoreCaption() {
+        const { foodStoreRequiredForGrowth,foodStore } = this.props.town
+        const {foodYield} = this.props.town.output
+        let figure
+
+        if (foodYield > 0 ) {
+            figure = getTurnsToComplete(foodStoreRequiredForGrowth - foodStore, foodYield)
+            return `growth in ${figure} ${pluralise('turn', figure)}`
+        } else if (foodYield < 0) {
+            figure = getTurnsToComplete(foodStore, -foodYield)
+            return `starvation in ${figure} ${pluralise('turn', figure)}`
+        } else {
+            return 'no growth'
+        }
     }
 
     render() {
         const { town, closeTownView, mapGrid, handleTownAction } = this.props
 
         return (
-
             <Window title={town.name} buttons={[{ text: 'close', clickFunction: closeTownView }]}>
-
                 <div className={styles.frame}>
 
                     <section className={[styles.section, styles.black].join(" ")}>
@@ -48,16 +62,20 @@ export default class TownView extends React.Component {
                     </section>
 
                     <section className={styles.section}>
-                        <h2>Food store</h2>
-                        <p>
-                            <span>
-                                {`${town.foodStore}(${town.output.foodYield >= 0 ? '+' : ''}${town.output.foodYield})`}
-                            </span>
-                            <span>
-                                {` - ${town.foodStoreRequiredForGrowth} needed to grow.`}
-                            </span>
-                        </p>
-                        <h2>Production</h2>
+                        <h2>Food{displayGain(town.output.foodYield)} </h2>
+                        <ProgressBox
+                            current={town.foodStore}
+                            target={town.foodStoreRequiredForGrowth}
+                            unit="food"
+                        />
+                        <p>{this.getFoodStoreCaption()}</p>
+
+                        <h2>Production{displayGain(town.output.productionYield)}</h2>
+                        <ProgressBox
+                            current={town.productionStore}
+                            target={town.isProducing ? town.isProducing.productionCost : 0}
+                            unit="production"
+                        />
                         <ProductionMenu handleTownAction={handleTownAction} town={town} />
                     </section>
 

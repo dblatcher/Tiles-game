@@ -41,8 +41,6 @@ export default class GameContainer extends React.Component {
             factionWindowIsOpen: false,
             pendingDialogues: [],
             mainMenuOpen: false,
-
-            CHANGE_IS_PENDING: false
         });
 
         this.gameHolderElement = React.createRef()
@@ -85,7 +83,7 @@ export default class GameContainer extends React.Component {
     }
 
     handleMapSquareClick(input) {
-        const {mapSquare, source} = input
+        const {mapSquare} = input
 
         if (this.hasOpenDialogue) { return false }
 
@@ -105,18 +103,11 @@ export default class GameContainer extends React.Component {
 
     handleOrderButton(command, input = {}) {
         if (this.hasOpenDialogue) { return false }
-        let commandFunction = state => state;
-        switch (command) {
-            case "END_OF_TURN": commandFunction = gameActions.END_OF_TURN; break;
-            case "NEXT_UNIT": commandFunction = gameActions.NEXT_UNIT(input); break;
-            case "PREVIOUS_UNIT": commandFunction = gameActions.PREVIOUS_UNIT(input); break;
-            case "START_ORDER": commandFunction = gameActions.START_ORDER(input); break;
-            case "CANCEL_ORDER": commandFunction = gameActions.CANCEL_ORDER(input); break;
-            default:
-                console.warn(`unknown command: ${command}`, input); return
+        if (!gameActions[command]) {
+            console.warn (`unknown order button command ${command}`, input)
+            return false
         }
-
-        return this.setState(commandFunction, this.scrollToSelection)
+        return this.setState(gameActions[command](input),this.scrollToSelection)
     }
 
     handleDialogueButton(command, input = {}) {
@@ -130,7 +121,6 @@ export default class GameContainer extends React.Component {
             default:
                 console.warn(`unknown dialogue command: ${command}`, input); return
         }
-
         return this.setState(commandFunction)
     }
 

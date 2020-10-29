@@ -35,7 +35,7 @@ export default class TileBoard extends React.Component {
         const { handleMapSquareClick, selectedSquare, selectedUnit, handleTileHoverEnter, mapGrid, interfaceMode, gameHasOpenDialogue } = this.props;
         return (
             <Tile key={`${mapSquare.x},${mapSquare.y}`}
-                handleClick={() => { handleMapSquareClick(mapSquare) }}
+                handleClick={() => { handleMapSquareClick({mapSquare, source:'tile'}) }}
                 interfaceMode={interfaceMode}
                 mapSquare={mapSquare}
                 selectedUnit={selectedUnit}
@@ -62,7 +62,9 @@ export default class TileBoard extends React.Component {
         const squareUnitIsOn = mapGrid[unit.y][unit.x]
 
         return (<UnitFigure
-            handleClick={() => { handleMapSquareClick(squareUnitIsOn) }}
+            handleClick={() => { 
+                handleMapSquareClick({mapSquare:squareUnitIsOn, source:'unit'}) 
+            }}
             squareUnitIsOn={squareUnitIsOn}
             interfaceMode={interfaceMode}
             unit={unit}
@@ -82,7 +84,9 @@ export default class TileBoard extends React.Component {
         return (
             <TownFigure town={town}
             key={"town#" + town.indexNumber}
-            handleClick={() => {handleMapSquareClick(squaretownIsOn)}}/>
+            handleClick={() => {
+                handleMapSquareClick({mapSquare: squaretownIsOn, source:'town'})
+            }}/>
         )
     }
 

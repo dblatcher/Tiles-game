@@ -25,19 +25,17 @@ export default class TownFigure extends React.Component {
 
         const spriteStyle = {
             backgroundColor: town.faction.color,
-
         }
 
         return (
             <figure
-                onClick={handleClick}
+                onClick={() => { handleClick() }}
                 style={figureStyle}
                 className={figureClassList.join(" ")}
             >
                 <i
                     style={spriteStyle}
                     className={spriteClassList.join(" ")}
-                    onClick={handleClick || function () { }}
                 >
                 </i>
 

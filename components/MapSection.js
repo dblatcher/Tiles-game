@@ -25,7 +25,7 @@ export default class MapSection extends React.Component {
     }
 
     renderTile(mapSquare, excludeCorners) {
-        const { handleMapSquareClick, selectedSquare, handleTileHoverEnter, xStart, xSpan, yStart, ySpan, town } = this.props;
+        const { handleMapSectionClick, selectedSquare, handleTileHoverEnter, xStart, xSpan, yStart, ySpan, town } = this.props;
         if (mapSquare.x < xStart || mapSquare.x > xStart + xSpan - 1) { return null }
 
         const isCorner = (mapSquare.x === xStart || mapSquare.x === xStart + xSpan - 1) && (mapSquare.y === yStart || mapSquare.y === yStart + ySpan - 1)
@@ -39,7 +39,7 @@ export default class MapSection extends React.Component {
 
         return (
             <Tile key={`${mapSquare.x},${mapSquare.y}`}
-                handleClick={handleMapSquareClick ? () => { handleMapSquareClick(mapSquare) } : null}
+                handleClick={handleMapSectionClick ? () => { handleMapSectionClick(mapSquare) } : null}
                 mapSquare={mapSquare}
                 isSelected={mapSquare === selectedSquare}
                 handleTileHoverEnter={handleTileHoverEnter}
@@ -87,7 +87,7 @@ export default class MapSection extends React.Component {
 
 
     renderCitizen(citizen, index) {
-        const { yStart, xStart, handleMapSquareClick } = this.props
+        const { yStart, xStart, handleMapSectionClick } = this.props
 
         const xPlacement = citizen.mapSquare.x - xStart
         const yPlacement = citizen.mapSquare.y - yStart
@@ -101,7 +101,7 @@ export default class MapSection extends React.Component {
             <figure
                 style={figureStyle}
                 className={styles.citizenFigure}
-                onClick={handleMapSquareClick ? () => { handleMapSquareClick(citizen.mapSquare) } : null}
+                onClick={handleMapSectionClick ? () => { handleMapSectionClick(citizen.mapSquare) } : null}
                 key={`citizenIcon-${index}`}>
 
                 <i className={styles.spriteOnMapSection}

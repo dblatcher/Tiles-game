@@ -12,12 +12,11 @@ import TownView from './TownView'
 import MainMenu from './MainMenu'
 import FactionWindow from './FactionWindow'
 
-import gameActions from '../lib/gameActions'
-import townActions from '../lib/townActions'
-import factionActions from '../lib/factionActions'
+import gameActions from '../lib/game-logic/gameActions'
+import townActions from '../lib/game-logic/townActions'
+import factionActions from '../lib/game-logic/factionActions'
 
 import styles from './gameContainer.module.scss'
-
 
 
 
@@ -42,6 +41,8 @@ export default class GameContainer extends React.Component {
             factionWindowIsOpen: false,
             pendingDialogues: [],
             mainMenuOpen: false,
+
+            CHANGE_IS_PENDING: false
         });
 
         this.gameHolderElement = React.createRef()
@@ -83,16 +84,21 @@ export default class GameContainer extends React.Component {
         })
     }
 
-    handleMapSquareClick(mapSquare) {
+    handleMapSquareClick(input) {
+        const {mapSquare, source} = input
+
         if (this.hasOpenDialogue) { return false }
 
         if (this.state.selectedUnit && this.state.interfaceMode === 'MOVE' && !this.state.selectedUnit.isAdjacentTo(mapSquare)) {
             return this.scrollToSquare(mapSquare)
         }
 
-        return this.setState(gameActions.handleMapSquareClick(mapSquare), () => {
-            if (this.state.interfaceMode === 'VIEW') { this.scrollToSelection() }
-        })
+        return this.setState(
+            gameActions.HANDLE_MAP_CLICK(input), 
+            () => {
+                if (this.state.interfaceMode === 'VIEW') { this.scrollToSelection() }
+            }
+        )
 
     }
 
@@ -101,11 +107,11 @@ export default class GameContainer extends React.Component {
         if (this.hasOpenDialogue) { return false }
         let commandFunction = state => state;
         switch (command) {
-            case "END_OF_TURN": commandFunction = gameActions.endOfTurn; break;
-            case "NEXT_UNIT": commandFunction = gameActions.selectNextUnit; break;
-            case "PREVIOUS_UNIT": commandFunction = gameActions.selectPreviousUnit; break;
-            case "START_ORDER": commandFunction = gameActions.startOrder(input); break;
-            case "CANCEL_ORDER": commandFunction = gameActions.cancelOrder; break;
+            case "END_OF_TURN": commandFunction = gameActions.END_OF_TURN; break;
+            case "NEXT_UNIT": commandFunction = gameActions.NEXT_UNIT(input); break;
+            case "PREVIOUS_UNIT": commandFunction = gameActions.PREVIOUS_UNIT(input); break;
+            case "START_ORDER": commandFunction = gameActions.START_ORDER(input); break;
+            case "CANCEL_ORDER": commandFunction = gameActions.CANCEL_ORDER(input); break;
             default:
                 console.warn(`unknown command: ${command}`, input); return
         }

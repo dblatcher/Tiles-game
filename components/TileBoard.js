@@ -3,7 +3,6 @@ import React from 'react';
 import Tile from './Tile'
 import UnitFigure from './UnitFigure'
 import styles from './tile.module.scss'
-import TownFigure from './TownFigure';
 
 
 
@@ -32,12 +31,16 @@ export default class TileBoard extends React.Component {
     }
 
     renderTile(mapSquare) {
-        const { handleMapSquareClick, selectedSquare, selectedUnit, handleTileHoverEnter, mapGrid, interfaceMode, gameHasOpenDialogue } = this.props;
+        const { handleMapSquareClick, selectedSquare, selectedUnit, handleTileHoverEnter, mapGrid, interfaceMode, gameHasOpenDialogue, towns } = this.props;
+        
+        const town = towns.filter(town => town.mapSquare === mapSquare)[0]
+
         return (
             <Tile key={`${mapSquare.x},${mapSquare.y}`}
                 handleClick={() => { handleMapSquareClick({mapSquare, source:'tile'}) }}
                 interfaceMode={interfaceMode}
                 mapSquare={mapSquare}
+                town={town}
                 selectedUnit={selectedUnit}
                 squareSelectedUnitIsIn={selectedUnit ? mapGrid[selectedUnit.y][selectedUnit.x] : null}
                 isSelected={mapSquare === selectedSquare}
@@ -77,26 +80,12 @@ export default class TileBoard extends React.Component {
         />)
     }
 
-    renderTown (town) {
-        const { handleMapSquareClick, mapGrid } = this.props;
-        const squaretownIsOn = mapGrid[town.y][town.x]
-
-        return (
-            <TownFigure town={town}
-            key={"town#" + town.indexNumber}
-            handleClick={() => {
-                handleMapSquareClick({mapSquare: squaretownIsOn, source:'town'})
-            }}/>
-        )
-    }
-
     render() {
         const { mapGrid, units=[], fallenUnits=[], towns=[] } = this.props
         return (
             <section style={{ position: 'relative' }}>
                 {mapGrid.map((row, index) => this.renderRow(row, index))}
                 {[].concat(units, fallenUnits).map(unit => this.renderUnit(unit))}
-                {towns.map(town => this.renderTown(town))}
             </section>
         )
     }

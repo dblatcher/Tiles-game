@@ -4,12 +4,13 @@
     @include figure();
 }
 
-.figureOnMap {
+.figureOnMapSection {
     position: absolute;
-    transition: left .5s, top .5s;
+    left: 0;
+    top: 0;
 }
 
-.figureInInfoRow {
+.figureOnTileBoard {
     position: relative;
 }
 
@@ -35,6 +36,7 @@
     letter-spacing: 1px;
     left: 50%;
     transform: translateX(-50%) translateY(65%);
+    z-index: 5;
 }
 
 .populationNumber {
@@ -45,4 +47,5 @@
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
     font-size: 2.5rem;
+    z-index: 5;
 }

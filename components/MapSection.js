@@ -2,7 +2,6 @@ import React from 'react';
 
 import Tile from './Tile'
 import styles from './mapSection.module.scss'
-import TownFigure from './TownFigure';
 
 import { spriteSheets } from "../lib/SpriteSheet.tsx"
 import VoidMapSquare from "../lib/game-entities/VoidMapSquare.tsx";
@@ -30,6 +29,8 @@ export default class MapSection extends React.Component {
 
         const isCorner = (mapSquare.x === xStart || mapSquare.x === xStart + xSpan - 1) && (mapSquare.y === yStart || mapSquare.y === yStart + ySpan - 1)
 
+        const isTownTile = town.mapSquare === mapSquare
+
         if (isCorner && excludeCorners) {
             return this.renderEmptyTile(mapSquare.x, mapSquare.y)
         }
@@ -41,6 +42,8 @@ export default class MapSection extends React.Component {
             <Tile key={`${mapSquare.x},${mapSquare.y}`}
                 handleClick={handleMapSectionClick ? () => { handleMapSectionClick(mapSquare) } : null}
                 mapSquare={mapSquare}
+                onMapSection={true}
+                town={isTownTile ? town : null }
                 isSelected={mapSquare === selectedSquare}
                 handleTileHoverEnter={handleTileHoverEnter}
                 showYields={showYields}
@@ -112,19 +115,6 @@ export default class MapSection extends React.Component {
         )
     }
 
-    renderTown(town) {
-        const { ySpan, xSpan } = this.props;
-
-        return (
-            <TownFigure town={town}
-                onMapSection
-                xPlacement={(xSpan - 1) / 2}
-                yPlacement={(ySpan - 1) / 2}
-                key={"town#" + town.indexNumber}
-            />
-        )
-    }
-
     render() {
         const { mapGrid, town, yStart, ySpan } = this.props
         let emptyRowY
@@ -153,7 +143,6 @@ export default class MapSection extends React.Component {
                     {emptyRowsAbove}
                     {mapGrid.map((row, index) => this.renderRow(row, index))}
                     {emptyRowsBelow}
-                    {this.renderTown(town)}
                     {citizensOnMap}
                 </div>
             </section>

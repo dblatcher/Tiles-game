@@ -5,21 +5,20 @@ import { spriteSheets } from '../lib/SpriteSheet.tsx'
 export default class TownFigure extends React.Component {
 
     render() {
-        const { town, handleClick, isFallen, onMapSection, xPlacement = 0, yPlacement = 0 } = this.props
+        const { town, handleClick, isFallen, onMapSection} = this.props
 
         let figureClassList = [styles.figure]
         let spriteClassList = [styles.sprite]
 
-        figureClassList.push(styles.figureOnMap)
+        figureClassList.push( onMapSection ? styles.figureOnMapSection : styles.figureOnTileBoard)
 
 
+        //TO DO - burnning town animation?
         if (isFallen) {
             spriteClassList.push(styles.fallenSprite)
         }
 
         const figureStyle = {
-            left: onMapSection ? `${xPlacement * 4}rem` : `${town.x * 4}rem`,
-            top: onMapSection ? `${yPlacement * 4}rem` : `${town.y * 4}rem`,
             pointerEvents: isFallen ? 'none' : 'unset',
         }
 

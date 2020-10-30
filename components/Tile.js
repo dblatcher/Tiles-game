@@ -1,5 +1,6 @@
 import React from 'react'
 import SvgIcon from './SvgIcon'
+import TownFigure from './TownFigure';
 import styles from './tile.module.scss'
 import { spriteSheets } from '../lib/SpriteSheet.tsx'
 
@@ -69,8 +70,11 @@ export default class Tile extends React.Component {
     }
 
     render() {
-        const { mapSquare, handleClick, isSelected, selectedUnit, inInfoRow, squareSelectedUnitIsIn, interfaceMode, gameHasOpenDialogue, showYields } = this.props
+        const { mapSquare, handleClick, isSelected, 
+            selectedUnit, inInfoRow, squareSelectedUnitIsIn, interfaceMode, 
+            gameHasOpenDialogue, showYields, town, onMapSection } = this.props
         const { isHoveredOn } = this.state
+
         const containsSelectedUnit = selectedUnit && (mapSquare.x === selectedUnit.x && mapSquare.y === selectedUnit.y);
         const selectedUnitCanMoveTo = selectedUnit && selectedUnit.canMoveTo(mapSquare, squareSelectedUnitIsIn);
         const needsCoastLine = this.doesNeedCoastline()
@@ -101,6 +105,9 @@ export default class Tile extends React.Component {
                 {needsCoastLine && mapSquare.isWater ? this.renderSprite(spriteSheets.coastlines) : (null)}
                 {needsCoastLine && !mapSquare.isWater ? this.renderSprite(spriteSheets.innerCoastlines) : (null)}
                 {mapSquare.road ? this.renderSprite(spriteSheets.roads) : (null)}
+
+                { town ? <TownFigure town={town} onMapSection={onMapSection} /> : null}
+
                 {mapSquare.tree ? this.renderSprite(spriteSheets.trees) : (null)}
 
                 {showYields ? this.renderYieldLines() : null}

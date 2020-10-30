@@ -81,9 +81,13 @@ export default class TileBoard extends React.Component {
     }
 
     render() {
-        const { mapGrid, units=[], fallenUnits=[], towns=[] } = this.props
+        const { mapGrid, units=[], fallenUnits=[], towns=[], mapZoomLevel=1 } = this.props
+        const sectionStyle = { fontSize: `${mapZoomLevel*100}%` }
+
         return (
-            <section style={{ position: 'relative' }}>
+            <section 
+            className={styles.tileBoard} 
+            style={sectionStyle}>
                 {mapGrid.map((row, index) => this.renderRow(row, index))}
                 {[].concat(units, fallenUnits).map(unit => this.renderUnit(unit))}
             </section>

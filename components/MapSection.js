@@ -96,8 +96,8 @@ export default class MapSection extends React.Component {
         const yPlacement = citizen.mapSquare.y - yStart
 
         const figureStyle = {
-            left: `${xPlacement * 4 * 16}px`,
-            top: `${yPlacement * 4 * 16}px`,
+            left: `${xPlacement * 4}em`,
+            top: `${yPlacement * 4}em`,
         }
 
         return (

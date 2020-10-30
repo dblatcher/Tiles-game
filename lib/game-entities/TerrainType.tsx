@@ -43,7 +43,7 @@ const terrainTypes = {
         yields: [3,1,0],
         css: {
             background: 'burlywood',
-            backgroundImage: 'repeating-linear-gradient(0deg, transparent -.1rem, black .5rem)',
+            backgroundImage: 'repeating-linear-gradient(0deg, transparent -.1em, black .5em)',
         }
     }),
     swamp: new TerrainType('swamp',{

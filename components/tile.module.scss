@@ -3,16 +3,20 @@
     flex-flow: row nowrap;
 }
 
+.tileBoard {
+    transition: font-size .5s;
+    transition-timing-function: linear;
+    position: relative;
+}
 
 .tile {
     display: inline-flex;
     flex-direction: column;
     position: relative;
-    width: 4rem;
-    height: 4rem;
+    width: 4em;
+    height: 4em;
     margin: 0;
     padding: 0;
-    font-size: x-small;
     flex-shrink: 0;
 }
 
@@ -65,7 +69,6 @@
 .yieldLine {
     margin: 0;
     color: white;
-    font-size: medium;
     z-index: 1;
     display: flex;
     align-items: center;

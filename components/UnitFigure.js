@@ -42,8 +42,8 @@ export default class UnitFigure extends React.Component {
         if (placeInStack > 0) { spriteClassList.push(styles.behind) }
 
         const figureStyle = {
-            left: inInfoRow ? 'unset' : `${unit.x * 4}rem`,
-            top: inInfoRow ? 'unset' : `${unit.y * 4}rem`,
+            left: inInfoRow ? 'unset' : `${unit.x * 4}em`,
+            top: inInfoRow ? 'unset' : `${unit.y * 4}em`,
             backgroundImage: isFallen
                 ? ''
                 : placeInStack === 0

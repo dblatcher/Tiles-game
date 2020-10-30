@@ -41,6 +41,7 @@ export default class GameContainer extends React.Component {
             factionWindowIsOpen: false,
             pendingDialogues: [],
             mainMenuOpen: false,
+            mapZoomLevel: 1,
         });
 
         this.gameHolderElement = React.createRef()
@@ -57,6 +58,7 @@ export default class GameContainer extends React.Component {
         this.handleDialogueButton = this.handleDialogueButton.bind(this)
         this.toggleMainMenu = this.toggleMainMenu.bind(this)
         this.toggleFactionWindow = this.toggleFactionWindow.bind(this)
+        this.mapZoom = this.mapZoom.bind(this)
     }
 
     get hasOpenDialogue() {
@@ -67,6 +69,26 @@ export default class GameContainer extends React.Component {
     toggleMainMenu() {
         this.setState(state => {
             return { mainMenuOpen: !state.mainMenuOpen }
+        })
+    }
+
+    mapZoom(directive) {
+
+        this.setState(state => {
+            const changeAmount = .2, max = 2, min = .4
+            let newZoomLevel = state.mapZoomLevel
+
+            if (directive === "IN") {
+                newZoomLevel = Math.min(max, state.mapZoomLevel + changeAmount)
+            } else if (directive === "OUT") {
+                newZoomLevel = Math.max(min, state.mapZoomLevel - changeAmount)
+            } else if  (directive === "RESET") {
+                newZoomLevel = 1
+            }
+
+            return {
+                mapZoomLevel: newZoomLevel
+            }
         })
     }
 
@@ -83,7 +105,7 @@ export default class GameContainer extends React.Component {
     }
 
     handleMapSquareClick(input) {
-        const {mapSquare} = input
+        const { mapSquare } = input
 
         if (this.hasOpenDialogue) { return false }
 
@@ -92,7 +114,7 @@ export default class GameContainer extends React.Component {
         }
 
         return this.setState(
-            gameActions.HANDLE_MAP_CLICK(input), 
+            gameActions.HANDLE_MAP_CLICK(input),
             () => {
                 if (this.state.interfaceMode === 'VIEW') { this.scrollToSelection() }
             }
@@ -104,10 +126,10 @@ export default class GameContainer extends React.Component {
     handleOrderButton(command, input = {}) {
         if (this.hasOpenDialogue) { return false }
         if (!gameActions[command]) {
-            console.warn (`unknown order button command ${command}`, input)
+            console.warn(`unknown order button command ${command}`, input)
             return false
         }
-        return this.setState(gameActions[command](input),this.scrollToSelection)
+        return this.setState(gameActions[command](input), this.scrollToSelection)
     }
 
     handleDialogueButton(command, input = {}) {
@@ -131,7 +153,7 @@ export default class GameContainer extends React.Component {
         return this.setState(townActions[command](input))
     }
 
-    handleFactionAction(command, input ={}) {
+    handleFactionAction(command, input = {}) {
         if (!factionActions[command]) {
             console.warn(`unknown faction command: ${command}`, input); return
         }
@@ -162,9 +184,10 @@ export default class GameContainer extends React.Component {
     scrollToSquare(target) {
         if (!target) { return false }
         const { x, y } = target
+        const { mapZoomLevel } = this.state
 
         //to do - support left aligned interface window 
-        const tileSize = (4 * 16)
+        const tileSize = (4 * 16 * mapZoomLevel)
         const leftBorderSize = (1 * 16)
         const topBorderSize = this.upperWindowElement.current
             ? this.upperWindowElement.current.offsetHeight
@@ -206,7 +229,8 @@ export default class GameContainer extends React.Component {
     render() {
         const { mapGrid, selectedSquare, units, towns, activeFaction,
             selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
-            pendingDialogues, unitWithMenuOpen, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen } = this.state
+            pendingDialogues, unitWithMenuOpen, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
+            mapZoomLevel } = this.state
 
         if (openTown) {
             return (
@@ -222,10 +246,10 @@ export default class GameContainer extends React.Component {
         if (factionWindowIsOpen) {
             return (
                 <FactionWindow
-                 faction={activeFaction} 
-                 towns={towns}
-                 handleFactionAction={this.handleFactionAction}
-                 closeWindow={this.toggleFactionWindow}/>
+                    faction={activeFaction}
+                    towns={towns}
+                    handleFactionAction={this.handleFactionAction}
+                    closeWindow={this.toggleFactionWindow} />
             )
         }
 
@@ -254,6 +278,7 @@ export default class GameContainer extends React.Component {
                         selectedUnit={selectedUnit}
                         fallenUnits={fallenUnits}
                         gameHasOpenDialogue={this.hasOpenDialogue}
+                        mapZoomLevel={mapZoomLevel}
                     />
                 </main>
 
@@ -269,6 +294,15 @@ export default class GameContainer extends React.Component {
                     />
 
                     <div>
+                        <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
+                            onClick={() => { this.mapZoom('OUT') }}
+                        >zoom_out</i>
+                        <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
+                            onClick={() => { this.mapZoom('RESET') }}
+                        >search</i>
+                        <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
+                            onClick={() => { this.mapZoom('IN') }}
+                        >zoom_in</i>
                         <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
                             onClick={this.toggleMainMenu}>
                             {mainMenuOpen ? "menu_open" : "menu"}

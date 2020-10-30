@@ -47,8 +47,8 @@ const icons = {
 const defaultIconStyle = {
     color: 'black',
     fill: 'black',
-    width: '1rem',
-    height: '1rem',
+    width: '1em',
+    height: '1em',
 }
 
 

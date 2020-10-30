@@ -1,52 +1,10 @@
 import { Faction } from './Faction'
 import { MapSquare } from './MapSquare'
 import { Unit, UnitType } from './Unit.tsx'
+import { citizenJobs } from './game-entities/CitizenJob.tsx'
+import { Citizen } from './game-entities/Citizen.tsx'
 
 let townIndex = 0
-
-class CitizenJob {
-    name: string;
-    constructor(name) {
-        this.name = name
-    }
-}
-
-const citizenJobs = {
-    unemployed: new CitizenJob('unemployed'),
-    worker: new CitizenJob('worker'),
-}
-
-class Citizen {
-    mapSquare: MapSquare | null;
-    job: CitizenJob | null;
-
-    constructor(mapSquare = null, job = citizenJobs.unemployed) {
-        this.mapSquare = mapSquare
-        this.job = job
-    }
-
-    putToWorkInSquare(mapSquare: MapSquare) {
-        this.mapSquare = mapSquare
-        this.job = citizenJobs.worker
-    }
-
-    makeUnemployed() {
-        this.mapSquare = null
-        this.job = citizenJobs.unemployed
-    }
-
-    get output() {
-        if (this.mapSquare) {
-            return {
-                foodYield: this.mapSquare.foodYield,
-                tradeYield: this.mapSquare.tradeYield,
-                productionYield: this.mapSquare.productionYield,
-            }
-        }
-
-        return {}
-    }
-}
 
 class Town {
     faction: Faction;
@@ -211,4 +169,4 @@ class Town {
 }
 
 
-export { Town, citizenJobs }
+export { Town }

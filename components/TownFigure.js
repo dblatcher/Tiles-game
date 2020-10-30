@@ -29,11 +29,12 @@ export default class TownFigure extends React.Component {
 
         return (
             <figure
-                onClick={() => { handleClick() }}
+                onClick={handleClick}
                 style={figureStyle}
                 className={figureClassList.join(" ")}
             >
                 <i
+                    onClick={handleClick}
                     style={spriteStyle}
                     className={spriteClassList.join(" ")}
                 >

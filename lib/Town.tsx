@@ -102,7 +102,64 @@ class Town {
         return output
     }
 
+    getSquaresAndObstacles(mapGrid, towns) {
+        const { x, y } = this.mapSquare
+        let row, col, townIndex, citizenIndex, squares = [], obstacle = null, obstacles = [];
 
+        for (row = y - 2; row <= y + 2; row++) {
+            if (mapGrid[row]) {
+                for (col = x - 2; col <= x + 2; col++) {
+                    if (!mapGrid[row][col]) { continue }     // can't work square off the map
+                    if (col === x && row === y) { continue } // can't work home square
+                    if (Math.abs(col - x) + Math.abs(row - y) === 4) { continue } // can't work corners
+                    //TO DO - if any non-friendly unit is fortified on square, push to obstacles
+
+                    squares.push(mapGrid[row][col])
+                    obstacle = null
+                    for (townIndex = 0; townIndex < towns.length; townIndex++) {
+                        for (citizenIndex = 0; citizenIndex < towns[townIndex].citizens.length; citizenIndex++) {
+                            if (mapGrid[row][col] === towns[townIndex].citizens[citizenIndex].mapSquare) {
+                                obstacle = towns[townIndex].citizens[citizenIndex];
+                                break;
+                            }
+                        }
+                        if (obstacle) { break }
+                    }
+                    obstacles.push(obstacle)
+                }
+            }
+        }
+
+        let freeSquares = []
+        squares.forEach((mapSquare, index) => {
+            if (!obstacles[index]) { freeSquares.push(mapSquare) }
+        })
+
+        return { squares, obstacles, freeSquares }
+    }
+
+    autoAssignCitizen(citizen, state) {
+        const { mapGrid, towns } = state
+        let freeSquares = this.getSquaresAndObstacles(mapGrid, towns).freeSquares
+        citizen.putToWorkInSquare(freeSquares.shift())
+        return citizen
+    }
+
+    autoAssignFreeCitizens(state) {
+        const { mapGrid, towns } = state
+        let freeSquares = this.getSquaresAndObstacles(mapGrid, towns).freeSquares
+        let freeCitizens = this.citizens.filter(citizen => citizen.job === citizenJobs.unemployed)
+
+        // TO DO - set priorites eg maximise production without starving
+        freeSquares.sort((squareA, squareB) => {
+            return (squareB.foodYield + squareB.tradeYield + squareB.productionYield) - (squareA.foodYield + squareA.tradeYield + squareA.productionYield)
+        })
+
+        while (freeCitizens.length > 0 && freeSquares.length > 0) {
+            freeCitizens.shift().putToWorkInSquare(freeSquares.shift())
+        }
+        return this
+    }
 
     processTurn(state) {
         let notices = []
@@ -116,7 +173,10 @@ class Town {
         }
 
         if (this.foodStore >= this.foodStoreRequiredForGrowth) {
-            this.citizens.push(new Citizen())
+            const newCitizen = new Citizen()
+            this.autoAssignCitizen(newCitizen, state)
+
+            this.citizens.push(newCitizen)
             this.foodStore = 0
             notices.push(`${this.name} has grown to a population of ${this.population}.`)
         }
@@ -126,7 +186,7 @@ class Town {
 
             while (shortFall > 0 && this.supportedUnits.length > 0) {
                 notices.push(`${this.name} cannot support  ${this.supportedUnits[0].type.name}. Unit disbanded`)
-                state.units.splice(state.units.indexOf(this.supportedUnits[0]),1)
+                state.units.splice(state.units.indexOf(this.supportedUnits[0]), 1)
                 this.supportedUnits.shift()
                 shortFall--
             }
@@ -135,7 +195,6 @@ class Town {
         if (this.isProducing && this.productionStore >= this.isProducing.productionCost) {
             notices.push(`${this.name} has finished building ${this.isProducing.name}`)
 
-            // to do - have list of units maintained by town
             // to do - reduce population if unit is 'settler' (has townBuilding > 0)
             // to do - add test for type of production item
             const newUnit = new Unit(this.isProducing, this.faction, { x: this.x, y: this.y })

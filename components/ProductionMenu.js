@@ -1,4 +1,4 @@
-import { unitTypes } from '../lib/Unit.tsx'
+import { unitTypes } from '../lib/game-entities/Unit.tsx'
 import { spriteSheets } from '../lib/SpriteSheet.tsx'
 import { getTurnsToComplete } from '../lib/utility'
 import styles from './productionMenu.module.scss'

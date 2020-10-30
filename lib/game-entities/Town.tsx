@@ -1,8 +1,8 @@
 import { Faction } from './Faction'
 import { MapSquare } from './MapSquare'
 import { Unit, UnitType } from './Unit.tsx'
-import { citizenJobs } from './game-entities/CitizenJob.tsx'
-import { Citizen } from './game-entities/Citizen.tsx'
+import { citizenJobs } from './CitizenJob.tsx'
+import { Citizen } from './Citizen.tsx'
 
 let townIndex = 0
 

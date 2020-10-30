@@ -1,4 +1,4 @@
-import { onGoingOrderTypes } from '../lib/OngoingOrder.tsx'
+import { onGoingOrderTypes } from '../lib/game-entities/OngoingOrder.tsx'
 
 import styles from './unitContextMenu.module.scss'
 

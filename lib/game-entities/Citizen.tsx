@@ -1,4 +1,4 @@
-import { MapSquare } from '../MapSquare'
+import { MapSquare } from './MapSquare'
 import { CitizenJob, citizenJobs } from './CitizenJob.tsx'
 
 class Citizen {

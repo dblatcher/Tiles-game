@@ -1,4 +1,4 @@
-import TradeBudget from './TradeBudget.js'
+import TradeBudget from '../TradeBudget.js'
 
 class Faction {
     name: string;

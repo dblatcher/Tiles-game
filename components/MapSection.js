@@ -5,7 +5,7 @@ import styles from './mapSection.module.scss'
 import TownFigure from './TownFigure';
 
 import { spriteSheets } from "../lib/SpriteSheet.tsx"
-import VoidMapSquare from "../lib/VoidMapSquare.tsx";
+import VoidMapSquare from "../lib/game-entities/VoidMapSquare.tsx";
 
 
 export default class MapSection extends React.Component {

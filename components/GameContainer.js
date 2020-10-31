@@ -16,6 +16,9 @@ import gameActions from '../lib/game-logic/gameActions'
 import townActions from '../lib/game-logic/townActions'
 import factionActions from '../lib/game-logic/factionActions'
 
+import {Message} from '../lib/game-entities/Message.tsx'
+import { SerialisedGame } from '../lib/serialiseGame'
+
 import styles from './gameContainer.module.scss'
 
 
@@ -58,7 +61,8 @@ export default class GameContainer extends React.Component {
         this.handleDialogueButton = this.handleDialogueButton.bind(this)
         this.toggleMainMenu = this.toggleMainMenu.bind(this)
         this.toggleFactionWindow = this.toggleFactionWindow.bind(this)
-        this.mapZoom = this.mapZoom.bind(this)
+        this.setMapZoomLevel = this.setMapZoomLevel.bind(this)
+        this.handleStorageAction = this.handleStorageAction.bind(this)
     }
 
     get hasOpenDialogue() {
@@ -72,7 +76,46 @@ export default class GameContainer extends React.Component {
         })
     }
 
-    mapZoom(directive) {
+    handleStorageAction(command) {
+
+        if (command === 'SAVE_GAME') {
+            let serialisedState = new SerialisedGame(this.state)
+            localStorage.SAVED_TILES_GAME = JSON.stringify(serialisedState)
+            this.setState(state => {
+                state.pendingDialogues.push(new Message('GAME SAVED'))
+                return { pendingDialogues: state.pendingDialogues }
+            })
+        }
+        if (command === 'LOAD_GAME') {
+            let stringifiedState = localStorage.SAVED_TILES_GAME
+
+            try {
+                let loadedState = new SerialisedGame (JSON.parse(stringifiedState), true )
+                let deserialisedLoadedState = loadedState.deserialise()
+                this.setState(state => {
+                    state.pendingDialogues.push(new Message('GAME LOADED'))
+                    let modification = {
+                        pendingDialogues: state.pendingDialogues
+                    }
+                    Object.keys(deserialisedLoadedState).forEach(key => {
+                        modification[key] = deserialisedLoadedState[key]
+                    })
+                    return modification
+                })
+
+            } catch(error) {
+                console.warn(error)
+                this.setState(state => {
+                    state.pendingDialogues.push(new Message(`Failed to load game: ${error.toString()}`))
+                    return {
+                        pendingDialogues: state.pendingDialogues
+                    }
+                })
+            }
+        }
+    }
+
+    setMapZoomLevel(directive) {
 
         this.setState(state => {
             const changeAmount = .2, max = 2, min = .4
@@ -82,7 +125,7 @@ export default class GameContainer extends React.Component {
                 newZoomLevel = Math.min(max, state.mapZoomLevel + changeAmount)
             } else if (directive === "OUT") {
                 newZoomLevel = Math.max(min, state.mapZoomLevel - changeAmount)
-            } else if  (directive === "RESET") {
+            } else if (directive === "RESET") {
                 newZoomLevel = 1
             }
 
@@ -295,13 +338,13 @@ export default class GameContainer extends React.Component {
 
                     <div>
                         <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
-                            onClick={() => { this.mapZoom('OUT') }}
+                            onClick={() => { this.setMapZoomLevel('OUT') }}
                         >zoom_out</i>
                         <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
-                            onClick={() => { this.mapZoom('RESET') }}
+                            onClick={() => { this.setMapZoomLevel('RESET') }}
                         >search</i>
                         <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
-                            onClick={() => { this.mapZoom('IN') }}
+                            onClick={() => { this.setMapZoomLevel('IN') }}
                         >zoom_in</i>
                         <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
                             onClick={this.toggleMainMenu}>
@@ -323,7 +366,10 @@ export default class GameContainer extends React.Component {
                     />
                 </aside>
 
-                {mainMenuOpen ? <MainMenu toggle={this.toggleMainMenu} /> : null}
+                {mainMenuOpen ? <MainMenu
+                    toggle={this.toggleMainMenu}
+                    storageAction={this.handleStorageAction}
+                /> : null}
             </>
         )
     }

@@ -1,4 +1,4 @@
-import { OnGoingOrder } from "./OngoingOrder";
+import { OnGoingOrder } from "./OngoingOrder.tsx";
 import { Faction } from "./Faction";
 
 class UnitType {
@@ -11,7 +11,7 @@ class UnitType {
     attack: number;
     defend: number;
     productionCost: number;
-    constructor(name: string, config:any = {}) {
+    constructor(name: string, config: any = {}) {
         this.name = name;
         this.spriteFrameName = config.spriteFrameName || name;
         this.moves = config.moves || 6;
@@ -27,7 +27,7 @@ class UnitType {
 
 const unitTypes = {
     knight: new UnitType('knight', { moves: 8, attack: 4, productionCost: 20 }),
-    worker: new UnitType('worker', { roadBuilding: 1, treeCutting: 1, townBuilding:1, productionCost: 10 }),
+    worker: new UnitType('worker', { roadBuilding: 1, treeCutting: 1, townBuilding: 1, productionCost: 10 }),
     spearman: new UnitType('spearman', { defend: 3, attack: 1, productionCost: 15 }),
 }
 
@@ -41,16 +41,22 @@ class Unit {
     x: number;
     y: number;
     remainingMoves: number;
-    onGoingOrder: OnGoingOrder;
     indexNumber: number;
-    constructor(type: UnitType, faction: Faction, config:any = {}) {
+    onGoingOrder: OnGoingOrder;
+    constructor(type: UnitType, faction: Faction, config: any = {}) {
         this.type = type
         this.faction = faction
         this.x = config.x;
         this.y = config.y;
-        this.remainingMoves = type.moves;
-        this.onGoingOrder = null;
-        this.indexNumber = unitIndexNumber++
+        this.remainingMoves = typeof config.remainingMoves === 'number'
+            ? config.remainingMoves
+            : type.moves;
+        this.indexNumber = typeof config.indexNumber === 'number'
+            ? config.indexNumber
+            : unitIndexNumber++
+        this.onGoingOrder = typeof config.onGoingOrder !== 'undefined'
+            ? config.onGoingOrder
+            : null;
     }
 
     get infoList() {
@@ -79,6 +85,37 @@ class Unit {
         return this.isAdjacentTo(targetMapSquare)
             && !(targetMapSquare.x === this.x && targetMapSquare.y === this.y)
             && (this.remainingMoves >= movementCost || this.remainingMoves === this.type.moves)
+    }
+
+    get serialised() {
+        let output = {
+            type: this.type.name,
+            faction: this.faction.name,
+            onGoingOrder: this.onGoingOrder ? this.onGoingOrder.serialised : null
+        }
+        Object.keys(this).forEach(key => {
+            if (typeof output[key] == 'undefined') { output[key] = this[key] }
+        })
+        return output
+    }
+
+    static deserialise(data, factions) {
+
+        let deserialisedOrder = data.onGoingOrder
+            ? OnGoingOrder.deserialise(data.onGoingOrder)
+            : undefined;
+
+        return new Unit(
+            unitTypes[data.type],
+            factions.filter(faction => faction.name === data.faction)[0],
+            {
+                x: data.x,
+                y: data.y,
+                remainingMoves: data.remainingMoves,
+                indexNumber: data.indexNumber,
+                ongoingOrder: deserialisedOrder,
+            }
+        )
     }
 }
 

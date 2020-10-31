@@ -1,3 +1,4 @@
+import { terrainTypes } from './TerrainType.tsx'
 import { TerrainType, randomTerrainType } from './TerrainType.tsx'
 
 class MapSquare {
@@ -51,6 +52,27 @@ class MapSquare {
     }
     get tradeYield() {
         return Math.max(0, (this.terrain.tradeYield) + (this.road ? 1 : 0))
+    }
+
+    get serialised() {
+        let output = {
+            terrain: this.terrain.name
+        }
+        Object.keys(this).forEach(key => {
+            if (typeof output[key] == 'undefined') { output[key] = this[key] }
+        })
+        return output
+    }
+
+    static deserialise(data) {
+        return new MapSquare(
+            {
+                terrain: terrainTypes[data.terrain],
+                road: data.road,
+                tree: data.tree
+            },
+            data.x, data.y
+        )
     }
 
     static makeRandomGrid(columns, rows, treeChance = 0, roadChance = 0) {

@@ -67,9 +67,9 @@ const onGoingOrderTypes = [
 class OnGoingOrder {
     type: OnGoingOrderType;
     timeRemaining: number;
-    constructor(type) {
+    constructor(type, timeRemaining:number|false = false) {
         this.type = type;
-        this.timeRemaining = type.timeTaken
+        this.timeRemaining = typeof timeRemaining === 'number' ? timeRemaining : type.timeTaken
     }
 
     reduceTime(unit) {
@@ -78,6 +78,24 @@ class OnGoingOrder {
         } else {
             this.timeRemaining = this.timeRemaining - unit.type[this.type.requiredUnitSkill]
         }
+    }
+
+    get serialised() {
+        let output = {
+            type: this.type.name,
+        }
+        Object.keys(this).forEach(key => {
+            if (typeof output[key] == 'undefined') { output[key] = this[key] }
+        })
+        return output
+    }
+
+    static deserialise(data) {
+
+        return new OnGoingOrder(
+            onGoingOrderTypes.filter(type => type.name === data.type)[0],
+            data.timeRemaining
+        )
     }
 }
 

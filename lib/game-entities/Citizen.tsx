@@ -31,6 +31,23 @@ class Citizen {
 
         return {}
     }
+
+    get serialised() {
+        let output = {
+            mapSquare: this.mapSquare ? {x: this.mapSquare.x, y: this.mapSquare.y} : null,
+            job: this.job ? this.job.name : null,
+        }
+        Object.keys(this).forEach(key => {
+            if (typeof output[key] == 'undefined') { output[key] = this[key] }
+        })
+        return output
+    }
+
+    static deserialise(data, mapGrid) {
+        const mapSquare = data.mapSquare ? mapGrid[data.mapSquare.y][data.mapSquare.x] : undefined
+        const job = data.job ? citizenJobs[data.job] : undefined
+        return new Citizen(mapSquare, job)
+    }
 }
 
 export { Citizen }

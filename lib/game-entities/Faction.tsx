@@ -12,8 +12,7 @@ class Faction {
         this.treasury = config.treasury || 0
         this.research = config.research || 0
 
-        this.budget = new TradeBudget()
-        this.budget.setAll(config.buget || {
+        this.budget = new TradeBudget().setAll(config.buget || {
             treasury: 1/2,
             research: 1/2,
             entertainment: 0,
@@ -37,6 +36,27 @@ class Faction {
         this.research += allocatedBudget.research
         this.treasury += allocatedBudget.treasury
         return notices
+    }
+
+    get serialised() {
+        let output = {
+            budget: this.budget.store
+        }
+        Object.keys(this).forEach(key => {
+            if (typeof output[key] == 'undefined') {
+                output[key] = this[key]
+            }
+        })
+        return output
+    }
+
+    static deserialise(data) {
+        return new Faction(data.name, {
+            color: data.color,
+            treasury: data.treasury,
+            research: data.research,
+            budget: data.budget,
+        })
     }
 }
 

@@ -3,6 +3,7 @@ import { MapSquare } from './MapSquare'
 import { Unit, UnitType } from './Unit.tsx'
 import { citizenJobs } from './CitizenJob.tsx'
 import { Citizen } from './Citizen.tsx'
+import { unitTypes } from './Unit.tsx'
 
 let townIndex = 0
 
@@ -19,19 +20,26 @@ class Town {
     constructor(faction: Faction, mapSquare: MapSquare, config: any = {}) {
         this.faction = faction;
         this.mapSquare = mapSquare;
-        this.indexNumber = ++townIndex
+
+        this.indexNumber = typeof config.indexNumber === 'number'
+            ? config.indexNumber
+            : townIndex++
 
         this.name = config.name || `TOWN#${townIndex}-${faction.name}`
-
-        const population = config.population || 1
-        this.citizens = []
-        for (let i = 0; i < population; i++) {
-            this.citizens.push(new Citizen())
-        }
-
         this.foodStore = config.foodStore || 0
         this.productionStore = config.productionStore || 0
         this.isProducing = config.isProducing || null
+
+        if (config.citizens) {
+            this.citizens = config.citizens
+        } else {
+            const population = config.population || 1
+            this.citizens = []
+            for (let i = 0; i < population; i++) {
+                this.citizens.push(new Citizen())
+            }
+        }
+
         this.supportedUnits = config.supportedUnits || []
     }
 
@@ -166,7 +174,42 @@ class Town {
         return notices
     }
 
+    get serialised() {
+        let output = {
+            faction: this.faction.name,
+            mapSquare: { x: this.mapSquare.x, y: this.mapSquare.y },
+            isProducing: this.isProducing ? this.isProducing.name : null, // TO DO - handle producing buildings
+            citizens: this.citizens.map(citizen => citizen.serialised),
+            supportedUnits: this.supportedUnits.map(unit => unit.indexNumber)
+        }
+        Object.keys(this).forEach(key => {
+            if (typeof output[key] == 'undefined') { output[key] = this[key] }
+        })
+        return output
+    }
+
+    static deserialise(data, factions, units, mapGrid) {
+        const faction = factions.filter(faction => faction.name === data.faction)[0]
+        const mapSquare = mapGrid[data.mapSquare.y][data.mapSquare.x]
+
+        return new Town(faction, mapSquare, {
+            indexNumber: data.indexNumber,
+            name: data.name,
+            foodStore: data.foodStore,
+            productionStore: data.productionStore,
+
+            isProducing: data.isProducing
+                ? unitTypes[data.isProducing] // TO DO - handle producing buildings
+                : null,
+
+            citizens: data.citizens.map(datum => Citizen.deserialise(datum, mapGrid)),
+            supportedUnits: data.supportedUnits.map(indexNumber => units.filter(unit => unit.indexNumber === indexNumber)[0]),
+        })
+    }
 }
+
+
+
 
 
 export { Town }

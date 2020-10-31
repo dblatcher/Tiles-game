@@ -72,7 +72,7 @@ export default class GameContainer extends React.Component {
 
     toggleMainMenu() {
         this.setState(state => {
-            return { mainMenuOpen: !state.mainMenuOpen }
+            return { mainMenuOpen: !state.mainMenuOpen, fallenUnits: [] }
         })
     }
 
@@ -137,13 +137,13 @@ export default class GameContainer extends React.Component {
 
     toggleFactionWindow() {
         this.setState(state => {
-            return { factionWindowIsOpen: !state.factionWindowIsOpen }
+            return { factionWindowIsOpen: !state.factionWindowIsOpen, fallenUnits:[] }
         })
     }
 
     closeTownView() {
         this.setState({
-            openTown: null
+            openTown: null, fallenUnits: []
         })
     }
 

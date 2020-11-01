@@ -16,11 +16,10 @@ import gameActions from '../lib/game-logic/gameActions'
 import townActions from '../lib/game-logic/townActions'
 import factionActions from '../lib/game-logic/factionActions'
 
-import { Message } from '../lib/game-entities/Message.tsx'
-import { SerialisedGame } from '../lib/serialiseGame'
+import {browserHasLocalStorage} from '../lib/storage'
+import handleStorageAction from './gameContainer.handleStorageAction'
 
 import styles from './gameContainer.module.scss'
-
 
 
 export default class GameContainer extends React.Component {
@@ -45,6 +44,7 @@ export default class GameContainer extends React.Component {
             pendingDialogues: [],
             mainMenuOpen: false,
             mapZoomLevel: 1,
+            browserSupportsLocalStorage: undefined
         });
 
         this.gameHolderElement = React.createRef()
@@ -62,7 +62,12 @@ export default class GameContainer extends React.Component {
         this.setMainMenuOpen = this.setMainMenuOpen.bind(this)
         this.toggleFactionWindow = this.toggleFactionWindow.bind(this)
         this.setMapZoomLevel = this.setMapZoomLevel.bind(this)
-        this.handleStorageAction = this.handleStorageAction.bind(this)
+
+        this.handleStorageAction = handleStorageAction.bind(this)
+    }
+
+    componentDidMount() {
+        this.setState({browserSupportsLocalStorage: browserHasLocalStorage()})
     }
 
     get hasOpenDialogue() {
@@ -85,48 +90,6 @@ export default class GameContainer extends React.Component {
                 fallenUnits: []
             }
         })
-    }
-
-    handleStorageAction(command, data) {
-
-        if (command === 'NEW_GAME') {
-            this.setState(data)
-        }
-        if (command === 'SAVE_GAME') {
-            let serialisedState = new SerialisedGame(this.state)
-            localStorage.SAVED_TILES_GAME = JSON.stringify(serialisedState)
-            this.setState(state => {
-                state.pendingDialogues.push(new Message('GAME SAVED'))
-                return { pendingDialogues: state.pendingDialogues }
-            })
-        }
-        if (command === 'LOAD_GAME') {
-            let stringifiedState = localStorage.SAVED_TILES_GAME
-
-            try {
-                let loadedState = new SerialisedGame(JSON.parse(stringifiedState), true)
-                let deserialisedLoadedState = loadedState.deserialise()
-                this.setState(state => {
-                    state.pendingDialogues.push(new Message('GAME LOADED'))
-                    let modification = {
-                        pendingDialogues: state.pendingDialogues
-                    }
-                    Object.keys(deserialisedLoadedState).forEach(key => {
-                        modification[key] = deserialisedLoadedState[key]
-                    })
-                    return modification
-                })
-
-            } catch (error) {
-                console.warn(error)
-                this.setState(state => {
-                    state.pendingDialogues.push(new Message(`Failed to load game: ${error.toString()}`))
-                    return {
-                        pendingDialogues: state.pendingDialogues
-                    }
-                })
-            }
-        }
     }
 
     setMapZoomLevel(directive) {
@@ -287,7 +250,7 @@ export default class GameContainer extends React.Component {
         const { mapGrid, selectedSquare, units, towns, activeFaction,
             selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
             pendingDialogues, unitWithMenuOpen, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
-            mapZoomLevel } = this.state
+            mapZoomLevel,browserSupportsLocalStorage } = this.state
 
         if (openTown) {
             return (
@@ -387,6 +350,7 @@ export default class GameContainer extends React.Component {
                         setOpenFunction={this.setMainMenuOpen}
                         noActiveGame={this.noActiveGame}
                         storageAction={this.handleStorageAction}
+                        browserSupportsLocalStorage= {browserSupportsLocalStorage}
                     />
                 ) : null}
             </>

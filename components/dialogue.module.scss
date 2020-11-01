@@ -24,6 +24,10 @@
     margin: .5rem 0;
 }
 
+.buttonRowLabel {
+    flex-basis: 8rem;
+}
+
 .button {
     @include input;
     font-size: large;

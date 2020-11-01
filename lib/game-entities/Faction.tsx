@@ -38,6 +38,14 @@ class Faction {
         return notices
     }
 
+    checkIfAlive (state) {
+        const {towns, units} = state
+        if (towns.filter(town => this === town.faction).length === 0 && units.filter(unit => this === unit.faction).length === 0) {
+            return false
+        }
+        return true
+    }
+
     get serialised() {
         let output = {
             budget: this.budget.store

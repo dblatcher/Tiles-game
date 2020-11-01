@@ -76,11 +76,15 @@ class MapSquare {
     }
 
     static makeRandomGrid(columns, rows, treeChance = 0, roadChance = 0) {
-        const squareFunction = (x, y) => new MapSquare({
-            terrain: randomTerrainType(),
-            tree: Math.random() < treeChance,
-            road: Math.random() < roadChance,
-        }, x, y)
+        const squareFunction = (x, y) => {
+
+            let terrain = randomTerrainType()
+            return new MapSquare({
+                terrain: terrain,
+                tree: terrain.isWater ? false : Math.random() < treeChance,
+                road: terrain.isWater ? false : Math.random() < roadChance,
+            }, x, y)
+        }
         return this.makeGrid(columns, rows, squareFunction)
     }
 

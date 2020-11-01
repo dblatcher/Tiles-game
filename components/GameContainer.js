@@ -16,7 +16,7 @@ import gameActions from '../lib/game-logic/gameActions'
 import townActions from '../lib/game-logic/townActions'
 import factionActions from '../lib/game-logic/factionActions'
 
-import {Message} from '../lib/game-entities/Message.tsx'
+import { Message } from '../lib/game-entities/Message.tsx'
 import { SerialisedGame } from '../lib/serialiseGame'
 
 import styles from './gameContainer.module.scss'
@@ -59,7 +59,7 @@ export default class GameContainer extends React.Component {
         this.handleOrderButton = this.handleOrderButton.bind(this)
         this.handleTileHoverEnter = this.handleTileHoverEnter.bind(this)
         this.handleDialogueButton = this.handleDialogueButton.bind(this)
-        this.toggleMainMenu = this.toggleMainMenu.bind(this)
+        this.setMainMenuOpen = this.setMainMenuOpen.bind(this)
         this.toggleFactionWindow = this.toggleFactionWindow.bind(this)
         this.setMapZoomLevel = this.setMapZoomLevel.bind(this)
         this.handleStorageAction = this.handleStorageAction.bind(this)
@@ -70,14 +70,28 @@ export default class GameContainer extends React.Component {
         return pendingDialogues.length > 0 || unitPickDialogueChoices.length > 0
     }
 
-    toggleMainMenu() {
+    get noActiveGame() {
+        if (!this.state.mapGrid.length === 0) { return true }
+        if (!this.state.activeFaction) { return true }
+        return false
+    }
+
+    setMainMenuOpen(shouldBeOpen) {
         this.setState(state => {
-            return { mainMenuOpen: !state.mainMenuOpen, fallenUnits: [] }
+            return {
+                mainMenuOpen: typeof shouldBeOpen === 'boolean'
+                    ? shouldBeOpen
+                    : !state.mainMenuOpen,
+                fallenUnits: []
+            }
         })
     }
 
-    handleStorageAction(command) {
+    handleStorageAction(command, data) {
 
+        if (command === 'NEW_GAME') {
+            this.setState(data)
+        }
         if (command === 'SAVE_GAME') {
             let serialisedState = new SerialisedGame(this.state)
             localStorage.SAVED_TILES_GAME = JSON.stringify(serialisedState)
@@ -90,7 +104,7 @@ export default class GameContainer extends React.Component {
             let stringifiedState = localStorage.SAVED_TILES_GAME
 
             try {
-                let loadedState = new SerialisedGame (JSON.parse(stringifiedState), true )
+                let loadedState = new SerialisedGame(JSON.parse(stringifiedState), true)
                 let deserialisedLoadedState = loadedState.deserialise()
                 this.setState(state => {
                     state.pendingDialogues.push(new Message('GAME LOADED'))
@@ -103,7 +117,7 @@ export default class GameContainer extends React.Component {
                     return modification
                 })
 
-            } catch(error) {
+            } catch (error) {
                 console.warn(error)
                 this.setState(state => {
                     state.pendingDialogues.push(new Message(`Failed to load game: ${error.toString()}`))
@@ -137,7 +151,7 @@ export default class GameContainer extends React.Component {
 
     toggleFactionWindow() {
         this.setState(state => {
-            return { factionWindowIsOpen: !state.factionWindowIsOpen, fallenUnits:[] }
+            return { factionWindowIsOpen: !state.factionWindowIsOpen, fallenUnits: [] }
         })
     }
 
@@ -325,51 +339,56 @@ export default class GameContainer extends React.Component {
                     />
                 </main>
 
-                <aside className={styles.upperInterfaceWindow} ref={this.upperWindowElement} >
+                {!this.noActiveGame ? (<>
+                    <aside className={styles.upperInterfaceWindow} ref={this.upperWindowElement} >
 
-                    <InfoBar
-                        selectedUnit={selectedUnit}
-                        selectedSquare={selectedSquare}
-                        scrollToSquare={this.scrollToSquare}
-                        toggleFactionWindow={this.toggleFactionWindow}
-                        activeFaction={activeFaction}
-                        towns={towns}
+                        <InfoBar
+                            selectedUnit={selectedUnit}
+                            selectedSquare={selectedSquare}
+                            scrollToSquare={this.scrollToSquare}
+                            toggleFactionWindow={this.toggleFactionWindow}
+                            activeFaction={activeFaction}
+                            towns={towns}
+                        />
+
+                        <div>
+                            <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
+                                onClick={() => { this.setMapZoomLevel('OUT') }}
+                            >zoom_out</i>
+                            <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
+                                onClick={() => { this.setMapZoomLevel('RESET') }}
+                            >search</i>
+                            <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
+                                onClick={() => { this.setMapZoomLevel('IN') }}
+                            >zoom_in</i>
+                            <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
+                                onClick={this.setMainMenuOpen}>
+                                {mainMenuOpen ? "menu_open" : "menu"}
+                            </i>
+                        </div>
+                    </aside>
+
+                    <aside className={styles.lowerInterfaceWindow} >
+                        <ModeButtons
+                            interfaceMode={interfaceMode}
+                            changeMode={this.changeMode}
+                            interfaceModeOptions={interfaceModeOptions}
+                        />
+                        <TurnButtons
+                            selectedUnit={selectedUnit}
+                            squareSelectedUnitIsIn={selectedUnit ? mapGrid[selectedUnit.y][selectedUnit.x] : null}
+                            handleOrderButton={this.handleOrderButton}
+                        />
+                    </aside>
+                </>) : null}
+
+                {mainMenuOpen || this.noActiveGame ? (
+                    <MainMenu
+                        setOpenFunction={this.setMainMenuOpen}
+                        noActiveGame={this.noActiveGame}
+                        storageAction={this.handleStorageAction}
                     />
-
-                    <div>
-                        <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
-                            onClick={() => { this.setMapZoomLevel('OUT') }}
-                        >zoom_out</i>
-                        <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
-                            onClick={() => { this.setMapZoomLevel('RESET') }}
-                        >search</i>
-                        <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
-                            onClick={() => { this.setMapZoomLevel('IN') }}
-                        >zoom_in</i>
-                        <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
-                            onClick={this.toggleMainMenu}>
-                            {mainMenuOpen ? "menu_open" : "menu"}
-                        </i>
-                    </div>
-                </aside>
-
-                <aside className={styles.lowerInterfaceWindow} >
-                    <ModeButtons
-                        interfaceMode={interfaceMode}
-                        changeMode={this.changeMode}
-                        interfaceModeOptions={interfaceModeOptions}
-                    />
-                    <TurnButtons
-                        selectedUnit={selectedUnit}
-                        squareSelectedUnitIsIn={selectedUnit ? mapGrid[selectedUnit.y][selectedUnit.x] : null}
-                        handleOrderButton={this.handleOrderButton}
-                    />
-                </aside>
-
-                {mainMenuOpen ? <MainMenu
-                    toggle={this.toggleMainMenu}
-                    storageAction={this.handleStorageAction}
-                /> : null}
+                ) : null}
             </>
         )
     }

@@ -1,0 +1,14 @@
+@import '../styles/design.scss';
+
+.background {
+    @include dialogueHolder();  
+    background-color: wheat;
+}
+
+.frame {
+    @include dialogueBox();
+    min-height: 80vh;
+    min-width: 80vw;
+    background-color: white;
+    
+}

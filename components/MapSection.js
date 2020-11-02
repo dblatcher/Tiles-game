@@ -23,7 +23,7 @@ export default class MapSection extends React.Component {
         return <Tile key={`${x},${y}`} mapSquare={new VoidMapSquare(x, y)} />
     }
 
-    renderTile(mapSquare, excludeCorners) {
+    renderTile(mapSquare, excludeCorners, occupier) {
         const { handleMapSectionClick, selectedSquare, handleTileHoverEnter, xStart, xSpan, yStart, ySpan, town } = this.props;
         if (mapSquare.x < xStart || mapSquare.x > xStart + xSpan - 1) { return null }
 
@@ -43,10 +43,11 @@ export default class MapSection extends React.Component {
                 handleClick={handleMapSectionClick ? () => { handleMapSectionClick(mapSquare) } : null}
                 mapSquare={mapSquare}
                 onMapSection={true}
-                town={isTownTile ? town : null }
+                town={isTownTile ? town : null}
                 isSelected={mapSquare === selectedSquare}
                 handleTileHoverEnter={handleTileHoverEnter}
                 showYields={showYields}
+                occupier={occupier}
                 adjacentSquares={this.getAdjacentSquares(mapSquare.x, mapSquare.y)}
             />
         )
@@ -63,11 +64,16 @@ export default class MapSection extends React.Component {
         )
     }
 
-    renderRow(row, y) {
+    renderRow(row, y, occupiersMap) {
         const { yStart, ySpan, xStart, xSpan, mapGrid } = this.props
         if (y < yStart || y > yStart + ySpan - 1) { return null }
 
-        let tiles = row.map(mapSquare => this.renderTile(mapSquare, true))
+        let tiles = row.map(mapSquare => {
+            const occupier = occupiersMap.some(item => item.mapSquare === mapSquare)
+                ? occupiersMap.filter(item => item.mapSquare === mapSquare)[0].obstacle
+                : null;
+            return this.renderTile(mapSquare, true, occupier)
+        })
         let emptyTileX
 
         if (xStart < 0) {
@@ -116,7 +122,7 @@ export default class MapSection extends React.Component {
     }
 
     render() {
-        const { mapGrid, town, yStart, ySpan } = this.props
+        const { mapGrid, town, yStart, ySpan, towns } = this.props
         let emptyRowY
 
         let emptyRowsAbove = []
@@ -137,11 +143,13 @@ export default class MapSection extends React.Component {
             .filter(citizen => citizen.mapSquare)
             .map((citizen, index) => this.renderCitizen(citizen, index))
 
+        const occupiersMap = town.getOccupierMap(mapGrid, towns)
+
         return (
             <section className={styles.container}>
                 <div className={styles.frame}>
                     {emptyRowsAbove}
-                    {mapGrid.map((row, index) => this.renderRow(row, index))}
+                    {mapGrid.map((row, index) => this.renderRow(row, index, occupiersMap))}
                     {emptyRowsBelow}
                     {citizensOnMap}
                 </div>

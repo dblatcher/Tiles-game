@@ -104,6 +104,19 @@ class Town {
         return { squares, obstacles, freeSquares }
     }
 
+    getOccupierMap(mapGrid, towns) {
+        const { squares, obstacles } = this.getSquaresAndObstacles(mapGrid, towns)
+        let result = []
+
+        for (let i = 0; i< obstacles.length; i++) {
+            if (!obstacles[i]) {continue}
+            if (this.citizens.includes(obstacles[i])) { continue }
+            result.push ({mapSquare: squares[i], obstacle: obstacles[i]})
+        }
+
+        return result
+    }
+
     autoAssignCitizen(citizen, state) {
         const { mapGrid, towns } = state
         let freeSquares = this.getSquaresAndObstacles(mapGrid, towns).freeSquares

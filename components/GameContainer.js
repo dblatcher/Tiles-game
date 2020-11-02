@@ -256,6 +256,7 @@ export default class GameContainer extends React.Component {
             return (
                 <TownView
                     town={openTown}
+                    towns={towns}
                     closeTownView={this.closeTownView}
                     handleTownAction={this.handleTownAction}
                     mapGrid={mapGrid}

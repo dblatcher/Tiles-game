@@ -72,7 +72,7 @@ export default class Tile extends React.Component {
     render() {
         const { mapSquare, handleClick, isSelected, 
             selectedUnit, inInfoRow, squareSelectedUnitIsIn, interfaceMode, 
-            gameHasOpenDialogue, showYields, town, onMapSection } = this.props
+            gameHasOpenDialogue, showYields, town, onMapSection, occupier } = this.props
         const { isHoveredOn } = this.state
 
         const containsSelectedUnit = selectedUnit && (mapSquare.x === selectedUnit.x && mapSquare.y === selectedUnit.y);
@@ -93,6 +93,7 @@ export default class Tile extends React.Component {
 
         }
 
+        if (occupier) { classList.push(styles.occupied)}
 
         return (
             <figure

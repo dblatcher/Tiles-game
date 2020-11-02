@@ -55,6 +55,10 @@
     }
 }
 
+.occupied {
+    border: 3px dotted red;
+}
+
 .spriteHolder {
     position: absolute;
     left: 0;

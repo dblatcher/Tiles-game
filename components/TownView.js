@@ -37,7 +37,7 @@ export default class TownView extends React.Component {
     }
 
     render() {
-        const { town, closeTownView, mapGrid, handleTownAction } = this.props
+        const { town, closeTownView, mapGrid, handleTownAction, towns } = this.props
 
         return (
             <Window title={town.name} buttons={[{ text: 'close', clickFunction: closeTownView }]}>
@@ -58,7 +58,7 @@ export default class TownView extends React.Component {
                             handleMapSectionClick={this.handleMapSectionClick}
                             xStart={town.x - 2} yStart={town.y - 2}
                             xSpan={5} ySpan={5}
-                            town={town} mapGrid={mapGrid} />
+                            town={town} mapGrid={mapGrid} towns={towns}/>
                     </section>
 
                     <section className={styles.section}>

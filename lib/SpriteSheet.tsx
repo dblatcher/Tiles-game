@@ -209,18 +209,24 @@ const roads = new SpriteSheet('roads', {
 })
 
 const units = new SpriteSheet ('units',{
-    cols: 2,
-    rows: 3,
+    cols: 3,
+    rows: 4,
     css: {
         backgroundImage: 'url(./units.png)'
     },
     frameNames: {
         'shadow': [0,0],
         'person': [1,0],
-        'unemployed': [1,2],
-        'worker': [0,2],
-        'spearman': [1,1],
-        'knight': [0,1],
+        'swordsman': [2,0],
+        'spearman': [0,1],
+        'worker': [1,1],
+        'unemployed': [2,1],
+        'warrior':[0,2],
+        'horseman':[1,2],
+        'archer':[1,2],
+        'knight':[0,3],
+        'settler':[1,3],
+        'scientist':[2,3],
     }
 })
 

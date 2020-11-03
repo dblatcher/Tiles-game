@@ -70,8 +70,8 @@ export default class Tile extends React.Component {
     }
 
     render() {
-        const { mapSquare, handleClick, isSelected, 
-            selectedUnit, inInfoRow, squareSelectedUnitIsIn, interfaceMode, 
+        const { mapSquare, handleClick, isSelected,
+            selectedUnit, inInfoRow, squareSelectedUnitIsIn, interfaceMode,
             gameHasOpenDialogue, showYields, town, onMapSection, occupier } = this.props
         const { isHoveredOn } = this.state
 
@@ -93,7 +93,7 @@ export default class Tile extends React.Component {
 
         }
 
-        if (occupier) { classList.push(styles.occupied)}
+        if (occupier) { classList.push(styles.occupied) }
 
         return (
             <figure
@@ -105,6 +105,11 @@ export default class Tile extends React.Component {
             >
                 {needsCoastLine && mapSquare.isWater ? this.renderDirectionedSprite(spriteSheets.coastlines) : (null)}
                 {needsCoastLine && !mapSquare.isWater ? this.renderDirectionedSprite(spriteSheets.innerCoastlines) : (null)}
+
+                {mapSquare.terrain.spriteCss ? (
+                    <i className={styles.spriteHolder} style={mapSquare.terrain.spriteCss}></i>
+                ) : null}
+
                 {mapSquare.road ? this.renderDirectionedSprite(spriteSheets.roads) : (null)}
 
                 { town ? <TownFigure town={town} onMapSection={onMapSection} /> : null}

@@ -1,9 +1,10 @@
-import {spriteSheets} from '../SpriteSheet.tsx'
+import { spriteSheets } from '../SpriteSheet.tsx'
 
 
 class TerrainType {
     name: string
     css: object
+    spriteCss: object
     movementCost: number
     isWater: boolean
     foodYield: number
@@ -11,12 +12,13 @@ class TerrainType {
     tradeYield: number
     neverTrees: boolean
     neverTown: boolean
-    canMine:boolean
-    canIrrigate:boolean
+    canMine: boolean
+    canIrrigate: boolean
 
-    constructor (name, config:any = {}) {
+    constructor(name, config: any = {}) {
         this.name = name
         this.css = config.css
+        this.spriteCss = config.spriteCss
         this.movementCost = config.movementCost || 3
         this.isWater = config.isWater || false
         this.neverTrees = config.neverTrees || false
@@ -37,61 +39,72 @@ class TerrainType {
 }
 
 const terrainTypes = {
-    grass: new TerrainType('grass',{
-        yields: [4,0,0],
+    grass: new TerrainType('grass', {
+        yields: [4, 0, 0],
         canIrrigate: true,
         css: {
             background: 'greenyellow',
             backgroundImage: 'repeating-radial-gradient(green, transparent 0.6px)',
-        }
+        },
     }),
-    desert: new TerrainType('desert',{
-        yields: [1,1,0],
+    desert: new TerrainType('desert', {
+        yields: [1, 1, 0],
         canIrrigate: true,
         css: {
             background: 'khaki',
             backgroundImage: 'repeating-radial-gradient(goldenrod, transparent 0.6px)'
-        }
+        },
     }),
-    plain: new TerrainType('plain',{
-        yields: [3,1,0],
+    plain: new TerrainType('plain', {
+        yields: [3, 1, 0],
         canIrrigate: true,
         css: {
             background: 'burlywood',
             backgroundImage: 'repeating-linear-gradient(0deg, transparent -.1em, black .5em)',
-        }
+        },
     }),
-    swamp: new TerrainType('swamp',{
-        yields: [2,1,0],
+    swamp: new TerrainType('swamp', {
+        yields: [2, 1, 0],
         movementCost: 4,
         css: {
             background: 'rosybrown',
             backgroundImage: 'repeating-radial-gradient(green 7%, transparent 14%), repeating-linear-gradient(transparent 2%, steelblue 4%)'
-        }
+        },
     }),
-    ocean: new TerrainType('ocean',{
-       yields: [2,0,1],
-       movementCost:2,
-       isWater: true,
-       css: {
-        background: 'lightseagreen',
-       } 
+    ocean: new TerrainType('ocean', {
+        yields: [2, 0, 1],
+        movementCost: 2,
+        isWater: true,
+        css: {
+            background: 'lightseagreen',
+        },
     }),
     hills: new TerrainType('hills', {
-        yields: [1,0,0],
+        yields: [1, 0, 0],
         movementCost: 6,
         neverTrees: true,
         canIrrigate: true,
-        canMine:true,
-        css: Object.assign(spriteSheets.misc.getStyleForFrameCalled('hills'), {backgroundColor:'greenYellow'})
+        canMine: true,
+        css: {
+            background: 'greenyellow',
+            backgroundImage: 'repeating-radial-gradient(green, transparent 0.6px)',
+        },
+        spriteCss: spriteSheets.misc.getStyleForFrameCalled('hills'),
     }),
     mountains: new TerrainType('mountains', {
-        yields: [0,1,0],
+        yields: [0, 1, 0],
         movementCost: 9,
         neverTrees: true,
         neverTown: true,
-        canMine:true,
-        css: Object.assign(spriteSheets.misc.getStyleForFrameCalled('mountains'), {backgroundColor:'wheat'})
+        canMine: true,
+        css: {
+            background: 'khaki',
+            backgroundImage: 'repeating-radial-gradient(goldenrod, transparent 0.6px)'
+        },
+        spriteCss: Object.assign(spriteSheets.misc.getStyleForFrameCalled('mountains'), {
+            height: '120%',
+            top: '-20%'
+        }),
     }),
 }
 
@@ -101,4 +114,4 @@ function randomTerrainType() {
     return terrainTypes[terrainNames[nameIndex]]
 }
 
-export {TerrainType, terrainTypes, randomTerrainType} 
+export { TerrainType, terrainTypes, randomTerrainType } 

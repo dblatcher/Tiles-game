@@ -5,12 +5,16 @@ class MapSquare {
     terrain: TerrainType
     road: boolean
     tree: boolean
+    mine: boolean
+    irrigation: boolean
     x: number
     y: number
     constructor(input, x, y) {
         this.terrain = input.terrain
         this.road = !!input.road
-        this.tree = !!input.tree
+        this.tree = input.terrain.neverTrees ? false : !!input.tree
+        this.mine = !input.terrain.canMine ? false : !!input.mine
+        this.irrigation = !input.terrain.canIrrigate ? false : !!input.irrigation
 
         this.x = x
         this.y = y
@@ -45,10 +49,10 @@ class MapSquare {
     }
 
     get foodYield() {
-        return Math.max(0, (this.terrain.foodYield) + (this.tree ? -1 : 0))
+        return Math.max(0, (this.terrain.foodYield) + (this.tree ? -1 : 0) + (this.irrigation ? 1 : 0))
     }
     get productionYield() {
-        return Math.max(0, (this.terrain.productionYield) + (this.tree ? 1 : 0))
+        return Math.max(0, (this.terrain.productionYield) + (this.tree ? 1 : 0) + (this.mine ? 2 : 0))
     }
     get tradeYield() {
         return Math.max(0, (this.terrain.tradeYield) + (this.road ? 1 : 0))
@@ -69,7 +73,9 @@ class MapSquare {
             {
                 terrain: terrainTypes[data.terrain],
                 road: data.road,
-                tree: data.tree
+                tree: data.tree,
+                mine: data.mine,
+                irrigation: data.irrigation,
             },
             data.x, data.y
         )

@@ -12,6 +12,7 @@ class TerrainType {
     neverTrees: boolean
     neverTown: boolean
     canMine:boolean
+    canIrrigate:boolean
 
     constructor (name, config:any = {}) {
         this.name = name
@@ -21,6 +22,7 @@ class TerrainType {
         this.neverTrees = config.neverTrees || false
         this.neverTown = config.neverTown || false
         this.canMine = config.canMine || false
+        this.canIrrigate = config.canIrrigate || false
 
         if (config.yields) {
             this.foodYield = config.yields[0] || 0
@@ -37,6 +39,7 @@ class TerrainType {
 const terrainTypes = {
     grass: new TerrainType('grass',{
         yields: [4,0,0],
+        canIrrigate: true,
         css: {
             background: 'greenyellow',
             backgroundImage: 'repeating-radial-gradient(green, transparent 0.6px)',
@@ -44,6 +47,7 @@ const terrainTypes = {
     }),
     desert: new TerrainType('desert',{
         yields: [1,1,0],
+        canIrrigate: true,
         css: {
             background: 'khaki',
             backgroundImage: 'repeating-radial-gradient(goldenrod, transparent 0.6px)'
@@ -51,6 +55,7 @@ const terrainTypes = {
     }),
     plain: new TerrainType('plain',{
         yields: [3,1,0],
+        canIrrigate: true,
         css: {
             background: 'burlywood',
             backgroundImage: 'repeating-linear-gradient(0deg, transparent -.1em, black .5em)',
@@ -76,6 +81,7 @@ const terrainTypes = {
         yields: [1,0,0],
         movementCost: 6,
         neverTrees: true,
+        canIrrigate: true,
         canMine:true,
         css: Object.assign(spriteSheets.misc.getStyleForFrameCalled('hills'), {backgroundColor:'greenYellow'})
     }),

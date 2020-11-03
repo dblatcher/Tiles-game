@@ -54,6 +54,28 @@ const onGoingOrderTypes = [
             timeTaken: 3,
             letterCode: 'C',
         }),
+    new OnGoingOrderType('Irrigate',
+        mapSquare => { 
+            mapSquare.mine = false 
+            mapSquare.irrigation = true
+        },
+        mapSquare => mapSquare.terrain.canIrrigate, // TO DO - check for water source?
+        {
+            requiredUnitSkill: 'irrigating',
+            timeTaken: 3,
+            letterCode: 'I',
+        }),
+    new OnGoingOrderType('Mine',
+        mapSquare => { 
+            mapSquare.mine = true 
+            mapSquare.irrigation = false
+        },
+        mapSquare => mapSquare.terrain.canMine, // TO DO - check for water source?
+        {
+            requiredUnitSkill: 'mining',
+            timeTaken: 4,
+            letterCode: 'M',
+        }),
     new OnGoingOrderType('Build Town',
         mapSquare => {},
         mapSquare => !mapSquare.terrain.isWater && !mapSquare.terrain.neverTown,

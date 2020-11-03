@@ -34,16 +34,16 @@ export default class Tile extends React.Component {
         return false
     }
 
-    renderSprite(spriteSheet) {
+    renderDirectionedSprite(spriteSheet) {
         const { adjacentSquares, inInfoRow } = this.props
         let style = spriteSheet.getStyleFromAdjacentSquares(adjacentSquares)
         if (inInfoRow) { style.top = "0" } //override the top property used on spriteSheets.trees.css
+        return <i className={styles.spriteHolder} style={style}></i>
+    }
 
-        return (
-            <i
-                className={styles.spriteHolder}
-                style={style}
-            ></i>)
+    renderNamedFrameSprite(spriteSheet, frameName) {
+        let style = spriteSheet.getStyleForFrameCalled(frameName)
+        return <i className={styles.spriteHolder} style={style}></i>
     }
 
     renderYieldLines() {
@@ -103,13 +103,15 @@ export default class Tile extends React.Component {
                 onPointerEnter={() => { this.handleHover(true) }}
                 onPointerLeave={() => { this.handleHover(false) }}
             >
-                {needsCoastLine && mapSquare.isWater ? this.renderSprite(spriteSheets.coastlines) : (null)}
-                {needsCoastLine && !mapSquare.isWater ? this.renderSprite(spriteSheets.innerCoastlines) : (null)}
-                {mapSquare.road ? this.renderSprite(spriteSheets.roads) : (null)}
+                {needsCoastLine && mapSquare.isWater ? this.renderDirectionedSprite(spriteSheets.coastlines) : (null)}
+                {needsCoastLine && !mapSquare.isWater ? this.renderDirectionedSprite(spriteSheets.innerCoastlines) : (null)}
+                {mapSquare.road ? this.renderDirectionedSprite(spriteSheets.roads) : (null)}
 
                 { town ? <TownFigure town={town} onMapSection={onMapSection} /> : null}
 
-                {mapSquare.tree ? this.renderSprite(spriteSheets.trees) : (null)}
+                {mapSquare.tree ? this.renderDirectionedSprite(spriteSheets.trees) : (null)}
+                {mapSquare.irrigation ? this.renderNamedFrameSprite(spriteSheets.misc, 'irrigation') : (null)}
+                {mapSquare.mine ? this.renderNamedFrameSprite(spriteSheets.misc, 'mine') : (null)}
 
                 {showYields ? this.renderYieldLines() : null}
 

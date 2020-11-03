@@ -8,6 +8,8 @@ class UnitType {
     roadBuilding: number;
     treeCutting: number;
     townBuilding: number;
+    mining:number;
+    irrigating:number;
     attack: number;
     defend: number;
     productionCost: number;
@@ -18,6 +20,8 @@ class UnitType {
         this.roadBuilding = config.roadBuilding || 0;
         this.treeCutting = config.treeCutting || 0;
         this.townBuilding = config.townBuilding || 0;
+        this.mining = config.mining || 0;
+        this.irrigating = config.irrigating || 0;
         this.attack = config.attack || 0;
         this.defend = config.defend || 0;
         this.productionCost = config.productionCost || 10;
@@ -26,7 +30,7 @@ class UnitType {
 }
 
 const unitTypes = {
-    worker:     new UnitType('worker',   { roadBuilding: 1, treeCutting: 1, productionCost: 20 }),
+    worker:     new UnitType('worker',   { roadBuilding: 1, treeCutting: 1, productionCost: 20, irrigating:1, mining:1 }),
     settler:    new UnitType('settler',  { roadBuilding: 1, treeCutting: 1, townBuilding: 1, productionCost: 50 }),
     swordsman:  new UnitType('swordsman',{ defend: 2, attack: 4, productionCost: 25 }),
     spearman:   new UnitType('spearman', { defend: 3, attack: 1, productionCost: 15 }),

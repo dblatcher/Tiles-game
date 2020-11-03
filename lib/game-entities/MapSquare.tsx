@@ -81,8 +81,8 @@ class MapSquare {
             let terrain = randomTerrainType()
             return new MapSquare({
                 terrain: terrain,
-                tree: terrain.isWater ? false : Math.random() < treeChance,
-                road: terrain.isWater ? false : Math.random() < roadChance,
+                tree: terrain.isWater || terrain.neverTrees ? false : Math.random() < treeChance,
+                road: terrain.isWater || terrain.neverTrees ? false : Math.random() < roadChance,
             }, x, y)
         }
         return this.makeGrid(columns, rows, squareFunction)

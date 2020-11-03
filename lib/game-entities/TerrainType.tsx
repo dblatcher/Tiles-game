@@ -1,3 +1,6 @@
+import {spriteSheets} from '../SpriteSheet.tsx'
+
+
 class TerrainType {
     name: string
     css: object
@@ -6,11 +9,18 @@ class TerrainType {
     foodYield: number
     productionYield: number
     tradeYield: number
-    constructor (name, config = {}) {
+    neverTrees: boolean
+    neverTown: boolean
+    canMine:boolean
+
+    constructor (name, config:any = {}) {
         this.name = name
         this.css = config.css
         this.movementCost = config.movementCost || 3
         this.isWater = config.isWater || false
+        this.neverTrees = config.neverTrees || false
+        this.neverTown = config.neverTown || false
+        this.canMine = config.canMine || false
 
         if (config.yields) {
             this.foodYield = config.yields[0] || 0
@@ -61,7 +71,22 @@ const terrainTypes = {
        css: {
         background: 'lightseagreen',
        } 
-    })
+    }),
+    hills: new TerrainType('hills', {
+        yields: [1,0,0],
+        movementCost: 6,
+        neverTrees: true,
+        canMine:true,
+        css: Object.assign(spriteSheets.misc.getStyleForFrameCalled('hills'), {backgroundColor:'greenYellow'})
+    }),
+    mountains: new TerrainType('mountains', {
+        yields: [0,1,0],
+        movementCost: 9,
+        neverTrees: true,
+        neverTown: true,
+        canMine:true,
+        css: Object.assign(spriteSheets.misc.getStyleForFrameCalled('mountains'), {backgroundColor:'wheat'})
+    }),
 }
 
 function randomTerrainType() {

@@ -56,7 +56,7 @@ const onGoingOrderTypes = [
         }),
     new OnGoingOrderType('Build Town',
         mapSquare => {},
-        mapSquare => !mapSquare.terrain.isWater,
+        mapSquare => !mapSquare.terrain.isWater && !mapSquare.terrain.neverTown,
         {
             requiredUnitSkill: 'townBuilding',
             letterCode: 'B',

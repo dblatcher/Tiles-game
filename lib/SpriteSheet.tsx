@@ -230,7 +230,26 @@ const units = new SpriteSheet ('units',{
     }
 })
 
-const spriteSheets = { trees,roads,coastlines,innerCoastlines, units }
+const misc = new SpriteSheet ('misc',{
+    cols: 3,
+    rows: 3,
+    css: {
+        backgroundImage: 'url(./misc.png)'
+    },
+    frameNames: {
+        'hills': [0,0],
+        'mountains': [1,0],
+        'irrigation': [2,0],
+        'mine': [0,1],
+        'gold': [1,1],
+        'coal': [2,1],
+        'fish':[0,2],
+        'cow':[1,2],
+        'horse':[1,2],
+    }
+})
+
+const spriteSheets = { trees,roads,coastlines,innerCoastlines, units, misc }
 
 
 export { spriteSheets, SpriteSheet }

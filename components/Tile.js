@@ -41,11 +41,6 @@ export default class Tile extends React.Component {
         return <i className={styles.spriteHolder} style={style}></i>
     }
 
-    renderNamedFrameSprite(spriteSheet, frameName) {
-        let style = spriteSheet.getStyleForFrameCalled(frameName)
-        return <i className={styles.spriteHolder} style={style}></i>
-    }
-
     renderYieldLines() {
         const { mapSquare } = this.props
 
@@ -115,8 +110,14 @@ export default class Tile extends React.Component {
                 { town ? <TownFigure town={town} onMapSection={onMapSection} /> : null}
 
                 {mapSquare.tree ? this.renderDirectionedSprite(spriteSheets.trees) : (null)}
-                {mapSquare.irrigation ? this.renderNamedFrameSprite(spriteSheets.misc, 'irrigation') : (null)}
-                {mapSquare.mine ? this.renderNamedFrameSprite(spriteSheets.misc, 'mine') : (null)}
+
+                {mapSquare.irrigation ? (
+                    <i className={styles.spriteHolder} style={spriteSheets.misc.getStyleForFrameCalled('irrigation')}></i>
+                ): null}
+
+                {mapSquare.mine ? (
+                    <i className={styles.spriteHolder} style={spriteSheets.misc.getStyleForFrameCalled('mine')}></i>
+                ): null}
 
                 {showYields ? this.renderYieldLines() : null}
 

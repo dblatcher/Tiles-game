@@ -3,7 +3,7 @@ import { onGoingOrderTypes } from '../lib/game-entities/OngoingOrder.tsx'
 import styles from './unitContextMenu.module.scss'
 
 export default function UnitContextenu(props) {
-    const { selectedUnit, handleOrderButton, squareSelectedUnitIsIn } = props;
+    const { selectedUnit, handleOrderButton, squareSelectedUnitIsIn, placement = [] } = props;
 
     const availableOrders = selectedUnit
         ? onGoingOrderTypes
@@ -30,7 +30,28 @@ export default function UnitContextenu(props) {
             })
         : [];
 
-    return <nav className={styles.contextMenu}>
+    let navClassList = [styles.contextMenu]
+
+    if (placement.includes('BELOW')) { 
+        if (placement.includes('RIGHT')) {
+            navClassList.push(styles.contextMenuBelowRight) 
+        } else if (placement.includes('LEFT')) {
+            navClassList.push(styles.contextMenuBelowLeft) 
+        } else {
+            navClassList.push(styles.contextMenuBelow) 
+        }
+    } else {
+        if (placement.includes('RIGHT')) {
+            navClassList.push(styles.contextMenuAboveRight) 
+        } else if (placement.includes('LEFT')) {
+            navClassList.push(styles.contextMenuAboveLeft) 
+        } else {
+            navClassList.push(styles.contextMenuAbove) 
+        } 
+    }
+    
+
+    return <nav className={navClassList.join(" ")}>
         {availableOrders.map(availableOrder => (
             <button className={availableOrder.buttonStyles.join(" ")}
                 key={"order-" + availableOrder.orderType.name}

@@ -80,20 +80,47 @@ $windowPadding : .5rem;
     padding: .5rem;
 }
 
-@mixin boxTail($color, $width, $height) {
+
+@mixin boxTail {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    display: block;
+    background-color: transparent;
+    border-style: solid;
+    box-sizing: border-box;
+}
+
+@mixin boxTailLeft($color, $width, $height, $position) {
     &::before {
-        content: "";
-        position: absolute;
-        width: 0;
-        height: 0;
-        display: block;
-        background-color: transparent;
+        @include boxTail();
         left: -$width;
-        top: 0;
+        top: $position;
         border-color: $color $color $color transparent;
-        border-style: solid;
         border-width: $height 0 0 $width;
-        box-sizing: border-box;
+    }
+}
+
+@mixin boxTailDown($color, $width, $height, $position) {
+    &::before {
+        @include boxTail();
+        transform: translateX(-50%);
+        left: $position;
+        bottom: -$height;
+        border-color: $color transparent $color transparent;
+        border-width: $height $width/2 0 $width/2;
+    }
+}
+
+@mixin boxTailUp($color, $width, $height, $position) {
+    &::before {
+        @include boxTail();
+        transform: translateX(-50%);
+        left: $position;
+        top: -$height;
+        border-color: $color transparent $color transparent;
+        border-width: 0 $width/2 $height $width/2;
     }
 }
 

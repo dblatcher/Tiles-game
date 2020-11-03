@@ -3,16 +3,60 @@
 .contextMenu {
     @include dialogueBox();
     position: absolute;
-    left: 8rem;
+    display: flex;
     z-index: 15; 
-    @include boxTail(white, 5rem, 2rem);
 
-    .button:not(:last-child) {
-        margin-bottom: .5rem;
-    }
 }
+
+.contextMenuAbove {
+    left: 50%;
+    transform: translateX(-50%) translateY(-100%);
+    top: -4em;
+    @include boxTailDown(white, 1em, 3em, 50%);
+}
+.contextMenuAboveRight {
+    left: 0;
+    transform: translateY(-100%);
+    top: -4em;
+    @include boxTailDown(white, 1em, 3em, 1em);
+}
+.contextMenuAboveLeft {
+    right:0;
+    transform: translateY(-100%);
+    top: -4em;
+    @include boxTailDown(white, 1em, 3em, calc(100% - 1em));
+}
+
+.contextMenuBelow {
+    bottom: -4em;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    @include boxTailUp(white, 1em, 3em, 50%);
+}
+.contextMenuBelowLeft {
+    bottom: -4em;
+    right:0;
+    transform:  translateY(100%);
+    @include boxTailUp(white, 1em, 3em, calc(100% - 1em));
+}
+.contextMenuBelowRight {
+    bottom: -4em;
+    left: 0;
+    transform: translateY(100%);
+    @include boxTailUp(white, 1em, 3em, 1em);
+}
+
 
 .button {
     @include letterButton;
     @include input; // adds .buttonDisabled and .buttonCancel subclass
+    margin: 0 .25rem;
+
+    &:first-child {
+        margin-left: 0;
+    }
+
+    &:last-child {
+        margin-right: 0;
+    }
 }

@@ -77,6 +77,7 @@ export default class TileBoard extends React.Component {
             isSelected={unit === selectedUnit}
             isFallen={fallenUnits && fallenUnits.includes(unit)}
             stack={this.getStackedUnits(unit)}
+            gridWidth={mapGrid[0].length}
         />)
     }
 

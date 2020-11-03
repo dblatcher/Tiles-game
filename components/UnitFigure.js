@@ -8,12 +8,19 @@ import { spriteSheets } from '../lib/SpriteSheet.tsx'
 export default class UnitFigure extends React.Component {
 
     renderUnitMenu() {
-        const { unit, handleOrderButton, squareUnitIsOn } = this.props
+        const { unit, handleOrderButton, squareUnitIsOn, gridWidth } = this.props
+        let placement = []
+
+        if (squareUnitIsOn.y < 3) { placement.push('BELOW')}
+        if (squareUnitIsOn.x < 3) { placement.push('RIGHT')}
+        if (gridWidth && (squareUnitIsOn.x > gridWidth -3)) { placement.push('LEFT')}
+
         return (
             <UnitContextMenu
                 selectedUnit={unit}
                 squareSelectedUnitIsIn={squareUnitIsOn}
-                handleOrderButton={handleOrderButton} />
+                handleOrderButton={handleOrderButton} 
+                placement={placement}/>
         )
     }
 

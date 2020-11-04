@@ -2,6 +2,7 @@ import MapSection from "./MapSection";
 import ProductionMenu from "./ProductionMenu";
 import Window from "./Window";
 import SupportedUnitsList from "./SupportedUnitsList";
+import TradeReport from "./TradeReport";
 
 import styles from "./townView.module.scss";
 import { spriteSheets } from "../lib/SpriteSheet.tsx"
@@ -80,7 +81,7 @@ export default class TownView extends React.Component {
 
 
                         <h2>Trade{displayGain(town.output.tradeYield)}</h2>
-                        <p>building cost: {town.buildingMaintenanceCost}</p>
+                        <TradeReport town={town} townView={true} />
 
 
                     </section>

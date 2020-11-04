@@ -1,5 +1,6 @@
 import Window from "./Window";
 import SvgIcon from "./SvgIcon"
+import TradeReport from "./TradeReport"
 
 export default class FactionWindow extends React.Component {
 
@@ -30,16 +31,16 @@ export default class FactionWindow extends React.Component {
 
     renderBudgetIcon(category) {
         switch (category) {
-            case 'treasury': return <SvgIcon color="goldenrod" iconName="coins" />
-            case 'research': return <SvgIcon color="skyblue" iconName="lightBulb" />
-            case 'entertainment': return <SvgIcon color="red" iconName="cocktail" />
+            case 'treasury': return <SvgIcon iconName="coins" />
+            case 'research': return <SvgIcon iconName="lightBulb" />
+            case 'entertainment': return <SvgIcon iconName="cocktail" />
             default: return (null)
         }
     }
 
     renderTownRevenueRow(town) {
         const { faction } = this.props
-        const allocatedBudget = faction.allocateTownRevenue(town) 
+        const allocatedBudget = faction.allocateTownRevenue(town)
 
 
         return (
@@ -91,28 +92,16 @@ export default class FactionWindow extends React.Component {
                 </table>
 
                 <table>
-                    <thead>
-                        <tr>
-                            <th>town</th>
-                            <th>trade</th>
-                            <th>treasury</th>
-                            <th>research</th>
-                            <th>entertainment</th>
-                            <th>maintenance</th>
-                        </tr>
-                    </thead>
                     <tbody>
-                        {factionTowns.map(town => this.renderTownRevenueRow(town))}
-                        <tr>
-                            <td>TOTAL</td>
-                            <td>{allocatedBudget.totalTrade}</td>
-                            <td>{allocatedBudget.treasury}</td>
-                            <td>{allocatedBudget.research}</td>
-                            <td>{allocatedBudget.entertainment}</td>
-                            <td>{totalMaintenanceCosts}</td>
-                        </tr>
+                        {factionTowns.map(town =>
+                            <tr>
+                                <td>{town.name}</td>
+                                <td><TradeReport town={town}/></td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
+
 
             </Window>
         )

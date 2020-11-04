@@ -1,4 +1,5 @@
 import { unitTypes } from '../lib/game-entities/Unit.tsx'
+import { buildingTypes } from '../lib/game-entities/BuildingType.tsx'
 import { spriteSheets } from '../lib/SpriteSheet.tsx'
 import { getTurnsToComplete } from '../lib/utility'
 import styles from './productionMenu.module.scss'
@@ -45,6 +46,28 @@ export default class ProductionMenu extends React.Component {
             })
     }
 
+    renderBuildingTypeOptions() {
+        const { town } = this.props
+        return Object.keys(buildingTypes)
+            .map(key => buildingTypes[key])
+            .filter(buildingType => !town.buildings.includes(buildingType))
+            .map(buildingType => {
+
+                const remainingProduction = buildingType.productionCost - town.productionStore
+                let turnsToComplete = getTurnsToComplete(remainingProduction, town.output.productionYield)
+
+                return (
+                    <li key={`buildingOption-${buildingType.name}`}
+                        className={styles.productionItem}
+                        onClick={() => { this.handleProductionItemPick(buildingType) }}>
+
+                        <span>{`${buildingType.name}(${buildingType.productionCost})`}</span>
+                        <span>{`${turnsToComplete} turn${turnsToComplete == 1 ? '' : 's'}`}</span>
+                    </li>
+                )
+            })
+    }
+
     handleProductionItemPick(item) {
         const { handleTownAction, town } = this.props
         this.setState({ listIsOpen: false })
@@ -67,6 +90,7 @@ export default class ProductionMenu extends React.Component {
                     <nav className={dialogueStyles.dialogueFrame}>
                         <ul className={styles.productionItemList}>
                             {this.renderUnitTypeOptions()}
+                            {this.renderBuildingTypeOptions()}
                         </ul>
 
                         <div className={dialogueStyles.buttonRow}>

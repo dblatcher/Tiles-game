@@ -26,7 +26,7 @@ class UnitType {
         this.defend = config.defend || 0;
         this.productionCost = config.productionCost || 10;
     }
-
+    get classIs (){return 'UnitType'}
 }
 
 const unitTypes = {

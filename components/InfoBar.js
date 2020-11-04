@@ -11,10 +11,17 @@ export default class InfoBar extends React.Component {
 
     render() {
         const { selectedSquare, selectedUnit, scrollToSquare, activeFaction, towns, toggleFactionWindow } = this.props;
+        
+        const activeFactionTowns = towns.filter(town => town.faction === activeFaction)
+
         const allocatedBudget = activeFaction 
-            ? activeFaction.calcuateAllocatedBudget(towns.filter(town => town.faction === activeFaction))
+            ? activeFaction.calcuateAllocatedBudget(activeFactionTowns)
             : null
 
+
+        const treasuryChange = activeFaction
+         ? allocatedBudget.treasury - activeFaction.calculateTotalMaintenceCost(activeFactionTowns)
+         : 0
 
         return (
             <section className={styles.infoRow}>
@@ -27,7 +34,7 @@ export default class InfoBar extends React.Component {
                         </p>
                         <p>
                             <span><SvgIcon color="goldenrod" iconName="coins" />{activeFaction.treasury}</span>
-                            <span>{`(${allocatedBudget.treasury >= 0 ? '+' : ''}${allocatedBudget.treasury})`}</span>
+                            <span>{`(${treasuryChange >= 0 ? '+' : ''}${treasuryChange})`}</span>
                             <span>{activeFaction.budget.displayPercentage.treasury}</span>
                         </p>
                         <p>

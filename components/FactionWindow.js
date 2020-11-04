@@ -24,7 +24,7 @@ export default class FactionWindow extends React.Component {
         handleFactionAction('CHANGE_BUDGET_LOCKED', {
             faction,
             category,
-            value: event.target.checked 
+            value: event.target.checked
         })
     }
 
@@ -37,10 +37,30 @@ export default class FactionWindow extends React.Component {
         }
     }
 
+    renderTownRevenueRow(town) {
+        const { faction } = this.props
+        const allocatedBudget = faction.allocateTownRevenue(town) 
+
+
+        return (
+            <tr key={`costs-list=${town.indexNumber}`}>
+                <td>{town.name}</td>
+                <td>{town.output.tradeYield}</td>
+                <td>{allocatedBudget.treasury}</td>
+                <td>{allocatedBudget.research}</td>
+                <td>{allocatedBudget.entertainment}</td>
+                <td>{town.buildingMaintenanceCost}</td>
+            </tr>
+        )
+    }
+
     render() {
         const { faction, closeWindow, towns } = this.props
-        const allocatedBudget = faction.calcuateAllocatedBudget(towns.filter(town => town.faction === faction))
+        const factionTowns = towns.filter(town => town.faction === faction)
+        const allocatedBudget = faction.calcuateAllocatedBudget(factionTowns)
         const budgetKeys = Object.keys(faction.budget.store)
+
+        const totalMaintenanceCosts = faction.calculateTotalMaintenceCost(factionTowns)
 
         return (
             <Window title={faction.name} buttons={[{ text: 'close', clickFunction: closeWindow }]}>
@@ -52,24 +72,47 @@ export default class FactionWindow extends React.Component {
                         {budgetKeys.map(category => (
                             <tr key={`row-${category}`}>
                                 <th>{category}</th>
-                                <td style={{width:'3rem'}}>{faction.budget.displayPercentage[category]}</td>
+                                <td style={{ width: '3rem' }}>{faction.budget.displayPercentage[category]}</td>
                                 <td>
                                     <input type="range" min="0" max="100"
                                         onChange={event => this.handleRangeEvent(event, category)}
                                         value={faction.budget[category] * 100} />
                                 </td>
                                 <td>
-                                    <input type="checkbox" 
-                                    checked={faction.budget.locked[category]}
-                                    onChange={event => this.handleLockEvent (event, category)} />
+                                    <input type="checkbox"
+                                        checked={faction.budget.locked[category]}
+                                        onChange={event => this.handleLockEvent(event, category)} />
                                 </td>
-                                <td style={{minWidth:'6rem', textAlign:'right'}}>{allocatedBudget[category]}{this.renderBudgetIcon(category)} / turn</td>
+                                <td style={{ minWidth: '6rem', textAlign: 'right' }}>{allocatedBudget[category]}{this.renderBudgetIcon(category)} / turn</td>
                             </tr>
                         ))}
 
                     </tbody>
                 </table>
 
+                <table>
+                    <thead>
+                        <tr>
+                            <th>town</th>
+                            <th>trade</th>
+                            <th>treasury</th>
+                            <th>research</th>
+                            <th>entertainment</th>
+                            <th>maintenance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {factionTowns.map(town => this.renderTownRevenueRow(town))}
+                        <tr>
+                            <td>TOTAL</td>
+                            <td>{allocatedBudget.totalTrade}</td>
+                            <td>{allocatedBudget.treasury}</td>
+                            <td>{allocatedBudget.research}</td>
+                            <td>{allocatedBudget.entertainment}</td>
+                            <td>{totalMaintenanceCosts}</td>
+                        </tr>
+                    </tbody>
+                </table>
 
             </Window>
         )

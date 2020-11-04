@@ -19,21 +19,40 @@ class Faction {
         })
     }
 
+    allocateTownRevenue(town) {
+        return this.budget.allocate(town.output.tradeYield)
+    }
+
     calcuateAllocatedBudget(myTowns) {
-        let totalTrade = 0
+        let total = {
+            treasury: 0,
+            research: 0,
+            entertainment: 0,
+            totalTrade: 0,
+        }
         myTowns.forEach(town => {
-            //TO DO - add up town maintenance costs
-            totalTrade += town.output.tradeYield
+            const townOutput = this.allocateTownRevenue(town)
+            total.treasury += townOutput.treasury
+            total.research += townOutput.research
+            total.entertainment += townOutput.entertainment
+            total.totalTrade += townOutput.totalTrade
         })
-        return this.budget.allocate(totalTrade)
+        return total
+    }
+
+    calculateTotalMaintenceCost(myTowns) {
+        return myTowns.reduce((accumulator, town) => accumulator + town.buildingMaintenanceCost, 0)
     }
 
     processTurn(state) {
         const {towns} = state
+        const myTowns = towns.filter(town => town.faction === this)
         let notices = []
 
-        const allocatedBudget = this.calcuateAllocatedBudget(towns.filter(town => town.faction === this))
+        const allocatedBudget = this.calcuateAllocatedBudget(myTowns)
+        const buildingMaintenanceCost = this.calculateTotalMaintenceCost(myTowns)
         this.research += allocatedBudget.research
+        this.treasury -= buildingMaintenanceCost
         this.treasury += allocatedBudget.treasury
         return notices
     }

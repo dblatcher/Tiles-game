@@ -21,11 +21,11 @@ export default class TownView extends React.Component {
     }
 
     getFoodStoreCaption() {
-        const { foodStoreRequiredForGrowth,foodStore } = this.props.town
-        const {foodYield} = this.props.town.output
+        const { foodStoreRequiredForGrowth, foodStore } = this.props.town
+        const { foodYield } = this.props.town.output
         let figure
 
-        if (foodYield > 0 ) {
+        if (foodYield > 0) {
             figure = getTurnsToComplete(foodStoreRequiredForGrowth - foodStore, foodYield)
             return `growth in ${figure} ${pluralise('turn', figure)}`
         } else if (foodYield < 0) {
@@ -58,7 +58,7 @@ export default class TownView extends React.Component {
                             handleMapSectionClick={this.handleMapSectionClick}
                             xStart={town.x - 2} yStart={town.y - 2}
                             xSpan={5} ySpan={5}
-                            town={town} mapGrid={mapGrid} towns={towns}/>
+                            town={town} mapGrid={mapGrid} towns={towns} />
                     </section>
 
                     <section className={styles.section}>
@@ -77,6 +77,26 @@ export default class TownView extends React.Component {
                             unit="production"
                         />
                         <ProductionMenu handleTownAction={handleTownAction} town={town} />
+
+
+                        <h2>Trade{displayGain(town.output.tradeYield)}</h2>
+                        <p>building cost: {town.buildingMaintenanceCost}</p>
+
+
+                    </section>
+
+                    <section className={styles.section}>
+                        <h2>{`Buildings`}</h2>
+                        <ul>
+                            {town.buildings.map(buildingType => {
+                                return (
+                                    <li key={`buildingListItem-${buildingType.name}`}>
+                                        <span>{buildingType.name}</span>
+                                        <span>{` ${buildingType.maintenanceCost}/turn`}</span>
+                                    </li>
+                                )
+                            })}
+                        </ul>
                     </section>
 
                     <section className={styles.section}>

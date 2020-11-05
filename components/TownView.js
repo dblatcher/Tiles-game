@@ -3,10 +3,10 @@ import ProductionMenu from "./ProductionMenu";
 import Window from "./Window";
 import SupportedUnitsList from "./SupportedUnitsList";
 import TradeReport from "./TradeReport";
+import ProgressBox from "./ProgressBox";
+import CitizenRow from "./CitizenRow";
 
 import styles from "./townView.module.scss";
-import { spriteSheets } from "../lib/SpriteSheet.tsx"
-import ProgressBox from "./ProgressBox";
 import { displayGain, getTurnsToComplete, pluralise } from '../lib/utility'
 
 export default class TownView extends React.Component {
@@ -41,20 +41,11 @@ export default class TownView extends React.Component {
         const { town, closeTownView, mapGrid, handleTownAction, towns } = this.props
 
         return (
-            <Window title={town.name} buttons={[{ text: 'close', clickFunction: closeTownView }]}>
+            <Window title={`${town.name} - pop.${town.population},000 `} buttons={[{ text: 'close', clickFunction: closeTownView }]}>
                 <div className={styles.frame}>
 
                     <section className={[styles.section, styles.black].join(" ")}>
-                        <div className={styles.citizenRow}>
-                            {town.citizens.map((citizen, index) => {
-                                return (
-                                    <i key={`citizen-${index}`}
-                                        className={styles.citizenFigure}
-                                        style={spriteSheets.units.getStyleForFrameCalled(citizen.job.name)}
-                                    />
-                                )
-                            })}
-                        </div>
+                        <CitizenRow town={town}/>
                         <MapSection
                             handleMapSectionClick={this.handleMapSectionClick}
                             xStart={town.x - 2} yStart={town.y - 2}

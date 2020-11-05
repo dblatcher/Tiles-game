@@ -1,6 +1,7 @@
 import Window from "./Window";
 import SvgIcon from "./SvgIcon"
 import TradeReport from "./TradeReport"
+import CitizenRow from "./CitizenRow";
 
 export default class FactionWindow extends React.Component {
 

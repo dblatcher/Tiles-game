@@ -7,12 +7,12 @@ export default class ProgressBox extends React.Component {
 
     getSymbolBreakdown(rowWidth) {
         const { current, target } = this.props
-
         const rowsNeeded = Math.ceil(target / rowWidth)
-
-        const numberOfFullRows = (current - current % rowWidth) / rowWidth
+        const numberToShow = Math.min(current, rowWidth * (rowsNeeded + 2));
+        const numberOfFullRows = (numberToShow - numberToShow % rowWidth) / rowWidth
         const symbolRows = new Array(numberOfFullRows).fill(rowWidth)
-        symbolRows.push(current % rowWidth)
+
+        symbolRows.push(numberToShow % rowWidth)
 
         while (symbolRows.length < rowsNeeded) {
             symbolRows.push(0)
@@ -31,31 +31,32 @@ export default class ProgressBox extends React.Component {
         }
         let color = unit === 'food' ? 'green' : 'brown';
         let bunchUp = 0
-        if (rowWidth == 20) {bunchUp = 5.5}
-        if (rowWidth == 30) {bunchUp = 7}
-        if (rowWidth == 40) {bunchUp = 7.8}
+        if (rowWidth == 20) { bunchUp = 5.5 }
+        if (rowWidth == 30) { bunchUp = 7 }
+        if (rowWidth == 40) { bunchUp = 7.8 }
 
 
         return keyArray.map((key, index) => {
-            
-            const isPastTarget = (rowindex*rowWidth) + index > target
+
+            const isPastTarget = (rowindex * rowWidth) + index + 1 > target
 
             return (
-            <SvgIcon key={key}
-                iconName={unit}
-                color={isPastTarget ? 'red':color}
-                style={{ flexShrink: 0, filter:"drop-shadow(-1px 0px 0px black)", marginRight:`-${bunchUp}%` }} />
-        )})
+                <SvgIcon key={key}
+                    iconName={unit}
+                    color={isPastTarget ? 'red' : color}
+                    style={{ flexShrink: 0, filter: "drop-shadow(-1px 0px 0px black)", marginRight: `-${bunchUp}%` }} />
+            )
+        })
     }
 
     render() {
         const { current, target } = this.props
 
-        const rowWidth = target < 80 
-            ? 10
-            : target < 200 
-                ? 20
-                : 30;
+        let rowWidth = 10
+        if (target > 50) { rowWidth = 20 }
+        if (target > 100) { rowWidth = 30 }
+        if (target > 150) { rowWidth = 40 }
+
 
         const breakdown = this.getSymbolBreakdown(rowWidth)
 

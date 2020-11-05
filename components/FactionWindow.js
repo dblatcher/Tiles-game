@@ -94,7 +94,7 @@ export default class FactionWindow extends React.Component {
                 <table>
                     <tbody>
                         {factionTowns.map(town =>
-                            <tr>
+                            <tr key={`trade-report-${town.indexNumber}`}>
                                 <td>{town.name}</td>
                                 <td><TradeReport town={town}/></td>
                             </tr>

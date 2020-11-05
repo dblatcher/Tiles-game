@@ -5,6 +5,7 @@ import SupportedUnitsList from "./SupportedUnitsList";
 import TradeReport from "./TradeReport";
 import ProgressBox from "./ProgressBox";
 import CitizenRow from "./CitizenRow";
+import TownBuildingList from "./TownBuildingList";
 
 import styles from "./townView.module.scss";
 import { displayGain, getTurnsToComplete, pluralise } from '../lib/utility'
@@ -21,7 +22,14 @@ export default class TownView extends React.Component {
         return handleTownAction('MAP_CLICK', { mapSquare, town })
     }
 
-    getFoodStoreCaption() {
+    get productionCaption() {
+        const {isProducing} = this.props.town
+        return isProducing 
+            ? `Producing: ${isProducing.name}` 
+            : `Producing: nothing`
+    }
+
+    get foodStoreCaption() {
         const { foodStoreRequiredForGrowth, foodStore } = this.props.town
         const { foodYield } = this.props.town.output
         let figure
@@ -44,8 +52,8 @@ export default class TownView extends React.Component {
             <Window title={`${town.name} - pop.${town.population},000 `} buttons={[{ text: 'close', clickFunction: closeTownView }]}>
                 <div className={styles.frame}>
 
-                    <section className={[styles.section, styles.black].join(" ")}>
-                        <CitizenRow town={town}/>
+                    <section className={[styles.section, styles.mapSection].join(" ")}>
+                        <CitizenRow town={town} />
                         <MapSection
                             handleMapSectionClick={this.handleMapSectionClick}
                             xStart={town.x - 2} yStart={town.y - 2}
@@ -54,41 +62,32 @@ export default class TownView extends React.Component {
                     </section>
 
                     <section className={styles.section}>
-                        <h2>Food{displayGain(town.output.foodYield)} </h2>
+                        <h2>Food <span>{displayGain(town.output.foodYield)}</span> </h2>
                         <ProgressBox
                             current={town.foodStore}
                             target={town.foodStoreRequiredForGrowth}
-                            unit="food"
-                        />
-                        <p>{this.getFoodStoreCaption()}</p>
+                            unit="food"/>
+                        <p className={styles.caption}>{this.foodStoreCaption}</p>
+                    </section>
 
-                        <h2>Production{displayGain(town.output.productionYield)}</h2>
+                    <section className={styles.section}>
+                        <h2>Production<span>{displayGain(town.output.productionYield)}</span></h2>
                         <ProgressBox
                             current={town.productionStore}
                             target={town.isProducing ? town.isProducing.productionCost : 0}
-                            unit="production"
-                        />
+                            unit="production"/>
+                        <p className={styles.caption}>{this.productionCaption}</p>
                         <ProductionMenu handleTownAction={handleTownAction} town={town} />
+                    </section>
 
-
-                        <h2>Trade{displayGain(town.output.tradeYield)}</h2>
+                    <section className={styles.section}>
+                        <h2>Trade<span>{displayGain(town.output.tradeYield)}</span></h2>
                         <TradeReport town={town} townView={true} />
-
-
                     </section>
 
                     <section className={styles.section}>
                         <h2>{`Buildings`}</h2>
-                        <ul>
-                            {town.buildings.map(buildingType => {
-                                return (
-                                    <li key={`buildingListItem-${buildingType.name}`}>
-                                        <span>{buildingType.name}</span>
-                                        <span>{` ${buildingType.maintenanceCost}/turn`}</span>
-                                    </li>
-                                )
-                            })}
-                        </ul>
+                        <TownBuildingList town={town} />
                     </section>
 
                     <section className={styles.section}>

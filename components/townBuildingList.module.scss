@@ -1,0 +1,19 @@
+@import '../styles/design.scss';
+
+.box {
+    @include box();
+    width: 10rem;
+    box-sizing: content-box;
+    min-height: 4rem;
+}
+
+.buildingList {
+    margin: 0;
+    list-style: none;
+    padding: 0;
+}
+
+.buildingListItem {
+    display: flex;
+    justify-content: space-between;
+}

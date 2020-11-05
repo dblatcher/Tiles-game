@@ -1,22 +1,35 @@
+@import '../styles/design.scss';
+
 .frame {
-    display: flex;
-    flex-flow: row wrap;
+    display: block;
 }
 
 .section {
+    float: left;
     display: flex;
     flex-direction: column;
     padding: 0 .5rem;
     margin-bottom: .5rem;
     max-width: 20rem;
     box-sizing: content-box;
-    
+    min-height: 9rem;
+
     h2 {
         margin: 0;
+
+        span {
+            font-size: 70%
+        }
     }
 }
 
-.black {
-    background-color: black;
-    padding: .5rem;
+.mapSection {
+    // background-color: black;
+    // padding: .5rem;
+    @include box();
+    margin-top: 1.8rem;
+}
+
+.caption {
+    margin: 0;
 }

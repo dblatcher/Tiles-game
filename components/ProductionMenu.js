@@ -79,10 +79,9 @@ export default class ProductionMenu extends React.Component {
         const { listIsOpen } = this.state
 
         return (<>
-            <section>
+            <article>
                 <button className={styles.changeButton} onClick={this.openList}>change</button>
-                <span>{`Producing ${town.isProducing ? town.isProducing.name : 'nothing'}`}</span>
-            </section>
+            </article>
 
             {listIsOpen ?
                 <aside className={dialogueStyles.dialogueHolder}>

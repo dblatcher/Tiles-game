@@ -9,4 +9,8 @@
 .citizenRow {
     text-align: center;
     max-width: 100%;
+    background-image: linear-gradient( black 25%, transparent);
+    padding: .2rem;
+    margin: -.2rem -.2rem 0 -.2rem;
+    box-sizing: content-box;
 }

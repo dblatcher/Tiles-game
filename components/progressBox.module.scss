@@ -1,10 +1,10 @@
+@import '../styles/design.scss';
+
 .box {
-    border: 1px solid black;
-    background-color: seashell;
-    position: relative;
-    display: inline-block;
+    @include box();
     align-self: start;
     width: 10rem;
+    box-sizing: content-box;
 }
 
 .row {
@@ -18,4 +18,5 @@
     bottom: 0;
     right: 0;
     background-color: rgba($color: #fff, $alpha: .5);
+    padding: 0 .2em .2em 0;
 }

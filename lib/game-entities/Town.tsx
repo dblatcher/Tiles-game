@@ -8,6 +8,9 @@ import { BuildingType, buildingTypes} from './BuildingType.tsx'
 
 let townIndex = 0
 
+// TO DO - create config module for constants like this?
+const hurryCostPerUnit = 5
+
 class Town {
     faction: Faction;
     mapSquare: MapSquare;
@@ -51,6 +54,10 @@ class Town {
     get population() { return this.citizens.length }
     get foodStoreRequiredForGrowth() { return (this.population + 1) * 10 }
 
+    get canHurryProduction() {
+      return (this.costToHurryProduction !== false) && (this.costToHurryProduction <= this.faction.treasury) 
+    }
+
     get output() {
         let output = {
             foodYield: this.mapSquare.foodYield,
@@ -75,6 +82,17 @@ class Town {
         let cost = 0
         this.buildings.forEach(buildingType => cost += buildingType.maintenanceCost)
         return cost
+    }
+
+    get costToHurryProduction() {
+        if (!this.isProducing) {return false}
+        if (this.productionStore >= this.isProducing.productionCost) {return false}
+        return (this.isProducing.productionCost - this.productionStore) * hurryCostPerUnit
+    }
+
+    get productionItemName() {
+        if (!this.isProducing) {return 'nothing'}
+        return this.isProducing.name
     }
 
     getSquaresAndObstacles(mapGrid, towns) {

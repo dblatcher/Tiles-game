@@ -57,9 +57,13 @@ export default class UnitFigure extends React.Component {
             top: inInfoRow ? 'unset' : `${unit.y * 4}em`,
             backgroundImage: isFallen
                 ? ''
-                : placeInStack === 0
-                    ? `radial-gradient(${unit.faction.color} 65%, rgba(0,0,0,0) 65%)`
-                    : `radial-gradient(${unit.faction.color} 55%, rgba(0,0,0,0) 55%)`,
+                : unit.vetran
+                    ? placeInStack === 0
+                        ? `radial-gradient(${unit.faction.color} 45%, black 45%, ${unit.faction.color} 55%, ${unit.faction.color} 65%,  rgba(0,0,0,0) 65%)`
+                        : `radial-gradient(${unit.faction.color} 40%, black 40%, ${unit.faction.color} 45%, ${unit.faction.color} 55%,  rgba(0,0,0,0) 55%)`
+                    : placeInStack === 0
+                        ? `radial-gradient(${unit.faction.color} 65%, rgba(0,0,0,0) 65%)`
+                        : `radial-gradient(${unit.faction.color} 55%, rgba(0,0,0,0) 55%)`,
             transform: `translate(${-Math.min(placeInStack, 5) * 8}px, ${-Math.min(placeInStack, 5) * 2}px)`,
             pointerEvents: isFallen ? 'none' : 'unset',
         }
@@ -75,15 +79,15 @@ export default class UnitFigure extends React.Component {
                     onClick={handleClick || function () { }}
                 ></i>
 
-                {unit.onGoingOrder && !unit.onGoingOrder.type.noFlag
+                { unit.onGoingOrder && !unit.onGoingOrder.type.noFlag
                     ? <p className={orderFlagClassList.join(" ")}>
                         <span>{unit.onGoingOrder.type.letterCode}</span>
                         <span>{unit.onGoingOrder.timeRemaining}</span>
                     </p>
                     : null}
 
-                {menuIsOpen && isSelected && interfaceMode === 'MOVE' ? this.renderUnitMenu() : null}
-            </figure>
+                { menuIsOpen && isSelected && interfaceMode === 'MOVE' ? this.renderUnitMenu() : null}
+            </figure >
         )
 
     }

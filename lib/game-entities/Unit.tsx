@@ -48,6 +48,7 @@ class Unit {
     faction: Faction;
     x: number;
     y: number;
+    vetran: boolean;
     remainingMoves: number;
     indexNumber: number;
     onGoingOrder: OnGoingOrder;
@@ -56,6 +57,8 @@ class Unit {
         this.faction = faction
         this.x = config.x;
         this.y = config.y;
+        this.vetran = !!config.vetran || false 
+
         this.remainingMoves = typeof config.remainingMoves === 'number'
             ? config.remainingMoves
             : type.moves;
@@ -68,14 +71,17 @@ class Unit {
     }
 
     get infoList() {
-
         return [
-            `${this.faction.name} ${this.type.name}`,
+            this.description,
             `Att:${this.type.attack} Def:${this.type.defend}`,
             this.onGoingOrder
                 ? `${this.onGoingOrder.type.name}, ${this.onGoingOrder.timeRemaining} turns left`
                 : `${this.remainingMoves}/${this.type.moves} movement`,
         ]
+    }
+
+    get description () {
+        return `${this.faction.name}${this.vetran ? ' vetran' : ''} ${this.type.name}`
     }
 
     isAdjacentTo(target) {

@@ -7,18 +7,19 @@ export default class BattleDialogue extends React.Component {
         const { battle, cancelBattle, confirmBattle } = this.props
         const { attacker, defenders, mapSquare } = battle
 
-
+        console.log(battle.attackScoreBreakdown)
 
         return (
             <aside className={styles.dialogueHolder}>
                 <div className={styles.dialogueFrame}>
 
                     <section className={styles.unitRow}>
-                        
+
                         <div className={styles.unitBlock}>
                             <div className={styles.scoreSummary}>
-                                <p>{attacker.type.name}</p>
-                                <p>{`${attacker.type.attack} attack`}</p>
+                                {battle.attackScoreBreakdown.map((item, index) => (
+                                    <p key={`attack-breakdown-${index}`}>{item}</p>
+                                ))}
                                 <p>{`total: ${battle.attackScore}`}</p>
                             </div>
                             <UnitFigure unit={attacker} inInfoRow />
@@ -27,8 +28,9 @@ export default class BattleDialogue extends React.Component {
                         <div className={styles.unitBlock}>
                             <UnitFigure unit={defenders[0]} inInfoRow />
                             <div className={styles.scoreSummary}>
-                                <p>{defenders[0].type.name}</p>
-                                <p>{`${defenders[0].type.defend} defend`}</p>
+                                {battle.defendScoreBreakdown.map((item, index) => (
+                                    <p key={`defend-breakdown-${index}`}>{item}</p>
+                                ))}
                                 <p>{`total: ${battle.defendScore}`}</p>
                             </div>
                         </div>

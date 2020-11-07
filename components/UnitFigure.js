@@ -11,21 +11,21 @@ export default class UnitFigure extends React.Component {
         const { unit, handleOrderButton, squareUnitIsOn, gridWidth } = this.props
         let placement = []
 
-        if (squareUnitIsOn.y < 3) { placement.push('BELOW')}
-        if (squareUnitIsOn.x < 3) { placement.push('RIGHT')}
-        if (gridWidth && (squareUnitIsOn.x > gridWidth -3)) { placement.push('LEFT')}
+        if (squareUnitIsOn.y < 3) { placement.push('BELOW') }
+        if (squareUnitIsOn.x < 3) { placement.push('RIGHT') }
+        if (gridWidth && (squareUnitIsOn.x > gridWidth - 3)) { placement.push('LEFT') }
 
         return (
             <UnitContextMenu
                 selectedUnit={unit}
                 squareSelectedUnitIsIn={squareUnitIsOn}
-                handleOrderButton={handleOrderButton} 
-                placement={placement}/>
+                handleOrderButton={handleOrderButton}
+                placement={placement} />
         )
     }
 
     render() {
-        const { unit, handleClick, isSelected, inInfoRow, stack, isFallen, menuIsOpen, interfaceMode } = this.props
+        const { unit, handleClick, isSelected, inInfoRow, stack, isFallen, menuIsOpen, interfaceMode, notInSight } = this.props
 
         const placeInStack = inInfoRow
             ? 0
@@ -44,6 +44,10 @@ export default class UnitFigure extends React.Component {
 
         if (isFallen) {
             spriteClassList.push(styles.fallenSprite)
+        }
+
+        if (notInSight && !isFallen) {
+            return null
         }
 
         if (placeInStack > 0) { spriteClassList.push(styles.behind) }
@@ -69,16 +73,14 @@ export default class UnitFigure extends React.Component {
                     style={spriteSheets.units.getStyleForFrameCalled(unit.type.name)}
                     className={spriteClassList.join(" ")}
                     onClick={handleClick || function () { }}
-                >
-                </i>
+                ></i>
 
                 {unit.onGoingOrder && !unit.onGoingOrder.type.noFlag
                     ? <p className={orderFlagClassList.join(" ")}>
                         <span>{unit.onGoingOrder.type.letterCode}</span>
                         <span>{unit.onGoingOrder.timeRemaining}</span>
                     </p>
-                    : null
-                }
+                    : null}
 
                 {menuIsOpen && isSelected && interfaceMode === 'MOVE' ? this.renderUnitMenu() : null}
             </figure>

@@ -13,8 +13,8 @@ class Faction {
         this.research = config.research || 0
 
         this.budget = new TradeBudget().setAll(config.buget || {
-            treasury: 1/2,
-            research: 1/2,
+            treasury: 1 / 2,
+            research: 1 / 2,
             entertainment: 0,
         })
     }
@@ -45,7 +45,7 @@ class Faction {
     }
 
     processTurn(state) {
-        const {towns} = state
+        const { towns } = state
         const myTowns = towns.filter(town => town.faction === this)
         let notices = []
 
@@ -57,12 +57,40 @@ class Faction {
         return notices
     }
 
-    checkIfAlive (state) {
-        const {towns, units} = state
+    checkIfAlive(state) {
+        const { towns, units } = state
         if (towns.filter(town => this === town.faction).length === 0 && units.filter(unit => this === unit.faction).length === 0) {
             return false
         }
         return true
+    }
+
+    getPlacesInSight(towns, units) {
+        const myTowns = towns.filter(town => town.faction === this)
+        const myUnits = units.filter(unit => unit.faction === this)
+
+        const places = [], results = []
+
+        function addPlacesInRange(item, range) {
+            let x, y;
+            for (x = item.x - range; x < item.x + range + 1; x++) {
+                for (y = item.y - range; y < item.y + range + 1; y++) {
+                    places.push({ x, y })
+                }
+            }
+        }
+
+        myTowns.forEach(town => { addPlacesInRange(town, 3) })
+        myUnits.forEach(unit => { addPlacesInRange(unit, 2) })
+
+        let i;
+        for (i = 0; i < places.length; i++) {
+            if (!results.some(place => place.x == places[i].x && place.y == places[i].y)) {
+                results.push(places[i])
+            }
+        }
+
+        return results
     }
 
     get serialised() {

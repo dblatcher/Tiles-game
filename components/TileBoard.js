@@ -30,14 +30,20 @@ export default class TileBoard extends React.Component {
             })
     }
 
-    renderTile(mapSquare) {
+    renderTile(mapSquare, placesInSight) {
         const { handleMapSquareClick, selectedSquare, selectedUnit, handleTileHoverEnter, mapGrid, interfaceMode, gameHasOpenDialogue, towns } = this.props;
-        
         const town = towns.filter(town => town.mapSquare === mapSquare)[0]
+
+
+        const notInSight = !placesInSight.some(square => {
+            return square.x === mapSquare.x && square.y === mapSquare.y
+        })
+
+
 
         return (
             <Tile key={`${mapSquare.x},${mapSquare.y}`}
-                handleClick={() => { handleMapSquareClick({mapSquare, source:'tile'}) }}
+                handleClick={() => { handleMapSquareClick({ mapSquare, source: 'tile' }) }}
                 interfaceMode={interfaceMode}
                 mapSquare={mapSquare}
                 town={town}
@@ -47,26 +53,30 @@ export default class TileBoard extends React.Component {
                 handleTileHoverEnter={handleTileHoverEnter}
                 adjacentSquares={this.getAdjacentSquares(mapSquare.x, mapSquare.y)}
                 gameHasOpenDialogue={gameHasOpenDialogue}
+                notInSight={notInSight}
             />
         )
     }
 
-    renderRow(row, y) {
+    renderRow(row, y, placesInSight) {
         return (
             <div className={styles.row} key={`row ${y}`}>
-                {row.map(mapSquare => this.renderTile(mapSquare))}
+                {row.map(mapSquare => this.renderTile(mapSquare, placesInSight))}
             </div>
         )
     }
 
-    renderUnit(unit) {
-        const { handleMapSquareClick, selectedUnit, fallenUnits, mapGrid, unitWithMenuOpen, handleOrderButton, interfaceMode } = this.props;
-
+    renderUnit(unit, placesInSight) {
+        const { handleMapSquareClick, selectedUnit, fallenUnits, mapGrid, unitWithMenuOpen, handleOrderButton, interfaceMode, } = this.props;
         const squareUnitIsOn = mapGrid[unit.y][unit.x]
 
+        const notInSight = !placesInSight.some(square => {
+            return square.x === unit.x && square.y === unit.y
+        })
+
         return (<UnitFigure
-            handleClick={() => { 
-                handleMapSquareClick({mapSquare:squareUnitIsOn, source:'unit'}) 
+            handleClick={() => {
+                handleMapSquareClick({ mapSquare: squareUnitIsOn, source: 'unit' })
             }}
             squareUnitIsOn={squareUnitIsOn}
             interfaceMode={interfaceMode}
@@ -78,19 +88,24 @@ export default class TileBoard extends React.Component {
             isFallen={fallenUnits && fallenUnits.includes(unit)}
             stack={this.getStackedUnits(unit)}
             gridWidth={mapGrid[0].length}
+            notInSight={notInSight}
         />)
     }
 
     render() {
-        const { mapGrid, units=[], fallenUnits=[], towns=[], mapZoomLevel=1 } = this.props
-        const sectionStyle = { fontSize: `${mapZoomLevel*100}%` }
+        const { mapGrid, units = [], fallenUnits = [], towns = [], mapZoomLevel = 1, activeFaction } = this.props
+        const sectionStyle = { fontSize: `${mapZoomLevel * 100}%` }
+
+        const placesInSight = activeFaction
+            ? activeFaction.getPlacesInSight(towns, units)
+            : []
 
         return (
-            <section 
-            className={styles.tileBoard} 
-            style={sectionStyle}>
-                {mapGrid.map((row, index) => this.renderRow(row, index))}
-                {[].concat(units, fallenUnits).map(unit => this.renderUnit(unit))}
+            <section
+                className={styles.tileBoard}
+                style={sectionStyle}>
+                {mapGrid.map((row, index) => this.renderRow(row, index, placesInSight))}
+                {[].concat(units, fallenUnits).map(unit => this.renderUnit(unit, placesInSight))}
             </section>
         )
     }

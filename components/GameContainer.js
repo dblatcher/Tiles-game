@@ -300,6 +300,7 @@ export default class GameContainer extends React.Component {
                         fallenUnits={fallenUnits}
                         gameHasOpenDialogue={this.hasOpenDialogue}
                         mapZoomLevel={mapZoomLevel}
+                        activeFaction={activeFaction}
                     />
                 </main>
 

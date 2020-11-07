@@ -25,7 +25,7 @@ export default class Tile extends React.Component {
         })
     }
 
-    doesNeedCoastline() {
+    get needsCoastline() {
         const { mapSquare, adjacentSquares } = this.props
         if (!adjacentSquares) { return false }
         for (let key in adjacentSquares) {
@@ -34,11 +34,11 @@ export default class Tile extends React.Component {
         return false
     }
 
-    renderDirectionedSprite(spriteSheet) {
+    renderDirectionedSprite(spriteSheet, bgClasses) {
         const { adjacentSquares, inInfoRow } = this.props
         let style = spriteSheet.getStyleFromAdjacentSquares(adjacentSquares)
         if (inInfoRow) { style.top = "0" } //override the top property used on spriteSheets.trees.css
-        return <i className={styles.spriteHolder} style={style}></i>
+        return <i className={bgClasses} style={style}></i>
     }
 
     renderYieldLines() {
@@ -65,59 +65,65 @@ export default class Tile extends React.Component {
     }
 
     render() {
-        const { mapSquare, handleClick, isSelected,
+        const { mapSquare, handleClick, isSelected, notInSight,
             selectedUnit, inInfoRow, squareSelectedUnitIsIn, interfaceMode,
             gameHasOpenDialogue, showYields, town, onMapSection, occupier } = this.props
-        const { isHoveredOn } = this.state
 
-        const containsSelectedUnit = selectedUnit && (mapSquare.x === selectedUnit.x && mapSquare.y === selectedUnit.y);
         const selectedUnitCanMoveTo = selectedUnit && selectedUnit.canMoveTo(mapSquare, squareSelectedUnitIsIn);
-        const needsCoastLine = this.doesNeedCoastline()
 
-        let classList = [styles.tile]
+        let figureClassList = [styles.tile]
+        let bgSpriteClassList = [styles.spriteHolder]
 
         if (!inInfoRow) {
             if (interfaceMode === 'VIEW') {
-                if (isSelected) { classList.push(styles.selected) }
-            } else if (interfaceMode === 'MOVE') {
-                if (!gameHasOpenDialogue && selectedUnitCanMoveTo) { classList.push(styles.inRange) }
+                if (isSelected) { figureClassList.push(styles.selected) }
+            } else if (interfaceMode === 'MOVE' && !gameHasOpenDialogue) {
 
-                if (!gameHasOpenDialogue && isHoveredOn && selectedUnitCanMoveTo) { classList.push(styles.inRangeHovered) }
-                if (!gameHasOpenDialogue && isHoveredOn && !selectedUnitCanMoveTo) { classList.push(styles.hovered) }
+                figureClassList.push(styles.inMoveMode)
+                if (selectedUnitCanMoveTo) { figureClassList.push(styles.inRange) }
             }
 
         }
 
-        if (occupier) { classList.push(styles.occupied) }
+        if (occupier) { figureClassList.push(styles.occupied) }
+
+        if (notInSight) {
+            bgSpriteClassList.push(styles.notInSight)
+        }
+
+        const bgClasses = bgSpriteClassList.join(" ")
 
         return (
             <figure
-                style={mapSquare.css || {}}
-                className={classList.join(" ")}
+                className={figureClassList.join(" ")}
                 onClick={handleClick || function () { }}
                 onPointerEnter={() => { this.handleHover(true) }}
                 onPointerLeave={() => { this.handleHover(false) }}
             >
-                {needsCoastLine && mapSquare.isWater ? this.renderDirectionedSprite(spriteSheets.coastlines) : (null)}
-                {needsCoastLine && !mapSquare.isWater ? this.renderDirectionedSprite(spriteSheets.innerCoastlines) : (null)}
+                <i className={bgClasses} style={mapSquare.css}></i>
+                {this.needsCoastline
+                    ? this.renderDirectionedSprite(spriteSheets[mapSquare.isWater ? 'coastlines' : 'innerCoastlines'], bgClasses)
+                    : (null)
+                }
+
 
                 {mapSquare.terrain.spriteCss ? (
-                    <i className={styles.spriteHolder} style={mapSquare.terrain.spriteCss}></i>
+                    <i className={bgClasses} style={mapSquare.terrain.spriteCss}></i>
                 ) : null}
 
-                {mapSquare.road ? this.renderDirectionedSprite(spriteSheets.roads) : (null)}
+                {mapSquare.road ? this.renderDirectionedSprite(spriteSheets.roads, bgClasses) : (null)}
 
                 { town ? <TownFigure town={town} onMapSection={onMapSection} /> : null}
 
-                {mapSquare.tree ? this.renderDirectionedSprite(spriteSheets.trees) : (null)}
+                {mapSquare.tree ? this.renderDirectionedSprite(spriteSheets.trees, bgClasses) : (null)}
 
                 {mapSquare.irrigation ? (
-                    <i className={styles.spriteHolder} style={spriteSheets.misc.getStyleForFrameCalled('irrigation')}></i>
-                ): null}
+                    <i className={bgClasses} style={spriteSheets.misc.getStyleForFrameCalled('irrigation')}></i>
+                ) : null}
 
                 {mapSquare.mine ? (
-                    <i className={styles.spriteHolder} style={spriteSheets.misc.getStyleForFrameCalled('mine')}></i>
-                ): null}
+                    <i className={bgClasses} style={spriteSheets.misc.getStyleForFrameCalled('mine')}></i>
+                ) : null}
 
                 {showYields ? this.renderYieldLines() : null}
 

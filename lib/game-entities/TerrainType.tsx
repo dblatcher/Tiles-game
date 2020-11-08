@@ -6,6 +6,7 @@ class TerrainType {
     css: object
     spriteCss: object
     movementCost: number
+    defenseBonus: number
     isWater: boolean
     foodYield: number
     productionYield: number
@@ -20,6 +21,7 @@ class TerrainType {
         this.css = config.css
         this.spriteCss = config.spriteCss
         this.movementCost = config.movementCost || 3
+        this.defenseBonus = config.defenseBonus || 0
         this.isWater = config.isWater || false
         this.neverTrees = config.neverTrees || false
         this.neverTown = config.neverTown || false
@@ -66,6 +68,7 @@ const terrainTypes = {
     swamp: new TerrainType('swamp', {
         yields: [2, 1, 0],
         movementCost: 4,
+        defenseBonus: .25,
         css: {
             background: 'rosybrown',
             backgroundImage: 'repeating-radial-gradient(green 7%, transparent 14%), repeating-linear-gradient(transparent 2%, steelblue 4%)'
@@ -82,6 +85,7 @@ const terrainTypes = {
     hills: new TerrainType('hills', {
         yields: [1, 0, 0],
         movementCost: 6,
+        defenseBonus: .75,
         neverTrees: true,
         canIrrigate: true,
         canMine: true,
@@ -94,6 +98,7 @@ const terrainTypes = {
     mountains: new TerrainType('mountains', {
         yields: [0, 1, 0],
         movementCost: 9,
+        defenseBonus: 1,
         neverTrees: true,
         neverTown: true,
         canMine: true,

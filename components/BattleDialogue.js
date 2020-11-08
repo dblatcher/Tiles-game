@@ -7,8 +7,6 @@ export default class BattleDialogue extends React.Component {
         const { battle, cancelBattle, confirmBattle } = this.props
         const { attacker, defenders, mapSquare } = battle
 
-        console.log(battle.attackScoreBreakdown)
-
         return (
             <aside className={styles.dialogueHolder}>
                 <div className={styles.dialogueFrame}>

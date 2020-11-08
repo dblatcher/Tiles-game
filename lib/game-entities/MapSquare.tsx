@@ -44,6 +44,12 @@ class MapSquare {
             : this.terrain.movementCost
     }
 
+    get defenseBonus() {
+        return this.tree
+        ? this.terrain.defenseBonus + .5
+        : this.terrain.defenseBonus
+    }
+
     get isWater() {
         return this.terrain.isWater
     }

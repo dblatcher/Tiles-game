@@ -12,6 +12,7 @@ import TownView from './TownView'
 import MainMenu from './MainMenu'
 import FactionWindow from './FactionWindow'
 
+import processMapClick from '../lib/game-logic/processMapClick'
 import gameActions from '../lib/game-logic/gameActions'
 import townActions from '../lib/game-logic/townActions'
 import factionActions from '../lib/game-logic/factionActions'
@@ -134,7 +135,7 @@ export default class GameContainer extends React.Component {
         }
 
         return this.setState(
-            gameActions.HANDLE_MAP_CLICK(input),
+            processMapClick(input),
             () => {
                 if (this.state.interfaceMode === 'VIEW') { this.scrollToSelection() }
             }
@@ -153,17 +154,15 @@ export default class GameContainer extends React.Component {
     }
 
     handleDialogueButton(command, input = {}) {
-        let commandFunction = state => state;
-        switch (command) {
-            case "CANCEL_BATTLE": commandFunction = gameActions.cancelBattle; break;
-            case "RESOLVE_BATTLE": commandFunction = gameActions.resolveBattle; break;
-            case "ACKNOWLEDGE_MESSAGE": commandFunction = gameActions.acknowledgeMessage(input); break;
-            case "PICK_UNIT": commandFunction = gameActions.pickUnit(input); break;
-            case "EXECUTE_STATE_FUNCTION": commandFunction = input; break
-            default:
-                console.warn(`unknown dialogue command: ${command}`, input); return
+        if (command === 'EXECUTE_STATE_FUNCTION') {
+            return this.setState(input)
         }
-        return this.setState(commandFunction)
+
+        if (!gameActions[command]) {
+            console.warn(`unknown order button command ${command}`, input)
+            return false
+        }
+        return this.setState(gameActions[command](input))
     }
 
     handleTownAction(command, input = {}) {

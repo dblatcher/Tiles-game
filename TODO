@@ -1,0 +1,35 @@
+TechDiscoveries
+-type definition
+-dialogue to pick
+-display progress on FactionWindow
+-TechTreeWindow
+-tech requirements for units and building
+-obseleting units
+
+Buildings
+- define more BuildingTypes, add rules to existing code
+- find way to include common rules (eg yield bonuses) on the type data instead of coding rule for every building
+
+informational text
+- use api endpoint to retreive longform text/data from static files
+- define data format?
+- internationalisation suport
+- InfoPage component
+
+AI
+- 'human player' flag on Faction
+- automate AI faction moves (crudely / randomly at first)
+- wait/sleep/delay function so player can watch the computer move
+- proper AI functions to pick computer moves well...
+- debug component to reveal AI priorities / goals
+
+'Wonders'
+- extends BuildingTypes? 
+- limit to one per world
+
+Options
+- add options menu to MainMenu
+- language option
+- view options - shade squarea out of view
+- game option - show battle breakdown
+

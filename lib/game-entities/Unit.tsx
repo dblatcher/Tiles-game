@@ -3,6 +3,7 @@ import { Faction } from "./Faction";
 
 class UnitType {
     name: string;
+    displayName: string;
     spriteFrameName: string;
     moves: number;
     roadBuilding: number;
@@ -15,6 +16,7 @@ class UnitType {
     productionCost: number;
     constructor(name: string, config: any = {}) {
         this.name = name;
+        this.displayName = config.displayName || name;
         this.spriteFrameName = config.spriteFrameName || name;
         this.moves = config.moves || 6;
         this.roadBuilding = config.roadBuilding || 0;
@@ -81,7 +83,7 @@ class Unit {
     }
 
     get description () {
-        return `${this.faction.name}${this.vetran ? ' vetran' : ''} ${this.type.name}`
+        return `${this.faction.name}${this.vetran ? ' vetran' : ''} ${this.type.displayName}`
     }
 
     isAdjacentTo(target) {
@@ -99,6 +101,20 @@ class Unit {
         return this.isAdjacentTo(targetMapSquare)
             && !(targetMapSquare.x === this.x && targetMapSquare.y === this.y)
             && (this.remainingMoves >= movementCost || this.remainingMoves === this.type.moves)
+    }
+
+    processTurn(state) {
+        this.remainingMoves = this.type.moves
+
+        if (this.onGoingOrder) {
+            this.onGoingOrder.reduceTime(this)
+        }
+
+        if (this.onGoingOrder && this.onGoingOrder.timeRemaining <= 0) {
+            let squareUnitIsOn = state.mapGrid[this.y][this.x]
+            this.onGoingOrder.type.applyOutcome(squareUnitIsOn)
+            this.onGoingOrder = null
+        }
     }
 
     get serialised() {

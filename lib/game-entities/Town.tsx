@@ -4,7 +4,7 @@ import { Unit, UnitType } from './Unit.tsx'
 import { citizenJobs } from './CitizenJob.tsx'
 import { Citizen } from './Citizen.tsx'
 import { unitTypes } from './Unit.tsx'
-import { BuildingType, buildingTypes} from './BuildingType.tsx'
+import { BuildingType, buildingTypes } from './BuildingType.tsx'
 
 let townIndex = 0
 
@@ -55,7 +55,7 @@ class Town {
     get foodStoreRequiredForGrowth() { return (this.population + 1) * 10 }
 
     get canHurryProduction() {
-      return (this.costToHurryProduction !== false) && (this.costToHurryProduction <= this.faction.treasury) 
+        return (this.costToHurryProduction !== false) && (this.costToHurryProduction <= this.faction.treasury)
     }
 
     get output() {
@@ -85,14 +85,14 @@ class Town {
     }
 
     get costToHurryProduction() {
-        if (!this.isProducing) {return false}
-        if (this.productionStore >= this.isProducing.productionCost) {return false}
+        if (!this.isProducing) { return false }
+        if (this.productionStore >= this.isProducing.productionCost) { return false }
         return (this.isProducing.productionCost - this.productionStore) * hurryCostPerUnit
     }
 
     get productionItemName() {
-        if (!this.isProducing) {return 'nothing'}
-        return this.isProducing.name
+        if (!this.isProducing) { return 'nothing' }
+        return this.isProducing.displayName
     }
 
     getSquaresAndObstacles(mapGrid, towns) {
@@ -135,10 +135,10 @@ class Town {
         const { squares, obstacles } = this.getSquaresAndObstacles(mapGrid, towns)
         let result = []
 
-        for (let i = 0; i< obstacles.length; i++) {
-            if (!obstacles[i]) {continue}
+        for (let i = 0; i < obstacles.length; i++) {
+            if (!obstacles[i]) { continue }
             if (this.citizens.includes(obstacles[i])) { continue }
-            result.push ({mapSquare: squares[i], obstacle: obstacles[i]})
+            result.push({ mapSquare: squares[i], obstacle: obstacles[i] })
         }
 
         return result
@@ -183,7 +183,10 @@ class Town {
             this.autoAssignCitizen(newCitizen, state)
 
             this.citizens.push(newCitizen)
-            this.foodStore = 0
+            this.foodStore = this.buildings.includes(buildingTypes.granary)
+                ? Math.floor(this.foodStore / 2)
+                : 0
+
             notices.push(`${this.name} has grown to a population of ${this.population}.`)
         }
 
@@ -199,13 +202,16 @@ class Town {
         }
 
         if (this.isProducing && this.productionStore >= this.isProducing.productionCost) {
-            notices.push(`${this.name} has finished building ${this.isProducing.name}`)
-
-            // to do - reduce population if unit is 'settler' (has townBuilding > 0)
-            // to do - add test for type of production item
+            notices.push(`${this.name} has finished building ${this.productionItemName}`)
 
             if (this.isProducing.classIs === 'UnitType') {
-                const newUnit = new Unit(this.isProducing, this.faction, { x: this.x, y: this.y })
+                const newUnit = new Unit(this.isProducing, this.faction, { 
+                    x: this.x, 
+                    y: this.y, 
+                    vetran: this.buildings.includes(buildingTypes.barracks)
+                })
+                if (newUnit.townBuilding >0 && this.population > 1) {this.citizens.pop()} 
+
                 state.units.push(newUnit)
                 this.supportedUnits.push(newUnit)
             } else if (this.isProducing.classIs === 'BuildingType') {
@@ -224,7 +230,7 @@ class Town {
         let output = {
             faction: this.faction.name,
             mapSquare: { x: this.mapSquare.x, y: this.mapSquare.y },
-            isProducing: this.isProducing ? this.isProducing.name : null, // TO DO - handle producing buildings
+            isProducing: this.isProducing ? this.isProducing.name : null, // TO DO - handle producing buildings better
             citizens: this.citizens.map(citizen => citizen.serialised),
             supportedUnits: this.supportedUnits.map(unit => unit.indexNumber),
             buildings: this.buildings.map(buildingType => buildingType.name),
@@ -246,7 +252,7 @@ class Town {
             productionStore: data.productionStore,
 
             isProducing: data.isProducing
-                ? unitTypes[data.isProducing] // TO DO - handle producing buildings
+                ? unitTypes[data.isProducing] || buildingTypes[data.isProducing] // TO DO - handle producing buildings better - assumes no unit and buildig with same name
                 : null,
 
             citizens: data.citizens.map(datum => Citizen.deserialise(datum, mapGrid)),

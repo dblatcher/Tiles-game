@@ -25,7 +25,7 @@ export default class TownView extends React.Component {
     get productionCaption() {
         const {isProducing} = this.props.town
         return isProducing 
-            ? `Producing: ${isProducing.name}` 
+            ? `Producing: ${isProducing.displayName}` 
             : `Producing: nothing`
     }
 

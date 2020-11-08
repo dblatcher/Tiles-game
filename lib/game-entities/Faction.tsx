@@ -1,4 +1,7 @@
 import TradeBudget from '../TradeBudget.js'
+import { buildingTypes } from './BuildingType.tsx'
+import { Town } from './Town.tsx'
+import { Unit } from './Unit.tsx'
 
 class Faction {
     name: string;
@@ -19,11 +22,21 @@ class Faction {
         })
     }
 
-    allocateTownRevenue(town) {
-        return this.budget.allocate(town.output.tradeYield)
+    allocateTownRevenue(town:Town) {
+        let townRevenue = this.budget.allocate(town.output.tradeYield)
+
+        if (town.buildings.includes(buildingTypes.marketplace)) {
+            townRevenue.treasury += Math.floor(townRevenue.treasury/2)
+        }
+
+        if (town.buildings.includes(buildingTypes.library)) {
+            townRevenue.research += Math.floor(townRevenue.research/2)
+        }
+
+        return townRevenue
     }
 
-    calcuateAllocatedBudget(myTowns) {
+    calcuateAllocatedBudget(myTowns:Array<Town>) {
         let total = {
             treasury: 0,
             research: 0,
@@ -40,7 +53,7 @@ class Faction {
         return total
     }
 
-    calculateTotalMaintenceCost(myTowns) {
+    calculateTotalMaintenceCost(myTowns:Array<Town>) {
         return myTowns.reduce((accumulator, town) => accumulator + town.buildingMaintenanceCost, 0)
     }
 
@@ -65,7 +78,7 @@ class Faction {
         return true
     }
 
-    getPlacesInSight(towns, units) {
+    getPlacesInSight(towns:Array<Town>, units:Array<Unit>) {
         const myTowns = towns.filter(town => town.faction === this)
         const myUnits = units.filter(unit => unit.faction === this)
 

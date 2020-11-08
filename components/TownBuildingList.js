@@ -12,7 +12,7 @@ export default class TownBuildingList extends React.Component {
                     {town.buildings.map(buildingType => {
                         return (
                             <li className={styles.buildingListItem} key={`buildingListItem-${buildingType.name}`}>
-                                <span>{buildingType.name}</span>
+                                <span>{buildingType.displayName}</span>
                                 <span>{buildingType.maintenanceCost}<SvgIcon iconName="coins" /></span>
                             </li>
                         )

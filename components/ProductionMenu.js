@@ -50,7 +50,7 @@ export default class ProductionMenu extends React.Component {
                                 style={spriteSheets.units.getStyleForFrameCalled(unitType.spriteFrameName)}></i>
                         </figure>
 
-                        <span>{`${unitType.name}(${unitType.productionCost})`}</span>
+                        <span>{`${unitType.displayName}(${unitType.productionCost})`}</span>
                         <span>{`${turnsToComplete} turn${turnsToComplete == 1 ? '' : 's'}`}</span>
                     </li>
                 )
@@ -72,7 +72,7 @@ export default class ProductionMenu extends React.Component {
                         className={styles.productionItem}
                         onClick={() => { this.handleProductionItemPick(buildingType) }}>
 
-                        <span>{`${buildingType.name}(${buildingType.productionCost})`}</span>
+                        <span>{`${buildingType.displayName}(${buildingType.productionCost})`}</span>
                         <span>{`${turnsToComplete} turn${turnsToComplete == 1 ? '' : 's'}`}</span>
                     </li>
                 )

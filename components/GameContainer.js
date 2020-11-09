@@ -187,7 +187,7 @@ export default class GameContainer extends React.Component {
     }
 
     handleTileHoverEnter(mapSquare) {
-        if (this.state.interfaceMode !== 'VIEW') {
+        if (this.state.interfaceMode === 'VIEW') {
             this.setState({ selectedSquare: mapSquare })
         }
     }
@@ -312,6 +312,7 @@ export default class GameContainer extends React.Component {
                             scrollToSquare={this.scrollToSquare}
                             toggleFactionWindow={this.toggleFactionWindow}
                             activeFaction={activeFaction}
+                            interfaceMode={interfaceMode}
                             towns={towns}
                         />
 

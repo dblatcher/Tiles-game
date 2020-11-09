@@ -10,18 +10,18 @@ export default class InfoBar extends React.Component {
 
 
     render() {
-        const { selectedSquare, selectedUnit, scrollToSquare, activeFaction, towns, toggleFactionWindow } = this.props;
-        
+        const { selectedSquare, selectedUnit, scrollToSquare, activeFaction, towns, toggleFactionWindow, interfaceMode } = this.props;
+
         const activeFactionTowns = towns.filter(town => town.faction === activeFaction)
 
-        const allocatedBudget = activeFaction 
+        const allocatedBudget = activeFaction
             ? activeFaction.calcuateAllocatedBudget(activeFactionTowns)
             : null
 
 
         const treasuryChange = activeFaction
-         ? allocatedBudget.treasury - activeFaction.calculateTotalMaintenceCost(activeFactionTowns)
-         : 0
+            ? allocatedBudget.treasury - activeFaction.calculateTotalMaintenceCost(activeFactionTowns)
+            : 0
 
         return (
             <section className={styles.infoRow}>
@@ -45,26 +45,26 @@ export default class InfoBar extends React.Component {
                     </article>)
                     : null}
 
-                <article className={styles.infoBlock}
-                    onClick={() => { scrollToSquare(selectedUnit) }}>
-                    {selectedUnit ? (<>
+                {selectedUnit && interfaceMode == 'MOVE' ? (<>
+                    <article className={styles.infoBlock}
+                        onClick={() => { scrollToSquare(selectedUnit) }}>
                         <UnitFigure unit={selectedUnit} inInfoRow />
 
                         <ul className={styles.infoList}>
                             {selectedUnit.infoList.map((infoPoint, index) => <li className={styles.infoLine} key={`selectedUnitInfo#${index}`}>{infoPoint}</li>)}
                         </ul>
-                    </>) : (null)}
-                </article>
+                    </article>
+                </>) : (null)}
 
-                <article className={styles.infoBlock}>
-                    {selectedSquare ? (<>
+                {selectedSquare && interfaceMode == 'VIEW' ? (<>
+                    <article className={styles.infoBlock}>
                         <Tile mapSquare={selectedSquare} inInfoRow showYields />
                         <ul className={styles.infoList}>
                             {selectedSquare.infoList.map((infoPoint, index) => <li className={styles.infoLine} key={`selectedSquaretInfo#${index}`}>{infoPoint}</li>)}
                         </ul>
 
-                    </>) : (null)}
-                </article>
+                    </article>
+                </>) : (null)}
 
             </section>
         )

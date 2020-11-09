@@ -47,7 +47,7 @@
     &.inRange {
         &::after {
             content: '';
-            z-index: 10 !important;
+            z-index: 11 !important;
             position: absolute;
             left: 0;
             top: 0;

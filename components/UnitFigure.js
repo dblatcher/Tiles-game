@@ -35,7 +35,7 @@ export default class UnitFigure extends React.Component {
         let spriteClassList = [styles.sprite]
         let orderFlagClassList = [styles.orderFlag]
 
-        figureClassList.push(inInfoRow ? styles.figureInInfoRow : styles.figureOnMap)
+        figureClassList.push(inInfoRow ? styles.inInfoRow : styles.onMap)
         if (!inInfoRow && isSelected) {
             figureClassList.push(styles.topOfStack)
             spriteClassList.push(styles.flashingSprite, styles.topOfStack)

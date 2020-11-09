@@ -2,6 +2,9 @@ import TradeBudget from '../TradeBudget.js'
 import { buildingTypes } from './BuildingType.tsx'
 import { Town } from './Town.tsx'
 import { Unit } from './Unit.tsx'
+import { TechDiscovery, techDiscoveries } from './TechDiscovery.tsx'
+
+
 
 class Faction {
     name: string;
@@ -9,11 +12,16 @@ class Faction {
     treasury: number;
     research: number;
     budget: TradeBudget;
+    researchGoal: TechDiscovery | null;
+    knownTech: Array<TechDiscovery>
     constructor(name: string, config: any = {}) {
         this.name = name;
         this.color = config.color || "#FFF";
         this.treasury = config.treasury || 0
         this.research = config.research || 0
+
+        this.researchGoal = config.researchGoal || null
+        this.knownTech = config.knownTech || []
 
         this.budget = new TradeBudget().setAll(config.buget || {
             treasury: 1 / 2,
@@ -22,21 +30,21 @@ class Faction {
         })
     }
 
-    allocateTownRevenue(town:Town) {
+    allocateTownRevenue(town: Town) {
         let townRevenue = this.budget.allocate(town.output.tradeYield)
 
         if (town.buildings.includes(buildingTypes.marketplace)) {
-            townRevenue.treasury += Math.floor(townRevenue.treasury/2)
+            townRevenue.treasury += Math.floor(townRevenue.treasury / 2)
         }
 
         if (town.buildings.includes(buildingTypes.library)) {
-            townRevenue.research += Math.floor(townRevenue.research/2)
+            townRevenue.research += Math.floor(townRevenue.research / 2)
         }
 
         return townRevenue
     }
 
-    calcuateAllocatedBudget(myTowns:Array<Town>) {
+    calcuateAllocatedBudget(myTowns: Array<Town>) {
         let total = {
             treasury: 0,
             research: 0,
@@ -53,7 +61,7 @@ class Faction {
         return total
     }
 
-    calculateTotalMaintenceCost(myTowns:Array<Town>) {
+    calculateTotalMaintenceCost(myTowns: Array<Town>) {
         return myTowns.reduce((accumulator, town) => accumulator + town.buildingMaintenanceCost, 0)
     }
 
@@ -67,6 +75,14 @@ class Faction {
         this.research += allocatedBudget.research
         this.treasury -= buildingMaintenanceCost
         this.treasury += allocatedBudget.treasury
+
+        if (this.researchGoal && this.research >= this.researchGoal.researchCost) {
+            notices.push(`${this.name} has discovered ${this.researchGoal.description}`)
+            this.knownTech.push(this.researchGoal)
+            this.researchGoal = null
+            this.research = 0
+        }
+
         return notices
     }
 
@@ -78,7 +94,7 @@ class Faction {
         return true
     }
 
-    getPlacesInSight(towns:Array<Town>, units:Array<Unit>) {
+    getPlacesInSight(towns: Array<Town>, units: Array<Unit>) {
         const myTowns = towns.filter(town => town.faction === this)
         const myUnits = units.filter(unit => unit.faction === this)
 
@@ -106,9 +122,21 @@ class Faction {
         return results
     }
 
+    get possibleResearchGoals() {
+        let techDiscoveryChoices = []
+        for (let techName in techDiscoveries) {
+            if (techDiscoveries[techName].checkCanResearchWith(this.knownTech)) {
+                techDiscoveryChoices.push(techDiscoveries[techName])
+            }
+        }
+        return techDiscoveryChoices
+    }
+
     get serialised() {
         let output = {
-            budget: this.budget.store
+            budget: this.budget.store,
+            researchGoal: this.researchGoal ? this.researchGoal.name : false,
+            knownTech: this.knownTech.map(techDiscovery => techDiscovery.name)
         }
         Object.keys(this).forEach(key => {
             if (typeof output[key] == 'undefined') {
@@ -124,6 +152,8 @@ class Faction {
             treasury: data.treasury,
             research: data.research,
             budget: data.budget,
+            researchGoal: data.researchGoal ? techDiscoveries[data.researchGoal] : null,
+            knownTech: data.knownTech.map(techName => techDiscoveries[techName])
         })
     }
 }

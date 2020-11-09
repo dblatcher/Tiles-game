@@ -11,4 +11,8 @@ class Message {
     get type() {return 'Message'}
 }
 
-export {Message}
+class TechDiscoveryChoice {
+    get type() {return 'TechDiscoveryChoice'}
+}
+
+export {Message, TechDiscoveryChoice}

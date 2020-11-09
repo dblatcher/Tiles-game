@@ -1,7 +1,9 @@
 import Window from "./Window";
 import SvgIcon from "./SvgIcon"
 import TradeReport from "./TradeReport"
+import ProgressBox from "./ProgressBox"
 import CitizenRow from "./CitizenRow";
+import { TechDiscovery } from "../lib/game-entities/TechDiscovery.tsx";
 
 export default class FactionWindow extends React.Component {
 
@@ -92,17 +94,37 @@ export default class FactionWindow extends React.Component {
                     </tbody>
                 </table>
 
+                <h2>Towns</h2>
                 <table>
                     <tbody>
                         {factionTowns.map(town =>
                             <tr key={`trade-report-${town.indexNumber}`}>
                                 <td>{town.name}</td>
-                                <td><TradeReport town={town}/></td>
+                                <td><TradeReport town={town} /></td>
                             </tr>
                         )}
                     </tbody>
                 </table>
 
+                <h2>Research</h2>
+                <p>Currently researching: {faction.researchGoal ? faction.researchGoal.description : 'nothing'}</p>
+
+                {faction.researchGoal ? (
+                    <ProgressBox
+                        current={faction.research}
+                        target={faction.researchGoal.researchCost}
+                        unit={'lightBulb'}
+                    />
+                ) : null}
+
+                <p>known tech:</p>
+                <ul>
+                    {faction.knownTech.map(techDiscovery => (
+                        <li key={`knownTech-${techDiscovery.name}`}>
+                            {techDiscovery.description}
+                        </li>
+                    ))}
+                </ul>
 
             </Window>
         )

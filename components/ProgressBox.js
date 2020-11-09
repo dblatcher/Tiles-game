@@ -29,7 +29,6 @@ export default class ProgressBox extends React.Component {
         for (let i = 1; i < number + 1; i++) {
             keyArray.push(`Icon-${rowindex || ""}-${i}`)
         }
-        let color = unit === 'food' ? 'green' : 'brown';
         let bunchUp = 0
         if (rowWidth == 20) { bunchUp = 5.5 }
         if (rowWidth == 30) { bunchUp = 7 }
@@ -43,7 +42,7 @@ export default class ProgressBox extends React.Component {
             return (
                 <SvgIcon key={key}
                     iconName={unit}
-                    color={isPastTarget ? 'red' : color}
+                    color={isPastTarget ? 'red' : undefined}
                     style={{ flexShrink: 0, filter: "drop-shadow(-1px 0px 0px black)", marginRight: `-${bunchUp}%` }} />
             )
         })

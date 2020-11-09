@@ -8,6 +8,7 @@ import TextQuestionDialogue from './TextQuestionDialogue'
 import ModeButtons from './ModeButtons'
 import TurnButtons from './TurnButtons'
 import PickUnitDialogue from './PickUnitDialogue'
+import ChooseResearchGoalDialogue from './ChooseResearchGoalDialogue'
 import TownView from './TownView'
 import MainMenu from './MainMenu'
 import FactionWindow from './FactionWindow'
@@ -159,7 +160,7 @@ export default class GameContainer extends React.Component {
         }
 
         if (!gameActions[command]) {
-            console.warn(`unknown order button command ${command}`, input)
+            console.warn(`unknown dialogue button command ${command}`, input)
             return false
         }
         return this.setState(gameActions[command](input))
@@ -219,7 +220,7 @@ export default class GameContainer extends React.Component {
     }
 
     renderDialogue() {
-        const { pendingDialogues } = this.state
+        const { pendingDialogues, activeFaction } = this.state
 
         if (pendingDialogues[0].type === "Message") {
             return <MessageDialogue
@@ -239,6 +240,13 @@ export default class GameContainer extends React.Component {
         if (pendingDialogues[0].type === "TextQuestion") {
             return <TextQuestionDialogue
                 textQuestion={pendingDialogues[0]}
+                handleDialogueButton={this.handleDialogueButton}
+            />
+        }
+
+        if (pendingDialogues[0].type === "TechDiscoveryChoice") {
+            return <ChooseResearchGoalDialogue
+                activeFaction={activeFaction}
                 handleDialogueButton={this.handleDialogueButton}
             />
         }

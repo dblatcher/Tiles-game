@@ -1,5 +1,6 @@
 import { OnGoingOrder } from "./OngoingOrder.tsx";
 import { Faction } from "./Faction";
+import { TechDiscovery, techDiscoveries } from './TechDiscovery.tsx'
 
 class UnitType {
     name: string;
@@ -14,6 +15,7 @@ class UnitType {
     attack: number;
     defend: number;
     productionCost: number;
+    prerequisite: string|null;
     constructor(name: string, config: any = {}) {
         this.name = name;
         this.displayName = config.displayName || name;
@@ -27,18 +29,58 @@ class UnitType {
         this.attack = config.attack || 0;
         this.defend = config.defend || 0;
         this.productionCost = config.productionCost || 10;
+        this.prerequisite = config.prerequisite || null
     }
     get classIs (){return 'UnitType'}
+
+
+    checkCanBuildWith(knowTech: Array<TechDiscovery>) {
+        if (!this.prerequisite) { return true }
+        if (!techDiscoveries[this.prerequisite]) {
+            console.warn(`Tech prerequisite[${this.prerequisite}] for BuildingType ${this.name} does not exist.`)
+            return true
+        }
+        return knowTech.includes(techDiscoveries[this.prerequisite])
+    }
+
 }
 
 const unitTypes = {
-    worker:     new UnitType('worker',   { roadBuilding: 1, treeCutting: 1, productionCost: 20, irrigating:1, mining:1 }),
-    settler:    new UnitType('settler',  { roadBuilding: 1, treeCutting: 1, townBuilding: 1, productionCost: 50 }),
-    swordsman:  new UnitType('swordsman',{ defend: 2, attack: 4, productionCost: 25 }),
-    spearman:   new UnitType('spearman', { defend: 3, attack: 1, productionCost: 15 }),
-    warrior:    new UnitType('warrior',  { defend: 1, attack: 1, productionCost: 10 }),
-    horseman:   new UnitType('horseman', { defend: 1, attack: 3, moves:12, productionCost: 25 }),
-    knight  :   new UnitType('knight',   { defend: 2, attack: 6, moves:12, productionCost: 50 }),
+    worker: new UnitType('worker', {
+        roadBuilding: 1, 
+        treeCutting: 1, 
+        irrigating:1, 
+        mining:1,
+        productionCost: 20,
+    }),
+    settler: new UnitType('settler', {
+        roadBuilding: 1, treeCutting: 1, townBuilding: 1, 
+        productionCost: 50,
+    }),
+    swordsman: new UnitType('swordsman', {
+        defend: 2, attack: 4,
+        productionCost: 25,
+        prerequisite: 'ironWorking',
+    }),
+    spearman: new UnitType('spearman', {
+        defend: 3, attack: 1,
+        productionCost: 15,
+        prerequisite: 'bronzeWorking',
+    }),
+    warrior: new UnitType('warrior',  {
+        defend: 1, attack: 1,
+        productionCost: 10,
+    }),
+    horseman: new UnitType('horseman', {
+        defend: 1, attack: 3, moves:12,
+        productionCost: 25, 
+        prerequisite: 'horseRiding',
+    }),
+    knight: new UnitType('knight', {
+        defend: 2, attack: 6, moves:12, 
+        productionCost: 50,
+        prerequisite: 'chivalry',
+    }),
 }
 
 

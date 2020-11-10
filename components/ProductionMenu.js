@@ -36,6 +36,7 @@ export default class ProductionMenu extends React.Component {
         const { town } = this.props
         return Object.keys(unitTypes)
             .map(key => unitTypes[key])
+            .filter(unitType => unitType.checkCanBuildWith(town.faction.knownTech))
             .map(unitType => {
 
                 const remainingProduction = unitType.productionCost - town.productionStore
@@ -62,6 +63,7 @@ export default class ProductionMenu extends React.Component {
         return Object.keys(buildingTypes)
             .map(key => buildingTypes[key])
             .filter(buildingType => !town.buildings.includes(buildingType))
+            .filter(buildingType => buildingType.checkCanBuildWith(town.faction.knownTech))
             .map(buildingType => {
 
                 const remainingProduction = buildingType.productionCost - town.productionStore

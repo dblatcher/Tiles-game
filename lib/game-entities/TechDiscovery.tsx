@@ -38,6 +38,9 @@ const techDiscoveries = {
     bronzeWorking: new TechDiscovery('bronzeWorking', {
         description: "bronze working",
     }),
+    currency: new TechDiscovery('currency', {
+        prerequisites: ["bronzeWorking"],
+    }),
     ironWorking: new TechDiscovery('ironWorking', {
         description: "iron working",
         prerequisites: ['bronzeWorking'],

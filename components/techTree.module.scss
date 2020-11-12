@@ -1,0 +1,54 @@
+@import '../styles/design.scss';
+
+.article {
+    @include box();
+    overflow: auto;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    padding-bottom: .5em;
+}
+
+.svg {
+    width: 45rem;
+    margin: 0 auto;
+    display: block;
+}
+
+.techG {
+    cursor: default;
+
+    &.possibleResearchGoal {
+        cursor: pointer;
+
+        &:hover .techPolygon {
+            stroke: black;
+            stroke-dasharray: 1;
+            fill: lightblue;
+        }
+    }
+}
+
+.techPolygon {
+    fill: white;
+
+    &.known {
+        stroke: black;
+        fill: yellow;
+    }
+    
+    &.possibleResearchGoal {
+        fill: lightgreen;
+    }
+
+    &.currentResearchGoal {
+        stroke: black;
+        stroke-dasharray: 1;
+        fill: lightblue;
+    }
+}
+
+.techText {
+    font-size: 10px;
+    font-family: arial, sans-serif;
+}

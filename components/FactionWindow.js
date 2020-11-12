@@ -3,7 +3,8 @@ import SvgIcon from "./SvgIcon"
 import TradeReport from "./TradeReport"
 import ProgressBox from "./ProgressBox"
 import CitizenRow from "./CitizenRow";
-import { TechDiscovery } from "../lib/game-entities/TechDiscovery.tsx";
+import TechTree from "./TechTree";
+import { getTurnsToComplete } from '../lib/utility'
 
 export default class FactionWindow extends React.Component {
 
@@ -68,8 +69,11 @@ export default class FactionWindow extends React.Component {
 
         return (
             <Window title={faction.name} buttons={[{ text: 'close', clickFunction: closeWindow }]}>
-                <h2>budget</h2>
-                <p>Total revenue: {allocatedBudget.totalTrade}</p>
+                <h2>Budget</h2>
+        <ul>
+            <li>{allocatedBudget.totalTrade}<SvgIcon iconName="trade" /> total income</li>
+            <li>{totalMaintenanceCosts}<SvgIcon iconName="coins" color="red"/> maintenance costs</li>
+        </ul>
 
                 <table>
                     <tbody>
@@ -87,7 +91,9 @@ export default class FactionWindow extends React.Component {
                                         checked={faction.budget.locked[category]}
                                         onChange={event => this.handleLockEvent(event, category)} />
                                 </td>
-                                <td style={{ minWidth: '6rem', textAlign: 'right' }}>{allocatedBudget[category]}{this.renderBudgetIcon(category)} / turn</td>
+                                <td style={{ minWidth: '6rem', textAlign: 'right' }}>
+                                    {allocatedBudget[category]}{this.renderBudgetIcon(category)} / turn
+                                </td>
                             </tr>
                         ))}
 
@@ -107,25 +113,24 @@ export default class FactionWindow extends React.Component {
                 </table>
 
                 <h2>Research</h2>
-                <p>Currently researching: {faction.researchGoal ? faction.researchGoal.description : 'nothing'}</p>
+                <section style={{display:"flex", justifyContent:"space-between", marginBottom:'1em'}}>
+                    <p style={{margin:"0"}}>
+                        <span>Researching {faction.researchGoal ? faction.researchGoal.description : 'nothing'}&nbsp;</span>
+                        {faction.researchGoal ? (
+                            <span>({getTurnsToComplete(faction.researchGoal.researchCost - faction.research,allocatedBudget.research)} turns)</span>
+                        ) : null }
+                    </p>
 
-                {faction.researchGoal ? (
-                    <ProgressBox
-                        current={faction.research}
-                        target={faction.researchGoal.researchCost}
-                        unit={'lightBulb'}
-                    />
-                ) : null}
+                    {faction.researchGoal ? (<>
+                        <ProgressBox
+                            current={faction.research}
+                            target={faction.researchGoal.researchCost}
+                            unit={'lightBulb'}
+                        />
+                    </>) : null}
+                </section>
 
-                <p>known tech:</p>
-                <ul>
-                    {faction.knownTech.map(techDiscovery => (
-                        <li key={`knownTech-${techDiscovery.name}`}>
-                            {techDiscovery.description}
-                        </li>
-                    ))}
-                </ul>
-
+                <TechTree knownTech={faction.knownTech} currentResearchGoal={faction.researchGoal}/>
             </Window>
         )
     }

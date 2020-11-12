@@ -98,13 +98,14 @@ class TechBubble {
         if (!bubble1 || !bubble2) { return null }
 
         const colors = ['blue', 'red', 'green']
-        const color = colors[bubble1.tier%colors.length]
+        const color = colors[bubble1.tier % colors.length]
+        const dash = 1 + bubble2.tier - bubble1.tier
 
         return (<>
             <line key={`joiningLine-${index}`}
                 x1={bubble1.rightPoint.x} y1={bubble1.rightPoint.y}
                 x2={bubble2.leftPoint.x} y2={bubble2.leftPoint.y}
-                stroke={color} strokeDasharray="3"
+                stroke={color} strokeDasharray={dash}
             />
             <circle cx={bubble2.leftPoint.x} cy={bubble2.leftPoint.y} r={3} fill={color} />
         </>)
@@ -151,11 +152,7 @@ export default class TechTree extends React.Component {
             ))
         }
 
-
-        console.log(sizing)
-
         const joiningLines = []
-
         techBubbles.forEach(bubble => {
             bubble.tech.prerequisites.forEach(prerequisiteTech => {
                 joiningLines.push([
@@ -173,9 +170,9 @@ export default class TechTree extends React.Component {
 
         return (
             <article className={styles.article}>
-
                 <svg className={styles.svg}
-                    viewBox={`0 0 ${1500} ${viewBox.height}`}
+                    style={{ width: `${viewBox.width * (2 / 3)}px` }}
+                    viewBox={`0 0 ${viewBox.width} ${viewBox.height}`}
                     xmlns="http://www.w3.org/2000/svg">
                     {joiningLines.map((line, index) => TechBubble.renderJoiningLine(...line, index))}
                     {techBubbles.map(bubble => bubble.render(handleClickOnTech))}

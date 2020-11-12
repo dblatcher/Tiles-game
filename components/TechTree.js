@@ -3,41 +3,59 @@ import { techDiscoveries } from '../lib/game-entities/TechDiscovery.tsx'
 import styles from './techTree.module.scss'
 
 class TechBubble {
-    constructor(tech, tier, x, y, width, isKnown, isPossibleResearchGoal, isCurrentResearchGoal) {
+    constructor(tech, tier, bubbleIndexInTier, isKnown, isPossibleResearchGoal, isCurrentResearchGoal, sizing) {
         this.tech = tech
         this.tier = tier
-        this.x = x
-        this.y = y
-        this.width = width
+        this.bubbleIndexInTier = bubbleIndexInTier
         this.isKnown = isKnown
         this.isPossibleResearchGoal = isPossibleResearchGoal
         this.isCurrentResearchGoal = isCurrentResearchGoal
+        this.sizing = sizing
+    }
+
+    get x() {
+        const { sizing, tier } = this
+        return tier * (sizing.width + sizing.spaceBetweenTiers)
+    }
+
+    get y() {
+        const { bubbleIndexInTier, height, tier } = this
+        const { longestTierLength, cornerSize, spaceBetweenBubbles, tierLengths } = this.sizing
+
+        const blockHeight = (longestTierLength * (2 * cornerSize)) + (longestTierLength - 1) * spaceBetweenBubbles
+        const tierHeight = (tierLengths[tier] * (2 * cornerSize)) + (tierLengths[tier] - 1) * spaceBetweenBubbles
+        const placeWithinTier = bubbleIndexInTier * (spaceBetweenBubbles + height)
+
+        const spaceLeft = blockHeight - tierHeight
+
+        return placeWithinTier + spaceLeft / 2
     }
 
     get polygonPoints() {
         const { x, y, longEdgeWidth } = this
-        const { cornerSize } = TechBubble
+        const { cornerSize } = this.sizing
         return `${x + cornerSize},${y + 0} ${x + cornerSize + longEdgeWidth},${y + 0} ${x + cornerSize * 2 + longEdgeWidth},${y + cornerSize} ${x + cornerSize + longEdgeWidth},${y + cornerSize * 2} ${x + cornerSize},${y + cornerSize * 2}, ${x + 0},${y + cornerSize}`
     }
 
     get leftPoint() {
         const { x, y } = this
-        const { cornerSize } = TechBubble
+        const { cornerSize } = this.sizing
         return { x: x, y: y + cornerSize };
 
     }
 
     get rightPoint() {
         const { x, y, longEdgeWidth } = this
-        const { cornerSize } = TechBubble
+        const { cornerSize } = this.sizing
         return { x: x + cornerSize * 2 + longEdgeWidth, y: y + cornerSize }
     }
 
-    get longEdgeWidth() { return this.width - (TechBubble.cornerSize * 2) }
+    get longEdgeWidth() { return this.sizing.width - (this.sizing.cornerSize * 2) }
+    get height() { return this.sizing.cornerSize * 2 }
 
     render(handleClickOnTech) {
         const { x, y, tech, polygonPoints, isKnown, isPossibleResearchGoal, isCurrentResearchGoal } = this
-        const { cornerSize } = TechBubble
+        const { cornerSize } = this.sizing
 
         const polygonClassList = [styles.techPolygon]
         const gClassList = [styles.techG]
@@ -75,18 +93,21 @@ class TechBubble {
         )
     }
 
-    static cornerSize = 10
-    static get height() { return this.cornerSize * 2 }
 
     static renderJoiningLine(bubble1, bubble2, index) {
         if (!bubble1 || !bubble2) { return null }
-        return (
+
+        const colors = ['blue', 'red', 'green']
+        const color = colors[bubble1.tier%colors.length]
+
+        return (<>
             <line key={`joiningLine-${index}`}
                 x1={bubble1.rightPoint.x} y1={bubble1.rightPoint.y}
                 x2={bubble2.leftPoint.x} y2={bubble2.leftPoint.y}
-                stroke="black" strokeDasharray="4"
+                stroke={color} strokeDasharray="3"
             />
-        )
+            <circle cx={bubble2.leftPoint.x} cy={bubble2.leftPoint.y} r={3} fill={color} />
+        </>)
     }
 
     static withTech(techName, techBubbles) {
@@ -99,34 +120,39 @@ export default class TechTree extends React.Component {
 
     render() {
         const { knownTech = [], possibleResearchGoals = [], currentResearchGoal = null, handleClickOnTech } = this.props
-
         const techBubbles = [];
-        let tier, highestTier = 0, bubbleIndexInTier, highestBubbleIndex = 0;
+        let tier, highestTier = 0, bubbleIndexInTier;
 
         const sizing = {
-            width: 90,
-            spaceBetweenTiers: 40,
-            spaceBetweenBubbles: 10,
+            width: 120,
+            spaceBetweenTiers: 100,
+            spaceBetweenBubbles: 30,
+            cornerSize: 15,
+            longestTierLength: 0,
+            tierLengths: [],
         }
 
         for (let techName in techDiscoveries) {
             tier = techDiscoveries[techName].getTier(techDiscoveries)
             bubbleIndexInTier = techBubbles.filter(techBubble => techBubble.tier === tier).length
             if (tier > highestTier) { highestTier = tier }
-            if (bubbleIndexInTier > highestBubbleIndex) { highestBubbleIndex = bubbleIndexInTier }
+            if (bubbleIndexInTier + 1 > sizing.longestTierLength) { sizing.longestTierLength = bubbleIndexInTier + 1 }
 
+            sizing.tierLengths[tier] = sizing.tierLengths[tier] ? sizing.tierLengths[tier] + 1 : 1;
 
             techBubbles.push(new TechBubble(
                 techDiscoveries[techName],
                 tier,
-                tier * (sizing.width + sizing.spaceBetweenTiers),
-                bubbleIndexInTier * (sizing.spaceBetweenBubbles + TechBubble.height),
-                sizing.width,
+                bubbleIndexInTier,
                 knownTech.includes(techDiscoveries[techName]),
                 possibleResearchGoals.includes(techDiscoveries[techName]),
-                currentResearchGoal === techDiscoveries[techName]
+                currentResearchGoal === techDiscoveries[techName],
+                sizing,
             ))
         }
+
+
+        console.log(sizing)
 
         const joiningLines = []
 
@@ -142,14 +168,14 @@ export default class TechTree extends React.Component {
 
         const viewBox = {
             width: ((highestTier + 1) * sizing.width) + highestTier * sizing.spaceBetweenTiers,
-            height: ((highestBubbleIndex + 1) * TechBubble.height) + highestBubbleIndex * sizing.spaceBetweenBubbles
+            height: (sizing.longestTierLength * (2 * sizing.cornerSize)) + (sizing.longestTierLength - 1) * sizing.spaceBetweenBubbles
         }
 
         return (
             <article className={styles.article}>
 
                 <svg className={styles.svg}
-                    viewBox={`0 0 ${600} ${viewBox.height}`}
+                    viewBox={`0 0 ${1500} ${viewBox.height}`}
                     xmlns="http://www.w3.org/2000/svg">
                     {joiningLines.map((line, index) => TechBubble.renderJoiningLine(...line, index))}
                     {techBubbles.map(bubble => bubble.render(handleClickOnTech))}

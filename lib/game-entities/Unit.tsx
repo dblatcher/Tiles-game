@@ -74,12 +74,17 @@ const unitTypes = {
     horseman: new UnitType('horseman', {
         defend: 1, attack: 3, moves:12,
         productionCost: 25, 
-        prerequisite: 'horseRiding',
+        prerequisite: 'horsebackRiding',
     }),
     knight: new UnitType('knight', {
         defend: 2, attack: 6, moves:12, 
         productionCost: 50,
         prerequisite: 'chivalry',
+    }),
+    archer: new UnitType('archer', {
+        defend: 2, attack: 6, moves:12, 
+        productionCost: 50,
+        prerequisite: 'warriorCode',
     }),
 }
 

@@ -1,0 +1,28 @@
+@import '../../styles/design.scss';
+
+.article {
+    @include box();
+}
+
+.sideBox {
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    float: left;
+    margin-right: .5em;
+}
+
+.clear {
+    clear: both;
+}
+
+.figure {
+    @include figure();
+    height: 6rem;
+    width: 6rem;
+    position: relative;
+}
+
+.sprite {
+    @include sprite();
+}

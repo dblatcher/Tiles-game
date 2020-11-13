@@ -18,7 +18,7 @@ export function standardHead() {
     )
 }
 
-export default function Layout({ children, home, gamePage }) {
+export default function Layout({ children, home, gamePage, backLinkUrl, backLinkText }) {
 
     if (gamePage) {
         return <>
@@ -52,8 +52,8 @@ export default function Layout({ children, home, gamePage }) {
 
             { !home && (
                 <div className={styles.backToHome}>
-                    <Link href="/">
-                        <a>← Back to home</a>
+                    <Link href={backLinkUrl || "/"}>
+                        <a>← {backLinkUrl ? backLinkText ||"Back" : "Back to home"}</a>
                     </Link>
                 </div>
             )}

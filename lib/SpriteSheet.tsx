@@ -42,7 +42,7 @@ const trees = new SpriteSheet('trees', {
     rows: 4,
     css: {
         top: '-15%',
-        backgroundImage: 'url(./trees.png)'
+        backgroundImage: 'url(/trees.png)'
     },
     getRightFromAdjacentSquares(adjacents) {
         let bitString = ''
@@ -80,7 +80,7 @@ const coastlines = new SpriteSheet('coastlines', {
     cols: 4,
     rows: 4,
     css: {
-        backgroundImage: 'url(./coastlines.png)'
+        backgroundImage: 'url(/coastlines.png)'
     },
     getRightFromAdjacentSquares(adjacents) {
         let bitString = ''
@@ -123,7 +123,7 @@ const innerCoastlines = new SpriteSheet('innerCoastlines', {
     cols: 4,
     rows: 4,
     css: {
-        backgroundImage: 'url(./coastlines.png)'
+        backgroundImage: 'url(/coastlines.png)'
     },
     getRightFromAdjacentSquares(adjacents) {
         let bitString = ''
@@ -167,7 +167,7 @@ const roads = new SpriteSheet('roads', {
     cols: 3,
     rows: 6,
     css: {
-        backgroundImage: 'url(./roads.png)'
+        backgroundImage: 'url(/roads.png)'
     },
     getRightFromAdjacentSquares(adjacents) {
         let bitString = ''
@@ -212,7 +212,7 @@ const units = new SpriteSheet ('units',{
     cols: 3,
     rows: 4,
     css: {
-        backgroundImage: 'url(./units.png)'
+        backgroundImage: 'url(/units.png)'
     },
     frameNames: {
         'shadow': [0,0],
@@ -223,7 +223,7 @@ const units = new SpriteSheet ('units',{
         'unemployed': [2,1],
         'warrior':[0,2],
         'horseman':[1,2],
-        'archer':[1,2],
+        'archer':[2,2],
         'knight':[0,3],
         'settler':[1,3],
         'scientist':[2,3],
@@ -234,7 +234,7 @@ const misc = new SpriteSheet ('misc',{
     cols: 3,
     rows: 3,
     css: {
-        backgroundImage: 'url(./misc.png)'
+        backgroundImage: 'url(/misc.png)'
     },
     frameNames: {
         'hills': [0,0],

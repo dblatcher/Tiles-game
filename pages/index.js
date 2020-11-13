@@ -16,7 +16,10 @@ export default function Home() {
         </h1>
 
         <p className={styles.description}>
-          <Link href="/game-page">start</Link>
+          <Link href="/game-page">start game</Link>
+        </p>
+        <p className={styles.description}>
+          <Link href="/info">info index</Link>
         </p>
 
 

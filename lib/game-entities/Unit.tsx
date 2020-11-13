@@ -33,6 +33,9 @@ class UnitType {
     }
     get classIs (){return 'UnitType'}
 
+    get infoPageUrl () {
+       return `/info/unit/${this.name}`
+    }
 
     checkCanBuildWith(knowTech: Array<TechDiscovery>) {
         if (!this.prerequisite) { return true }
@@ -129,8 +132,10 @@ class Unit {
         ]
     }
 
+    get infoPageUrl () {return this.type.infoPageUrl}
+
     get description () {
-        return `${this.faction.name}${this.vetran ? ' vetran' : ''} ${this.type.displayName}`
+        return `${this.vetran ? ' vetran' : ''} ${this.type.displayName}`
     }
 
     isAdjacentTo(target) {

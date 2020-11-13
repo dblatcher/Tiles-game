@@ -3,6 +3,7 @@ import Tile from './Tile'
 import SvgIcon from './SvgIcon'
 import UnitFigure from './UnitFigure'
 import styles from './infoBar.module.scss'
+import InfoLink from './InfoLink'
 
 
 
@@ -51,7 +52,13 @@ export default class InfoBar extends React.Component {
                         <UnitFigure unit={selectedUnit} inInfoRow />
 
                         <ul className={styles.infoList}>
-                            {selectedUnit.infoList.map((infoPoint, index) => <li className={styles.infoLine} key={`selectedUnitInfo#${index}`}>{infoPoint}</li>)}
+                            
+                            {selectedUnit.infoList.map((infoPoint, index) => (
+                                <li className={styles.infoLine} key={`selectedUnitInfo#${index}`}>
+                                    {infoPoint}
+                                    {index == 0 ? <InfoLink subject={selectedUnit}/> :null}
+                                </li>
+                            ))}
                         </ul>
                     </article>
                 </>) : (null)}

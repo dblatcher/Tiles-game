@@ -55,7 +55,7 @@ class TechBubble {
 
     render(handleClickOnTech) {
         const { x, y, tech, polygonPoints, isKnown, isPossibleResearchGoal, isCurrentResearchGoal } = this
-        const { cornerSize } = this.sizing
+        const { cornerSize, width } = this.sizing
 
         const polygonClassList = [styles.techPolygon]
         const gClassList = [styles.techG]
@@ -76,12 +76,13 @@ class TechBubble {
         return (
             <g key={`techBubble-${tech.name}`}
                 className={gClassList.join(" ")}
-                onClick={handleClickOnTech ? () => handleClickOnTech(tech) : null}
+
             >
                 <polygon
+                    onClick={handleClickOnTech ? () => handleClickOnTech(tech) : null}
                     points={polygonPoints}
-                    className={polygonClassList.join(" ")}>
-                </polygon>
+                    className={polygonClassList.join(" ")} />
+
                 <text
                     x={x + cornerSize}
                     y={y + (cornerSize * 1.25)}
@@ -89,6 +90,25 @@ class TechBubble {
                 >
                     {tech.description}{isKnown ? "✓" : ""}
                 </text>
+
+                <a href={this.tech.infoPageUrl} 
+                target="_blank" 
+                className={styles.infoLink}
+                onClick={event => event.stopPropagation()}>
+                    <circle
+                        cx={x + width - cornerSize*1.5}
+                        cy={y + (cornerSize * 1.25) - 5}
+                        r="10"
+                        className={styles.infoLinkCircle}
+                    >
+                    </circle>
+                    <text
+                        x={x + width - cornerSize*1.5 - 5}
+                        y={y + (cornerSize * 1.25)}
+                        className={styles.infoLinkText}
+                    >?</text>
+                </a>
+
             </g>
         )
     }
@@ -101,14 +121,16 @@ class TechBubble {
         const color = colors[bubble1.tier % colors.length]
         const dash = 1 + bubble2.tier - bubble1.tier
 
-        return (<>
-            <line key={`joiningLine-${index}`}
-                x1={bubble1.rightPoint.x} y1={bubble1.rightPoint.y}
-                x2={bubble2.leftPoint.x} y2={bubble2.leftPoint.y}
-                stroke={color} strokeDasharray={dash}
-            />
-            <circle cx={bubble2.leftPoint.x} cy={bubble2.leftPoint.y} r={3} fill={color} />
-        </>)
+        return (
+            <g key={`joiningLine-${index}`}>
+                <line
+                    x1={bubble1.rightPoint.x} y1={bubble1.rightPoint.y}
+                    x2={bubble2.leftPoint.x} y2={bubble2.leftPoint.y}
+                    stroke={color} strokeDasharray={dash}
+                />
+                <circle cx={bubble2.leftPoint.x} cy={bubble2.leftPoint.y} r={3} fill={color} />
+            </g>
+        )
     }
 
     static withTech(techName, techBubbles) {
@@ -125,7 +147,7 @@ export default class TechTree extends React.Component {
         let tier, highestTier = 0, bubbleIndexInTier;
 
         const sizing = {
-            width: 120,
+            width: 150,
             spaceBetweenTiers: 100,
             spaceBetweenBubbles: 30,
             cornerSize: 15,

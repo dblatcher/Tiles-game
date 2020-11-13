@@ -51,3 +51,24 @@
     font-size: 12px;
     font-family: arial, sans-serif;
 }
+
+.infoLink {
+    circle {
+        fill: blue;
+    }
+
+    text {
+        stroke: white;
+        fill: white;
+    }
+
+    &:hover {
+        circle {
+            fill: lightblue;
+        }
+        text {
+            fill: black;
+            stroke: black;
+        }
+    }
+}

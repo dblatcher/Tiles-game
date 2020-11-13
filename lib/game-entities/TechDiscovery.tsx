@@ -30,6 +30,8 @@ class TechDiscovery {
         return true
     }
 
+    get infoPageUrl() {return `info/tech/${this.name}`}
+
 }
 
 

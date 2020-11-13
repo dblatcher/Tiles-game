@@ -31,13 +31,18 @@ export default class TileBoard extends React.Component {
     }
 
     renderTile(mapSquare, placesInSight) {
-        const { handleMapSquareClick, selectedSquare, selectedUnit, handleTileHoverEnter, mapGrid, interfaceMode, gameHasOpenDialogue, towns } = this.props;
+        const {
+            handleMapSquareClick, selectedSquare, selectedUnit,
+            handleTileHoverEnter, mapGrid, interfaceMode, infoPage,
+            gameHasOpenDialogue, towns = [] } = this.props;
+
         const town = towns.filter(town => town.mapSquare === mapSquare)[0]
 
-
-        const notInSight = !placesInSight.some(square => {
-            return square.x === mapSquare.x && square.y === mapSquare.y
-        })
+        const notInSight = infoPage
+            ? false
+            : !placesInSight.some(square => {
+                return square.x === mapSquare.x && square.y === mapSquare.y
+            })
 
 
 
@@ -54,6 +59,7 @@ export default class TileBoard extends React.Component {
                 adjacentSquares={this.getAdjacentSquares(mapSquare.x, mapSquare.y)}
                 gameHasOpenDialogue={gameHasOpenDialogue}
                 notInSight={notInSight}
+                showYields={infoPage}
             />
         )
     }

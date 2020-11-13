@@ -1,11 +1,11 @@
 import React from 'react'
-import Layout from '../../components/Layout'
 import { useRouter } from 'next/router'
-import UnitInfo from '../../components/info/UnitInfo'
+import Layout from '../../../components/Layout'
+import UnitInfo from '../../../components/info/UnitInfo'
 
-import { unitTypes } from '../../lib/game-entities/Unit.tsx'
+import { unitTypes } from '../../../lib/game-entities/Unit.tsx'
 
-const InfoPage = () => {
+const UnitInfoPage = () => {
     const router = useRouter()
     const { itemName } = router.query
     const unitType = unitTypes[itemName]
@@ -20,4 +20,4 @@ const InfoPage = () => {
     )
 }
 
-export default InfoPage
+export default UnitInfoPage

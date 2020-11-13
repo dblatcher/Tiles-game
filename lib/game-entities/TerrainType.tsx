@@ -23,8 +23,9 @@ class TerrainType {
         this.movementCost = config.movementCost || 3
         this.defenseBonus = config.defenseBonus || 0
         this.isWater = config.isWater || false
-        this.neverTrees = config.neverTrees || false
-        this.neverTown = config.neverTown || false
+
+        this.neverTrees = config.isWater || config.neverTrees || false
+        this.neverTown = config.isWater || config.neverTown || false
         this.canMine = config.canMine || false
         this.canIrrigate = config.canIrrigate || false
 

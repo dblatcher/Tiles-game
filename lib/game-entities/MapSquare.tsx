@@ -11,7 +11,7 @@ class MapSquare {
     y: number
     constructor(input, x, y) {
         this.terrain = input.terrain
-        this.road = !!input.road
+        this.road =  input.terrain.isWater ? false : !!input.road
         this.tree = input.terrain.neverTrees ? false : !!input.tree
         this.mine = !input.terrain.canMine ? false : !!input.mine
         this.irrigation = !input.terrain.canIrrigate ? false : !!input.irrigation

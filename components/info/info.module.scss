@@ -10,6 +10,12 @@
     align-items: center;
     float: left;
     margin-right: .5em;
+
+    &Right {
+        float: right;
+        margin-right: 0;
+        margin-left: .5em;
+    }
 }
 
 .clear {

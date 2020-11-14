@@ -17,9 +17,7 @@ import { techDiscoveries } from '../../lib/game-entities/TechDiscovery.tsx'
 import { findValueWithLowerCasedKey } from '../../lib/utility'
 
 
-const NotFound = ({ params }) => {
-    return (<p>There is no {params.type} called {params.itemName}!</p>)
-}
+
 
 const folderNameMap = {
     unit: {
@@ -38,21 +36,32 @@ const folderNameMap = {
         target: techDiscoveries,
         component: TechInfo,
     },
+}
 
+const NotFound = ({ params, badType }) => {
+    if (badType) {
+        return (<p>There is no such thing as a "{params.type}"!</p>)
+    }
+    return (<p>There is no {params.type} called "{params.itemName}"!</p>)
 }
 
 const InfoPage = ({ content, params }) => {
     let subject = null;
     let pageContent = null;
 
-    if (params && params.type && folderNameMap[params.type]) {
-        subject = findValueWithLowerCasedKey(folderNameMap[params.type].target, params.itemName)
-        const InfoComponentType = folderNameMap[params.type].component
+    // params are loaded asynchronously - will be null at first
+    if (params) {
+        if (params.type && folderNameMap[params.type]) {
+            subject = findValueWithLowerCasedKey(folderNameMap[params.type].target, params.itemName)
+            const InfoComponentType = folderNameMap[params.type].component
 
-        if (subject) {
-            pageContent = <InfoComponentType subject={subject} content={content} />
+            if (subject) {
+                pageContent = <InfoComponentType subject={subject} content={content} />
+            } else {
+                pageContent = <NotFound params={params} />
+            }
         } else {
-            pageContent = <NotFound params={params} />
+            pageContent = <NotFound params={params} badType />
         }
     }
 
@@ -95,8 +104,8 @@ export async function getStaticProps(context) {
     const { slug } = context.params
 
     const params = {
-        type: slug[0],
-        itemName: slug[1]
+        type: slug[0] || null,
+        itemName: slug[1] || null
     }
 
     const content = await getContentJson(params)

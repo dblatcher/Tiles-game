@@ -1,12 +1,17 @@
 TechDiscoveries
 -obseleting units
--opening info pages
-- define more types
 
 units
 - obseleting units
 - opening info pages
 - define more types
+- disband order
+- fortify order
+
+towns
+- fortified enemy units prevent production
+- prevent duplicate names
+- suggested names
 
 Buildings
 - define more BuildingTypes, add rules to existing code
@@ -14,10 +19,12 @@ Buildings
 - opening info pages
 
 informational text
-- Info page App with routing
-- ? use api endpoint to retreive longform text/data from static files
-- define data format?
+- more content
+- support HTML / markdown instead of json?
 - internationalisation suport
+
+Diplomacy
+
 
 AI
 - 'human player' flag on Faction
@@ -25,6 +32,10 @@ AI
 - wait/sleep/delay function so player can watch the computer move
 - proper AI functions to pick computer moves well...
 - debug component to reveal AI priorities / goals
+
+map
+ - special resources
+ - unexplored map
 
 'Wonders'
 - extends BuildingTypes? 

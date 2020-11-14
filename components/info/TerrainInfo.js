@@ -1,15 +1,11 @@
 import TileBoard from '../TileBoard'
-
-
-
 import { MapSquare } from '../../lib/game-entities/MapSquare.tsx'
-
 import styles from './info.module.scss'
 
 export default class TerrainInfo extends React.Component {
 
     render() {
-        const { terrainType } = this.props
+        const { terrainType, content } = this.props
 
         const mapGrid = MapSquare.makeGrid(3, 3, function (x, y) {
             let mapSquare = new MapSquare({
@@ -28,7 +24,7 @@ export default class TerrainInfo extends React.Component {
             <article className={styles.article}>
 
 
-                <div className={styles.sideBoxRight}>
+                <div className={styles.sideBox}>
                     <table>
                         <tbody>
                             <tr><td>move cost</td><td>{terrainType.movementCost}</td></tr>
@@ -38,9 +34,10 @@ export default class TerrainInfo extends React.Component {
                     <TileBoard mapGrid={mapGrid} infoPage />
                 </div>
                 <h2>{terrainType.name}</h2>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dignissim semper nibh eu tempor. Suspendisse consequat risus velit, sed ultrices mi facilisis eu. Etiam nec risus quam. Vivamus nec lorem leo. Aliquam id lectus in tellus vehicula aliquet. Donec eleifend nunc maximus, porttitor nisi vitae, bibendum nulla. Nullam turpis est, gravida eget nisl sed, ullamcorper accumsan ex. Curabitur vestibulum massa id quam laoreet pharetra. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec eu molestie lacus, et sodales neque.
-                </p>
+
+                {content && content.description
+                    ? <p>{content.description}</p>
+                    : <p>{terrainType.name} is a type of terrain.</p>}
 
 
                 <div className={styles.clear}></div>

@@ -4,9 +4,10 @@ import styles from './info.module.scss'
 export default class BuildingInfo extends React.Component {
 
     render() {
-        const { buildingType, content } = this.props
+        const { subject, content } = this.props
 
-        if (!buildingType) {return null}
+        if (!subject) {return null}
+        const buildingType = subject
 
         return (
             <article className={styles.article}>

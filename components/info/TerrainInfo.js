@@ -5,7 +5,8 @@ import styles from './info.module.scss'
 export default class TerrainInfo extends React.Component {
 
     render() {
-        const { terrainType, content } = this.props
+        const { subject, content } = this.props
+        const terrainType = subject
 
         const mapGrid = MapSquare.makeGrid(3, 3, function (x, y) {
             let mapSquare = new MapSquare({

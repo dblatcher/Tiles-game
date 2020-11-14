@@ -5,7 +5,8 @@ import styles from './info.module.scss'
 
 export default class UnitInfo extends React.Component {
     render() {
-        const { unitType, content } = this.props
+        const { subject, content } = this.props
+        const unitType = subject
 
         const prerequisite = techDiscoveries[unitType.prerequisite]
 

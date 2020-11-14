@@ -17,29 +17,49 @@ import { techDiscoveries } from '../../lib/game-entities/TechDiscovery.tsx'
 import { findValueWithLowerCasedKey } from '../../lib/utility'
 
 
-const InfoPage = ({ content, params }) => {
-    let subject = null, infoComponent = null
+const NotFound = ({ params }) => {
+    return (<p>There is no {params.type} called {params.itemName}!</p>)
+}
 
-    if (params && params.type == 'unit') {
-        subject = findValueWithLowerCasedKey(unitTypes, params.itemName)
-        infoComponent = <UnitInfo unitType={subject} content={content} />
+const folderNameMap = {
+    unit: {
+        target: unitTypes,
+        component: UnitInfo,
+    },
+    terrain: {
+        target: terrainTypes,
+        component: TerrainInfo,
+    },
+    building: {
+        target: buildingTypes,
+        component: BuildingInfo,
+    },
+    tech: {
+        target: techDiscoveries,
+        component: TechInfo,
+    },
+
+}
+
+const InfoPage = ({ content, params }) => {
+    let subject = null;
+    let pageContent = null;
+
+    if (params && params.type && folderNameMap[params.type]) {
+        subject = findValueWithLowerCasedKey(folderNameMap[params.type].target, params.itemName)
+        const InfoComponentType = folderNameMap[params.type].component
+
+        if (subject) {
+            pageContent = <InfoComponentType subject={subject} content={content} />
+        } else {
+            pageContent = <NotFound params={params} />
+        }
     }
-    if (params && params.type == 'terrain') {
-        subject = findValueWithLowerCasedKey(terrainTypes, params.itemName)
-        infoComponent = <TerrainInfo terrainType={subject} content={content} />
-    }
-    if (params && params.type == 'building') {
-        subject = findValueWithLowerCasedKey(buildingTypes, params.itemName)
-        infoComponent = <BuildingInfo buildingType={subject} content={content} />
-    }
-    if (params && params.type == 'tech') {
-        subject = findValueWithLowerCasedKey(techDiscoveries, params.itemName)
-        infoComponent = <TechInfo techDiscovery={subject} content={content} />
-    }
+
 
     return (
         <Layout backLinkText="Back to Index" backLinkUrl="/info">
-            {infoComponent}
+            {pageContent || "loading..."}
         </Layout>
     )
 }

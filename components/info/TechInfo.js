@@ -4,8 +4,8 @@ import styles from './info.module.scss'
 export default class TechInfo extends React.Component {
 
     render() {
-        const { techDiscovery, content } = this.props
-
+        const { subject, content } = this.props
+        const techDiscovery = subject
         if (!techDiscovery) {return null}
 
         return (

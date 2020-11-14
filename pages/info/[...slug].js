@@ -8,6 +8,7 @@ import UnitInfo from '../../components/info/UnitInfo'
 import TerrainInfo from '../../components/info/TerrainInfo'
 import BuildingInfo from '../../components/info/BuildingInfo'
 import TechInfo from '../../components/info/TechInfo'
+import IndexList from '../../components/info/IndexList'
 
 import { unitTypes } from '../../lib/game-entities/Unit.tsx'
 import { terrainTypes } from '../../lib/game-entities/TerrainType.tsx'
@@ -23,18 +24,22 @@ const folderNameMap = {
     unit: {
         target: unitTypes,
         component: UnitInfo,
+        listTitle: 'Units',
     },
     terrain: {
         target: terrainTypes,
         component: TerrainInfo,
+        listTitle: 'Terrain',
     },
     building: {
         target: buildingTypes,
         component: BuildingInfo,
+        listTitle: 'Buildings',
     },
     tech: {
         target: techDiscoveries,
         component: TechInfo,
+        listTitle: 'Discoveries',
     },
 }
 
@@ -51,20 +56,20 @@ const InfoPage = ({ content, params }) => {
 
     // params are loaded asynchronously - will be null at first
     if (params) {
-        if (params.type && folderNameMap[params.type]) {
+        if (params.itemName && params.type && folderNameMap[params.type]) { // have valid type and item name
             subject = findValueWithLowerCasedKey(folderNameMap[params.type].target, params.itemName)
             const InfoComponentType = folderNameMap[params.type].component
-
             if (subject) {
                 pageContent = <InfoComponentType subject={subject} content={content} />
             } else {
                 pageContent = <NotFound params={params} />
             }
+        } else if (params.type && folderNameMap[params.type]) { // have valid type
+            pageContent = <IndexList title="index" listObject={folderNameMap[params.type].target}/>
         } else {
             pageContent = <NotFound params={params} badType />
         }
     }
-
 
     return (
         <Layout backLinkText="Back to Index" backLinkUrl="/info">

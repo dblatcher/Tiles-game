@@ -23,23 +23,23 @@ export default class TerrainInfo extends React.Component {
 
         return (
             <article className={styles.article}>
+                <h3>{terrainType.name}</h3>
 
+                <div className={styles.sideBoxRight}>
 
-                <div className={styles.sideBox}>
-                    <table>
-                        <tbody>
-                            <tr><td>move cost</td><td>{terrainType.movementCost}</td></tr>
-                            <tr><td>defense bonus</td><td>{`${terrainType.defenseBonus * 100}%`}</td></tr>
-                        </tbody>
-                    </table>
                     <TileBoard mapGrid={mapGrid} infoPage />
                 </div>
-                <h2>{terrainType.name}</h2>
 
                 {content && content.description
                     ? <p>{content.description}</p>
                     : <p>{terrainType.name} is a type of terrain.</p>}
 
+                <table>
+                    <tbody>
+                        <tr><td>move cost</td><td>{terrainType.movementCost}</td></tr>
+                        <tr><td>defense bonus</td><td>{`${terrainType.defenseBonus * 100}%`}</td></tr>
+                    </tbody>
+                </table>
 
                 <div className={styles.clear}></div>
             </article>

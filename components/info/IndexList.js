@@ -3,7 +3,7 @@ export default function IndexList({ title, listObject }) {
 
     return (
         <section>
-            <h2>{title}</h2>
+            <h3>{title}</h3>
             <ul>
                 {Object.keys(listObject).map(typeName => (
                     <li key={`unit-${typeName.toLowerCase()}`}>

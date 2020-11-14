@@ -33,17 +33,16 @@ export default class TechInfo extends React.Component {
 
         return (
             <article className={styles.article}>
-
-                <h2>{techDiscovery.name}</h2>
+                <h3>{techDiscovery.description}</h3>
 
                 {content && content.description
                     ? <p>{content.description}</p>
-                    : <p>{techDiscovery.name} is a techDiscovery.</p>}
+                    : <p>{techDiscovery.description} is a techDiscovery.</p>}
 
 
                 {unitTypesEnabled.length + buildingTypesEnabled.length >0 
                 ? (<>
-                    <h3>Allows</h3>
+                    <h4>Allows</h4>
                     <ul>
                         {unitTypesEnabled.map(unitType => (
                             <li key={`unit-list-${unitType.name}`}>

@@ -1,7 +1,9 @@
 import InfoLink from '../InfoLink'
 
+
 import { techDiscoveries } from '../../lib/game-entities/TechDiscovery.tsx'
 import styles from './info.module.scss'
+import SvgIcon from '../SvgIcon'
 
 export default class BuildingInfo extends React.Component {
 
@@ -14,8 +16,7 @@ export default class BuildingInfo extends React.Component {
 
         return (
             <article className={styles.article}>
-
-                <h2>{buildingType.name}</h2>
+                <h3>{buildingType.name}</h3>
 
                 {content && content.description
                     ? <p>{content.description}</p>
@@ -24,9 +25,21 @@ export default class BuildingInfo extends React.Component {
 
                 <table>
                     <tbody>
-                        <tr><td>requires</td><td>{prerequisite
-                            ? <InfoLink sameWindow useDescription subject={prerequisite} />
-                            : 'none'}</td></tr>
+                        <tr>
+                            <td>cost:</td>
+                            <td>{buildingType.productionCost}<SvgIcon iconName="production"/> </td>
+                        </tr>
+                        <tr>
+                            <td>maintenance:</td>
+                            <td>{buildingType.maintenanceCost}<SvgIcon iconName="coins"/></td>
+                        </tr>
+                        <tr>
+                            <td>requires:</td>
+                            <td>{prerequisite
+                                ? <InfoLink sameWindow useDescription subject={prerequisite} />
+                                : 'none'}
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
 

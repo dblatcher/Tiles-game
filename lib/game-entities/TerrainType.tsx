@@ -39,6 +39,7 @@ class TerrainType {
             this.tradeYield = 0
         }
     }
+    get infoPageUrl() {return `/info/terrain/${this.name.toLowerCase()}`}
 }
 
 const terrainTypes = {

@@ -24,7 +24,7 @@ class BuildingType {
         return knowTech.includes(techDiscoveries[this.prerequisite])
     }
 
-    get infoPageUrl() {return `/info/building/${this.name}`}
+    get infoPageUrl() {return `/info/building/${this.name.toLowerCase()}`}
 }
 
 const buildingTypes = {

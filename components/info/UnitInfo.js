@@ -1,3 +1,5 @@
+import InfoLink from '../InfoLink'
+
 import { spriteSheets } from '../../lib/SpriteSheet.tsx'
 import { techDiscoveries } from '../../lib/game-entities/TechDiscovery.tsx'
 
@@ -24,7 +26,9 @@ export default class UnitInfo extends React.Component {
                             <tr><td>defend</td><td>{unitType.defend}</td></tr>
                             <tr><td>moves</td><td>{unitType.moves}</td></tr>
                             <tr><td>cost</td><td>{unitType.productionCost}</td></tr>
-                            <tr><td>requires</td><td>{prerequisite ? prerequisite.description : 'none'}</td></tr>
+                            <tr><td>requires</td><td>{prerequisite 
+                            ?  <InfoLink sameWindow useDescription subject={prerequisite}/>
+                            : 'none'}</td></tr>
                         </tbody>
                     </table>
                 </div>

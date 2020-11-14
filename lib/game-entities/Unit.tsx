@@ -34,7 +34,7 @@ class UnitType {
     get classIs (){return 'UnitType'}
 
     get infoPageUrl () {
-       return `/info/unit/${this.name}`
+       return `/info/unit/${this.name.toLowerCase()}`
     }
 
     checkCanBuildWith(knowTech: Array<TechDiscovery>) {

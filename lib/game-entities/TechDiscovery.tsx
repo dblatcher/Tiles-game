@@ -30,7 +30,7 @@ class TechDiscovery {
         return true
     }
 
-    get infoPageUrl() {return `info/tech/${this.name}`}
+    get infoPageUrl() {return `/info/tech/${this.name.toLowerCase()}`}
 
 }
 

@@ -1,3 +1,5 @@
+import { Citizen } from "./Citizen";
+
 class OnGoingOrderType {
     name: String;
     requiredUnitSkill: String | false;
@@ -109,9 +111,20 @@ const onGoingOrderTypes = [
         {
             letterCode: 'F',
             timeTaken: 1,
-            applyEffectOnUnit: unit => {
+            applyEffectOnUnit: (unit, state) => {
                 unit.onGoingOrder = new OnGoingOrder(fortifiedOrderType)
                 unit.remainingMoves = 0
+
+                //remove enemy citizens working the square
+                const mapSquare = state.mapGrid[unit.y][unit.x]
+
+                const enemyCitizensWorkingSquare = state.towns
+                .filter(town => town.faction !== unit.faction)
+                .map(town => town.citizens)
+                .flat()
+                .filter(citizen => citizen.mapSquare === mapSquare)
+
+                enemyCitizensWorkingSquare.forEach(citizen => citizen.makeUnemployed())
             }
         }),
     fortifiedOrderType,

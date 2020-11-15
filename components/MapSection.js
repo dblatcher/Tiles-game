@@ -122,7 +122,7 @@ export default class MapSection extends React.Component {
     }
 
     render() {
-        const { mapGrid, town, yStart, ySpan, towns } = this.props
+        const { mapGrid, town, yStart, ySpan, towns, units } = this.props
         let emptyRowY
 
         let emptyRowsAbove = []
@@ -143,7 +143,7 @@ export default class MapSection extends React.Component {
             .filter(citizen => citizen.mapSquare)
             .map((citizen, index) => this.renderCitizen(citizen, index))
 
-        const occupiersMap = town.getOccupierMap(mapGrid, towns)
+        const occupiersMap = town.getOccupierMap(mapGrid, towns, units)
 
         return (
             <section className={styles.container}>

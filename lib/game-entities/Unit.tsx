@@ -173,7 +173,7 @@ class Unit {
             // needs to happen after clearing this.onGoingOrder
             // can add a new order!
             if (onGoingOrder.type.applyEffectOnUnit) {
-                onGoingOrder.type.applyEffectOnUnit(this)
+                onGoingOrder.type.applyEffectOnUnit(this, state)
             }
 
         }

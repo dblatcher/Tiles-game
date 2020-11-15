@@ -95,9 +95,9 @@ class Town {
         return this.isProducing.displayName
     }
 
-    getSquaresAndObstacles(mapGrid, towns) {
+    getSquaresAndObstacles(mapGrid, towns, units=[]) {
         const { x, y } = this.mapSquare
-        let row, col, townIndex, citizenIndex, squares = [], obstacle = null, obstacles = [];
+        let row, col, townIndex, citizenIndex, unitIndex, squares = [], obstacle = null, obstacles = [];
 
         for (row = y - 2; row <= y + 2; row++) {
             if (mapGrid[row]) {
@@ -118,6 +118,20 @@ class Town {
                         }
                         if (obstacle) { break }
                     }
+
+                    for (unitIndex = 0; unitIndex < units.length; unitIndex++) {
+                        if (
+                            units[unitIndex].faction !== this.faction &&
+                            units[unitIndex].x === col &&
+                            units[unitIndex].y === row &&
+                            units[unitIndex].onGoingOrder && 
+                            units[unitIndex].onGoingOrder.type.name === "Fortified"
+                        ) {
+                            obstacle = units[unitIndex]
+                            break;
+                        }
+                    }
+
                     obstacles.push(obstacle)
                 }
             }
@@ -131,8 +145,8 @@ class Town {
         return { squares, obstacles, freeSquares }
     }
 
-    getOccupierMap(mapGrid, towns) {
-        const { squares, obstacles } = this.getSquaresAndObstacles(mapGrid, towns)
+    getOccupierMap(mapGrid, towns, units=[]) {
+        const { squares, obstacles } = this.getSquaresAndObstacles(mapGrid, towns, units)
         let result = []
 
         for (let i = 0; i < obstacles.length; i++) {
@@ -145,15 +159,15 @@ class Town {
     }
 
     autoAssignCitizen(citizen, state) {
-        const { mapGrid, towns } = state
-        let freeSquares = this.getSquaresAndObstacles(mapGrid, towns).freeSquares
+        const { mapGrid, towns, units } = state
+        let freeSquares = this.getSquaresAndObstacles(mapGrid, towns, units).freeSquares
         citizen.putToWorkInSquare(freeSquares.shift())
         return citizen
     }
 
     autoAssignFreeCitizens(state) {
-        const { mapGrid, towns } = state
-        let freeSquares = this.getSquaresAndObstacles(mapGrid, towns).freeSquares
+        const { mapGrid, towns, units } = state
+        let freeSquares = this.getSquaresAndObstacles(mapGrid, towns, units).freeSquares
         let freeCitizens = this.citizens.filter(citizen => citizen.job === citizenJobs.unemployed)
 
         // TO DO - set priorites eg maximise production without starving

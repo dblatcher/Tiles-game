@@ -1,15 +1,19 @@
+map
+ - special resources
+ - unexplored map
+
 TechDiscoveries
 -obseleting units
 
 units
 - obseleting units
 - opening info pages
-- define more types
+- define more types + special rules
 
 towns
-- fortified enemy units prevent production
 - prevent duplicate names
 - suggested names
+- render obstables in townView (unit or citizen of other town)
 
 Buildings
 - define more BuildingTypes, add rules to existing code
@@ -20,6 +24,8 @@ informational text
 - more content
 - support HTML / markdown instead of json?
 - internationalisation suport
+- render unit special rules / skills on info pages
+- building effect descriptions
 
 Diplomacy
 
@@ -30,10 +36,6 @@ AI
 - wait/sleep/delay function so player can watch the computer move
 - proper AI functions to pick computer moves well...
 - debug component to reveal AI priorities / goals
-
-map
- - special resources
- - unexplored map
 
 'Wonders'
 - extends BuildingTypes? 

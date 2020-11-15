@@ -68,9 +68,9 @@ export default class MainMenu extends React.Component {
         this.setState({ saveFileNames: Storage.getItemNames(savedGameFolder) })
     }
 
-    newGame() {
+    newGame(makeStateFunction = makeGameState.randomWorld) {
         const { storageAction } = this.props
-        const data = makeGameState.test()
+        const data = makeStateFunction()
         storageAction("NEW_GAME", { data })
     }
 
@@ -105,7 +105,8 @@ export default class MainMenu extends React.Component {
 
 
                     <section className={dialogueStyles.buttonRow}>
-                        <button className={dialogueStyles.button} onClick={this.newGame}>new game</button>
+                        <button className={dialogueStyles.button} onClick={() => {this.newGame(makeGameState.randomWorld)}}>new game</button>
+                        <button className={dialogueStyles.button} onClick={() => {this.newGame(makeGameState.test)}}>test world</button>
                     </section>
 
                     {browserSupportsLocalStorage

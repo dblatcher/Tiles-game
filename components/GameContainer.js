@@ -4,7 +4,7 @@ import TileBoard from './TileBoard'
 import InfoBar from './InfoBar'
 import BattleDialogue from './BattleDialogue'
 import MessageDialogue from './MessageDialogue'
-import TextQuestionDialogue from './TextQuestionDialogue'
+import QuestionDialogue from './QuestionDialogue'
 import ModeButtons from './ModeButtons'
 import TurnButtons from './TurnButtons'
 import PickUnitDialogue from './PickUnitDialogue'
@@ -237,9 +237,9 @@ export default class GameContainer extends React.Component {
             />
         }
 
-        if (pendingDialogues[0].type === "TextQuestion") {
-            return <TextQuestionDialogue
-                textQuestion={pendingDialogues[0]}
+        if (pendingDialogues[0].type === "TextQuestion" || pendingDialogues[0].type === "OptionsQuestion") {
+            return <QuestionDialogue
+                question={pendingDialogues[0]}
                 handleDialogueButton={this.handleDialogueButton}
             />
         }

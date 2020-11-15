@@ -84,6 +84,13 @@ const onGoingOrderTypes = [
             letterCode: 'B',
             specialCase: true,
         }),
+    new OnGoingOrderType('Disband',
+        mapSquare => {},
+        mapSquare => true,
+        {
+            letterCode: 'D',
+            specialCase: true,
+        }),
 ]
 
 class OnGoingOrder {

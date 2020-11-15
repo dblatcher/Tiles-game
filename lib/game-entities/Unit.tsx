@@ -117,9 +117,7 @@ class Unit {
         this.indexNumber = typeof config.indexNumber === 'number'
             ? config.indexNumber
             : unitIndexNumber++
-        this.onGoingOrder = typeof config.onGoingOrder !== 'undefined'
-            ? config.onGoingOrder
-            : null;
+        this.onGoingOrder = config.ongoingOrder || null
     }
 
     get infoList() {
@@ -157,15 +155,27 @@ class Unit {
 
     processTurn(state) {
         this.remainingMoves = this.type.moves
+        const {onGoingOrder} = this
 
-        if (this.onGoingOrder) {
-            this.onGoingOrder.reduceTime(this)
+        if (onGoingOrder) {
+            onGoingOrder.reduceTime(this)
         }
 
-        if (this.onGoingOrder && this.onGoingOrder.timeRemaining <= 0) {
+        if (onGoingOrder && onGoingOrder.timeRemaining <= 0) {
             let squareUnitIsOn = state.mapGrid[this.y][this.x]
-            this.onGoingOrder.type.applyOutcome(squareUnitIsOn)
+
+            if (onGoingOrder.type.applyEffectOnSquare) {
+                onGoingOrder.type.applyEffectOnSquare(squareUnitIsOn)
+            }
+
             this.onGoingOrder = null
+
+            // needs to happen after clearing this.onGoingOrder
+            // can add a new order!
+            if (onGoingOrder.type.applyEffectOnUnit) {
+                onGoingOrder.type.applyEffectOnUnit(this)
+            }
+
         }
     }
 
@@ -193,6 +203,7 @@ class Unit {
             {
                 x: data.x,
                 y: data.y,
+                vetran: data.veteran,
                 remainingMoves: data.remainingMoves,
                 indexNumber: data.indexNumber,
                 ongoingOrder: deserialisedOrder,

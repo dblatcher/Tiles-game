@@ -82,7 +82,7 @@ export default class UnitFigure extends React.Component {
                 { unit.onGoingOrder && !unit.onGoingOrder.type.noFlag
                     ? <p className={orderFlagClassList.join(" ")}>
                         <span>{unit.onGoingOrder.type.letterCode}</span>
-                        <span>{unit.onGoingOrder.timeRemaining}</span>
+                        <span>{unit.onGoingOrder.timeRemaining === Infinity ? '' : unit.onGoingOrder.timeRemaining}</span>
                     </p>
                     : null}
 

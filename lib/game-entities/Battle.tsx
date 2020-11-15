@@ -25,6 +25,11 @@ class Battle {
         if (this.defenders[0].vetran) {score += this.defenders[0].type.defend/2}
         if (this.mapSquare.defenseBonus > 0) {score += this.defenders[0].type.defend * this.mapSquare.defenseBonus}
         if (this.town) {score += this.defenders[0].type.defend * .5}
+
+        if (this.defenders[0].onGoingOrder && this.defenders[0].onGoingOrder.type.name === "Fortified") {
+            score += this.defenders[0].type.defend * .5
+        }
+
 // rules question - should terrain defense bonus AND town defense bonus both apply?
         return score
     }
@@ -34,6 +39,11 @@ class Battle {
         if (this.defenders[0].vetran) {breakdown.push(`vetran: +50%`)}
         if (this.mapSquare.defenseBonus > 0) {breakdown.push(`${this.mapSquare.description}: +${this.mapSquare.defenseBonus*100}%`)}
         if (this.town) {breakdown.push(`town: +50%`)}
+
+        if (this.defenders[0].onGoingOrder && this.defenders[0].onGoingOrder.type.name === "Fortified") {
+            breakdown.push(`Fortified: +50%`)
+        }
+
         return breakdown
     }
 

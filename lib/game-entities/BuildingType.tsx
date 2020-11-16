@@ -1,3 +1,4 @@
+import { MapSquare } from './MapSquare';
 import { TechDiscovery, techDiscoveries } from './TechDiscovery.tsx'
 
 class BuildingType {
@@ -6,16 +7,18 @@ class BuildingType {
     productionCost: number;
     maintenanceCost: number;
     prerequisite: string | null;
-    townRevenueMultiplierBonus: object | null;
-    townRevenueAdditionBonus: object | null;
+    revenueMultiplierBonus: object | null;
+    revenueAdditionBonus: object | null;
+    addSquareOutputBonus: Function | null;
     constructor(name, input: any = {}) {
         this.name = name
         this.displayName = input.displayName || name
         this.productionCost = input.productionCost || 50
         this.maintenanceCost = input.maintenanceCost || 0
         this.prerequisite = input.prerequisite || null
-        this.townRevenueMultiplierBonus = input.townRevenueMultiplierBonus || null
-        this.townRevenueAdditionBonus = input.townRevenueAdditionBonus || null
+        this.revenueMultiplierBonus = input.revenueMultiplierBonus || null
+        this.revenueAdditionBonus = input.revenueAdditionBonus || null
+        this.addSquareOutputBonus = input.addSquareOutputBonus || null
     }
     get classIs() { return 'BuildingType' }
 
@@ -28,7 +31,7 @@ class BuildingType {
         return knowTech.includes(techDiscoveries[this.prerequisite])
     }
 
-    get infoPageUrl() {return `/info/building/${this.name.toLowerCase()}`}
+    get infoPageUrl() { return `/info/building/${this.name.toLowerCase()}` }
 }
 
 const buildingTypes = {
@@ -44,16 +47,26 @@ const buildingTypes = {
     marketplace: new BuildingType('marketplace', {
         productionCost: 40,
         maintenanceCost: 1,
-        prerequisite:'currency',
-        townRevenueMultiplierBonus : {
+        prerequisite: 'currency',
+        revenueMultiplierBonus: {
             treasury: .5
         },
+    }),
+    harbour: new BuildingType('harbour', {
+        productionCost: 40,
+        maintenanceCost: 1,
+        prerequisite: 'seafaring',
+
+        addSquareOutputBonus: (mapSquare, output) => {
+            if (mapSquare.isWater) { output.foodYield += 1}
+        },
+
     }),
     library: new BuildingType('library', {
         productionCost: 40,
         maintenanceCost: 1,
         prerequisite: 'writing',
-        townRevenueMultiplierBonus : {
+        revenueMultiplierBonus: {
             research: .5
         }
     }),
@@ -61,7 +74,7 @@ const buildingTypes = {
         productionCost: 40,
         maintenanceCost: 1,
         prerequisite: 'ceremonialBurial',
-        townRevenueAdditionBonus : {
+        revenueAdditionBonus: {
             entertainment: 4
         }
     }),
@@ -69,7 +82,7 @@ const buildingTypes = {
         productionCost: 65,
         maintenanceCost: 2,
         prerequisite: 'construction',
-        townRevenueAdditionBonus : {
+        revenueAdditionBonus: {
             entertainment: 6
         }
     }),

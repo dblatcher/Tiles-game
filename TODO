@@ -1,13 +1,12 @@
 map
  - special resources
- - unexplored map
+
 
 TechDiscoveries
 -obseleting units
 
 units
 - obseleting units
-- opening info pages
 - define more types + special rules
 
 towns
@@ -19,7 +18,6 @@ towns
 Buildings
 - define more BuildingTypes, add rules to existing code
 - find way to include common rules (eg yield bonuses) on the type data instead of coding rule for every building
-- opening info pages
 
 informational text
 - more content

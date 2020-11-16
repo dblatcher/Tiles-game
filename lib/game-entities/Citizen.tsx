@@ -20,13 +20,20 @@ class Citizen {
         this.job = citizenJobs.unemployed
     }
 
-    get output() {
+    getOutput(town) {
         if (this.mapSquare) {
-            return {
+
+            let output =  {
                 foodYield: this.mapSquare.foodYield,
                 tradeYield: this.mapSquare.tradeYield,
                 productionYield: this.mapSquare.productionYield,
             }
+            town.buildings.forEach(buildingType => {
+                if (buildingType.addSquareOutputBonus) {
+                    buildingType.addSquareOutputBonus(this.mapSquare, output)
+                }
+            })
+            return output
         }
 
         return {}

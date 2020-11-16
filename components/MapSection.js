@@ -26,15 +26,13 @@ export default class MapSection extends React.Component {
         if (mapSquare.x < xStart || mapSquare.x > xStart + xSpan - 1) { return null }
 
         const isCorner = (mapSquare.x === xStart || mapSquare.x === xStart + xSpan - 1) && (mapSquare.y === yStart || mapSquare.y === yStart + ySpan - 1)
-
         const isTownTile = town.mapSquare === mapSquare
+        const citizen = town.citizens.filter(citizen => citizen.mapSquare === mapSquare)[0]
+        const showYields = mapSquare === town.mapSquare || citizen;
 
         if (isCorner && excludeCorners) {
             return this.renderEmptyTile(mapSquare.x, mapSquare.y)
         }
-
-        const showYields = mapSquare === town.mapSquare
-            || town.citizens.filter(citizen => citizen.mapSquare === mapSquare)[0];
 
         return (
             <Tile key={`${mapSquare.x},${mapSquare.y}`}
@@ -46,6 +44,7 @@ export default class MapSection extends React.Component {
                 handleTileHoverEnter={handleTileHoverEnter}
                 showYields={showYields}
                 occupier={occupier}
+                citizenOutput={citizen ? citizen.getOutput(town) : null}
                 adjacentSquares={this.getAdjacentSquares(mapSquare.x, mapSquare.y)}
             />
         )

@@ -12,19 +12,19 @@ export default class BuildingInfo extends React.Component {
 
         if (!subject) { return null }
         const buildingType = subject
-        const { prerequisite, townRevenueAdditionBonus, townRevenueMultiplierBonus } = buildingType
+        const { prerequisite, revenueAdditionBonus, revenueMultiplierBonus } = buildingType
 
         const prerequisiteTech = techDiscoveries[prerequisite]
 
         let bonusDescriptionItems = []
-        if (townRevenueAdditionBonus) {
-            for (let item in townRevenueAdditionBonus) {
-                bonusDescriptionItems.push(`${item}: +${townRevenueAdditionBonus[item]}`)
+        if (revenueAdditionBonus) {
+            for (let item in revenueAdditionBonus) {
+                bonusDescriptionItems.push(`${item}: +${revenueAdditionBonus[item]}`)
             }
         }
-        if (townRevenueMultiplierBonus) {
-            for (let item in townRevenueMultiplierBonus) {
-                bonusDescriptionItems.push(`${item}: ${townRevenueMultiplierBonus[item] * 100}%`)
+        if (revenueMultiplierBonus) {
+            for (let item in revenueMultiplierBonus) {
+                bonusDescriptionItems.push(`${item}: ${revenueMultiplierBonus[item] * 100}%`)
             }
         }
         const bonusDescription = bonusDescriptionItems.join(", ")

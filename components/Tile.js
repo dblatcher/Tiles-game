@@ -45,23 +45,34 @@ export default class Tile extends React.Component {
     }
 
     renderYieldLines() {
-        const { mapSquare } = this.props
+        const { mapSquare, citizenOutput } = this.props
+        let foodYield, productionYield, tradeYield
+
+        if (citizenOutput) {
+            foodYield = citizenOutput.foodYield
+            productionYield = citizenOutput.productionYield
+            tradeYield = citizenOutput.tradeYield
+        } else {
+            foodYield = mapSquare.foodYield
+            productionYield = mapSquare.productionYield
+            tradeYield = mapSquare.tradeYield
+        }
 
         return <>
-            {mapSquare.foodYield ?
+            {foodYield ?
                 <p className={styles.yieldLine}>
-                    {mapSquare.foodYield} <SvgIcon iconName="food" color="white" />
+                    {foodYield} <SvgIcon iconName="food" color="white" />
                 </p>
                 : null}
-            {mapSquare.productionYield ?
+            {productionYield ?
                 <p className={styles.yieldLine}>
-                    {mapSquare.productionYield} <SvgIcon iconName="production" color="white" />
+                    {productionYield} <SvgIcon iconName="production" color="white" />
                 </p>
                 : null}
 
-            {mapSquare.tradeYield ?
+            {tradeYield ?
                 <p className={styles.yieldLine}>
-                    {mapSquare.tradeYield} <SvgIcon iconName="trade" color="white" />
+                    {tradeYield} <SvgIcon iconName="trade" color="white" />
                 </p>
                 : null}
         </>
@@ -80,7 +91,7 @@ export default class Tile extends React.Component {
         if (!inInfoRow && !onMapSection) {
             if (interfaceMode === 'VIEW') {
                 if (isSelected) { figureClassList.push(styles.selected) }
-            } else if (interfaceMode === 'MOVE' && !gameHasOpenDialogue ) {
+            } else if (interfaceMode === 'MOVE' && !gameHasOpenDialogue) {
 
                 figureClassList.push(styles.inMoveMode)
                 if (selectedUnitCanMoveTo) { figureClassList.push(styles.inRange) }

@@ -65,7 +65,7 @@ class Town {
             tradeYield: this.mapSquare.tradeYield
         }
         this.citizens.forEach(citizen => {
-            const { foodYield = 0, productionYield = 0, tradeYield = 0 } = citizen.output
+            const { foodYield = 0, productionYield = 0, tradeYield = 0 } = citizen.getOutput(this)
             output.foodYield += foodYield
             output.productionYield += productionYield
             output.tradeYield += tradeYield

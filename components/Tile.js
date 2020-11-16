@@ -17,10 +17,13 @@ export default class Tile extends React.Component {
     }
 
     handleHover(wasEnterEvent) {
-        const { inInfoRow, handleTileHoverEnter, mapSquare } = this.props
+        const { inInfoRow, handleTileHoverEnter, mapSquare, mapSquareOnFactionWorldMap, showVoid } = this.props
+
+        const viewerVersionOfMapSquare = mapSquareOnFactionWorldMap || mapSquare;
+
         this.setState({ isHoveredOn: wasEnterEvent }, () => {
-            if (!inInfoRow && this.state.isHoveredOn && handleTileHoverEnter) {
-                handleTileHoverEnter(mapSquare)
+            if (!inInfoRow && this.state.isHoveredOn && !showVoid && handleTileHoverEnter) {
+                handleTileHoverEnter(viewerVersionOfMapSquare)
             }
         })
     }

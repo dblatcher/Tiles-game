@@ -84,6 +84,7 @@ class TechBubble {
                     className={polygonClassList.join(" ")} />
 
                 <text
+                    onClick={handleClickOnTech ? () => handleClickOnTech(tech) : null}
                     x={x + cornerSize}
                     y={y + (cornerSize * 1.25)}
                     className={styles.techText}

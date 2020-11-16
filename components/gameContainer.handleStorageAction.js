@@ -1,13 +1,31 @@
-import { Message } from '../lib/game-entities/Message.tsx'
 import { SerialisedGame } from '../lib/serialiseGame'
 import * as Storage from '../lib/storage'
+import selectNextOrPreviousUnit from '../lib/game-logic/selectNextOrPreviousUnit'
+import { Message, TechDiscoveryChoice } from '../lib/game-entities/Message.tsx'
 
 export default function handleStorageAction(command, input) {
 
     if (command === 'NEW_GAME') {
-        this.setState(Object.assign({mainMenuOpen: false},input.data))
-    }
+        this.setState(
+            Object.assign({ mainMenuOpen: false }, input.data),
+            () => {
 
+                this.setState(
+                    state => {
+                        state.activeFaction.processTurn(state)
+                        if (!state.activeFaction.researchGoal && state.activeFaction.possibleResearchGoals.length > 0) {
+                            state.pendingDialogues.push(new TechDiscoveryChoice)
+                        }
+
+                        selectNextOrPreviousUnit(state)
+                        this.state.interfaceMode = 'MOVE'
+                        return state
+                    },
+                    this.scrollToSelection
+                )
+            }
+        )
+    }
 
     if (command === 'SAVE_GAME') {
         let serialisedState = new SerialisedGame(this.state)

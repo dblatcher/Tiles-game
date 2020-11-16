@@ -3,7 +3,7 @@ import { buildingTypes } from './BuildingType.tsx'
 import { Town } from './Town.tsx'
 import { Unit } from './Unit.tsx'
 import { TechDiscovery, techDiscoveries } from './TechDiscovery.tsx'
-
+import { MapSquare } from './MapSquare.tsx'
 
 
 class Faction {
@@ -13,7 +13,8 @@ class Faction {
     research: number;
     budget: TradeBudget;
     researchGoal: TechDiscovery | null;
-    knownTech: Array<TechDiscovery>
+    knownTech: Array<TechDiscovery>;
+    worldMap: Array<Array<MapSquare>>;
     constructor(name: string, config: any = {}) {
         this.name = name;
         this.color = config.color || "#FFF";
@@ -22,11 +23,23 @@ class Faction {
 
         this.researchGoal = config.researchGoal || null
         this.knownTech = config.knownTech || []
+        this.worldMap = config.worldMap || [[]]
 
         this.budget = new TradeBudget().setAll(config.buget || {
             treasury: 1 / 2,
             research: 1 / 2,
             entertainment: 0,
+        })
+    }
+
+    updateWorldMap(state) {
+        const { towns, units, mapGrid } = state
+        let placesInSight = this.getPlacesInSight(towns, units)
+            .filter(place => place.y >= 0 && place.x >= 0 && place.y < mapGrid.length && place.x < mapGrid[0].length)
+
+        placesInSight.forEach(place => {
+            if (!this.worldMap[place.y]) { this.worldMap[place.y] = [] }
+            this.worldMap[place.y][place.x] = mapGrid[place.y][place.x].duplicate()
         })
     }
 
@@ -83,6 +96,7 @@ class Faction {
             this.research = 0
         }
 
+        this.updateWorldMap(state)
         return notices
     }
 
@@ -136,7 +150,8 @@ class Faction {
         let output = {
             budget: this.budget.store,
             researchGoal: this.researchGoal ? this.researchGoal.name : false,
-            knownTech: this.knownTech.map(techDiscovery => techDiscovery.name)
+            knownTech: this.knownTech.map(techDiscovery => techDiscovery.name),
+            worldMap: MapSquare.serialiseGrid(this.worldMap)
         }
         Object.keys(this).forEach(key => {
             if (typeof output[key] == 'undefined') {
@@ -153,7 +168,8 @@ class Faction {
             research: data.research,
             budget: data.budget,
             researchGoal: data.researchGoal ? techDiscoveries[data.researchGoal] : null,
-            knownTech: data.knownTech.map(techName => techDiscoveries[techName])
+            knownTech: data.knownTech.map(techName => techDiscoveries[techName]),
+            worldMap: MapSquare.deserialiseGrid(data.worldMap)
         })
     }
 }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { version } from 'react'
 import SvgIcon from './SvgIcon'
 import TownFigure from './TownFigure';
 import styles from './tile.module.scss'
@@ -67,7 +67,7 @@ export default class Tile extends React.Component {
     render() {
         const { mapSquare, handleClick, isSelected, notInSight,
             selectedUnit, inInfoRow, squareSelectedUnitIsIn, interfaceMode,
-            gameHasOpenDialogue, showYields, town, onMapSection, occupier } = this.props
+            gameHasOpenDialogue, showYields, town, onMapSection, occupier, showVoid, mapSquareOnFactionWorldMap } = this.props
 
         const selectedUnitCanMoveTo = selectedUnit && !selectedUnit.onGoingOrder && selectedUnit.canMoveTo(mapSquare, squareSelectedUnitIsIn);
 
@@ -91,6 +91,8 @@ export default class Tile extends React.Component {
             bgSpriteClassList.push(styles.notInSight)
         }
 
+        const viewerVersionOfMapSquare = mapSquareOnFactionWorldMap || mapSquare;
+
         const bgClasses = bgSpriteClassList.join(" ")
 
         return (
@@ -100,32 +102,39 @@ export default class Tile extends React.Component {
                 onPointerEnter={() => { this.handleHover(true) }}
                 onPointerLeave={() => { this.handleHover(false) }}
             >
-                <i className={bgClasses} style={mapSquare.css}></i>
-                {this.needsCoastline
-                    ? this.renderDirectionedSprite(spriteSheets[mapSquare.isWater ? 'coastlines' : 'innerCoastlines'], bgClasses)
-                    : (null)
+                {showVoid
+                    ? (null)
+                    : (<>
+                        <i className={bgClasses} style={mapSquare.css}></i>
+                        {this.needsCoastline
+                            ? this.renderDirectionedSprite(spriteSheets[mapSquare.isWater ? 'coastlines' : 'innerCoastlines'], bgClasses)
+                            : (null)
+                        }
+
+
+                        {mapSquare.terrain.spriteCss ? (
+                            <i className={bgClasses} style={mapSquare.terrain.spriteCss}></i>
+                        ) : null}
+
+                        {viewerVersionOfMapSquare.road ? this.renderDirectionedSprite(spriteSheets.roads, bgClasses) : (null)}
+
+                        { town ? <TownFigure town={town} onMapSection={onMapSection} /> : null}
+
+                        {viewerVersionOfMapSquare.tree ? this.renderDirectionedSprite(spriteSheets.trees, bgClasses) : (null)}
+
+                        {viewerVersionOfMapSquare.irrigation ? (
+                            <i className={bgClasses} style={spriteSheets.misc.getStyleForFrameCalled('irrigation')}></i>
+                        ) : null}
+
+                        {viewerVersionOfMapSquare.mine ? (
+                            <i className={bgClasses} style={spriteSheets.misc.getStyleForFrameCalled('mine')}></i>
+                        ) : null}
+
+                        {showYields ? this.renderYieldLines() : null}
+                    </>)
                 }
 
 
-                {mapSquare.terrain.spriteCss ? (
-                    <i className={bgClasses} style={mapSquare.terrain.spriteCss}></i>
-                ) : null}
-
-                {mapSquare.road ? this.renderDirectionedSprite(spriteSheets.roads, bgClasses) : (null)}
-
-                { town ? <TownFigure town={town} onMapSection={onMapSection} /> : null}
-
-                {mapSquare.tree ? this.renderDirectionedSprite(spriteSheets.trees, bgClasses) : (null)}
-
-                {mapSquare.irrigation ? (
-                    <i className={bgClasses} style={spriteSheets.misc.getStyleForFrameCalled('irrigation')}></i>
-                ) : null}
-
-                {mapSquare.mine ? (
-                    <i className={bgClasses} style={spriteSheets.misc.getStyleForFrameCalled('mine')}></i>
-                ) : null}
-
-                {showYields ? this.renderYieldLines() : null}
 
             </figure>
         )

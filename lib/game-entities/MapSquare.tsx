@@ -64,6 +64,28 @@ class MapSquare {
         return Math.max(0, (this.terrain.tradeYield) + (this.road ? 1 : 0))
     }
 
+    duplicate() {
+        return MapSquare.deserialise(this.serialised)
+    }
+
+    static serialiseGrid(mapGrid:Array<Array<MapSquare>>) {
+        const serialisedMapGrid = []
+        mapGrid.forEach(row => {
+            let newRow = []
+            row.forEach(mapSquare => {
+                newRow.push(mapSquare.serialised)
+            })
+            serialisedMapGrid.push(newRow)
+        })
+        return serialisedMapGrid
+    }
+
+    static deserialiseGrid(serialisedMapGrid:Array<Array<object>>) {
+        return serialisedMapGrid.map(row => {
+            return row.map(data => MapSquare.deserialise(data))
+        })
+    }
+
     get serialised() {
         let output = {
             terrain: this.terrain.name

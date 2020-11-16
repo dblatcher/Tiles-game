@@ -5,7 +5,6 @@ import UnitFigure from './UnitFigure'
 import styles from './tile.module.scss'
 
 
-
 export default class TileBoard extends React.Component {
 
     getAdjacentSquares(x, y) {
@@ -34,7 +33,7 @@ export default class TileBoard extends React.Component {
         const {
             handleMapSquareClick, selectedSquare, selectedUnit,
             handleTileHoverEnter, mapGrid, interfaceMode, infoPage,
-            gameHasOpenDialogue, towns = [] } = this.props;
+            gameHasOpenDialogue, towns = [], activeFaction } = this.props;
 
         const town = towns.filter(town => town.mapSquare === mapSquare)[0]
 
@@ -44,6 +43,16 @@ export default class TileBoard extends React.Component {
                 return square.x === mapSquare.x && square.y === mapSquare.y
             })
 
+
+        const notOnFactionWorldMap = activeFaction && !infoPage && notInSight
+            ? !activeFaction.worldMap[mapSquare.y] || !activeFaction.worldMap[mapSquare.y][mapSquare.x]
+            : false
+
+        let mapSquareOnFactionWorldMap = null
+        if (activeFaction && !infoPage) {
+            if (!notInSight) {mapSquareOnFactionWorldMap = mapSquare}
+            else if (!notOnFactionWorldMap) {mapSquareOnFactionWorldMap = activeFaction.worldMap[mapSquare.y][mapSquare.x]}
+        }
 
 
         return (
@@ -59,6 +68,8 @@ export default class TileBoard extends React.Component {
                 adjacentSquares={this.getAdjacentSquares(mapSquare.x, mapSquare.y)}
                 gameHasOpenDialogue={gameHasOpenDialogue}
                 notInSight={notInSight}
+                showVoid={notOnFactionWorldMap}
+                mapSquareOnFactionWorldMap={mapSquareOnFactionWorldMap}
                 showYields={infoPage}
             />
         )

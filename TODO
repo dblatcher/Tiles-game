@@ -7,13 +7,15 @@ TechDiscoveries
 
 units
 - obseleting units
-- define more types + special rules
+- implement special rules
 
 towns
 - prevent duplicate names
 - suggested names
 - render obstables in townView (unit or citizen of other town)
 - happiness, luxury and revolt
+- take treasury and tech on town conquest
+- trade routes
 
 Buildings
 - define more BuildingTypes, add rules to existing code

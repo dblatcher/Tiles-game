@@ -6,12 +6,16 @@ class BuildingType {
     productionCost: number;
     maintenanceCost: number;
     prerequisite: string | null;
+    townRevenueMultiplierBonus: object | null;
+    townRevenueAdditionBonus: object | null;
     constructor(name, input: any = {}) {
         this.name = name
         this.displayName = input.displayName || name
         this.productionCost = input.productionCost || 50
         this.maintenanceCost = input.maintenanceCost || 0
         this.prerequisite = input.prerequisite || null
+        this.townRevenueMultiplierBonus = input.townRevenueMultiplierBonus || null
+        this.townRevenueAdditionBonus = input.townRevenueAdditionBonus || null
     }
     get classIs() { return 'BuildingType' }
 
@@ -41,11 +45,33 @@ const buildingTypes = {
         productionCost: 40,
         maintenanceCost: 1,
         prerequisite:'currency',
+        townRevenueMultiplierBonus : {
+            treasury: .5
+        },
     }),
     library: new BuildingType('library', {
         productionCost: 40,
         maintenanceCost: 1,
         prerequisite: 'writing',
+        townRevenueMultiplierBonus : {
+            research: .5
+        }
+    }),
+    temple: new BuildingType('temple', {
+        productionCost: 40,
+        maintenanceCost: 1,
+        prerequisite: 'ceremonialBurial',
+        townRevenueAdditionBonus : {
+            entertainment: 4
+        }
+    }),
+    theatre: new BuildingType('theatre', {
+        productionCost: 65,
+        maintenanceCost: 2,
+        prerequisite: 'construction',
+        townRevenueAdditionBonus : {
+            entertainment: 6
+        }
     }),
 }
 

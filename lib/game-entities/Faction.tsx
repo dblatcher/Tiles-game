@@ -46,14 +46,19 @@ class Faction {
     allocateTownRevenue(town: Town) {
         let townRevenue = this.budget.allocate(town.output.tradeYield)
 
-        if (town.buildings.includes(buildingTypes.marketplace)) {
-            townRevenue.treasury += Math.floor(townRevenue.treasury / 2)
-        }
-
-        if (town.buildings.includes(buildingTypes.library)) {
-            townRevenue.research += Math.floor(townRevenue.research / 2)
-        }
-
+        town.buildings.forEach(buildingType => {
+            const { townRevenueMultiplierBonus, townRevenueAdditionBonus } = buildingType
+            if (townRevenueMultiplierBonus) {
+                for (let revenueType in townRevenueMultiplierBonus) {
+                    townRevenue[revenueType] += Math.floor(townRevenue[revenueType] * townRevenueMultiplierBonus[revenueType])
+                }
+            }
+            if (townRevenueAdditionBonus) {
+                for (let revenueType in townRevenueAdditionBonus) {
+                    townRevenue[revenueType] += townRevenueAdditionBonus[revenueType]
+                }
+            }
+        })
         return townRevenue
     }
 

@@ -12,7 +12,23 @@ export default class BuildingInfo extends React.Component {
 
         if (!subject) { return null }
         const buildingType = subject
-        const prerequisite = techDiscoveries[buildingType.prerequisite]
+        const { prerequisite, townRevenueAdditionBonus, townRevenueMultiplierBonus } = buildingType
+
+        const prerequisiteTech = techDiscoveries[prerequisite]
+
+        let bonusDescriptionItems = []
+        if (townRevenueAdditionBonus) {
+            for (let item in townRevenueAdditionBonus) {
+                bonusDescriptionItems.push(`${item}: +${townRevenueAdditionBonus[item]}`)
+            }
+        }
+        if (townRevenueMultiplierBonus) {
+            for (let item in townRevenueMultiplierBonus) {
+                bonusDescriptionItems.push(`${item}: ${townRevenueMultiplierBonus[item] * 100}%`)
+            }
+        }
+        const bonusDescription = bonusDescriptionItems.join(", ")
+
 
         return (
             <article className={styles.article}>
@@ -27,16 +43,24 @@ export default class BuildingInfo extends React.Component {
                     <tbody>
                         <tr>
                             <td>cost:</td>
-                            <td>{buildingType.productionCost}<SvgIcon iconName="production"/> </td>
+                            <td>{buildingType.productionCost}<SvgIcon iconName="production" /> </td>
                         </tr>
                         <tr>
                             <td>maintenance:</td>
-                            <td>{buildingType.maintenanceCost}<SvgIcon iconName="coins"/></td>
+                            <td>{buildingType.maintenanceCost}<SvgIcon iconName="coins" /></td>
                         </tr>
+
+                        {bonusDescription ? (
+                            <tr>
+                                <td>bonus</td>
+                                <td>{bonusDescription}</td>
+                            </tr>
+                        ) : null}
+
                         <tr>
                             <td>requires:</td>
-                            <td>{prerequisite
-                                ? <InfoLink sameWindow useDescription subject={prerequisite} />
+                            <td>{prerequisiteTech
+                                ? <InfoLink sameWindow useDescription subject={prerequisiteTech} />
                                 : 'none'}
                             </td>
                         </tr>

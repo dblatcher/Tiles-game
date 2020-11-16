@@ -20,6 +20,8 @@
     display: inline-block;
     color: white;
     margin: 0;
+    pointer-events: none;
+    z-index: 10;
 }
 
 .spriteOnMapSection {

@@ -2,8 +2,6 @@ import React from 'react';
 
 import Tile from './Tile'
 import styles from './mapSection.module.scss'
-
-import { spriteSheets } from "../lib/SpriteSheet.tsx"
 import VoidMapSquare from "../lib/game-entities/VoidMapSquare.tsx";
 
 
@@ -114,7 +112,7 @@ export default class MapSection extends React.Component {
                 key={`citizenIcon-${index}`}>
 
                 <i className={styles.spriteOnMapSection}
-                    style={spriteSheets.units.getStyleForFrameCalled('worker')}
+                    style={citizen.job.spriteStyle}
                 />
 
             </figure>

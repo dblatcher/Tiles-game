@@ -1,5 +1,4 @@
 import styles from "./citizenRow.module.scss";
-import { spriteSheets } from "../lib/SpriteSheet.tsx"
 
 export default function CitizenRow(props) {
     const { town } = props
@@ -26,7 +25,7 @@ export default function CitizenRow(props) {
                         ? 0
                         : `-${bunchUp}%`,
                     fontSize: '100%',
-                }, spriteSheets.units.getStyleForFrameCalled(citizen.job.name))
+                }, citizen.job.spriteStyle)
 
                 return (
                     <i key={`citizen-${index}`}

@@ -1,7 +1,5 @@
 import InfoLink from '../InfoLink'
 import SvgIcon from '../SvgIcon'
-
-import { spriteSheets } from '../../lib/SpriteSheet.tsx'
 import { techDiscoveries } from '../../lib/game-entities/TechDiscovery.tsx'
 
 import styles from './info.module.scss'
@@ -19,7 +17,7 @@ export default class UnitInfo extends React.Component {
                 <div className={styles.sideBox}>
                     <figure className={styles.figure}>
                         <i className={styles.sprite}
-                            style={spriteSheets.units.getStyleForFrameCalled(unitType.spriteFrameName)}></i>
+                            style={unitType.spriteStyle}></i>
                     </figure>
                 </div>
 

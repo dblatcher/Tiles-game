@@ -1,6 +1,5 @@
 
 import styles from './townFigure.module.scss'
-import { spriteSheets } from '../lib/SpriteSheet.tsx'
 
 export default class TownFigure extends React.Component {
 
@@ -13,7 +12,7 @@ export default class TownFigure extends React.Component {
         figureClassList.push( onMapSection ? styles.figureOnMapSection : styles.figureOnTileBoard)
 
 
-        //TO DO - burnning town animation?
+        //TO DO - burning town animation?
         if (isFallen) {
             spriteClassList.push(styles.fallenSprite)
         }
@@ -22,6 +21,7 @@ export default class TownFigure extends React.Component {
             pointerEvents: isFallen ? 'none' : 'unset',
         }
 
+        //TO DO - town sprite images?
         const spriteStyle = {
             backgroundColor: town.faction.color,
         }

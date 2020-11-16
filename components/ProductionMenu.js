@@ -1,6 +1,5 @@
 import { unitTypes } from '../lib/game-entities/Unit.tsx'
 import { buildingTypes } from '../lib/game-entities/BuildingType.tsx'
-import { spriteSheets } from '../lib/SpriteSheet.tsx'
 import { getTurnsToComplete } from '../lib/utility'
 import styles from './productionMenu.module.scss'
 import dialogueStyles from './dialogue.module.scss'
@@ -49,7 +48,7 @@ export default class ProductionMenu extends React.Component {
                         onClick={() => { this.handleProductionItemPick(unitType) }}>
                         <figure className={styles.figure}>
                             <i className={styles.sprite}
-                                style={spriteSheets.units.getStyleForFrameCalled(unitType.spriteFrameName)}></i>
+                                style={unitType.spriteStyle}></i>
                         </figure>
 
                         <span>{`${unitType.displayName}(${unitType.productionCost})`}</span>

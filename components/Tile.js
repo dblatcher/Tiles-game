@@ -77,10 +77,10 @@ export default class Tile extends React.Component {
         let figureClassList = [styles.tile]
         let bgSpriteClassList = [styles.spriteHolder]
 
-        if (!inInfoRow) {
+        if (!inInfoRow && !onMapSection) {
             if (interfaceMode === 'VIEW') {
                 if (isSelected) { figureClassList.push(styles.selected) }
-            } else if (interfaceMode === 'MOVE' && !gameHasOpenDialogue) {
+            } else if (interfaceMode === 'MOVE' && !gameHasOpenDialogue ) {
 
                 figureClassList.push(styles.inMoveMode)
                 if (selectedUnitCanMoveTo) { figureClassList.push(styles.inRange) }

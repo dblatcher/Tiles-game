@@ -14,6 +14,7 @@ towns
 - prevent duplicate names
 - suggested names
 - render obstables in townView (unit or citizen of other town)
+- happiness, luxury and revolt
 
 Buildings
 - define more BuildingTypes, add rules to existing code

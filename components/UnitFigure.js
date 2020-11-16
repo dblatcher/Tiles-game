@@ -1,9 +1,7 @@
 import React from 'react'
-
 import UnitContextMenu from './UnitContextMenu'
-
 import styles from './unitFigure.module.scss'
-import { spriteSheets } from '../lib/SpriteSheet.tsx'
+
 
 export default class UnitFigure extends React.Component {
 
@@ -74,7 +72,7 @@ export default class UnitFigure extends React.Component {
                 className={figureClassList.join(" ")}
             >
                 <i
-                    style={spriteSheets.units.getStyleForFrameCalled(unit.type.name)}
+                    style={unit.type.spriteStyle}
                     className={spriteClassList.join(" ")}
                     onClick={handleClick || function () { }}
                 ></i>

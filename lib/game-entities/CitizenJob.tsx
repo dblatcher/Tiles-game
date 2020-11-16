@@ -1,7 +1,16 @@
+import { spriteSheets } from '../SpriteSheet.tsx'
+
 class CitizenJob {
     name: string;
-    constructor(name) {
+    spriteFrameName: string;
+    spriteSheetName: string;
+    constructor(name, config:any={}) {
         this.name = name
+        this.spriteFrameName = config.spriteFrameName || name;
+        this.spriteSheetName = config.spriteSheetName || 'units';
+    }
+    get spriteStyle() {
+        return spriteSheets[this.spriteSheetName].getStyleForFrameCalled(this.spriteFrameName)
     }
 }
 

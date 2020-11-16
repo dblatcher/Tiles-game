@@ -16,6 +16,11 @@ class UnitType {
     irrigating: number;
     attack: number;
     defend: number;
+    isPathfinder: boolean;
+    isTrader: boolean; //TODO implement rule
+    isEffectiveAgainstMounted: boolean; //TODO implement rule
+    isMounted: boolean; //TODO implement rule
+    isEffectiveAgainstWalls: boolean; //TODO implement rule
     productionCost: number;
     prerequisite: string | null;
     constructor(name: string, config: any = {}) {
@@ -31,6 +36,12 @@ class UnitType {
         this.irrigating = config.irrigating || 0;
         this.attack = config.attack || 0;
         this.defend = config.defend || 0;
+        this.isPathfinder = !!config.isPathfinder || false;
+        this.isTrader = !!config.isTrader || false;
+        this.isEffectiveAgainstMounted = !!config.isEffectiveAgainstMounted || false;
+        this.isMounted = !!config.isMounted || false;
+        this.isEffectiveAgainstWalls = !!config.isEffectiveAgainstWalls || false;
+
         this.productionCost = config.productionCost || 10;
         this.prerequisite = config.prerequisite || null
     }
@@ -73,7 +84,7 @@ const unitTypes = {
         prerequisite: 'ironWorking',
     }),
     spearman: new UnitType('spearman', {
-        defend: 3, attack: 1,
+        defend: 2, attack: 1,
         productionCost: 15,
         prerequisite: 'bronzeWorking',
     }),
@@ -82,19 +93,89 @@ const unitTypes = {
         productionCost: 10,
     }),
     horseman: new UnitType('horseman', {
-        defend: 1, attack: 3, moves: 12,
+        defend: 1, attack: 2, moves: 12,
         productionCost: 25,
         prerequisite: 'horsebackRiding',
+        isMounted: true,
     }),
     knight: new UnitType('knight', {
-        defend: 2, attack: 6, moves: 12,
+        defend: 2, attack: 4, moves: 12,
         productionCost: 50,
         prerequisite: 'chivalry',
+        isMounted: true,
     }),
     archer: new UnitType('archer', {
-        defend: 2, attack: 6, moves: 12,
+        defend: 2, attack: 3,
         productionCost: 50,
         prerequisite: 'warriorCode',
+    }),
+    explorer: new UnitType('explorer', {
+        defend: 1, attack: 0,
+        isPathfinder: true,
+        productionCost: 20,
+        spriteSheetName: 'units2',
+        prerequisite: 'seafaring',
+    }),
+    pikeman: new UnitType('pikeman', {
+        defend: 2, attack: 1,
+        productionCost: 20,
+        spriteSheetName: 'units2',
+        prerequisite: 'feudalism',
+        isEffectiveAgainstMounted: true,
+    }),
+    catapult: new UnitType('catapult', {
+        defend: 1, attack: 6,
+        productionCost: 40,
+        spriteSheetName: 'units2',
+        prerequisite: 'mathematics',
+    }),
+    chariot: new UnitType('chariot', {
+        defend: 1, attack: 3,
+        productionCost: 30,
+        spriteSheetName: 'units2',
+        prerequisite: 'theWheel',
+        isMounted: true,
+    }),
+    cannon: new UnitType('cannon', {
+        defend: 1, attack: 8,
+        productionCost: 60,
+        spriteSheetName: 'units2',
+        prerequisite: 'metallurgy',
+        isEffectiveAgainstWalls: true,
+    }),
+    elephant: new UnitType('elephant', {
+        defend: 1, attack: 2, moves: 12,
+        productionCost: 40,
+        spriteSheetName: 'units2',
+        prerequisite: 'polytheism',
+        isMounted: true,
+    }),
+    crusader: new UnitType('crusader', {
+        defend: 1, attack: 5, moves: 12,
+        productionCost: 50,
+        spriteSheetName: 'units2',
+        prerequisite: 'monotheism',
+        isMounted: true,
+    }),
+    dragoon: new UnitType('dragoon', {
+        defend: 2, attack: 5, moves: 12,
+        productionCost: 50,
+        spriteSheetName: 'units2',
+        prerequisite: 'leadership',
+        isMounted: true,
+    }),
+    musketeer: new UnitType('musketeer', {
+        defend: 4, attack: 2,
+        productionCost: 30,
+        spriteSheetName: 'units2',
+        prerequisite: 'gunpowder',
+    }),
+    caravan: new UnitType('caravan', {
+        defend: 0, attack: 0,
+        productionCost: 50,
+        isTrader: true,
+        spriteSheetName: 'units2',
+        prerequisite: 'trade',
     }),
 }
 
@@ -147,13 +228,16 @@ class Unit {
         return !(Math.abs(this.x - target.x) > 1 || Math.abs(this.y - target.y) > 1)
     }
 
+    getMovementCost(startingMapSquare, targetMapSquare) {
+        return (startingMapSquare.road && targetMapSquare.road) || this.type.isPathfinder
+            ? 1
+            : targetMapSquare.movementCost
+    }
+
     canMoveTo(targetMapSquare, startingMapSquare = null) {
 
         if (targetMapSquare.isWater) { return false }
-
-        const movementCost = startingMapSquare && startingMapSquare.road && targetMapSquare.road
-            ? 1
-            : targetMapSquare.movementCost
+        const movementCost = this.getMovementCost(startingMapSquare, targetMapSquare)
 
         return this.isAdjacentTo(targetMapSquare)
             && !(targetMapSquare.x === this.x && targetMapSquare.y === this.y)

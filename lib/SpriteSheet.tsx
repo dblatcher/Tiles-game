@@ -230,6 +230,26 @@ const units = new SpriteSheet ('units',{
     }
 })
 
+const units2 = new SpriteSheet ('units2',{
+    cols: 3,
+    rows: 4,
+    css: {
+        backgroundImage: 'url(/units_2.png)'
+    },
+    frameNames: {
+        'explorer': [0,0],
+        'pikeman': [1,0],
+        'musketeer': [2,0],
+        'catapult': [0,1],
+        'chariot': [1,1],
+        'cannon': [2,1],
+        'elephant':[0,2],
+        'crusader':[1,2],
+        'dragoon':[2,2],
+        'caravan':[0,3],
+    }
+})
+
 const misc = new SpriteSheet ('misc',{
     cols: 3,
     rows: 3,
@@ -249,7 +269,7 @@ const misc = new SpriteSheet ('misc',{
     }
 })
 
-const spriteSheets = { trees,roads,coastlines,innerCoastlines, units, misc }
+const spriteSheets = { trees,roads,coastlines,innerCoastlines, units, misc, units2 }
 
 
 export { spriteSheets, SpriteSheet }

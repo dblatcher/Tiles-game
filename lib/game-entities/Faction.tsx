@@ -161,7 +161,8 @@ class Faction {
             budget: this.budget.store,
             researchGoal: this.researchGoal ? this.researchGoal.name : false,
             knownTech: this.knownTech.map(techDiscovery => techDiscovery.name),
-            worldMap: MapSquare.serialiseGrid(this.worldMap)
+            worldMap: MapSquare.serialiseGrid(this.worldMap),
+            computerPersonality: null
         }
         Object.keys(this).forEach(key => {
             if (typeof output[key] == 'undefined') {
@@ -197,6 +198,23 @@ class ComputerFaction extends Faction {
     }
 
     get isComputerPlayer() {return true}
+
+    get serialised() {
+        let output = {
+            budget: this.budget.store,
+            researchGoal: this.researchGoal ? this.researchGoal.name : false,
+            knownTech: this.knownTech.map(techDiscovery => techDiscovery.name),
+            worldMap: MapSquare.serialiseGrid(this.worldMap),
+            computerPersonality: this.computerPersonality.serialised
+        }
+        Object.keys(this).forEach(key => {
+            if (typeof output[key] == 'undefined') {
+                output[key] = this[key]
+            }
+        })
+        return output
+    }
+
 }
 
 export { Faction, ComputerFaction }

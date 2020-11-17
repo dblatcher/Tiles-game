@@ -73,6 +73,11 @@ class ComputerPersonality {
         console.log(`** has ${this.faction.name} finished turn after ${movesMade} moves?`, result)
         return result
     }
+
+    get serialised() {
+        return this.config
+    }
+
 }
 
 

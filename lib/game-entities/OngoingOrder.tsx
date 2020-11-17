@@ -166,4 +166,7 @@ class OnGoingOrder {
     }
 }
 
-export { onGoingOrderTypes, OnGoingOrder }
+let orderTypesMap = {}
+onGoingOrderTypes.forEach(type => {orderTypesMap[type.name] = type})
+
+export { onGoingOrderTypes, OnGoingOrder, orderTypesMap }

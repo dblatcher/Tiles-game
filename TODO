@@ -1,3 +1,9 @@
+
+AI
+- automate AI faction moves (crudely / randomly at first)
+- proper AI functions to pick computer moves well...
+- debug component to reveal AI priorities / goals
+
 map
  - special resources
 
@@ -8,14 +14,15 @@ TechDiscoveries
 units
 - obseleting units
 - implement special rules
+- naval units!
 
 towns
 - prevent duplicate names
-- suggested names
-- render obstables in townView (unit or citizen of other town)
 - happiness, luxury and revolt
 - take treasury and tech on town conquest
 - trade routes
+- suggested names
+- render obstables in townView (unit or citizen of other town)
 
 Buildings
 - define more BuildingTypes, add rules to existing code
@@ -30,13 +37,6 @@ informational text
 
 Diplomacy
 
-
-AI
-- 'human player' flag on Faction
-- automate AI faction moves (crudely / randomly at first)
-- wait/sleep/delay function so player can watch the computer move
-- proper AI functions to pick computer moves well...
-- debug component to reveal AI priorities / goals
 
 'Wonders'
 - extends BuildingTypes? 

@@ -4,7 +4,7 @@ import { Town } from './Town.tsx'
 import { Unit } from './Unit.tsx'
 import { TechDiscovery, techDiscoveries } from './TechDiscovery.tsx'
 import { MapSquare } from './MapSquare.tsx'
-
+import { ComputerPersonality} from '../game-ai/ComputerPersonality.ts'
 
 class Faction {
     name: string;
@@ -15,6 +15,7 @@ class Faction {
     researchGoal: TechDiscovery | null;
     knownTech: Array<TechDiscovery>;
     worldMap: Array<Array<MapSquare>>;
+    computerPersonality: null
     constructor(name: string, config: any = {}) {
         this.name = name;
         this.color = config.color || "#FFF";
@@ -30,7 +31,11 @@ class Faction {
             research: 1 / 2,
             entertainment: 0,
         })
+
+        this.computerPersonality = null
     }
+
+    get isComputerPlayer() {return false}
 
     updateWorldMap(state) {
         const { towns, units, mapGrid } = state
@@ -167,16 +172,31 @@ class Faction {
     }
 
     static deserialise(data) {
-        return new Faction(data.name, {
-            color: data.color,
-            treasury: data.treasury,
-            research: data.research,
-            budget: data.budget,
-            researchGoal: data.researchGoal ? techDiscoveries[data.researchGoal] : null,
-            knownTech: data.knownTech.map(techName => techDiscoveries[techName]),
-            worldMap: MapSquare.deserialiseGrid(data.worldMap)
-        })
+
+        const correctClass = data.computerPersonality ? ComputerFaction : Faction
+        return new correctClass(
+            data.name,
+            {
+                color: data.color,
+                treasury: data.treasury,
+                research: data.research,
+                budget: data.budget,
+                researchGoal: data.researchGoal ? techDiscoveries[data.researchGoal] : null,
+                knownTech: data.knownTech.map(techName => techDiscoveries[techName]),
+                worldMap: MapSquare.deserialiseGrid(data.worldMap),
+            },
+            data.computerPersonality)
     }
 }
 
-export { Faction }
+class ComputerFaction extends Faction {
+    computerPersonality: any;
+    constructor(name: string, config: any, computerPersonality: any = {}) {
+        super(name, config)
+        this.computerPersonality = new ComputerPersonality(this, computerPersonality)
+    }
+
+    get isComputerPlayer() {return true}
+}
+
+export { Faction, ComputerFaction }

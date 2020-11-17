@@ -18,7 +18,7 @@ import gameActions from '../lib/game-logic/gameActions'
 import townActions from '../lib/game-logic/townActions'
 import factionActions from '../lib/game-logic/factionActions'
 
-import {browserHasLocalStorage} from '../lib/storage'
+import { browserHasLocalStorage } from '../lib/storage'
 import handleStorageAction from './gameContainer.handleStorageAction'
 
 import styles from './gameContainer.module.scss'
@@ -69,7 +69,11 @@ export default class GameContainer extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({browserSupportsLocalStorage: browserHasLocalStorage()})
+        this.setState({ browserSupportsLocalStorage: browserHasLocalStorage() })
+    }
+
+    get isComputerPlayersTurn() {
+        return this.state.activeFaction.isComputerPlayer
     }
 
     get hasOpenDialogue() {
@@ -82,6 +86,39 @@ export default class GameContainer extends React.Component {
         if (!this.state.activeFaction) { return true }
         return false
     }
+
+    letComputerTakeItsTurn() {
+        const { activeFaction } = this.state
+        let computerHasFinished = false
+        let movesMade = 0
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        const letComputerMakeMove = () => {
+
+            this.setState(
+                state => {
+                    activeFaction.computerPersonality.makeMove(state)
+                    movesMade++
+                    computerHasFinished = activeFaction.computerPersonality.checkIfFinished(state, movesMade)
+                    return state
+                },
+                async () => {
+                    await sleep(1000)
+                    if (computerHasFinished) {
+                        this.setState(gameActions.END_OF_TURN()(this.state))
+                    } else {
+                        letComputerMakeMove()
+                    }
+                })
+        }
+
+        letComputerMakeMove()
+
+    }
+
 
     setMainMenuOpen(shouldBeOpen) {
         this.setState(state => {
@@ -129,7 +166,7 @@ export default class GameContainer extends React.Component {
     handleMapSquareClick(input) {
         const { mapSquare } = input
 
-        if (this.hasOpenDialogue) { return false }
+        if (this.hasOpenDialogue || this.isComputerPlayersTurn) { return false }
 
         if (this.state.selectedUnit && this.state.interfaceMode === 'MOVE' && !this.state.selectedUnit.isAdjacentTo(mapSquare)) {
             return this.scrollToSquare(mapSquare)
@@ -146,12 +183,18 @@ export default class GameContainer extends React.Component {
 
 
     handleOrderButton(command, input = {}) {
-        if (this.hasOpenDialogue) { return false }
+        if (this.hasOpenDialogue || this.isComputerPlayersTurn) { return false }
         if (!gameActions[command]) {
             console.warn(`unknown order button command ${command}`, input)
             return false
         }
-        return this.setState(gameActions[command](input), this.scrollToSelection)
+        return this.setState(
+            gameActions[command](input),
+            () => {
+                this.scrollToSelection()
+                if (this.isComputerPlayersTurn) { this.letComputerTakeItsTurn() }
+            }
+        )
     }
 
     handleDialogueButton(command, input = {}) {
@@ -181,7 +224,7 @@ export default class GameContainer extends React.Component {
     }
 
     changeMode(newMode) {
-        if (this.hasOpenDialogue) { return false }
+        if (this.hasOpenDialogue || this.isComputerPlayersTurn) { return false }
         this.setState({
             interfaceMode: newMode
         })
@@ -257,7 +300,7 @@ export default class GameContainer extends React.Component {
         const { mapGrid, selectedSquare, units, towns, activeFaction,
             selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
             pendingDialogues, unitWithMenuOpen, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
-            mapZoomLevel,browserSupportsLocalStorage } = this.state
+            mapZoomLevel, browserSupportsLocalStorage } = this.state
 
         if (openTown) {
             return (
@@ -318,7 +361,7 @@ export default class GameContainer extends React.Component {
                             selectedUnit={selectedUnit}
                             selectedSquare={selectedSquare}
                             scrollToSquare={this.scrollToSquare}
-                            toggleFactionWindow={this.toggleFactionWindow}
+                            toggleFactionWindow={this.isComputerPlayersTurn ? null : this.toggleFactionWindow}
                             activeFaction={activeFaction}
                             interfaceMode={interfaceMode}
                             towns={towns}
@@ -340,7 +383,9 @@ export default class GameContainer extends React.Component {
                             </i>
                         </div>
                     </aside>
+                </>) : null}
 
+                {!this.noActiveGame && !this.isComputerPlayersTurn ? (<>
                     <aside className={styles.lowerInterfaceWindow} >
                         <ModeButtons
                             interfaceMode={interfaceMode}
@@ -360,7 +405,7 @@ export default class GameContainer extends React.Component {
                         setOpenFunction={this.setMainMenuOpen}
                         noActiveGame={this.noActiveGame}
                         storageAction={this.handleStorageAction}
-                        browserSupportsLocalStorage= {browserSupportsLocalStorage}
+                        browserSupportsLocalStorage={browserSupportsLocalStorage}
                     />
                 ) : null}
             </>

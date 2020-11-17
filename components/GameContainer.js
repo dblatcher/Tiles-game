@@ -276,7 +276,7 @@ export default class GameContainer extends React.Component {
             return <BattleDialogue
                 battle={pendingDialogues[0]}
                 cancelBattle={() => this.handleDialogueButton('CANCEL_BATTLE', {})}
-                confirmBattle={() => this.handleDialogueButton('RESOLVE_BATTLE', {})}
+                confirmBattle={() => this.handleDialogueButton('RESOLVE_BATTLE', {battle: pendingDialogues[0]})}
             />
         }
 

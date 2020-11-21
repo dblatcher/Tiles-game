@@ -3,6 +3,8 @@ import { Faction } from "./Faction";
 import { TechDiscovery, techDiscoveries } from './TechDiscovery.tsx'
 import { spriteSheets } from '../SpriteSheet.tsx'
 
+import {UnitMission} from '../game-ai/UnitMission.ts'
+
 class UnitType {
     name: string;
     displayName: string;
@@ -192,6 +194,7 @@ class Unit {
     remainingMoves: number;
     indexNumber: number;
     onGoingOrder: OnGoingOrder;
+    missions: Array<UnitMission> 
     constructor(type: UnitType, faction: Faction, config: any = {}) {
         this.type = type
         this.faction = faction
@@ -206,6 +209,7 @@ class Unit {
             ? config.indexNumber
             : unitIndexNumber++
         this.onGoingOrder = config.ongoingOrder || null
+        this.missions = config.missions || []
     }
 
     get infoList() {
@@ -274,7 +278,8 @@ class Unit {
         let output = {
             type: this.type.name,
             faction: this.faction.name,
-            onGoingOrder: this.onGoingOrder ? this.onGoingOrder.serialised : null
+            onGoingOrder: this.onGoingOrder ? this.onGoingOrder.serialised : null,
+            missions: this.missions.map(unitMission => unitMission.serialised) 
         }
         Object.keys(this).forEach(key => {
             if (typeof output[key] == 'undefined') { output[key] = this[key] }
@@ -288,6 +293,11 @@ class Unit {
             ? OnGoingOrder.deserialise(data.onGoingOrder)
             : undefined;
 
+        let deserialisedMissions = data.misssions.map(
+            unitMission => UnitMission.deserialise(unitMission)
+        )
+
+
         return new Unit(
             unitTypes[data.type],
             factions.filter(faction => faction.name === data.faction)[0],
@@ -298,6 +308,7 @@ class Unit {
                 remainingMoves: data.remainingMoves,
                 indexNumber: data.indexNumber,
                 ongoingOrder: deserialisedOrder,
+                missions: deserialisedMissions,
             }
         )
     }

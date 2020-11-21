@@ -105,7 +105,6 @@ class Town {
                     if (!mapGrid[row][col]) { continue }     // can't work square off the map
                     if (col === x && row === y) { continue } // can't work home square
                     if (Math.abs(col - x) + Math.abs(row - y) === 4) { continue } // can't work corners
-                    //TO DO - if any non-friendly unit is fortified on square, push to obstacles
 
                     squares.push(mapGrid[row][col])
                     obstacle = null

@@ -57,7 +57,7 @@ class ComputerPersonality {
     makeMove(state) {
         let moveSuceeded = false;
         const unit = state.selectedUnit;
-        console.log(`** ${this.faction.name} AI is making a move with ${unit.description} [unit#${unit.indexNumber}] `)
+        console.log(`** ${this.faction.name} AI is making a move with ${unit.description} (${unit.role}) [unit#${unit.indexNumber}] `)
         if (state.selectedUnit.remainingMoves > 0) {
 
             unit.missions = unit.missions.filter(mission => !mission.checkIfFinished(unit, state))

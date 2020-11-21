@@ -49,6 +49,16 @@ class UnitType {
     }
     get classIs() { return 'UnitType' }
 
+    get role() {
+        if (this.townBuilding) {return "SETTLER"}
+        if (this.irrigating || this.mining || this.treeCutting) {return "WORKER"}
+        if (this.isTrader ) {return "TRADER"}
+        if (this.defend >= this.attack && this.moves <= 6) {return "DEFENDER"}
+        if (this.defend < this.attack && this.moves <= 6) {return "ATTACKER"}
+        if (this.attack && this.moves > 6) {return "CAVALRY"}
+        return "SCOUT"
+    }
+
     get infoPageUrl() {
         return `/info/unit/${this.name.toLowerCase()}`
     }
@@ -221,6 +231,8 @@ class Unit {
                 : `${this.remainingMoves}/${this.type.moves} movement`,
         ]
     }
+
+    get role() {return this.type.role}
 
     get infoPageUrl() { return this.type.infoPageUrl }
 

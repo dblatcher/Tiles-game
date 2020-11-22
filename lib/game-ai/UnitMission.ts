@@ -12,33 +12,45 @@ class UnitMissionType {
     }
 }
 
+// TO DO - proper pathfinding function
+function chooseMoveTowards(target, unit, state, possibleMoves) {
+    if (!target) { return null }
+    if (unit.x == target.x && unit.y == target.y) { return null }
+    if (possibleMoves.length === 0) { return null }
+
+    possibleMoves = possibleMoves.filter(mapSquare => {
+        if (target.x >= unit.x && mapSquare.x < unit.x) { return false }
+        if (target.x <= unit.x && mapSquare.x > unit.x) { return false }
+        if (target.y >= unit.y && mapSquare.y < unit.y) { return false }
+        if (target.y <= unit.y && mapSquare.y > unit.y) { return false }
+        return true
+    })
+
+    possibleMoves.sort((mapSquareA, mapSquareB) => getDistanceBetween(mapSquareA, target) - getDistanceBetween(mapSquareB, target))
+    return possibleMoves[0]
+}
+
+
 // this is bound to UnitMission
 const unitMissionTypes = {
+
+    WAIT: new UnitMissionType('WAIT',
+        function (unit, state) {
+            return this.untilCancelled
+        },
+        function (unit, state, possibleMoves) {
+            return null
+        }
+    ),
+
     GO_TO: new UnitMissionType('GO_TO',
         function (unit, state) {
             return unit.x == this.xTarget && unit.y == this.yTarget
         },
         function (unit, state, possibleMoves) {
-            // TO DO - proper pathfinding function
             const { target } = this
             console.log(`*${unit.indexNumber}*${unit.description} at [${unit.x}, ${unit.y}] going to [${target.x}, ${target.y}]`)
-
-            if (unit.x == target.x && unit.y == target.y) {
-                return null
-            }
-            if (possibleMoves.length === 0) { return null }
-
-            possibleMoves = possibleMoves.filter(mapSquare => {
-                if (target.x >= unit.x && mapSquare.x < unit.x) { return false }
-                if (target.x <= unit.x && mapSquare.x > unit.x) { return false }
-                if (target.y >= unit.y && mapSquare.y < unit.y) { return false }
-                if (target.y <= unit.y && mapSquare.y > unit.y) { return false }
-                return true
-            })
-
-            possibleMoves.sort((mapSquareA, mapSquareB) => getDistanceBetween(mapSquareA, target) - getDistanceBetween(mapSquareB, target))
-            return possibleMoves[0]
-
+            return chooseMoveTowards(target, unit, state, possibleMoves)
         },
     ),
     RANDOM: new UnitMissionType('RANDOM',
@@ -63,27 +75,43 @@ const unitMissionTypes = {
             console.log(`*${unit.indexNumber}*${unit.description} at [${unit.x}, ${unit.y}] and wants to conquer the town at [${target.x}, ${target.y}] - ${distance} away`)
 
             const moveToAttack = possibleMoves.filter(mapSquare => areSamePlace(mapSquare, target))[0]
-
-            if (moveToAttack) {
-                return moveToAttack
-            }
-            if (distance > 1) {
-                return unitMissionTypes.GO_TO.chooseMove.apply(this, [unit, state, possibleMoves])
-            }
-
-            return null
+            return moveToAttack || chooseMoveTowards(target, unit, state, possibleMoves)
         }
-    )
+    ),
+    INTERCEPT: new UnitMissionType('INTERCEPT',
+        function (unit, state) {
+            if (this.untilCancelled) { return false }
+            const ai = unit.faction.computerPersonality
+            return this.range
+                ? ai.getKnownEnemyUnitInOpen(state)
+                    .filter(enemyUnit => getDistanceBetween(enemyUnit, unit) < this.range)
+                    .length === 0
+                : ai.getKnownEnemyUnitInOpen(state)
+                    .length === 0
+        },
+        function (unit, state, possibleMoves) {
+            const ai = unit.faction.computerPersonality
+            let knownEnemyUnitInOpen = ai.getKnownEnemyUnitInOpen(state)
+                .sort((enemyUnitA, enemyUnitB) => getDistanceBetween(enemyUnitA, unit) - getDistanceBetween(enemyUnitB, unit))
+
+            return chooseMoveTowards(knownEnemyUnitInOpen[0], unit, state, possibleMoves)
+
+        }
+    ),
 }
 
 class UnitMission {
     type: string;
     xTarget: number | null;
     yTarget: number | null;
+    range: number | null;
+    untilCancelled: boolean;
     constructor(type: string, config: any = {}) {
         this.type = type
         this.xTarget = config.xTarget || null
         this.yTarget = config.yTarget || null
+        this.range = config.range || null
+        this.untilCancelled = !!config.untilCancelled
     }
 
     checkIfFinished(unit, state) {

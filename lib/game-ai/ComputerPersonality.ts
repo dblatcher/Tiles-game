@@ -5,6 +5,7 @@ import { onGoingOrderTypes, orderTypesMap } from '../game-entities/OngoingOrder.
 import attemptMove from '../game-logic/attemptMove'
 
 import gameActions from '../game-logic/gameActions'
+import { areSamePlace } from '../utility';
 
 
 class ComputerPersonality {
@@ -44,42 +45,64 @@ class ComputerPersonality {
                 .some(mapSquare => mapSquare.x === town.mapSquare.x && mapSquare.y === town.mapSquare.y))
     }
 
+    getKnownEnemyUnits(state) {
+        return state.units
+            .filter(unit => unit.faction !== this.faction)
+            .filter(unit => this.faction.worldMap[unit.y] && this.faction.worldMap[unit.y][unit.x])
+    }
+
+    getKnownEnemyUnitInOpen(state) {
+        let enemyTowns = this.getKnownEnemyTowns(state)
+        let enemyUnits = this.getKnownEnemyUnits(state)
+
+        return enemyUnits
+            .filter(unit => !enemyTowns.some(town => areSamePlace(town, unit)))
+    }
+
     assignNewMission(unit, state) {
         // TO DO - logic for picking a mission...
 
-        let mission = Math.random() > .7
-            ? new UnitMission('RANDOM', {})
-            : new UnitMission('GO_TO', { xTarget: 6, yTarget: 4 })
+        let enemyTowns = this.getKnownEnemyTowns(state)
+        let enemyUnitsInOpen = this.getKnownEnemyUnitInOpen(state)
 
 
         if (unit.role === "ATTACKER") {
-            let enemyTowns = this.getKnownEnemyTowns(state)
             let targetSquare = enemyTowns[0] ? enemyTowns[0].mapSquare : null
 
-            mission = targetSquare
+            unit.missions.push(targetSquare
                 ? new UnitMission('CONQUER', { xTarget: targetSquare.x, yTarget: targetSquare.y })
-                : new UnitMission('RANDOM', {})
+                : new UnitMission('INTERCEPT', { untilCancelled: false })
+            )
+        }
+        if (unit.role === "CAVALRY") {
+            unit.missions.push(new UnitMission('INTERCEPT', { range: 3, untilCancelled: true }))
+        }
+        else {
+            unit.missions.push(Math.random() > .7
+                ? new UnitMission('RANDOM', {})
+                : new UnitMission('GO_TO', { xTarget: 6, yTarget: 4 })
+            )
         }
 
-        console.log(`*${unit.indexNumber}*Assigning mission to ${unit.description}:`, mission)
-        unit.missions.push(
-            mission
-        )
+        if (unit.missions.length == 0) {
+            unit.missions.push(new UnitMission("WAIT"))
+        }
     }
 
     makeMove(state) {
         let moveSuceeded = false;
         const unit = state.selectedUnit;
-        console.log(`*${unit.indexNumber}* ${this.faction.name} moving ${unit.description} (${unit.role})`)
         if (state.selectedUnit.remainingMoves > 0) {
-
+            console.log(`*${unit.indexNumber}* ${this.faction.name} moving ${unit.description} (${unit.role})`)
             unit.missions = unit.missions.filter(mission => !mission.checkIfFinished(unit, state))
             if (unit.missions.length == 0) { this.assignNewMission(unit, state) }
+            console.log(`*${unit.indexNumber}* misson: ${unit.missions[0] ? unit.missions[0].type : 'none'}`, unit.missions[0])
 
 
             // TO DO - allow for missions that return in a START_ORDER call rather than a mapSquare
             // TO DO - if mission[0].chooseMove returns null, try the next missions before accepting
             // - eg  Unit has mission to attack enememy[0] but a fallback mission to explore[1] if none in sight
+
             const choosenMove = unit.missions[0].chooseMove(unit, state)
             if (choosenMove) {
                 moveSuceeded = attemptMove(state, state.selectedUnit, choosenMove)

@@ -1,5 +1,5 @@
 import { MapSquare } from "../game-entities/MapSquare";
-import { getDistanceBetween} from "../utility"
+import { getDistanceBetween, areSamePlace } from "../utility"
 
 class UnitMissionType {
     name: string;
@@ -12,15 +12,16 @@ class UnitMissionType {
     }
 }
 
+// this is bound to UnitMission
 const unitMissionTypes = {
-    goTo: new UnitMissionType('goTo',
+    GO_TO: new UnitMissionType('GO_TO',
         function (unit, state) {
             return unit.x == this.xTarget && unit.y == this.yTarget
         },
         function (unit, state, possibleMoves) {
             // TO DO - proper pathfinding function
-            const target = {x: this.xTarget, y:this.yTarget}
-            console.log(`${unit.description} is at [${unit.x}, ${unit.y}] and is going to [${target.x}, ${target.y}]`)
+            const { target } = this
+            console.log(`*${unit.indexNumber}*${unit.description} at [${unit.x}, ${unit.y}] going to [${target.x}, ${target.y}]`)
 
             if (unit.x == target.x && unit.y == target.y) {
                 return null
@@ -35,20 +36,44 @@ const unitMissionTypes = {
                 return true
             })
 
-            possibleMoves.sort( (mapSquareA, mapSquareB) => getDistanceBetween(mapSquareA, target) - getDistanceBetween(mapSquareB, target) )
+            possibleMoves.sort((mapSquareA, mapSquareB) => getDistanceBetween(mapSquareA, target) - getDistanceBetween(mapSquareB, target))
             return possibleMoves[0]
 
         },
     ),
-    random: new UnitMissionType('random',
+    RANDOM: new UnitMissionType('RANDOM',
         function (unit, state) {
-            return false
+            return true
         },
         function (unit, state, possibleMoves) {
-            console.log(`${unit.description} is at [${unit.x}, ${unit.y}] and is moving at random`)
+            console.log(`*${unit.indexNumber}*${unit.description} at [${unit.x}, ${unit.y}] moving at random (${possibleMoves.length} options)`)
             return possibleMoves[Math.floor(Math.random() * possibleMoves.length)]
         },
     ),
+    CONQUER: new UnitMissionType('CONQUER',
+        function (unit, state) {
+            const { target } = this
+            const ai = unit.faction.computerPersonality
+            let enemyTowns = ai.getKnownEnemyTowns(state)
+            return !enemyTowns.some(town => town.mapSquare.x === target.x && town.mapSquare.y === target.y)
+        },
+        function (unit, state, possibleMoves) {
+            const { target } = this
+            const distance = getDistanceBetween(target, unit)
+            console.log(`*${unit.indexNumber}*${unit.description} at [${unit.x}, ${unit.y}] and wants to conquer the town at [${target.x}, ${target.y}] - ${distance} away`)
+
+            const moveToAttack = possibleMoves.filter(mapSquare => areSamePlace(mapSquare, target))[0]
+
+            if (moveToAttack) {
+                return moveToAttack
+            }
+            if (distance > 1) {
+                return unitMissionTypes.GO_TO.chooseMove.apply(this, [unit, state, possibleMoves])
+            }
+
+            return null
+        }
+    )
 }
 
 class UnitMission {
@@ -62,20 +87,24 @@ class UnitMission {
     }
 
     checkIfFinished(unit, state) {
-        return unitMissionTypes[this.type].checkIfFinished.apply(this,[unit, state])
+        return unitMissionTypes[this.type].checkIfFinished.apply(this, [unit, state])
     }
 
     chooseMove(unit, state) {
-
         const { x, y } = unit;
         let possibleMoves = state.mapGrid
             .slice(y - 1, y + 2)
             .map(row => row.slice(x - 1, x + 2))
             .flat()
             .filter(mapSquare => unit.canMoveTo(mapSquare, state.mapGrid[y][x]))
+        return unitMissionTypes[this.type].chooseMove.apply(this, [unit, state, possibleMoves])
+    }
 
-        return unitMissionTypes[this.type].chooseMove.apply(this,[unit, state, possibleMoves])
-
+    get target() {
+        if (typeof this.xTarget == 'number' && typeof this.yTarget == 'number') {
+            return { x: this.xTarget, y: this.yTarget }
+        }
+        return null
     }
 
     get serialised() {

@@ -106,7 +106,7 @@ export default class GameContainer extends React.Component {
                     return state
                 },
                 async () => {
-                    await sleep(1000)
+                    await sleep(500)
                     if (computerHasFinished) {
                         this.setState(gameActions.END_OF_TURN()(this.state))
                     } else {
@@ -115,6 +115,7 @@ export default class GameContainer extends React.Component {
                 })
         }
 
+        console.log(`___${activeFaction.name.toUpperCase()} STARTING TURN____`)
         letComputerMakeMove()
 
     }

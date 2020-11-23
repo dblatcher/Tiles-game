@@ -62,25 +62,22 @@ class ComputerPersonality {
     assignNewMission(unit, state) {
         // TO DO - logic for picking a mission...
 
-        let enemyTowns = this.getKnownEnemyTowns(state)
-        let enemyUnitsInOpen = this.getKnownEnemyUnitInOpen(state)
-
 
         if (unit.role === "ATTACKER") {
-            let targetSquare = enemyTowns[0] ? enemyTowns[0].mapSquare : null
-
-            unit.missions.push(targetSquare
-                ? new UnitMission('CONQUER', { xTarget: targetSquare.x, yTarget: targetSquare.y })
-                : new UnitMission('INTERCEPT', { untilCancelled: false })
+            unit.missions.push(
+                new UnitMission('CONQUER', {}),
+                new UnitMission('INTERCEPT', { untilCancelled: false })
             )
         }
         if (unit.role === "CAVALRY") {
-            unit.missions.push(new UnitMission('INTERCEPT', { range: 3, untilCancelled: true }))
+            unit.missions.push(
+                new UnitMission('INTERCEPT', { range: 5, untilCancelled: true }),
+                new UnitMission('CONQUER', {}),
+            )
         }
         else {
-            unit.missions.push(Math.random() > .7
-                ? new UnitMission('RANDOM', {})
-                : new UnitMission('GO_TO', { xTarget: 6, yTarget: 4 })
+            unit.missions.push(
+                new UnitMission('WAIT', {})
             )
         }
 
@@ -96,16 +93,16 @@ class ComputerPersonality {
             console.log(`*${unit.indexNumber}* ${this.faction.name} moving ${unit.description} (${unit.role})`)
             unit.missions = unit.missions.filter(mission => !mission.checkIfFinished(unit, state))
             if (unit.missions.length == 0) { this.assignNewMission(unit, state) }
-            console.log(`*${unit.indexNumber}* misson: ${unit.missions[0] ? unit.missions[0].type : 'none'}`, unit.missions[0])
 
 
             // TO DO - allow for missions that return in a START_ORDER call rather than a mapSquare
-            // TO DO - if mission[0].chooseMove returns null, try the next missions before accepting
-            // - eg  Unit has mission to attack enememy[0] but a fallback mission to explore[1] if none in sight
-
-            const choosenMove = unit.missions[0].chooseMove(unit, state)
-            if (choosenMove) {
-                moveSuceeded = attemptMove(state, state.selectedUnit, choosenMove)
+            let choosenMove = null
+            for (let i = 0; i< unit.missions.length; i++) {
+                choosenMove = unit.missions[i].chooseMove(unit, state)
+                if (choosenMove) {
+                    moveSuceeded = attemptMove(state, state.selectedUnit, choosenMove)
+                    break;
+                }
             }
 
             if (!moveSuceeded) { // unit will hold if mission returns null or a mapSquare (move) that fails

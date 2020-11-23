@@ -65,12 +65,21 @@ const unitMissionTypes = {
     CONQUER: new UnitMissionType('CONQUER',
         function (unit, state) {
             const { target } = this
+            if (!target) {return true}
             const ai = unit.faction.computerPersonality
             let enemyTowns = ai.getKnownEnemyTowns(state)
             return !enemyTowns.some(town => town.mapSquare.x === target.x && town.mapSquare.y === target.y)
         },
         function (unit, state, possibleMoves) {
+            const ai = unit.faction.computerPersonality
+            if (!this.target) {
+                let enemyTowns = ai.getKnownEnemyTowns(state)
+                    .sort((enemyTownA, enemyTownB) => getDistanceBetween(enemyTownA, unit) - getDistanceBetween(enemyTownB, unit))
+                this.target = enemyTowns[0]
+            }
+
             const { target } = this
+            if (!target) {return null}
             const distance = getDistanceBetween(target, unit)
             console.log(`*${unit.indexNumber}*${unit.description} at [${unit.x}, ${unit.y}] and wants to conquer the town at [${target.x}, ${target.y}] - ${distance} away`)
 
@@ -126,6 +135,22 @@ class UnitMission {
             .flat()
             .filter(mapSquare => unit.canMoveTo(mapSquare, state.mapGrid[y][x]))
         return unitMissionTypes[this.type].chooseMove.apply(this, [unit, state, possibleMoves])
+    }
+
+    set target(newTarget:any) {
+        if (typeof newTarget !== 'object') {
+            console.warn('invalid Mission target', newTarget)
+        } else {
+
+            if (newTarget.mapSquare) { newTarget = newTarget.mapSquare}
+
+            if (typeof newTarget.x != 'number' || typeof newTarget.y != 'number') {
+                console.warn('invalid Mission target', newTarget)
+            } else {
+                this.xTarget = newTarget.x
+                this.yTarget = newTarget.y
+            }
+        }
     }
 
     get target() {

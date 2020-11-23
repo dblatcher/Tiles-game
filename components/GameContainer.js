@@ -108,7 +108,14 @@ export default class GameContainer extends React.Component {
                 async () => {
                     await sleep(500)
                     if (computerHasFinished) {
-                        this.setState(gameActions.END_OF_TURN()(this.state))
+                        this.setState(
+                            gameActions.END_OF_TURN()(this.state),
+                            () => {
+                                if (this.isComputerPlayersTurn) {
+                                    this.letComputerTakeItsTurn()
+                                }
+                            }
+                        )
                     } else {
                         letComputerMakeMove()
                     }

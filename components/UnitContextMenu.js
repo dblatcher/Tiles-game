@@ -2,7 +2,7 @@ import { onGoingOrderTypes } from '../lib/game-entities/OngoingOrder.tsx'
 
 import styles from './unitContextMenu.module.scss'
 
-export default function UnitContextenu(props) {
+export default function UnitContextMenu(props) {
     const { selectedUnit, handleOrderButton, squareSelectedUnitIsIn, placement = [] } = props;
 
     const availableOrders = selectedUnit

@@ -20,6 +20,8 @@ class MapSquare {
         this.y = y
     }
 
+    get classIs() {return "MapSquare"} 
+
     get css() {
         return this.terrain.css || {}
     }

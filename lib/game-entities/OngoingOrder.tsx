@@ -28,6 +28,8 @@ class OnGoingOrderType {
         this.onlyOnMenuToCancel = !!config.onlyOnMenuToCancel || false
     }
 
+    get classIs() {return "OnGoingOrderType"} 
+
     canUnitUse(unit) {
         if (this.onlyOnMenuToCancel) {
             return unit.onGoingOrder && unit.onGoingOrder.type === this

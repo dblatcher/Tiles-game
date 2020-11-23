@@ -75,6 +75,11 @@ class ComputerPersonality {
                 new UnitMission('CONQUER', {}),
             )
         }
+        if (unit.role === "DEFENDER") {
+            unit.missions.push(
+                new UnitMission('DEFEND_CURRENT_PLACE', {})
+            )
+        }
         else {
             unit.missions.push(
                 new UnitMission('WAIT', {})
@@ -89,24 +94,30 @@ class ComputerPersonality {
     makeMove(state) {
         let moveSuceeded = false;
         const unit = state.selectedUnit;
-        if (state.selectedUnit.remainingMoves > 0) {
+        if (unit && unit.remainingMoves > 0) {
             console.log(`*${unit.indexNumber}* ${this.faction.name} moving ${unit.description} (${unit.role})`)
             unit.missions = unit.missions.filter(mission => !mission.checkIfFinished(unit, state))
             if (unit.missions.length == 0) { this.assignNewMission(unit, state) }
 
 
-            // TO DO - allow for missions that return in a START_ORDER call rather than a mapSquare
             let choosenMove = null
-            for (let i = 0; i< unit.missions.length; i++) {
+            for (let i = 0; i < unit.missions.length; i++) {
                 choosenMove = unit.missions[i].chooseMove(unit, state)
-                if (choosenMove) {
+                if (choosenMove && choosenMove.classIs === 'MapSquare') {
                     moveSuceeded = attemptMove(state, state.selectedUnit, choosenMove)
                     break;
                 }
+                else if (choosenMove && choosenMove.classIs === 'OnGoingOrderType') {
+                    gameActions.START_ORDER({ unit: state.selectedUnit, orderType: choosenMove })(state)
+                    moveSuceeded = true
+                    break
+                }
             }
 
-            if (!moveSuceeded) { // unit will hold if mission returns null or a mapSquare (move) that fails
-                gameActions.START_ORDER({ unit: state.selectedUnit, orderType: orderTypesMap['Hold Unit'] })(state)
+            if (!moveSuceeded) {
+                if (!unit.onGoingOrder) {
+                    gameActions.START_ORDER({ unit: state.selectedUnit, orderType: orderTypesMap['Hold Unit'] })(state)
+                }
             }
         } else {
             gameActions.NEXT_UNIT({})(state)
@@ -117,7 +128,7 @@ class ComputerPersonality {
         let result
         const myUnitsWithMovesLeft = state.units
             .filter(unit => unit.faction === this.faction)
-            .filter(unit => unit.remainingMoves > 0)
+            .filter(unit => unit.remainingMoves > 0 && !unit.onGoingOrder)
         result = myUnitsWithMovesLeft.length === 0
 
         console.log(`__${movesMade} MOVES MADE__`, result ? 'FINISHED' : '')

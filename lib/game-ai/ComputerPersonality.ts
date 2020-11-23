@@ -77,6 +77,7 @@ class ComputerPersonality {
         }
         if (unit.role === "DEFENDER") {
             unit.missions.push(
+                new UnitMission('GO_TO_MY_NEAREST_TOWN', {}),
                 new UnitMission('DEFEND_CURRENT_PLACE', {})
             )
         }

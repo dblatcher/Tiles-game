@@ -31,6 +31,9 @@ function chooseMoveTowards(target, unit, state, possibleMoves) {
     return possibleMoves[0]
 }
 
+function sortByDistanceFrom(subject) {
+    return (placeA, placeB) => getDistanceBetween(placeA, subject) - getDistanceBetween(placeB, subject)
+}
 
 // this is bound to UnitMission
 const unitMissionTypes = {
@@ -103,6 +106,22 @@ const unitMissionTypes = {
                 .sort((enemyUnitA, enemyUnitB) => getDistanceBetween(enemyUnitA, unit) - getDistanceBetween(enemyUnitB, unit))
 
             return chooseMoveTowards(knownEnemyUnitInOpen[0], unit, state, possibleMoves)
+
+        }
+    ),
+    GO_TO_MY_NEAREST_TOWN: new UnitMissionType('GO_TO_MY_NEAREST_TOWN',
+        function (unit, state) {
+            return state.towns.some(town => town.faction === unit.faction && areSamePlace(town,unit))
+        },
+        function (ai, unit, state, possibleMoves, possibleActions) {
+
+            let myTowns = state.towns
+                .filter(town => town.faction === unit.faction)
+                .sort(sortByDistanceFrom(unit))
+
+            if (!myTowns[0]) {return null}
+
+            return chooseMoveTowards(myTowns[0], unit, state, possibleMoves)
 
         }
     ),

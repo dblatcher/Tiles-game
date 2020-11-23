@@ -113,6 +113,8 @@ export default class GameContainer extends React.Component {
                             () => {
                                 if (this.isComputerPlayersTurn) {
                                     this.letComputerTakeItsTurn()
+                                } else {
+                                    this.scrollToSelection()
                                 }
                             }
                         )

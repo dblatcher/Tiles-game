@@ -5,6 +5,7 @@ import { onGoingOrderTypes, orderTypesMap } from '../game-entities/OngoingOrder.
 import attemptMove from '../game-logic/attemptMove'
 
 import gameActions from '../game-logic/gameActions'
+import townActions from '../game-logic/townActions'
 import { areSamePlace } from '../utility';
 
 
@@ -22,6 +23,14 @@ class ComputerPersonality {
 
         myTowns.forEach(town => {
             town.autoAssignFreeCitizens(state);
+            if (!town.isProducing) {
+                const { producableUnits, producableBuildings } = this.faction
+                //TO DO - logic for computer picking a production item
+                let item
+                item = producableUnits[Math.floor(Math.random() * producableUnits.length)]
+                townActions.PRODUCTION_PICK({town, item})(state)
+                console.log(`** ${town.name} now producing ${town.isProducing.name}`)
+            }
         })
     }
 
@@ -116,9 +125,10 @@ class ComputerPersonality {
             }
 
             if (!moveSuceeded) {
-                if (!unit.onGoingOrder) {
-                    gameActions.START_ORDER({ unit: state.selectedUnit, orderType: orderTypesMap['Hold Unit'] })(state)
-                }
+                unit.remainingMoves = 0  // TO DO - don't like this - should be able to use 'Hold Unit' like a human player
+                // if (!unit.onGoingOrder) {
+                //     gameActions.START_ORDER({ unit: state.selectedUnit, orderType: orderTypesMap['Hold Unit'] })(state)
+                // }
             }
         } else {
             gameActions.NEXT_UNIT({})(state)
@@ -130,6 +140,7 @@ class ComputerPersonality {
         const myUnitsWithMovesLeft = state.units
             .filter(unit => unit.faction === this.faction)
             .filter(unit => unit.remainingMoves > 0 && !unit.onGoingOrder)
+
         result = myUnitsWithMovesLeft.length === 0
 
         console.log(`__${movesMade} MOVES MADE__`, result ? 'FINISHED' : '')

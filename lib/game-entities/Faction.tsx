@@ -1,7 +1,7 @@
 import TradeBudget from '../TradeBudget.js'
 import { buildingTypes } from './BuildingType.tsx'
 import { Town } from './Town.tsx'
-import { Unit } from './Unit.tsx'
+import { Unit, unitTypes } from './Unit.tsx'
 import { TechDiscovery, techDiscoveries } from './TechDiscovery.tsx'
 import { MapSquare } from './MapSquare.tsx'
 import { ComputerPersonality} from '../game-ai/ComputerPersonality.ts'
@@ -144,6 +144,18 @@ class Faction {
         }
 
         return results
+    }
+
+    get producableUnits() {
+        return Object.keys(unitTypes)
+            .map(key => unitTypes[key])
+            .filter(unitType => unitType.checkCanBuildWith(this.knownTech))
+    }
+    
+    get producableBuildings() {
+        return Object.keys(buildingTypes)
+        .map(key => buildingTypes[key])
+        .filter(buildingType => buildingType.checkCanBuildWith(this.knownTech))
     }
 
     get possibleResearchGoals() {

@@ -6,6 +6,8 @@ import { TechDiscovery, techDiscoveries } from './TechDiscovery.tsx'
 import { MapSquare } from './MapSquare.tsx'
 import { ComputerPersonality} from '../game-ai/ComputerPersonality.ts'
 
+import {TOWN_SIGHT_RADIUS, UNIT_SIGHT_RADIUS} from '../game-logic/constants'
+
 class Faction {
     name: string;
     color: string;
@@ -133,8 +135,8 @@ class Faction {
             }
         }
 
-        myTowns.forEach(town => { addPlacesInRange(town, 3) })
-        myUnits.forEach(unit => { addPlacesInRange(unit, 2) })
+        myTowns.forEach(town => { addPlacesInRange(town, TOWN_SIGHT_RADIUS) })
+        myUnits.forEach(unit => { addPlacesInRange(unit, UNIT_SIGHT_RADIUS) })
 
         let i;
         for (i = 0; i < places.length; i++) {

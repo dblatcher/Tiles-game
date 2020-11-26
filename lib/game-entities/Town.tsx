@@ -6,10 +6,12 @@ import { Citizen } from './Citizen.tsx'
 import { unitTypes } from './Unit.tsx'
 import { BuildingType, buildingTypes } from './BuildingType.tsx'
 
+import { hurryCostPerUnit} from '../game-logic/constants'
+
 let townIndex = 0
 
 // TO DO - create config module for constants like this?
-const hurryCostPerUnit = 5
+
 
 class Town {
     faction: Faction;

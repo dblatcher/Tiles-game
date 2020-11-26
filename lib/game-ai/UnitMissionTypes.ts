@@ -111,7 +111,7 @@ const unitMissionTypes = {
     ),
     GO_TO_MY_NEAREST_TOWN: new UnitMissionType('GO_TO_MY_NEAREST_TOWN',
         function (unit, state) {
-            return state.towns.some(town => town.faction === unit.faction && areSamePlace(town,unit))
+            return state.towns.some(town => town.faction === unit.faction && areSamePlace(town, unit))
         },
         function (ai, unit, state, possibleMoves, possibleActions) {
 
@@ -119,7 +119,7 @@ const unitMissionTypes = {
                 .filter(town => town.faction === unit.faction)
                 .sort(sortByDistanceFrom(unit))
 
-            if (!myTowns[0]) {return null}
+            if (!myTowns[0]) { return null }
 
             return chooseMoveTowards(myTowns[0], unit, state, possibleMoves)
 
@@ -137,38 +137,87 @@ const unitMissionTypes = {
         }
     ),
     BUILD_NEW_TOWN: new UnitMissionType('BUILD_NEW_TOWN',
-    function (unit, state) {
-        return false
-    },
-    function (ai, unit, state, possibleMoves, possibleActions) {
+        function (unit, state) {
+            return false
+        },
+        function (ai, unit, state, possibleMoves, possibleActions) {
 
-        if (!this.target) {
-            let possibleNewTownLocationsWithScores = ai.getPossibleNewTownLocations(state)
-            .map(mapSquare => { 
-                return {mapSquare, score: ai.assesNewTownLocation(mapSquare,ai.faction.worldMap).score }
-            })
-            .sort( (itemA, itemB) => itemB.score - itemA.score)
+            if (!this.target) {
+                let possibleNewTownLocationsWithScores = ai.getPossibleNewTownLocations(state)
+                    .map(mapSquare => {
+                        return { mapSquare, score: ai.assesNewTownLocation(mapSquare, ai.faction.worldMap).score }
+                    })
+                    .sort((itemA, itemB) => itemB.score - itemA.score)
 
-            if (possibleNewTownLocationsWithScores.length > 0) {
-                this.target = possibleNewTownLocationsWithScores[0].mapSquare
-                console.log(`${unit.description} has choosed a place to build town:`, this.target)
-            } else {
-                console.log(`${unit.description} has no a place to build town.`)
+                if (possibleNewTownLocationsWithScores.length > 0) {
+                    this.target = possibleNewTownLocationsWithScores[0].mapSquare
+                    console.log(`${unit.description} has choosed a place to build town:`, this.target)
+                } else {
+                    console.log(`${unit.description} has no a place to build town.`)
+                }
             }
-        }
 
-        if (!this.target) {return null}
+            if (!this.target) { return null }
 
-        if (areSamePlace(unit, this.target)) {
-            if (possibleActions.includes(orderTypesMap['Build Town'])) {
-                return orderTypesMap['Build Town']
+            if (areSamePlace(unit, this.target)) {
+                if (possibleActions.includes(orderTypesMap['Build Town'])) {
+                    return orderTypesMap['Build Town']
+                }
             }
-        }
 
-        return chooseMoveTowards(this.target, unit, state, possibleMoves)
+            return chooseMoveTowards(this.target, unit, state, possibleMoves)
 
-    }
-),
+        },
+    ),
+    EXPLORE: new UnitMissionType('EXPLORE',
+        function (unit, state) {
+            return false
+        },
+        function (ai, unit, state, possibleMoves, possibleActions) {
+
+            const map = ai.faction.worldMap
+
+            function hasSpaceNearby(mapSquare) {
+                const { x, y } = mapSquare
+                const gridHeight = state.mapGrid.length
+                const gridWidth = state.mapGrid[0].length
+
+                if (y > 0 && !map[y - 1]) { return true }
+                if (y + 1 < gridHeight && !map[y + 1]) { return true }
+
+                if (x > 0 && !map[y][x - 1]) { return true }
+                if (x + 1 < gridWidth && !map[y][x + 1]) { return true }
+
+                if (y > 0 && !map[y - 1][x]) { return true }
+                if (y + 1 < gridHeight && !map[y + 1][x]) { return true }
+
+                //TO DO - check for corners
+
+                return false
+            }
+
+
+            if (this.target) {
+                console.log(`Exploring ${unit.description} [${unit.x},${unit.y}] going to`, this.target)
+            }
+            
+
+            if (!this.target || areSamePlace(unit, this.target)) {
+                let placesWithSpacesNearby = map.flat()
+                    .filter(mapSquare => hasSpaceNearby(mapSquare))
+                    .sort(sortByDistanceFrom(unit))
+
+                console.log({ placesWithSpacesNearby })
+
+                if (placesWithSpacesNearby.length > 0) {
+                    this.target = placesWithSpacesNearby[0]
+                }
+            }
+
+            if (!this.target) { return null }
+            return chooseMoveTowards(this.target, unit, state, possibleMoves)
+        },
+    )
 }
 
-export {unitMissionTypes, UnitMissionType}
+export { unitMissionTypes, UnitMissionType }

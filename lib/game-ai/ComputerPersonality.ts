@@ -128,24 +128,32 @@ class ComputerPersonality {
         if (unit.role === "ATTACKER") {
             unit.missions.push(
                 new UnitMission('CONQUER', {}),
-                new UnitMission('INTERCEPT', { untilCancelled: false })
+                new UnitMission('INTERCEPT', { untilCancelled: false }),
+                new UnitMission('EXPLORE'),
             )
         }
         if (unit.role === "CAVALRY") {
             unit.missions.push(
                 new UnitMission('INTERCEPT', { range: 5, untilCancelled: true }),
                 new UnitMission('CONQUER', {}),
+                new UnitMission('EXPLORE'),
             )
         }
         if (unit.role === "DEFENDER") {
             unit.missions.push(
                 new UnitMission('GO_TO_MY_NEAREST_TOWN', {}),
-                new UnitMission('DEFEND_CURRENT_PLACE', {})
+                new UnitMission('DEFEND_CURRENT_PLACE', {}),
             )
         }
         if (unit.role === "SETTLER") {
             unit.missions.push(
                 new UnitMission('BUILD_NEW_TOWN', {}),
+                new UnitMission('EXPLORE'),
+            )
+        }
+        if (unit.role === "SCOUT") {
+            unit.missions.push(
+                new UnitMission('EXPLORE'),
             )
         }
 

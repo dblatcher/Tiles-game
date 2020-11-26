@@ -53,6 +53,7 @@ class UnitType {
         if (this.townBuilding) {return "SETTLER"}
         if (this.irrigating || this.mining || this.treeCutting) {return "WORKER"}
         if (this.isTrader ) {return "TRADER"}
+        if (this.defend >= this.attack && (this.moves > 6 || this.isPathfinder)) {return "SCOUT"}
         if (this.defend >= this.attack && this.moves <= 6) {return "DEFENDER"}
         if (this.defend < this.attack && this.moves <= 6) {return "ATTACKER"}
         if (this.attack && this.moves > 6) {return "CAVALRY"}
@@ -296,16 +297,17 @@ class Unit {
         Object.keys(this).forEach(key => {
             if (typeof output[key] == 'undefined') { output[key] = this[key] }
         })
+
+        console.log(output)
         return output
     }
 
     static deserialise(data, factions) {
-
         let deserialisedOrder = data.onGoingOrder
             ? OnGoingOrder.deserialise(data.onGoingOrder)
             : undefined;
 
-        let deserialisedMissions = data.misssions.map(
+        let deserialisedMissions = data.missions.map(
             unitMission => UnitMission.deserialise(unitMission)
         )
 

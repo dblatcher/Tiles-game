@@ -135,7 +135,40 @@ const unitMissionTypes = {
             }
             return null
         }
-    )
+    ),
+    BUILD_NEW_TOWN: new UnitMissionType('BUILD_NEW_TOWN',
+    function (unit, state) {
+        return false
+    },
+    function (ai, unit, state, possibleMoves, possibleActions) {
+
+        if (!this.target) {
+            let possibleNewTownLocationsWithScores = ai.getPossibleNewTownLocations(state)
+            .map(mapSquare => { 
+                return {mapSquare, score: ai.assesNewTownLocation(mapSquare,ai.faction.worldMap).score }
+            })
+            .sort( (itemA, itemB) => itemB.score - itemA.score)
+
+            if (possibleNewTownLocationsWithScores.length > 0) {
+                this.target = possibleNewTownLocationsWithScores[0].mapSquare
+                console.log(`${unit.description} has choosed a place to build town:`, this.target)
+            } else {
+                console.log(`${unit.description} has no a place to build town.`)
+            }
+        }
+
+        if (!this.target) {return null}
+
+        if (areSamePlace(unit, this.target)) {
+            if (possibleActions.includes(orderTypesMap['Build Town'])) {
+                return orderTypesMap['Build Town']
+            }
+        }
+
+        return chooseMoveTowards(this.target, unit, state, possibleMoves)
+
+    }
+),
 }
 
 export {unitMissionTypes, UnitMissionType}

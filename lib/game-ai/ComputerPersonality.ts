@@ -6,8 +6,9 @@ import attemptMove from '../game-logic/attemptMove'
 
 import gameActions from '../game-logic/gameActions'
 import townActions from '../game-logic/townActions'
-import { areSamePlace } from '../utility';
-
+import { areSamePlace, getDistanceBetween } from '../utility';
+import { MapSquare } from '../game-entities/MapSquare';
+import { MINIMUM_DISTANCE_BETWEEN_TOWNS} from '../game-logic/constants'
 
 class ComputerPersonality {
     faction: Faction;
@@ -68,6 +69,58 @@ class ComputerPersonality {
             .filter(unit => !enemyTowns.some(town => areSamePlace(town, unit)))
     }
 
+    getPossibleNewTownLocations(state) {
+        const squaresTownsCouldBeBuiltOn = this.faction.worldMap
+            .flat()
+            .filter(mapSquare => !mapSquare.terrain.neverTown)
+            .filter(mapSquare => !state.towns.some(town => getDistanceBetween(town, mapSquare) < MINIMUM_DISTANCE_BETWEEN_TOWNS ))
+
+        return squaresTownsCouldBeBuiltOn
+    }
+
+    assesNewTownLocation(mapSquare, mapGrid) {
+
+        const { x, y } = mapSquare
+        let row, col, workableSquares = []
+
+        for (row = y - 2; row <= y + 2; row++) {
+            if (mapGrid[row]) {
+                for (col = x - 2; col <= x + 2; col++) {
+                    if (!mapGrid[row][col]) { continue }     // can't work square off the known map
+                    if (col === x && row === y) { continue } // can't work home square
+                    if (Math.abs(col - x) + Math.abs(row - y) === 4) { continue } // can't work corners
+                    workableSquares.push(mapGrid[row][col])
+                }
+            }
+        }
+
+
+        // TO DO - better scoring system 
+        // one square that  yields 8 is more valuable than two that yields 4
+        // balance matters - town with high production yield but v low food yield isnt good
+
+        let foodYield=0, productionYield=0, tradeYield=0; 
+        workableSquares.forEach(square => {
+            foodYield += square.foodYield;
+            productionYield += square.productionYield;
+            tradeYield += square.tradeYield;
+        })
+
+        // give double weight to home square
+        foodYield += mapSquare.foodYield*2;
+        productionYield += mapSquare.productionYield*2;
+        tradeYield += mapSquare.tradeYield*2;
+
+        return {
+            mapSquare,
+            workableSquares,
+            foodYield,
+            productionYield,
+            tradeYield,
+            score: foodYield+productionYield+tradeYield
+        }
+    }
+
     assignNewMission(unit, state) {
         // TO DO - logic for picking a mission...
 
@@ -90,6 +143,12 @@ class ComputerPersonality {
                 new UnitMission('DEFEND_CURRENT_PLACE', {})
             )
         }
+        if (unit.role === "SETTLER") {
+            unit.missions.push(
+                new UnitMission('BUILD_NEW_TOWN', {}),
+            )
+        }
+
         else {
             unit.missions.push(
                 new UnitMission('WAIT', {})
@@ -104,6 +163,8 @@ class ComputerPersonality {
     makeMove(state) {
         let moveSuceeded = false;
         const unit = state.selectedUnit;
+
+
         if (unit && unit.remainingMoves > 0) {
             console.log(`*${unit.indexNumber}* ${this.faction.name} moving ${unit.description} (${unit.role})`)
             unit.missions = unit.missions.filter(mission => !mission.checkIfFinished(unit, state))

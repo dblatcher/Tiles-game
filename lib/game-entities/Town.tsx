@@ -275,6 +275,10 @@ class Town {
             buildings: data.buildings.map(buildingTypeName => buildingTypes[buildingTypeName])
         })
     }
+
+    static resetIndexNumber() {
+        townIndex = 0
+    }
 }
 
 

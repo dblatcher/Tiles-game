@@ -2,10 +2,14 @@ import { SerialisedGame } from '../lib/serialiseGame'
 import * as Storage from '../lib/storage'
 import selectNextOrPreviousUnit from '../lib/game-logic/selectNextOrPreviousUnit'
 import { Message, TechDiscoveryChoice } from '../lib/game-entities/Message.tsx'
+import { Unit } from '../lib/game-entities/Unit.tsx'
+import { Town } from '../lib/game-entities/Town.tsx'
 
 export default function handleStorageAction(command, input) {
 
     if (command === 'NEW_GAME') {
+        Unit.resetIndexNumber();
+        Town.resetIndexNumber();
         this.setState(
             Object.assign({ mainMenuOpen: false }, input.data),
             () => {
@@ -42,6 +46,8 @@ export default function handleStorageAction(command, input) {
     if (command === 'LOAD_GAME') {
         try {
             const loadedGameData = Storage.load(input.savedGameFolder, input.itemName)
+            Unit.resetIndexNumber();
+            Town.resetIndexNumber();
             let deserialisedLoadedState = new SerialisedGame(loadedGameData, true).deserialise()
 
             this.setState(state => {

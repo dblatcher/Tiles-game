@@ -1,6 +1,5 @@
 
 AI
-- automate AI faction moves (crudely / randomly at first)
 - proper AI functions to pick computer moves well...
 - debug component to reveal AI priorities / goals
 

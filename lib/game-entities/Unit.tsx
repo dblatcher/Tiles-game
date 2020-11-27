@@ -326,6 +326,10 @@ class Unit {
             }
         )
     }
+
+    static resetIndexNumber() {
+        unitIndexNumber = 0
+    }
 }
 
 export { UnitType, unitTypes, Unit }

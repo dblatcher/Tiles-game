@@ -191,8 +191,10 @@ const unitMissionTypes = {
                 if (y > 0 && !map[y - 1][x]) { return true }
                 if (y + 1 < gridHeight && !map[y + 1][x]) { return true }
 
-                //TO DO - check for corners
-
+                if (y > 0 && x > 0 && !map[y - 1][x - 1]) { return true }
+                if (y + 1 < gridHeight && x > 0 && !map[y + 1][x - 1]) { return true }
+                if (y > 0 && x + 1 < gridWidth && !map[y - 1][x + 1]) { return true }
+                if (y + 1 < gridHeight && x + 1 < gridWidth && !map[y + 1][x + 1]) { return true }
                 return false
             }
 
@@ -200,7 +202,7 @@ const unitMissionTypes = {
             if (this.target) {
                 console.log(`Exploring ${unit.description} [${unit.x},${unit.y}] going to`, this.target)
             }
-            
+
 
             if (!this.target || areSamePlace(unit, this.target)) {
                 let placesWithSpacesNearby = map.flat()

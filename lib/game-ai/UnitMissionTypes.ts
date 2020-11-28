@@ -1,6 +1,5 @@
 import { getDistanceBetween, areSamePlace, sortByDistanceFrom } from "../utility"
 import { orderTypesMap } from "../game-entities/OngoingOrder.tsx";
-
 import { chooseMoveTowards } from './pathfinding.ts'
 
 class UnitMissionType {
@@ -33,7 +32,6 @@ const unitMissionTypes = {
         },
         function (ai, unit, state, possibleMoves, possibleActions) {
             const { target } = this
-            console.log(`*${unit.indexNumber}*${unit.description} at [${unit.x}, ${unit.y}] going to [${target.x}, ${target.y}]`)
             return chooseMoveTowards(target, unit, state, possibleMoves)
         },
     ),
@@ -42,7 +40,6 @@ const unitMissionTypes = {
             return true
         },
         function (ai, unit, state, possibleMoves, possibleActions) {
-            console.log(`*${unit.indexNumber}*${unit.description} at [${unit.x}, ${unit.y}] moving at random (${possibleMoves.length} options)`)
             return possibleMoves[Math.floor(Math.random() * possibleMoves.length)]
         },
     ),
@@ -178,22 +175,15 @@ const unitMissionTypes = {
                 return false
             }
 
-
-            if (this.target) {
-                console.log(`Exploring ${unit.description} [${unit.x},${unit.y}] going to`, this.target)
-            }
-
-
             if (!this.target || areSamePlace(unit, this.target)) {
                 let placesWithSpacesNearby = map.flat()
                     .filter(mapSquare => hasSpaceNearby(mapSquare))
                     .filter(mapSquare => unit.getCouldEnter(mapSquare))
                     .sort(sortByDistanceFrom(unit))
 
-                console.log({ placesWithSpacesNearby })
-
                 if (placesWithSpacesNearby.length > 0) {
                     this.target = placesWithSpacesNearby[0]
+                    console.log(`Exploring ${unit.description} [${unit.x},${unit.y}] going to`, this.target)
                 }
             }
 

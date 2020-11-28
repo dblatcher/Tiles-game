@@ -1,13 +1,11 @@
 import { UnitMission } from './UnitMission.ts';
 import { Faction } from '../game-entities/Faction.tsx';
 import { techDiscoveries } from '../game-entities/TechDiscovery.tsx';
-import { onGoingOrderTypes, orderTypesMap } from '../game-entities/OngoingOrder.tsx'
 import attemptMove from '../game-logic/attemptMove'
 
 import gameActions from '../game-logic/gameActions'
 import townActions from '../game-logic/townActions'
 import { areSamePlace, getDistanceBetween } from '../utility';
-import { MapSquare } from '../game-entities/MapSquare';
 import { MINIMUM_DISTANCE_BETWEEN_TOWNS} from '../game-logic/constants'
 
 class ComputerPersonality {
@@ -20,7 +18,6 @@ class ComputerPersonality {
 
     manageTowns(state) {
         const myTowns = state.towns.filter(town => town.faction === this.faction)
-        console.log(`* ${this.faction.name} AI is managing its ${myTowns.length} towns`)
 
         myTowns.forEach(town => {
             town.autoAssignFreeCitizens(state);
@@ -182,7 +179,6 @@ class ComputerPersonality {
             let choosenMove = null
             for (let i = 0; i < unit.missions.length; i++) {
                 choosenMove = unit.missions[i].chooseMove(unit, state)
-                console.log({choosenMove})
                 if (choosenMove && choosenMove.classIs === 'MapSquare') {
                     moveSuceeded = attemptMove(state, state.selectedUnit, choosenMove)
                     break;

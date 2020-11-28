@@ -26,9 +26,6 @@ function chooseMoveTowards(target, unit, state, possibleMoves) {
         graph.grid[target.y][target.x],
         { closest: true }
     )
-
-    console.log({path})
-
     if (!path[0]) {return null}
 
     // co-ordinates are reversed on path result - unsure why. Graph maybe uses array of coloumns, not array or rows?

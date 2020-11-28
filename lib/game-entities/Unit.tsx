@@ -302,7 +302,6 @@ class Unit {
             if (typeof output[key] == 'undefined') { output[key] = this[key] }
         })
 
-        console.log(output)
         return output
     }
 

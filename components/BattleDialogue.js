@@ -15,10 +15,10 @@ export default class BattleDialogue extends React.Component {
 
                         <div className={styles.unitBlock}>
                             <div className={styles.scoreSummary}>
-                                {battle.attackScoreBreakdown.map((item, index) => (
+                                {battle.attack.breakdown.map((item, index) => (
                                     <p key={`attack-breakdown-${index}`}>{item}</p>
                                 ))}
-                                <p>{`total: ${battle.attackScore}`}</p>
+                                <p>{`total: ${battle.attack.score}`}</p>
                             </div>
                             <UnitFigure unit={attacker} inInfoRow />
                         </div>
@@ -26,10 +26,10 @@ export default class BattleDialogue extends React.Component {
                         <div className={styles.unitBlock}>
                             <UnitFigure unit={defenders[0]} inInfoRow />
                             <div className={styles.scoreSummary}>
-                                {battle.defendScoreBreakdown.map((item, index) => (
+                                {battle.defence.breakdown.map((item, index) => (
                                     <p key={`defend-breakdown-${index}`}>{item}</p>
                                 ))}
-                                <p>{`total: ${battle.defendScore}`}</p>
+                                <p>{`total: ${battle.defence.score}`}</p>
                             </div>
                         </div>
                     </section>

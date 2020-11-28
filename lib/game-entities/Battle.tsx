@@ -20,64 +20,53 @@ class Battle {
 
     get type() { return 'Battle' }
 
-    get defendScore() {
+    get defence () {
         const defenderType = this.defenders[0].type;
         let score = defenderType.defend
-        if (this.defenders[0].vetran) { score += defenderType.defend / 2 }
+        let breakdown = [`${defenderType.defend} defense`]
+
+        if (this.defenders[0].vetran) { 
+            breakdown.push(`vetran: +50%`) 
+            score += defenderType.defend / 2
+        }
 
         if (this.mapSquare.defenseBonus > 0 && this.town) {
             score += defenderType.defend * Math.max(this.mapSquare.defenseBonus, .5)
-        }
-        else if (this.mapSquare.defenseBonus > 0) { score += defenderType.defend * this.mapSquare.defenseBonus }
-        else if (this.town) { score += defenderType.defend * .5 }
-
-        if (this.defenders[0].onGoingOrder && this.defenders[0].onGoingOrder.type.name === "Fortified") {
-            score += defenderType.defend * .5
-        }
-
-        if (defenderType.hasDefenseBonusVsMounted && this.attacker.type.isMounted) {
-            score += defenderType.defend * .5
-        }
-
-        // rules question - should terrain defense bonus AND town defense bonus both apply?
-        return score
-    }
-
-    get defendScoreBreakdown() {
-        const defenderType = this.defenders[0].type;
-        let breakdown = [`${defenderType.defend} defense`]
-        if (this.defenders[0].vetran) { breakdown.push(`vetran: +50%`) }
-
-        if (this.mapSquare.defenseBonus > 0 && this.town) {
             breakdown.push(this.mapSquare.defenseBonus > .5
                 ? `town on ${this.mapSquare.description}: +${this.mapSquare.defenseBonus * 100}%`
                 : `town: +50%`
             )
+        } else if (this.mapSquare.defenseBonus > 0) { 
+            score += defenderType.defend * this.mapSquare.defenseBonus 
+            breakdown.push(`${this.mapSquare.description}: +${this.mapSquare.defenseBonus * 100}%`)
+        } else if (this.town) { 
+            score += defenderType.defend * .5 
+            breakdown.push(`town: +50%`)
         }
-        else if (this.mapSquare.defenseBonus > 0) { breakdown.push(`${this.mapSquare.description}: +${this.mapSquare.defenseBonus * 100}%`) }
-        else if (this.town) { breakdown.push(`town: +50%`) }
 
         if (this.defenders[0].onGoingOrder && this.defenders[0].onGoingOrder.type.name === "Fortified") {
+            score += defenderType.defend * .5
             breakdown.push(`Fortified: +50%`)
         }
 
         if (defenderType.hasDefenseBonusVsMounted && this.attacker.type.isMounted) {
+            score += defenderType.defend * .5
             breakdown.push(`bonus vs mounted: +50%`)
         }
 
-        return breakdown
+        return { score, breakdown }
     }
 
-    get attackScore() {
+
+    get attack() {
         let score = this.attacker.type.attack
-        if (this.attacker.vetran) { score += this.attacker.type.attack / 2 }
-        return score
-    }
-
-    get attackScoreBreakdown() {
         let breakdown = [`${this.attacker.type.attack} attack`]
-        if (this.attacker.vetran) { breakdown.push(`vetran: +50%`) }
-        return breakdown
+        if (this.attacker.vetran) { 
+            score += this.attacker.type.attack / 2 
+            breakdown.push(`vetran: +50%`)
+        }
+
+        return { score, breakdown }
     }
 
     get outcome() {
@@ -91,8 +80,8 @@ class Battle {
     }
 
     resolve() {
-        let defenseRoll = this.defendScore * Math.random()
-        let attackRoll = this.attackScore * Math.random()
+        let defenseRoll = this.defence.score * Math.random()
+        let attackRoll = this.attack.score * Math.random()
         this.attackerWon = attackRoll > defenseRoll
         return this.outcome
     }

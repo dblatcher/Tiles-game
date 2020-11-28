@@ -39,10 +39,12 @@ const buildingTypes = {
         productionCost: 60,
         maintenanceCost: 1,
         prerequisite: 'pottery',
+        // rule is special cased
     }),
     barracks: new BuildingType('barracks', {
         productionCost: 20,
         maintenanceCost: 1,
+        // rule is special cased
     }),
     marketplace: new BuildingType('marketplace', {
         productionCost: 40,

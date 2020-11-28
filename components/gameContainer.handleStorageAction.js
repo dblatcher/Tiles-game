@@ -1,9 +1,10 @@
 import { SerialisedGame } from '../lib/serialiseGame'
 import * as Storage from '../lib/storage'
-import selectNextOrPreviousUnit from '../lib/game-logic/selectNextOrPreviousUnit'
-import { Message, TechDiscoveryChoice } from '../lib/game-entities/Message.tsx'
+import { Message } from '../lib/game-entities/Message.tsx'
 import { Unit } from '../lib/game-entities/Unit.tsx'
 import { Town } from '../lib/game-entities/Town.tsx'
+
+import startOfTurn from '../lib/game-logic/startOfTurn'
 
 export default function handleStorageAction(command, input) {
 
@@ -18,12 +19,7 @@ export default function handleStorageAction(command, input) {
 
                 this.setState(
                     state => {
-                        state.activeFaction.processTurn(state)
-                        if (!state.activeFaction.researchGoal && state.activeFaction.possibleResearchGoals.length > 0) {
-                            state.pendingDialogues.push(new TechDiscoveryChoice)
-                        }
-
-                        selectNextOrPreviousUnit(state)
+                        startOfTurn()(state)
                         this.state.interfaceMode = 'MOVE'
                         return state
                     },

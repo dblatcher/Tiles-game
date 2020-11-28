@@ -70,8 +70,7 @@ export default class MainMenu extends React.Component {
 
     newGame(makeStateFunction = makeGameState.randomWorld) {
         const { storageAction } = this.props
-        const data = makeStateFunction()
-        storageAction("NEW_GAME", { data })
+        storageAction("NEW_GAME", { makeStateFunction })
     }
 
     render() {

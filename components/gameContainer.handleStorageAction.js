@@ -8,10 +8,12 @@ import { Town } from '../lib/game-entities/Town.tsx'
 export default function handleStorageAction(command, input) {
 
     if (command === 'NEW_GAME') {
+
         Unit.setIndexNumber();
         Town.setIndexNumber();
+
         this.setState(
-            Object.assign({ mainMenuOpen: false }, input.data),
+            Object.assign({ mainMenuOpen: false }, input.makeStateFunction()),
             () => {
 
                 this.setState(

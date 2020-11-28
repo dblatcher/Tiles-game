@@ -276,8 +276,8 @@ class Town {
         })
     }
 
-    static resetIndexNumber() {
-        townIndex = 0
+    static setIndexNumber(value:number = 0) {
+        townIndex = value
     }
 }
 

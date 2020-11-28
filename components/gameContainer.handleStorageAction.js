@@ -8,8 +8,8 @@ import { Town } from '../lib/game-entities/Town.tsx'
 export default function handleStorageAction(command, input) {
 
     if (command === 'NEW_GAME') {
-        Unit.resetIndexNumber();
-        Town.resetIndexNumber();
+        Unit.setIndexNumber();
+        Town.setIndexNumber();
         this.setState(
             Object.assign({ mainMenuOpen: false }, input.data),
             () => {
@@ -46,8 +46,8 @@ export default function handleStorageAction(command, input) {
     if (command === 'LOAD_GAME') {
         try {
             const loadedGameData = Storage.load(input.savedGameFolder, input.itemName)
-            Unit.resetIndexNumber();
-            Town.resetIndexNumber();
+            Unit.setIndexNumber();
+            Town.setIndexNumber();
             let deserialisedLoadedState = new SerialisedGame(loadedGameData, true).deserialise()
 
             this.setState(state => {

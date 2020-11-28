@@ -1,5 +1,7 @@
-import { getDistanceBetween, areSamePlace } from "../utility"
+import { getDistanceBetween, areSamePlace, sortByDistanceFrom } from "../utility"
 import { orderTypesMap } from "../game-entities/OngoingOrder.tsx";
+
+import { chooseMoveTowards } from './pathfinding.ts'
 
 class UnitMissionType {
     name: string;
@@ -12,28 +14,6 @@ class UnitMissionType {
     }
 }
 
-
-// TO DO - proper pathfinding function
-function chooseMoveTowards(target, unit, state, possibleMoves) {
-    if (!target) { return null }
-    if (unit.x == target.x && unit.y == target.y) { return null }
-    if (possibleMoves.length === 0) { return null }
-
-    possibleMoves = possibleMoves.filter(mapSquare => {
-        if (target.x >= unit.x && mapSquare.x < unit.x) { return false }
-        if (target.x <= unit.x && mapSquare.x > unit.x) { return false }
-        if (target.y >= unit.y && mapSquare.y < unit.y) { return false }
-        if (target.y <= unit.y && mapSquare.y > unit.y) { return false }
-        return true
-    })
-
-    possibleMoves.sort((mapSquareA, mapSquareB) => getDistanceBetween(mapSquareA, target) - getDistanceBetween(mapSquareB, target))
-    return possibleMoves[0]
-}
-
-function sortByDistanceFrom(subject) {
-    return (placeA, placeB) => getDistanceBetween(placeA, subject) - getDistanceBetween(placeB, subject)
-}
 
 // this is bound to UnitMission
 const unitMissionTypes = {
@@ -207,6 +187,7 @@ const unitMissionTypes = {
             if (!this.target || areSamePlace(unit, this.target)) {
                 let placesWithSpacesNearby = map.flat()
                     .filter(mapSquare => hasSpaceNearby(mapSquare))
+                    .filter(mapSquare => unit.getCouldEnter(mapSquare))
                     .sort(sortByDistanceFrom(unit))
 
                 console.log({ placesWithSpacesNearby })

@@ -251,6 +251,10 @@ class Unit {
             : targetMapSquare.movementCost
     }
 
+    getCouldEnter(mapSquare) {
+        return !mapSquare.terrain.isWater
+    }
+
     canMoveTo(targetMapSquare, startingMapSquare = null) {
 
         if (targetMapSquare.isWater) { return false }
@@ -327,8 +331,8 @@ class Unit {
         )
     }
 
-    static resetIndexNumber() {
-        unitIndexNumber = 0
+    static setIndexNumber(value:number = 0) {
+        unitIndexNumber = value
     }
 }
 

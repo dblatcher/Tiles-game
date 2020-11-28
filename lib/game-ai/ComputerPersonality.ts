@@ -182,6 +182,7 @@ class ComputerPersonality {
             let choosenMove = null
             for (let i = 0; i < unit.missions.length; i++) {
                 choosenMove = unit.missions[i].chooseMove(unit, state)
+                console.log({choosenMove})
                 if (choosenMove && choosenMove.classIs === 'MapSquare') {
                     moveSuceeded = attemptMove(state, state.selectedUnit, choosenMove)
                     break;

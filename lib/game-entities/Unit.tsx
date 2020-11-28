@@ -93,7 +93,7 @@ const unitTypes = {
     }),
     swordsman: new UnitType('swordsman', {
         defend: 2, attack: 4,
-        productionCost: 25,
+        productionCost: 30,
         prerequisite: 'ironWorking',
     }),
     spearman: new UnitType('spearman', {
@@ -107,19 +107,19 @@ const unitTypes = {
     }),
     horseman: new UnitType('horseman', {
         defend: 1, attack: 2, moves: 12,
-        productionCost: 25,
+        productionCost: 20,
         prerequisite: 'horsebackRiding',
         isMounted: true,
     }),
     knight: new UnitType('knight', {
         defend: 2, attack: 4, moves: 12,
-        productionCost: 50,
+        productionCost: 40,
         prerequisite: 'chivalry',
         isMounted: true,
     }),
     archer: new UnitType('archer', {
         defend: 2, attack: 3,
-        productionCost: 50,
+        productionCost: 30,
         prerequisite: 'warriorCode',
     }),
     explorer: new UnitType('explorer', {
@@ -151,7 +151,7 @@ const unitTypes = {
     }),
     cannon: new UnitType('cannon', {
         defend: 1, attack: 8,
-        productionCost: 60,
+        productionCost: 50,
         spriteSheetName: 'units2',
         prerequisite: 'metallurgy',
         isEffectiveAgainstWalls: true,
@@ -165,14 +165,14 @@ const unitTypes = {
     }),
     crusader: new UnitType('crusader', {
         defend: 1, attack: 5, moves: 12,
-        productionCost: 50,
+        productionCost: 40,
         spriteSheetName: 'units2',
         prerequisite: 'monotheism',
         isMounted: true,
     }),
     dragoon: new UnitType('dragoon', {
         defend: 2, attack: 5, moves: 12,
-        productionCost: 50,
+        productionCost: 60,
         spriteSheetName: 'units2',
         prerequisite: 'leadership',
         isMounted: true,

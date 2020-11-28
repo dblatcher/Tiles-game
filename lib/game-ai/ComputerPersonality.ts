@@ -77,21 +77,7 @@ class ComputerPersonality {
 
     assesNewTownLocation(mapSquare, mapGrid) {
 
-        const { x, y } = mapSquare
-        let row, col, workableSquares = []
-
-        for (row = y - 2; row <= y + 2; row++) {
-            if (mapGrid[row]) {
-                for (col = x - 2; col <= x + 2; col++) {
-                    if (!mapGrid[row][col]) { continue }     // can't work square off the known map
-                    if (col === x && row === y) { continue } // can't work home square
-                    if (Math.abs(col - x) + Math.abs(row - y) === 4) { continue } // can't work corners
-                    workableSquares.push(mapGrid[row][col])
-                }
-            }
-        }
-
-
+        const workableSquares = mapSquare.getWorkableSquaresAround(mapGrid)
         // TO DO - better scoring system 
         // one square that  yields 8 is more valuable than two that yields 4
         // balance matters - town with high production yield but v low food yield isnt good

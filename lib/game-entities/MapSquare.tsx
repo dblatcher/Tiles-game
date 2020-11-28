@@ -66,6 +66,23 @@ class MapSquare {
         return Math.max(0, (this.terrain.tradeYield) + (this.road ? 1 : 0))
     }
 
+    getWorkableSquaresAround(mapGrid) {
+        const { x, y } = this
+        let row, col, workableSquares = []
+
+        for (row = y - 2; row <= y + 2; row++) {
+            if (mapGrid[row]) {
+                for (col = x - 2; col <= x + 2; col++) {
+                    if (!mapGrid[row][col]) { continue }     // can't work square off the known map
+                    if (col === x && row === y) { continue } // can't work home square
+                    if (Math.abs(col - x) + Math.abs(row - y) === 4) { continue } // can't work corners
+                    workableSquares.push(mapGrid[row][col])
+                }
+            }
+        }
+        return workableSquares
+    }
+
     duplicate() {
         return MapSquare.deserialise(this.serialised)
     }

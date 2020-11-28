@@ -20,8 +20,8 @@ class UnitType {
     defend: number;
     isPathfinder: boolean;
     isTrader: boolean; //TODO implement rule
-    isEffectiveAgainstMounted: boolean; //TODO implement rule
-    isMounted: boolean; //TODO implement rule
+    hasDefenseBonusVsMounted: boolean; 
+    isMounted: boolean; 
     isEffectiveAgainstWalls: boolean; //TODO implement rule
     productionCost: number;
     prerequisite: string | null;
@@ -40,7 +40,7 @@ class UnitType {
         this.defend = config.defend || 0;
         this.isPathfinder = !!config.isPathfinder || false;
         this.isTrader = !!config.isTrader || false;
-        this.isEffectiveAgainstMounted = !!config.isEffectiveAgainstMounted || false;
+        this.hasDefenseBonusVsMounted = !!config.hasDefenseBonusVsMounted || false;
         this.isMounted = !!config.isMounted || false;
         this.isEffectiveAgainstWalls = !!config.isEffectiveAgainstWalls || false;
 
@@ -134,7 +134,7 @@ const unitTypes = {
         productionCost: 20,
         spriteSheetName: 'units2',
         prerequisite: 'feudalism',
-        isEffectiveAgainstMounted: true,
+        hasDefenseBonusVsMounted: true,
     }),
     catapult: new UnitType('catapult', {
         defend: 1, attack: 6,

@@ -21,17 +21,22 @@ class Battle {
     get type() { return 'Battle' }
 
     get defendScore() {
-        let score = this.defenders[0].type.defend
-        if (this.defenders[0].vetran) { score += this.defenders[0].type.defend / 2 }
+        const defenderType = this.defenders[0].type;
+        let score = defenderType.defend
+        if (this.defenders[0].vetran) { score += defenderType.defend / 2 }
 
         if (this.mapSquare.defenseBonus > 0 && this.town) {
-            score += this.defenders[0].type.defend * Math.max(this.mapSquare.defenseBonus, .5)
+            score += defenderType.defend * Math.max(this.mapSquare.defenseBonus, .5)
         }
-        else if (this.mapSquare.defenseBonus > 0) { score += this.defenders[0].type.defend * this.mapSquare.defenseBonus }
-        else if (this.town) { score += this.defenders[0].type.defend * .5 }
+        else if (this.mapSquare.defenseBonus > 0) { score += defenderType.defend * this.mapSquare.defenseBonus }
+        else if (this.town) { score += defenderType.defend * .5 }
 
         if (this.defenders[0].onGoingOrder && this.defenders[0].onGoingOrder.type.name === "Fortified") {
-            score += this.defenders[0].type.defend * .5
+            score += defenderType.defend * .5
+        }
+
+        if (defenderType.hasDefenseBonusVsMounted && this.attacker.type.isMounted) {
+            score += defenderType.defend * .5
         }
 
         // rules question - should terrain defense bonus AND town defense bonus both apply?
@@ -39,7 +44,8 @@ class Battle {
     }
 
     get defendScoreBreakdown() {
-        let breakdown = [`${this.defenders[0].type.defend} defense`]
+        const defenderType = this.defenders[0].type;
+        let breakdown = [`${defenderType.defend} defense`]
         if (this.defenders[0].vetran) { breakdown.push(`vetran: +50%`) }
 
         if (this.mapSquare.defenseBonus > 0 && this.town) {
@@ -53,6 +59,10 @@ class Battle {
 
         if (this.defenders[0].onGoingOrder && this.defenders[0].onGoingOrder.type.name === "Fortified") {
             breakdown.push(`Fortified: +50%`)
+        }
+
+        if (defenderType.hasDefenseBonusVsMounted && this.attacker.type.isMounted) {
+            breakdown.push(`bonus vs mounted: +50%`)
         }
 
         return breakdown

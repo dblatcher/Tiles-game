@@ -22,7 +22,7 @@ class UnitType {
     isTrader: boolean; //TODO implement rule
     hasDefenseBonusVsMounted: boolean; 
     isMounted: boolean; 
-    isEffectiveAgainstWalls: boolean; //TODO implement rule
+    isEffectiveAgainstTowns: boolean;
     productionCost: number;
     prerequisite: string | null;
     constructor(name: string, config: any = {}) {
@@ -42,7 +42,7 @@ class UnitType {
         this.isTrader = !!config.isTrader || false;
         this.hasDefenseBonusVsMounted = !!config.hasDefenseBonusVsMounted || false;
         this.isMounted = !!config.isMounted || false;
-        this.isEffectiveAgainstWalls = !!config.isEffectiveAgainstWalls || false;
+        this.isEffectiveAgainstTowns = !!config.isEffectiveAgainstTowns || false;
 
         this.productionCost = config.productionCost || 10;
         this.prerequisite = config.prerequisite || null
@@ -154,7 +154,7 @@ const unitTypes = {
         productionCost: 50,
         spriteSheetName: 'units2',
         prerequisite: 'metallurgy',
-        isEffectiveAgainstWalls: true,
+        isEffectiveAgainstTowns: true,
     }),
     elephant: new UnitType('elephant', {
         defend: 1, attack: 2, moves: 12,

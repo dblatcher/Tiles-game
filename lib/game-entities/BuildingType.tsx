@@ -88,6 +88,12 @@ const buildingTypes = {
             entertainment: 6
         }
     }),
+    cityWalls: new BuildingType('cityWalls', {
+        productionCost: 50,
+        maintenanceCost: 2,
+        prerequisite: 'masonry',
+        // rule special cased
+    })
 }
 
 export { BuildingType, buildingTypes }

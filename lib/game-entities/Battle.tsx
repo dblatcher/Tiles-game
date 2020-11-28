@@ -30,19 +30,33 @@ class Battle {
             score += defenderType.defend / 2
         }
 
-        if (this.mapSquare.defenseBonus > 0 && this.town) {
-            score += defenderType.defend * Math.max(this.mapSquare.defenseBonus, .5)
-            breakdown.push(this.mapSquare.defenseBonus > .5
-                ? `town on ${this.mapSquare.description}: +${this.mapSquare.defenseBonus * 100}%`
-                : `town: +50%`
-            )
-        } else if (this.mapSquare.defenseBonus > 0) { 
-            score += defenderType.defend * this.mapSquare.defenseBonus 
-            breakdown.push(`${this.mapSquare.description}: +${this.mapSquare.defenseBonus * 100}%`)
-        } else if (this.town) { 
-            score += defenderType.defend * .5 
-            breakdown.push(`town: +50%`)
+
+        let townBonus = 0, townBonusDescription = "", squareBonus = 0, squareBonusDescription = ""
+
+        if (this.town) {
+            if (this.attacker.type.isEffectiveAgainstTowns) {
+                townBonusDescription = `town vs ${this.attacker.type.name}: 0%`
+            } else if (this.town.hasBuilding('cityWalls')) {
+                townBonus = 1
+                townBonusDescription = `City Walls: +100%`
+            } else {
+                townBonus = .5
+                townBonusDescription = `Town: +50%`
+            }
         }
+
+        if (this.town && this.attacker.type.isEffectiveAgainstTowns) {
+            squareBonusDescription = `town vs ${this.attacker.type.name}: 0%`
+        } else if (this.mapSquare.defenseBonus > 0) {
+            squareBonusDescription = `${this.mapSquare.description}: +${this.mapSquare.defenseBonus * 100}%`
+            squareBonus = this.mapSquare.defenseBonus
+        }
+
+        if (townBonusDescription || squareBonusDescription) {
+            score += defenderType.defend * Math.max(townBonus, squareBonus)
+            breakdown.push ( squareBonus > townBonus ? squareBonusDescription : townBonusDescription)
+        }
+
 
         if (this.defenders[0].onGoingOrder && this.defenders[0].onGoingOrder.type.name === "Fortified") {
             score += defenderType.defend * .5

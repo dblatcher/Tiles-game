@@ -97,6 +97,12 @@ class Town {
         return this.isProducing.displayName
     }
 
+    hasBuilding(name) {
+        return this.buildings
+            .map(buildingType => buildingType.name)
+            .includes(name)
+    }
+
     getSquaresAndObstacles(mapGrid, towns, units=[]) {
         const { x, y } = this.mapSquare
         let row, col, townIndex, citizenIndex, unitIndex, squares = [], obstacle = null, obstacles = [];

@@ -1,4 +1,3 @@
-
 import styles from './townFigure.module.scss'
 
 export default class TownFigure extends React.Component {
@@ -24,6 +23,9 @@ export default class TownFigure extends React.Component {
         //TO DO - town sprite images?
         const spriteStyle = {
             backgroundColor: town.faction.color,
+            border: town.hasBuilding('cityWalls')
+                ? '5px dashed white'
+                : ''
         }
 
         return (

@@ -1,5 +1,6 @@
 import { MapSquare } from './MapSquare';
 import { TechDiscovery, techDiscoveries } from './TechDiscovery.tsx'
+import { camelToSentence } from '../utility';
 
 class BuildingType {
     name: string;
@@ -12,7 +13,7 @@ class BuildingType {
     addSquareOutputBonus: Function | null;
     constructor(name, input: any = {}) {
         this.name = name
-        this.displayName = input.displayName || name
+        this.displayName = input.displayName || camelToSentence(name)
         this.productionCost = input.productionCost || 50
         this.maintenanceCost = input.maintenanceCost || 0
         this.prerequisite = input.prerequisite || null
@@ -93,7 +94,41 @@ const buildingTypes = {
         maintenanceCost: 2,
         prerequisite: 'masonry',
         // rule special cased
-    })
+    }),
+    courtHouse: new BuildingType('courtHouse', {
+        productionCost: 30,
+        maintenanceCost: 1,
+        prerequisite: 'codeOfLaws', // to implement
+    }),
+    aqueduct: new BuildingType('aqueduct', {
+        productionCost: 50,
+        maintenanceCost: 1,
+        prerequisite: 'construction', // to implement
+    }),
+    university: new BuildingType('university', {
+        productionCost: 60,
+        maintenanceCost: 2,
+        prerequisite: 'university',
+        revenueMultiplierBonus: {
+            research: .5
+        }
+    }),
+    bank: new BuildingType('bank', {
+        productionCost: 60,
+        maintenanceCost: 2,
+        prerequisite: 'banking',
+        revenueMultiplierBonus: {
+            treasury: 1
+        }
+    }),
+    cathedral: new BuildingType('cathedral', {
+        productionCost: 80,
+        maintenanceCost: 3,
+        prerequisite: 'monotheism',
+        revenueAdditionBonus: {
+            entertainment: 8
+        }
+    }),
 }
 
 export { BuildingType, buildingTypes }

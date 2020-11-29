@@ -2,7 +2,6 @@ import Window from "./Window";
 import SvgIcon from "./SvgIcon"
 import TradeReport from "./TradeReport"
 import ProgressBox from "./ProgressBox"
-import CitizenRow from "./CitizenRow";
 import TechTree from "./TechTree";
 import { getTurnsToComplete } from '../lib/utility'
 
@@ -62,7 +61,7 @@ export default class FactionWindow extends React.Component {
     render() {
         const { faction, closeWindow, towns } = this.props
         const factionTowns = towns.filter(town => town.faction === faction)
-        const allocatedBudget = faction.calcuateAllocatedBudget(factionTowns)
+        const allocatedBudget = faction.calcuateAllocatedBudget(factionTowns, true)
         const budgetKeys = Object.keys(faction.budget.store)
 
         const totalMaintenanceCosts = faction.calculateTotalMaintenceCost(factionTowns)

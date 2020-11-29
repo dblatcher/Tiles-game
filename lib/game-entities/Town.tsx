@@ -185,7 +185,7 @@ class Town {
     autoAssignFreeCitizens(state) {
         const { mapGrid, towns, units } = state
         let freeSquares = this.getSquaresAndObstacles(mapGrid, towns, units).freeSquares
-        let freeCitizens = this.citizens.filter(citizen => citizen.job === citizenJobs.unemployed)
+        let freeCitizens = this.citizens.filter(citizen => citizen.job !== citizenJobs.worker)
 
         // TO DO - set priorites eg maximise production without starving
         freeSquares.sort((squareA, squareB) => {

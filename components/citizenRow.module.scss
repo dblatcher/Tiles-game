@@ -4,6 +4,13 @@
     width: 2em;
     height: 2em;
     position: relative;
+
+    &.unhappy {
+        background-color: rgba($color: #f00, $alpha: .5);
+    }
+    &.happy {
+        background-color: rgba($color: #0f0, $alpha: .5);
+    }
 }
 
 .citizenRow {

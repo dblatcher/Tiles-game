@@ -220,7 +220,7 @@ const units = new SpriteSheet ('units',{
         'swordsman': [2,0],
         'spearman': [0,1],
         'worker': [1,1],
-        'unemployed': [2,1],
+        'entertainer': [2,1],
         'warrior':[0,2],
         'horseman':[1,2],
         'archer':[2,2],

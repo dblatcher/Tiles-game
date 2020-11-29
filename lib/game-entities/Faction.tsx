@@ -4,9 +4,9 @@ import { Town } from './Town.tsx'
 import { Unit, unitTypes } from './Unit.tsx'
 import { TechDiscovery, techDiscoveries } from './TechDiscovery.tsx'
 import { MapSquare } from './MapSquare.tsx'
-import { ComputerPersonality} from '../game-ai/ComputerPersonality.ts'
+import { ComputerPersonality } from '../game-ai/ComputerPersonality.ts'
 
-import {TOWN_SIGHT_RADIUS, UNIT_SIGHT_RADIUS} from '../game-logic/constants'
+import { TOWN_SIGHT_RADIUS, UNIT_SIGHT_RADIUS } from '../game-logic/constants'
 
 class Faction {
     name: string;
@@ -37,7 +37,7 @@ class Faction {
         this.computerPersonality = null
     }
 
-    get isComputerPlayer() {return false}
+    get isComputerPlayer() { return false }
 
     updateWorldMap(state) {
         const { towns, units, mapGrid } = state
@@ -50,8 +50,19 @@ class Faction {
         })
     }
 
-    allocateTownRevenue(town: Town) {
+    allocateTownRevenue(town: Town, excludeCitizenBonus:boolean = false) {
         let townRevenue = this.budget.allocate(town.output.tradeYield)
+
+        if (!excludeCitizenBonus) {
+            town.citizens.forEach(citizen => {
+                const { revenueAdditionBonus } = citizen.job
+                if (revenueAdditionBonus) {
+                    for (let revenueType in revenueAdditionBonus) {
+                        townRevenue[revenueType] += revenueAdditionBonus[revenueType]
+                    }
+                }
+            })
+        }
 
         town.buildings.forEach(buildingType => {
             const { revenueMultiplierBonus, revenueAdditionBonus } = buildingType
@@ -69,7 +80,7 @@ class Faction {
         return townRevenue
     }
 
-    calcuateAllocatedBudget(myTowns: Array<Town>) {
+    calcuateAllocatedBudget(myTowns: Array<Town>, excludeCitizenBonus:boolean = false) {
         let total = {
             treasury: 0,
             research: 0,
@@ -77,7 +88,7 @@ class Faction {
             totalTrade: 0,
         }
         myTowns.forEach(town => {
-            const townOutput = this.allocateTownRevenue(town)
+            const townOutput = this.allocateTownRevenue(town, excludeCitizenBonus)
             total.treasury += townOutput.treasury
             total.research += townOutput.research
             total.entertainment += townOutput.entertainment
@@ -153,11 +164,11 @@ class Faction {
             .map(key => unitTypes[key])
             .filter(unitType => unitType.checkCanBuildWith(this.knownTech))
     }
-    
+
     get producableBuildings() {
         return Object.keys(buildingTypes)
-        .map(key => buildingTypes[key])
-        .filter(buildingType => buildingType.checkCanBuildWith(this.knownTech))
+            .map(key => buildingTypes[key])
+            .filter(buildingType => buildingType.checkCanBuildWith(this.knownTech))
     }
 
     get possibleResearchGoals() {
@@ -211,7 +222,7 @@ class ComputerFaction extends Faction {
         this.computerPersonality = new ComputerPersonality(this, computerPersonality)
     }
 
-    get isComputerPlayer() {return true}
+    get isComputerPlayer() { return true }
 
     get serialised() {
         let output = {

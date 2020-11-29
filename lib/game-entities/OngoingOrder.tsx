@@ -126,7 +126,7 @@ const onGoingOrderTypes = [
                 .flat()
                 .filter(citizen => citizen.mapSquare === mapSquare)
 
-                enemyCitizensWorkingSquare.forEach(citizen => citizen.makeUnemployed())
+                enemyCitizensWorkingSquare.forEach(citizen => citizen.changeJob())
             }
         }),
     fortifiedOrderType,

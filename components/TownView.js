@@ -15,6 +15,12 @@ export default class TownView extends React.Component {
     constructor(props) {
         super(props)
         this.handleMapSectionClick = this.handleMapSectionClick.bind(this)
+        this.handleCitizenClick = this.handleCitizenClick.bind(this)
+    }
+
+    handleCitizenClick(citizen) {
+        const { town, handleTownAction } = this.props
+        return handleTownAction('CITIZEN_CLICK', { citizen, town })
     }
 
     handleMapSectionClick(mapSquare) {
@@ -53,7 +59,7 @@ export default class TownView extends React.Component {
                 <div className={styles.frame}>
 
                     <section className={[styles.section, styles.mapSection].join(" ")}>
-                        <CitizenRow town={town} />
+                        <CitizenRow town={town} handleCitizenClick={this.handleCitizenClick}/>
                         <MapSection
                             handleMapSectionClick={this.handleMapSectionClick}
                             xStart={town.x - 2} yStart={town.y - 2}

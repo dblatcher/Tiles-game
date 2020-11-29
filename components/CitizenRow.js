@@ -1,8 +1,8 @@
 import styles from "./citizenRow.module.scss";
 
 export default function CitizenRow(props) {
-    const { town } = props
-    const population = town.citizens.length
+    const { town, handleCitizenClick } = props
+    const { population, adjustedUnhappiness } = town
 
     let bunchUp = 0 // fits 10
     if (population > 10) {
@@ -20,6 +20,9 @@ export default function CitizenRow(props) {
         <article className={styles.citizenRow}>
             {town.citizens.map((citizen, index) => {
 
+                const classList = [styles.citizenFigure]
+                if (index + 1 > population - adjustedUnhappiness) { classList.push(styles.unhappy) }
+
                 const styleObject = Object.assign({
                     marginLeft: index === 0
                         ? 0
@@ -29,7 +32,8 @@ export default function CitizenRow(props) {
 
                 return (
                     <i key={`citizen-${index}`}
-                        className={styles.citizenFigure}
+                        onClick={ handleCitizenClick ? () => handleCitizenClick(citizen) : null}
+                        className={classList.join(" ")}
                         style={styleObject}
                     />
                 )

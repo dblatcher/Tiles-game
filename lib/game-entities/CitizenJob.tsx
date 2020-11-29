@@ -4,10 +4,12 @@ class CitizenJob {
     name: string;
     spriteFrameName: string;
     spriteSheetName: string;
-    constructor(name, config:any={}) {
+    revenueAdditionBonus: any;
+    constructor(name, config: any = {}) {
         this.name = name
         this.spriteFrameName = config.spriteFrameName || name;
         this.spriteSheetName = config.spriteSheetName || 'units';
+        this.revenueAdditionBonus = config.revenueAdditionBonus || {}
     }
     get spriteStyle() {
         return spriteSheets[this.spriteSheetName].getStyleForFrameCalled(this.spriteFrameName)
@@ -15,7 +17,18 @@ class CitizenJob {
 }
 
 const citizenJobs = {
-    unemployed: new CitizenJob('unemployed'),
+    entertainer: new CitizenJob('entertainer', {
+        revenueAdditionBonus: { entertainment: 4 }
+    }),
+    scientist: new CitizenJob('scientist', {
+        revenueAdditionBonus: { research: 4 }
+    }),
+    merchant: new CitizenJob('merchant', {
+        revenueAdditionBonus: { treasury: 4 },
+        spriteFrameName: 'caravan',
+        spriteSheetName: 'units2'
+
+    }),
     worker: new CitizenJob('worker'),
 }
 

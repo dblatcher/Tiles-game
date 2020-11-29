@@ -1,31 +1,48 @@
 import SvgIcon from "./SvgIcon"
 
 export default function IconRow(props) {
-    const { iconName, color=false, number = 1, rowWidth=10, shadow } = props
+    const { iconName, color = false, number = 1, useTens = true } = props
+    const onesKeyArray = [], tensKeyArray = []
 
-    const keyArray = []
-    for (let i = 1; i < number + 1; i++) {
-        keyArray.push(`Icon-${i}`)
+    const tenStyle = {
+        backgroundColor: 'black',
+        padding: '.1rem',
+        borderRadius: '50%',
+        width: '1.5rem',
+        height: '1.5rem',
+        marginRight: '.2rem',
     }
 
+    const spanStyle = {
+        display: 'inline-flex',
+        alignItems: 'center',
+        minHeight: "2rem",
+    }
 
-    let bunchUp = 0
-    if (rowWidth == 20) {bunchUp = 5.5}
-    if (rowWidth == 30) {bunchUp = 7}
-    if (rowWidth == 40) {bunchUp = 7.8}
+    let numberOfOnes = useTens ? number % 10 : number;
 
+    if (useTens) {
+        for (let i = 0; i < number; i = i + 10) {
+            if (i == 0) { continue }
+            tensKeyArray.push(`TenIcon-${i}`)
+        }
+    }
 
-    return keyArray.map((key, index) => {
+    for (let i = 1; i < numberOfOnes + 1; i++) {
+        onesKeyArray.push(`Icon-${i}`)
+    }
 
-
-        return (
-        <SvgIcon key={key}
+    return <span style={spanStyle}>
+        {tensKeyArray.map((key, index) => <SvgIcon
+            key={key}
             iconName={iconName}
             color={color}
-            style={{ 
-                flexShrink: 0,
-                filter: shadow ? "drop-shadow(-1px 0px 0px black)" : "",
-                marginRight:`-${bunchUp}%` 
-            }} />
-    )})
+            style={tenStyle} />
+        )}
+        {onesKeyArray.map((key, index) => <SvgIcon
+            key={key}
+            iconName={iconName}
+            color={color} />
+        )}
+    </span>
 }

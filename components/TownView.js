@@ -88,7 +88,7 @@ export default class TownView extends React.Component {
 
                     <section className={styles.section}>
                         <h2>Trade<span>{displayGain(town.output.tradeYield)}</span></h2>
-                        <TradeReport town={town} townView={true} />
+                        <TradeReport town={town} townView={true} separateLines={true}/>
                     </section>
 
                     <section className={styles.section}>

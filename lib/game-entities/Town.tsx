@@ -7,6 +7,7 @@ import { unitTypes } from './Unit.tsx'
 import { BuildingType, buildingTypes } from './BuildingType.tsx'
 
 import { hurryCostPerUnit} from '../game-logic/constants'
+import { UNHAPPINESS_ALLOWANCE, UNHAPPINESS_RATE } from '../game-logic/constants'
 
 let townIndex = 0
 
@@ -78,6 +79,15 @@ class Town {
         output.foodYield -= this.population * 2
 
         return output
+    }
+
+    get baseUnhappiness () {
+        return Math.ceil((this.population - UNHAPPINESS_ALLOWANCE) / UNHAPPINESS_RATE)
+    }
+
+    get adjustedUnhappiness() {
+        let entertainment = this.faction.allocateTownRevenue(this).entertainment
+        return Math.max( this.baseUnhappiness - Math.floor(entertainment/2), 0)
     }
 
     get buildingMaintenanceCost() {

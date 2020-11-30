@@ -65,15 +65,10 @@ class Faction {
         }
 
         town.buildings.forEach(buildingType => {
-            const { revenueMultiplierBonus, revenueAdditionBonus } = buildingType
+            const { revenueMultiplierBonus } = buildingType
             if (revenueMultiplierBonus) {
                 for (let revenueType in revenueMultiplierBonus) {
                     townRevenue[revenueType] += Math.floor(townRevenue[revenueType] * revenueMultiplierBonus[revenueType])
-                }
-            }
-            if (revenueAdditionBonus) {
-                for (let revenueType in revenueAdditionBonus) {
-                    townRevenue[revenueType] += revenueAdditionBonus[revenueType]
                 }
             }
         })

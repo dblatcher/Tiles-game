@@ -12,15 +12,13 @@ export default class BuildingInfo extends React.Component {
 
         if (!subject) { return null }
         const buildingType = subject
-        const { prerequisite, revenueAdditionBonus, revenueMultiplierBonus } = buildingType
+        const { prerequisite, reduceUnhappiness, revenueMultiplierBonus } = buildingType
 
         const prerequisiteTech = techDiscoveries[prerequisite]
 
         let bonusDescriptionItems = []
-        if (revenueAdditionBonus) {
-            for (let item in revenueAdditionBonus) {
-                bonusDescriptionItems.push(`${item}: +${revenueAdditionBonus[item]}`)
-            }
+        if (reduceUnhappiness) {
+            bonusDescriptionItems.push(`reduces unhappiness by ${reduceUnhappiness}`)
         }
         if (revenueMultiplierBonus) {
             for (let item in revenueMultiplierBonus) {

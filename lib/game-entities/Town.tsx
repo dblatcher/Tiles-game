@@ -6,7 +6,7 @@ import { Citizen } from './Citizen.tsx'
 import { unitTypes } from './Unit.tsx'
 import { BuildingType, buildingTypes } from './BuildingType.tsx'
 
-import { hurryCostPerUnit} from '../game-logic/constants'
+import { hurryCostPerUnit } from '../game-logic/constants'
 import { UNHAPPINESS_ALLOWANCE, UNHAPPINESS_RATE } from '../game-logic/constants'
 
 let townIndex = 0
@@ -81,13 +81,22 @@ class Town {
         return output
     }
 
-    get baseUnhappiness () {
+    get baseUnhappiness() {
         return Math.ceil((this.population - UNHAPPINESS_ALLOWANCE) / UNHAPPINESS_RATE)
     }
 
-    get adjustedUnhappiness() {
-        let entertainment = this.faction.allocateTownRevenue(this).entertainment
-        return Math.max( this.baseUnhappiness - Math.floor(entertainment/2), 0)
+    get unhappinessReduction() {
+        let value = 0;
+        this.buildings.forEach(buildingType => { value += buildingType.reduceUnhappiness })
+        return value
+    }
+
+    get unhappiness() {
+        return Math.max(this.baseUnhappiness - this.unhappinessReduction, 0)
+    }
+
+    get happiness() {
+        return Math.floor(this.faction.allocateTownRevenue(this).entertainment / 2)
     }
 
     get buildingMaintenanceCost() {
@@ -113,7 +122,7 @@ class Town {
             .includes(name)
     }
 
-    getSquaresAndObstacles(mapGrid, towns, units=[]) {
+    getSquaresAndObstacles(mapGrid, towns, units = []) {
         const { x, y } = this.mapSquare
         let row, col, townIndex, citizenIndex, unitIndex, squares = [], obstacle = null, obstacles = [];
 
@@ -141,7 +150,7 @@ class Town {
                             units[unitIndex].faction !== this.faction &&
                             units[unitIndex].x === col &&
                             units[unitIndex].y === row &&
-                            units[unitIndex].onGoingOrder && 
+                            units[unitIndex].onGoingOrder &&
                             units[unitIndex].onGoingOrder.type.name === "Fortified"
                         ) {
                             obstacle = units[unitIndex]
@@ -162,7 +171,7 @@ class Town {
         return { squares, obstacles, freeSquares }
     }
 
-    getOccupierMap(mapGrid, towns, units=[]) {
+    getOccupierMap(mapGrid, towns, units = []) {
         const { squares, obstacles } = this.getSquaresAndObstacles(mapGrid, towns, units)
         let result = []
 
@@ -236,12 +245,12 @@ class Town {
             notices.push(`${this.name} has finished building ${this.productionItemName}`)
 
             if (this.isProducing.classIs === 'UnitType') {
-                const newUnit = new Unit(this.isProducing, this.faction, { 
-                    x: this.x, 
-                    y: this.y, 
+                const newUnit = new Unit(this.isProducing, this.faction, {
+                    x: this.x,
+                    y: this.y,
                     vetran: this.buildings.includes(buildingTypes.barracks)
                 })
-                if (newUnit.townBuilding >0 && this.population > 1) {this.citizens.pop()} 
+                if (newUnit.townBuilding > 0 && this.population > 1) { this.citizens.pop() }
 
                 state.units.push(newUnit)
                 this.supportedUnits.push(newUnit)
@@ -292,7 +301,7 @@ class Town {
         })
     }
 
-    static setIndexNumber(value:number = 0) {
+    static setIndexNumber(value: number = 0) {
         townIndex = value
     }
 }

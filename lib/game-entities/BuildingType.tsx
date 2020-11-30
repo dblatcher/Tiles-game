@@ -9,7 +9,7 @@ class BuildingType {
     maintenanceCost: number;
     prerequisite: string | null;
     revenueMultiplierBonus: object | null;
-    revenueAdditionBonus: object | null;
+    reduceUnhappiness: number;
     addSquareOutputBonus: Function | null;
     constructor(name, input: any = {}) {
         this.name = name
@@ -18,7 +18,7 @@ class BuildingType {
         this.maintenanceCost = input.maintenanceCost || 0
         this.prerequisite = input.prerequisite || null
         this.revenueMultiplierBonus = input.revenueMultiplierBonus || null
-        this.revenueAdditionBonus = input.revenueAdditionBonus || null
+        this.reduceUnhappiness = input.reduceUnhappiness || 0
         this.addSquareOutputBonus = input.addSquareOutputBonus || null
     }
     get classIs() { return 'BuildingType' }
@@ -77,17 +77,13 @@ const buildingTypes = {
         productionCost: 40,
         maintenanceCost: 1,
         prerequisite: 'ceremonialBurial',
-        revenueAdditionBonus: {
-            entertainment: 4
-        }
+        reduceUnhappiness: 2,
     }),
     theatre: new BuildingType('theatre', {
         productionCost: 65,
         maintenanceCost: 2,
         prerequisite: 'construction',
-        revenueAdditionBonus: {
-            entertainment: 6
-        }
+        reduceUnhappiness: 3,
     }),
     cityWalls: new BuildingType('cityWalls', {
         productionCost: 50,
@@ -125,9 +121,7 @@ const buildingTypes = {
         productionCost: 80,
         maintenanceCost: 3,
         prerequisite: 'monotheism',
-        revenueAdditionBonus: {
-            entertainment: 8
-        }
+        reduceUnhappiness: 4
     }),
 }
 

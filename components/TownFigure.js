@@ -16,6 +16,10 @@ export default class TownFigure extends React.Component {
             spriteClassList.push(styles.fallenSprite)
         }
 
+        if (town.isInRevolt) {
+            spriteClassList.push(styles.unrest)
+        }
+
         const figureStyle = {
             pointerEvents: isFallen ? 'none' : 'unset',
         }

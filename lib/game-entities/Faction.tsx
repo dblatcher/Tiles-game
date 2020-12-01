@@ -101,7 +101,7 @@ class Faction {
         const myTowns = towns.filter(town => town.faction === this)
         let notices = []
 
-        const allocatedBudget = this.calcuateAllocatedBudget(myTowns)
+        const allocatedBudget = this.calcuateAllocatedBudget(myTowns.filter(town => !town.isInRevolt))
         const buildingMaintenanceCost = this.calculateTotalMaintenceCost(myTowns)
         this.research += allocatedBudget.research
         this.treasury -= buildingMaintenanceCost

@@ -99,6 +99,10 @@ class Town {
         return Math.floor(this.faction.allocateTownRevenue(this).entertainment / 2)
     }
 
+    get isInRevolt() {
+        return this.unhappiness > this.happiness
+    }
+
     get buildingMaintenanceCost() {
         let cost = 0
         this.buildings.forEach(buildingType => cost += buildingType.maintenanceCost)
@@ -210,55 +214,60 @@ class Town {
     processTurn(state) {
         let notices = []
 
-        this.foodStore += this.output.foodYield
-        this.productionStore += this.output.productionYield
+        if (this.isInRevolt) {
+            notices.push(`Unrest in ${this.name}!`)
+        } else {
+            this.foodStore += this.output.foodYield
+            this.productionStore += this.output.productionYield
 
-        if (this.foodStore < 0 && this.population > 1) {
-            this.citizens.pop()
-            notices.push(`Starvation in ${this.name}! Population reduced to ${this.population}.`)
-        }
-
-        if (this.foodStore >= this.foodStoreRequiredForGrowth) {
-            const newCitizen = new Citizen()
-            this.autoAssignCitizen(newCitizen, state)
-
-            this.citizens.push(newCitizen)
-            this.foodStore = this.buildings.includes(buildingTypes.granary)
-                ? Math.floor(this.foodStore / 2)
-                : 0
-
-            notices.push(`${this.name} has grown to a population of ${this.population}.`)
-        }
-
-        if (this.productionStore < 0 && this.supportedUnits.length > 1) {
-            let shortFall = 0 - this.productionStore
-
-            while (shortFall > 0 && this.supportedUnits.length > 0) {
-                notices.push(`${this.name} cannot support  ${this.supportedUnits[0].type.name}. Unit disbanded`)
-                state.units.splice(state.units.indexOf(this.supportedUnits[0]), 1)
-                this.supportedUnits.shift()
-                shortFall--
+            if (this.foodStore < 0 && this.population > 1) {
+                this.citizens.pop()
+                notices.push(`Starvation in ${this.name}! Population reduced to ${this.population}.`)
             }
-        }
 
-        if (this.isProducing && this.productionStore >= this.isProducing.productionCost) {
-            notices.push(`${this.name} has finished building ${this.productionItemName}`)
+            if (this.foodStore >= this.foodStoreRequiredForGrowth) {
+                const newCitizen = new Citizen()
+                this.autoAssignCitizen(newCitizen, state)
 
-            if (this.isProducing.classIs === 'UnitType') {
-                const newUnit = new Unit(this.isProducing, this.faction, {
-                    x: this.x,
-                    y: this.y,
-                    vetran: this.buildings.includes(buildingTypes.barracks)
-                })
-                if (newUnit.townBuilding > 0 && this.population > 1) { this.citizens.pop() }
+                this.citizens.push(newCitizen)
+                this.foodStore = this.buildings.includes(buildingTypes.granary)
+                    ? Math.floor(this.foodStore / 2)
+                    : 0
 
-                state.units.push(newUnit)
-                this.supportedUnits.push(newUnit)
-            } else if (this.isProducing.classIs === 'BuildingType') {
-                this.buildings.push(this.isProducing)
-                this.isProducing = null
+                notices.push(`${this.name} has grown to a population of ${this.population}.`)
             }
-            this.productionStore = 0
+
+            if (this.productionStore < 0 && this.supportedUnits.length > 1) {
+                let shortFall = 0 - this.productionStore
+
+                while (shortFall > 0 && this.supportedUnits.length > 0) {
+                    notices.push(`${this.name} cannot support  ${this.supportedUnits[0].type.name}. Unit disbanded`)
+                    state.units.splice(state.units.indexOf(this.supportedUnits[0]), 1)
+                    this.supportedUnits.shift()
+                    shortFall--
+                }
+            }
+
+            if (this.isProducing && this.productionStore >= this.isProducing.productionCost) {
+                notices.push(`${this.name} has finished building ${this.productionItemName}`)
+
+                if (this.isProducing.classIs === 'UnitType') {
+                    const newUnit = new Unit(this.isProducing, this.faction, {
+                        x: this.x,
+                        y: this.y,
+                        vetran: this.buildings.includes(buildingTypes.barracks)
+                    })
+                    if (newUnit.townBuilding > 0 && this.population > 1) { this.citizens.pop() }
+
+                    state.units.push(newUnit)
+                    this.supportedUnits.push(newUnit)
+                } else if (this.isProducing.classIs === 'BuildingType') {
+                    this.buildings.push(this.isProducing)
+                    this.isProducing = null
+                }
+                this.productionStore = 0
+            }
+
         }
 
         this.foodStore = Math.max(0, this.foodStore)

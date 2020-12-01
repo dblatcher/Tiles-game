@@ -4,6 +4,7 @@ import TradeReport from "./TradeReport"
 import ProgressBox from "./ProgressBox"
 import TechTree from "./TechTree";
 import { getTurnsToComplete } from '../lib/utility'
+import CitizenRow from "./CitizenRow";
 
 export default class FactionWindow extends React.Component {
 
@@ -69,10 +70,10 @@ export default class FactionWindow extends React.Component {
         return (
             <Window title={faction.name} buttons={[{ text: 'close', clickFunction: closeWindow }]}>
                 <h2>Budget</h2>
-        <ul>
-            <li>{allocatedBudget.totalTrade}<SvgIcon iconName="trade" /> total income</li>
-            <li>{totalMaintenanceCosts}<SvgIcon iconName="coins" color="red"/> maintenance costs</li>
-        </ul>
+                <ul>
+                    <li>{allocatedBudget.totalTrade}<SvgIcon iconName="trade" /> total income</li>
+                    <li>{totalMaintenanceCosts}<SvgIcon iconName="coins" color="red"/> maintenance costs</li>
+                </ul>
 
                 <table>
                     <tbody>
@@ -105,6 +106,7 @@ export default class FactionWindow extends React.Component {
                         {factionTowns.map(town =>
                             <tr key={`trade-report-${town.indexNumber}`}>
                                 <td>{town.name}</td>
+                                <td><CitizenRow town={town} onFactionWindow={true}/></td>
                                 <td><TradeReport town={town} /></td>
                             </tr>
                         )}

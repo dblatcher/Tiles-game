@@ -1,7 +1,8 @@
+import { on } from "events";
 import styles from "./citizenRow.module.scss";
 
 export default function CitizenRow(props) {
-    const { town, handleCitizenClick } = props
+    const { town, handleCitizenClick, onFactionWindow } = props
     const { population, happiness, unhappiness } = town
 
     let bunchUp = 0 // fits 10
@@ -15,8 +16,13 @@ export default function CitizenRow(props) {
         bunchUp = 7.4 + ((population - 30) * 0.05)
     }
 
+    const rowClassList = [styles.citizenRow]
+    if (onFactionWindow) {
+        rowClassList.push(styles.rowInFactionWindow)
+    }
+
     return (
-        <article className={styles.citizenRow}>
+        <article className={rowClassList.join(" ")}>
             {town.citizens.map((citizen, index) => {
 
                 const classList = [styles.citizenFigure]

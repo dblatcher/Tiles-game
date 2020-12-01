@@ -1,9 +1,9 @@
 class Message {
-    text:string;
+    text:Array<String>;
     constructor(text, config = {}) {
 
-        if (Array.isArray(text)) {
-            text = text.join('\n')
+        if (!Array.isArray(text)) {
+            text = [text]
         }
 
         this.text = text

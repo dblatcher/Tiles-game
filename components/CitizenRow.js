@@ -1,4 +1,3 @@
-import { on } from "events";
 import styles from "./citizenRow.module.scss";
 
 export default function CitizenRow(props) {

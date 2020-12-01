@@ -4,6 +4,7 @@ import InfoLink from '../InfoLink'
 import { techDiscoveries } from '../../lib/game-entities/TechDiscovery.tsx'
 import styles from './info.module.scss'
 import SvgIcon from '../SvgIcon'
+import { BASE_POPULATION_LIMIT } from '../../lib/game-logic/constants'
 
 export default class BuildingInfo extends React.Component {
 
@@ -12,13 +13,16 @@ export default class BuildingInfo extends React.Component {
 
         if (!subject) { return null }
         const buildingType = subject
-        const { prerequisite, reduceUnhappiness, revenueMultiplierBonus } = buildingType
+        const { prerequisite, reduceUnhappiness, revenueMultiplierBonus, allowExtraPopulation } = buildingType
 
         const prerequisiteTech = techDiscoveries[prerequisite]
 
         let bonusDescriptionItems = []
         if (reduceUnhappiness) {
             bonusDescriptionItems.push(`reduces unhappiness by ${reduceUnhappiness}`)
+        }
+        if (allowExtraPopulation) {
+            bonusDescriptionItems.push(`allows ${allowExtraPopulation} extra population (${BASE_POPULATION_LIMIT} base)`)
         }
         if (revenueMultiplierBonus) {
             for (let item in revenueMultiplierBonus) {

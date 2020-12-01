@@ -29,23 +29,25 @@ export default class TownView extends React.Component {
     }
 
     get productionCaption() {
-        const {isProducing} = this.props.town
-        return isProducing 
-            ? `Producing: ${isProducing.displayName}` 
+        const { isProducing } = this.props.town
+        return isProducing
+            ? `Producing: ${isProducing.displayName}`
             : `Producing: nothing`
     }
 
     get foodStoreCaption() {
-        const { foodStoreRequiredForGrowth, foodStore } = this.props.town
+        const { foodStoreRequiredForGrowth, foodStore, population, populationLimit } = this.props.town
         const { foodYield } = this.props.town.output
         let figure
 
-        if (foodYield > 0) {
+        if (foodYield > 0 && population < populationLimit) {
             figure = getTurnsToComplete(foodStoreRequiredForGrowth - foodStore, foodYield)
             return `growth in ${figure} ${pluralise('turn', figure)}`
         } else if (foodYield < 0) {
             figure = getTurnsToComplete(foodStore, -foodYield)
             return `starvation in ${figure} ${pluralise('turn', figure)}`
+        } else if (population >= populationLimit) {
+            return 'max population'
         } else {
             return 'no growth'
         }
@@ -59,12 +61,12 @@ export default class TownView extends React.Component {
                 <div className={styles.frame}>
 
                     <section className={[styles.section, styles.mapSection].join(" ")}>
-                        <CitizenRow town={town} handleCitizenClick={this.handleCitizenClick}/>
+                        <CitizenRow town={town} handleCitizenClick={this.handleCitizenClick} />
                         <MapSection
                             handleMapSectionClick={this.handleMapSectionClick}
                             xStart={town.x - 2} yStart={town.y - 2}
                             xSpan={5} ySpan={5}
-                            town={town} mapGrid={mapGrid} towns={towns} units={units}/>
+                            town={town} mapGrid={mapGrid} towns={towns} units={units} />
                     </section>
 
                     <section className={styles.section}>
@@ -72,7 +74,7 @@ export default class TownView extends React.Component {
                         <ProgressBox
                             current={town.foodStore}
                             target={town.foodStoreRequiredForGrowth}
-                            unit="food"/>
+                            unit="food" />
                         <p className={styles.caption}>{this.foodStoreCaption}</p>
                     </section>
 
@@ -81,14 +83,14 @@ export default class TownView extends React.Component {
                         <ProgressBox
                             current={town.productionStore}
                             target={town.isProducing ? town.isProducing.productionCost : 0}
-                            unit="production"/>
+                            unit="production" />
                         <p className={styles.caption}>{this.productionCaption}</p>
                         <ProductionMenu handleTownAction={handleTownAction} town={town} />
                     </section>
 
                     <section className={styles.section}>
                         <h2>Trade<span>{displayGain(town.output.tradeYield)}</span></h2>
-                        <TradeReport town={town} townView={true} separateLines={true}/>
+                        <TradeReport town={town} townView={true} separateLines={true} />
                     </section>
 
                     <section className={styles.section}>

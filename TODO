@@ -17,11 +17,11 @@ units
 
 towns
 - prevent duplicate names
-- happiness, luxury and revolt
 - take treasury and tech on town conquest
 - trade routes
 - suggested names
 - render obstables in townView (unit or citizen of other town)
+- corruption rate
 
 Buildings
 - define more BuildingTypes, add rules to existing code

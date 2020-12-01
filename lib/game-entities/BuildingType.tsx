@@ -11,6 +11,7 @@ class BuildingType {
     revenueMultiplierBonus: object | null;
     reduceUnhappiness: number;
     addSquareOutputBonus: Function | null;
+    allowExtraPopulation: number;
     constructor(name, input: any = {}) {
         this.name = name
         this.displayName = input.displayName || camelToSentence(name)
@@ -19,6 +20,7 @@ class BuildingType {
         this.prerequisite = input.prerequisite || null
         this.revenueMultiplierBonus = input.revenueMultiplierBonus || null
         this.reduceUnhappiness = input.reduceUnhappiness || 0
+        this.allowExtraPopulation = input.allowExtraPopulation || 0
         this.addSquareOutputBonus = input.addSquareOutputBonus || null
     }
     get classIs() { return 'BuildingType' }
@@ -99,7 +101,8 @@ const buildingTypes = {
     aqueduct: new BuildingType('aqueduct', {
         productionCost: 50,
         maintenanceCost: 1,
-        prerequisite: 'construction', // to implement
+        prerequisite: 'construction', 
+        allowExtraPopulation: 4,
     }),
     university: new BuildingType('university', {
         productionCost: 60,

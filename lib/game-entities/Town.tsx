@@ -7,7 +7,7 @@ import { unitTypes } from './Unit.tsx'
 import { BuildingType, buildingTypes } from './BuildingType.tsx'
 
 import { hurryCostPerUnit } from '../game-logic/constants'
-import { UNHAPPINESS_ALLOWANCE, UNHAPPINESS_RATE } from '../game-logic/constants'
+import { UNHAPPINESS_ALLOWANCE, UNHAPPINESS_RATE, BASE_POPULATION_LIMIT } from '../game-logic/constants'
 
 let townIndex = 0
 
@@ -120,6 +120,12 @@ class Town {
         return this.isProducing.displayName
     }
 
+    get populationLimit() {
+        let value = BASE_POPULATION_LIMIT;
+        this.buildings.forEach(buildingType => { value += buildingType.allowExtraPopulation })
+        return value
+    }
+
     hasBuilding(name) {
         return this.buildings
             .map(buildingType => buildingType.name)
@@ -226,15 +232,20 @@ class Town {
             }
 
             if (this.foodStore >= this.foodStoreRequiredForGrowth) {
-                const newCitizen = new Citizen()
-                this.autoAssignCitizen(newCitizen, state)
+                if (this.population < this.populationLimit) {
+                    const newCitizen = new Citizen()
+                    this.autoAssignCitizen(newCitizen, state)
 
-                this.citizens.push(newCitizen)
-                this.foodStore = this.buildings.includes(buildingTypes.granary)
-                    ? Math.floor(this.foodStore / 2)
-                    : 0
+                    this.citizens.push(newCitizen)
+                    this.foodStore = this.buildings.includes(buildingTypes.granary)
+                        ? Math.floor(this.foodStore / 2)
+                        : 0
 
-                notices.push(`${this.name} has grown to a population of ${this.population}.`)
+                    notices.push(`${this.name} has grown to a population of ${this.population}.`)
+                } else {
+                    this.foodStore = Math.floor(this.foodStore / 2)
+                    notices.push(`${this.name} cannot grow past its population of ${this.population}.`)
+                }
             }
 
             if (this.productionStore < 0 && this.supportedUnits.length > 1) {

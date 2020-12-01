@@ -1,7 +1,7 @@
 
 import styles from './info.module.scss'
 
-import { unitTypes } from '../../lib/game-entities/Unit.tsx'
+import { unitTypes } from '../../lib/game-entities/UnitType.ts'
 import { buildingTypes } from '../../lib/game-entities/BuildingType.tsx'
 import InfoLink from '../InfoLink'
 

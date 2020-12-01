@@ -1,4 +1,4 @@
-import { unitTypes } from '../lib/game-entities/Unit.tsx'
+import { unitTypes } from '../lib/game-entities/UnitType.ts'
 import { buildingTypes } from '../lib/game-entities/BuildingType.tsx'
 import { getTurnsToComplete } from '../lib/utility'
 import styles from './productionMenu.module.scss'

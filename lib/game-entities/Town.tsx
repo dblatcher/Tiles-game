@@ -1,9 +1,9 @@
 import { Faction } from './Faction'
 import { MapSquare } from './MapSquare'
-import { Unit, UnitType } from './Unit.tsx'
+import { Unit } from './Unit.tsx'
+import { UnitType, unitTypes } from './UnitType.ts'
 import { citizenJobs } from './CitizenJob.tsx'
 import { Citizen } from './Citizen.tsx'
-import { unitTypes } from './Unit.tsx'
 import { BuildingType, buildingTypes } from './BuildingType.tsx'
 
 import { hurryCostPerUnit } from '../game-logic/constants'

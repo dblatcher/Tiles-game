@@ -16,7 +16,7 @@ function chooseMoveTowards(target, unit, state, possibleMoves) {
     // (need to fill in the blanks? decide weight for unknown squares)
     const gridIn = state.mapGrid
         .map(row => row.map(
-            mapSquare => mapSquare.terrain.isWater ? 0 : 1
+            mapSquare => unit.getCouldEnter(mapSquare) ? 1 : 0
         ))
 
     const graph = new Graph(gridIn, { diagonal: true })

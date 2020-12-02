@@ -60,13 +60,13 @@ class Unit {
             : targetMapSquare.movementCost
     }
 
-    getCouldEnter(mapSquare) {
-        return !mapSquare.terrain.isWater
+    getCouldEnter(mapSquare, townInMapSquare) {
+        return this.type.canEnterMapSquare(mapSquare, townInMapSquare, this)
     }
 
-    canMoveTo(targetMapSquare, startingMapSquare = null) {
+    canMoveTo(targetMapSquare, startingMapSquare = null, townInTargetMapSquare = null) {
 
-        if (targetMapSquare.isWater) { return false }
+        if (!this.getCouldEnter(targetMapSquare, townInTargetMapSquare)) { return false }
         const movementCost = this.getMovementCost(startingMapSquare, targetMapSquare)
 
         return this.isAdjacentTo(targetMapSquare)

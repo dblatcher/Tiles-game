@@ -26,7 +26,10 @@ class UnitMission {
             .slice(unit.y - 1, unit.y + 2)
             .map(row => row.slice(unit.x - 1, unit.x + 2))
             .flat()
-            .filter(mapSquare => unit.canMoveTo(mapSquare, state.mapGrid[unit.y][unit.x]))
+            .filter(mapSquare => {
+                const townInMapSquare = state.towns.filter(town => town.x == mapSquare.x && town.y === mapSquare.y)[0]
+                return unit.canMoveTo(mapSquare, state.mapGrid[unit.y][unit.x], townInMapSquare)
+            })
 
         let possibleActions = unit.onGoingOrder
             ? []

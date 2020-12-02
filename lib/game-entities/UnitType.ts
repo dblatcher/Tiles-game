@@ -64,6 +64,13 @@ class UnitType {
         return spriteSheets[this.spriteSheetName].getStyleForFrameCalled(this.spriteFrameName)
     }
 
+    canEnterMapSquare(mapSquare, townInMapSquare, unit) {
+        if (this.attack == 0 && townInMapSquare && unit.faction !== townInMapSquare.faction) {
+            return false
+        }
+        return !mapSquare.terrain.isWater 
+    }
+
     checkCanBuildWith(knowTech: Array<TechDiscovery>) {
         if (!this.prerequisite) { return true }
         if (!techDiscoveries[this.prerequisite]) {

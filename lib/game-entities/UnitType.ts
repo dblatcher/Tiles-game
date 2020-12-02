@@ -16,8 +16,8 @@ class UnitType {
     defend: number;
     isPathfinder: boolean;
     isTrader: boolean; //TODO implement rule
-    hasDefenseBonusVsMounted: boolean; 
-    isMounted: boolean; 
+    hasDefenseBonusVsMounted: boolean;
+    isMounted: boolean;
     isEffectiveAgainstTowns: boolean;
     productionCost: number;
     prerequisite: string | null;
@@ -44,15 +44,15 @@ class UnitType {
         this.prerequisite = config.prerequisite || null
     }
     get classIs() { return 'UnitType' }
-
+    get isNaval() { return false }
     get role() {
-        if (this.townBuilding) {return "SETTLER"}
-        if (this.irrigating || this.mining || this.treeCutting) {return "WORKER"}
-        if (this.isTrader ) {return "TRADER"}
-        if (this.defend >= this.attack && (this.moves > 6 || this.isPathfinder)) {return "SCOUT"}
-        if (this.defend >= this.attack && this.moves <= 6) {return "DEFENDER"}
-        if (this.defend < this.attack && this.moves <= 6) {return "ATTACKER"}
-        if (this.attack && this.moves > 6) {return "CAVALRY"}
+        if (this.townBuilding) { return "SETTLER" }
+        if (this.irrigating || this.mining || this.treeCutting) { return "WORKER" }
+        if (this.isTrader) { return "TRADER" }
+        if (this.defend >= this.attack && (this.moves > 6 || this.isPathfinder)) { return "SCOUT" }
+        if (this.defend >= this.attack && this.moves <= 6) { return "DEFENDER" }
+        if (this.defend < this.attack && this.moves <= 6) { return "ATTACKER" }
+        if (this.attack && this.moves > 6) { return "CAVALRY" }
         return "SCOUT"
     }
 
@@ -68,7 +68,7 @@ class UnitType {
         if (this.attack == 0 && townInMapSquare && unit.faction !== townInMapSquare.faction) {
             return false
         }
-        return !mapSquare.terrain.isWater 
+        return !mapSquare.terrain.isWater
     }
 
     checkCanBuildWith(knowTech: Array<TechDiscovery>) {
@@ -82,6 +82,20 @@ class UnitType {
 
 }
 
+class NavalUnitType extends UnitType {
+    constructor(name: string, config: any = {}) {
+        super(name, config);
+    }
+
+    get isNaval() { return true }
+
+    canEnterMapSquare(mapSquare, townInMapSquare, unit) {
+        if (townInMapSquare && townInMapSquare.faction === unit.faction) {
+            return true
+        }
+        return mapSquare.terrain.isWater
+    }
+}
 
 const unitTypes = {
     worker: new UnitType('worker', {
@@ -194,6 +208,11 @@ const unitTypes = {
         spriteSheetName: 'units2',
         prerequisite: 'trade',
     }),
+    boat: new NavalUnitType('boat', {
+        moves: 12,
+        spriteSheetName: 'units',
+        spriteFrameName: 'shadow',
+    })
 }
 
 export { UnitType, unitTypes }

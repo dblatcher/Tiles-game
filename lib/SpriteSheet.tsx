@@ -247,6 +247,8 @@ const units2 = new SpriteSheet ('units2',{
         'crusader':[1,2],
         'dragoon':[2,2],
         'caravan':[0,3],
+        'trireme':[1,3],
+        'caravel':[2,3],
     }
 })
 

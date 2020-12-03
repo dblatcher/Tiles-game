@@ -208,11 +208,22 @@ const unitTypes = {
         spriteSheetName: 'units2',
         prerequisite: 'trade',
     }),
-    boat: new NavalUnitType('boat', {
-        moves: 12,
-        spriteSheetName: 'units',
-        spriteFrameName: 'shadow',
-    })
+    trireme: new NavalUnitType('trireme', {
+        defend: 1, attack: 2,
+        moves: 18,
+        productionCost: 30,
+        spriteSheetName: 'units2',
+        prerequisite: 'mapMaking',
+        getsLostAtSea: true, // TO DO
+    }),
+    caravel: new NavalUnitType('caravel', {
+        defend: 2, attack: 2,
+        moves: 24,
+        productionCost: 30,
+        spriteSheetName: 'units2',
+        prerequisite: 'navigation',
+        passengers: 2, // TO DO
+    }),
 }
 
 export { UnitType, unitTypes }

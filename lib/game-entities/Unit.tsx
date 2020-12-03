@@ -1,7 +1,8 @@
 import { UnitType, unitTypes } from "./UnitType.ts"
 import { OnGoingOrder } from "./OngoingOrder.tsx";
 import { Faction } from "./Faction";
-import {UnitMission} from '../game-ai/UnitMission.ts'
+import { UnitMission } from '../game-ai/UnitMission.ts'
+import { getAreaSurrounding } from '../utility'
 
 let unitIndexNumber = 0
 
@@ -14,7 +15,7 @@ class Unit {
     remainingMoves: number;
     indexNumber: number;
     onGoingOrder: OnGoingOrder;
-    missions: Array<UnitMission> 
+    missions: Array<UnitMission>
     constructor(type: UnitType, faction: Faction, config: any = {}) {
         this.type = type
         this.faction = faction
@@ -42,7 +43,7 @@ class Unit {
         ]
     }
 
-    get role() {return this.type.role}
+    get role() { return this.type.role }
 
     get infoPageUrl() { return this.type.infoPageUrl }
 
@@ -72,6 +73,16 @@ class Unit {
         return this.isAdjacentTo(targetMapSquare)
             && !(targetMapSquare.x === this.x && targetMapSquare.y === this.y)
             && (this.remainingMoves >= movementCost || this.remainingMoves === this.type.moves)
+    }
+
+    canMakeNoMoreMoves(mapGrid, towns, units) {
+        const { x, y } = this
+        let surroundingArea = getAreaSurrounding(this, mapGrid);
+
+        return !surroundingArea.some(mapSquare => {
+            if (units.some(unit => unit.x === mapSquare.x && unit.y === mapSquare.y && unit.faction !== this.faction)) { return true }
+            return this.canMoveTo(mapSquare, mapGrid[y][x], towns.filter(town => town.mapSquare === mapSquare)[0])
+        })
     }
 
     processTurn(state) {
@@ -105,7 +116,7 @@ class Unit {
             type: this.type.name,
             faction: this.faction.name,
             onGoingOrder: this.onGoingOrder ? this.onGoingOrder.serialised : null,
-            missions: this.missions.map(unitMission => unitMission.serialised) 
+            missions: this.missions.map(unitMission => unitMission.serialised)
         }
         Object.keys(this).forEach(key => {
             if (typeof output[key] == 'undefined') { output[key] = this[key] }
@@ -139,7 +150,7 @@ class Unit {
         )
     }
 
-    static setIndexNumber(value:number = 0) {
+    static setIndexNumber(value: number = 0) {
         unitIndexNumber = value
     }
 }

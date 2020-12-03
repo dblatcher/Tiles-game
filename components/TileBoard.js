@@ -84,7 +84,7 @@ export default class TileBoard extends React.Component {
     }
 
     renderUnit(unit, placesInSight) {
-        const { handleMapSquareClick, selectedUnit, fallenUnits, mapGrid, unitWithMenuOpen, handleOrderButton, interfaceMode, } = this.props;
+        const { handleMapSquareClick, selectedUnit, fallenUnits, mapGrid, handleOrderButton, interfaceMode, } = this.props;
         const squareUnitIsOn = mapGrid[unit.y][unit.x]
 
         const notInSight = !placesInSight.some(square => {
@@ -99,7 +99,6 @@ export default class TileBoard extends React.Component {
             interfaceMode={interfaceMode}
             unit={unit}
             handleOrderButton={handleOrderButton}
-            menuIsOpen={unit === unitWithMenuOpen}
             key={"unit#" + unit.indexNumber}
             isSelected={unit === selectedUnit}
             isFallen={fallenUnits && fallenUnits.includes(unit)}

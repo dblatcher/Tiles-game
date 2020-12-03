@@ -36,7 +36,6 @@ export default class GameContainer extends React.Component {
 
         this.state = Object.assign(props.startingGameState, {
             selectedSquare: null,
-            unitWithMenuOpen: null,
             interfaceMode: "MOVE",
             interfaceModeOptions,
             fallenUnits: [],
@@ -309,7 +308,7 @@ export default class GameContainer extends React.Component {
     render() {
         const { mapGrid, selectedSquare, units, towns, activeFaction,
             selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
-            pendingDialogues, unitWithMenuOpen, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
+            pendingDialogues, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
             mapZoomLevel, browserSupportsLocalStorage } = this.state
 
         if (openTown) {
@@ -349,7 +348,6 @@ export default class GameContainer extends React.Component {
                     <TileBoard
                         units={units}
                         towns={towns}
-                        unitWithMenuOpen={unitWithMenuOpen}
                         mapGrid={mapGrid}
                         handleMapSquareClick={this.handleMapSquareClick}
                         handleTileHoverEnter={this.handleTileHoverEnter}

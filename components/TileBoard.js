@@ -3,6 +3,7 @@ import React from 'react';
 import Tile from './Tile'
 import UnitFigure from './UnitFigure'
 import styles from './tile.module.scss'
+import { areSamePlace } from '../lib/utility';
 
 
 export default class TileBoard extends React.Component {
@@ -33,9 +34,10 @@ export default class TileBoard extends React.Component {
         const {
             handleMapSquareClick, selectedSquare, selectedUnit,
             handleTileHoverEnter, mapGrid, interfaceMode, infoPage,
-            gameHasOpenDialogue, towns = [], activeFaction } = this.props;
+            gameHasOpenDialogue, towns = [], activeFaction, units=[] } = this.props;
 
         const town = towns.filter(town => town.mapSquare === mapSquare)[0]
+        const unitsInMapSquare = units.filter(unit => areSamePlace(unit, mapSquare));
 
         const notInSight = infoPage
             ? false
@@ -61,6 +63,7 @@ export default class TileBoard extends React.Component {
                 interfaceMode={interfaceMode}
                 mapSquare={mapSquare}
                 town={town}
+                unitsInMapSquare={unitsInMapSquare}
                 selectedUnit={selectedUnit}
                 squareSelectedUnitIsIn={selectedUnit ? mapGrid[selectedUnit.y][selectedUnit.x] : null}
                 isSelected={mapSquare === selectedSquare}

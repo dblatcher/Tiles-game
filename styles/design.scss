@@ -93,6 +93,7 @@ $windowPadding : .5rem;
     background-color: transparent;
     border-style: solid;
     box-sizing: border-box;
+    pointer-events: none;
 }
 
 @mixin boxTailLeft($color, $width, $height, $position) {

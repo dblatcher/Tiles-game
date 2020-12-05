@@ -64,10 +64,17 @@ class UnitType {
         return spriteSheets[this.spriteSheetName].getStyleForFrameCalled(this.spriteFrameName)
     }
 
-    canEnterMapSquare(mapSquare, townInMapSquare, unit) {
-        if (this.attack == 0 && townInMapSquare && unit.faction !== townInMapSquare.faction) {
-            return false
+    canEnterMapSquare(mapSquare, townInMapSquare=null, unitsInMapSquare=[], unit) {
+        const enemyPresence = (
+            townInMapSquare && unit.faction !== townInMapSquare.faction || 
+            unitsInMapSquare.some(otherUnit => unit.faction !== otherUnit.faction)
+        );
+
+        // allows land units to attack sea units from the shore
+        if (enemyPresence) {
+            return this.attack > 0
         }
+
         return !mapSquare.terrain.isWater
     }
 
@@ -89,7 +96,17 @@ class NavalUnitType extends UnitType {
 
     get isNaval() { return true }
 
-    canEnterMapSquare(mapSquare, townInMapSquare, unit) {
+    canEnterMapSquare(mapSquare, townInMapSquare, unitsInMapSquare=[], unit) {
+        const enemyPresence = (
+            townInMapSquare && unit.faction !== townInMapSquare.faction || 
+            unitsInMapSquare.some(otherUnit => unit.faction !== otherUnit.faction)
+        );
+
+        // allows sea units to attack land units from the sea
+        if (enemyPresence) {
+            return this.attack > 0
+        }
+
         if (townInMapSquare && townInMapSquare.faction === unit.faction) {
             return true
         }

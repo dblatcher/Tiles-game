@@ -11,8 +11,9 @@ function chooseMoveTowards(target, unit, state, possibleMoves) {
     }
 
     // TO DO - weight by movement cost
-    // treat enemy towns and units as obstacles
-    // use unit.faction.worldMap AI magically knows routes to unknown Places
+    // treat enemy towns and units as obstacles 
+    // (can use separate getCouldEnter calls with towns and/or units included to weight by enemy presence)
+    // use unit.faction.worldMap AI magically knows routes through unknown Places
     // (need to fill in the blanks? decide weight for unknown squares)
     const gridIn = state.mapGrid
         .map(row => row.map(

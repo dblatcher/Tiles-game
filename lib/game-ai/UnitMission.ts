@@ -1,5 +1,6 @@
 
 import { onGoingOrderTypes } from "../game-entities/OngoingOrder.tsx";
+import { areSamePlace } from "../utility";
 import { unitMissionTypes} from "./UnitMissionTypes.ts"
 
 
@@ -28,7 +29,8 @@ class UnitMission {
             .flat()
             .filter(mapSquare => {
                 const townInMapSquare = state.towns.filter(town => town.x == mapSquare.x && town.y === mapSquare.y)[0]
-                return unit.canMoveTo(mapSquare, state.mapGrid[unit.y][unit.x], townInMapSquare)
+                const unitsInMapSquare = state.units.filter(otherUnit => areSamePlace(otherUnit, mapSquare))
+                return unit.canMoveToOrAttack(mapSquare, state.mapGrid[unit.y][unit.x], townInMapSquare, unitsInMapSquare)
             })
 
         let possibleActions = unit.onGoingOrder

@@ -2,7 +2,8 @@ import { UnitType, unitTypes } from "./UnitType.ts"
 import { OnGoingOrder } from "./OngoingOrder.tsx";
 import { Faction } from "./Faction";
 import { UnitMission } from '../game-ai/UnitMission.ts'
-import { getAreaSurrounding } from '../utility'
+import { getAreaSurrounding, areSamePlace } from '../utility'
+import { MapSquare } from './MapSquare.tsx'
 
 let unitIndexNumber = 0
 
@@ -55,24 +56,26 @@ class Unit {
         return !(Math.abs(this.x - target.x) > 1 || Math.abs(this.y - target.y) > 1)
     }
 
-    getMovementCost(startingMapSquare, targetMapSquare) {
+    getMovementCost(startingMapSquare:MapSquare, targetMapSquare:MapSquare, townInTargetMapSquare = null, unitsInTargetMapSquare:Array<Unit> = []) {
+        // attack movement cost = 1
+        if (unitsInTargetMapSquare.some(otherUnit => otherUnit.faction !== this.faction)) {return 1}
+
         return (startingMapSquare.road && targetMapSquare.road) || this.type.isPathfinder
             ? 1
             : targetMapSquare.movementCost
     }
 
-    getCouldEnter(mapSquare, townInMapSquare) {
-        return this.type.canEnterMapSquare(mapSquare, townInMapSquare, this)
+    getCouldEnter(targetMapSquare:MapSquare, townInTargetMapSquare = null, unitsInTargetMapSquare:Array<Unit> = []) {
+        return this.type.canEnterMapSquare(targetMapSquare, townInTargetMapSquare, unitsInTargetMapSquare, this)
     }
 
-    canMoveTo(targetMapSquare, startingMapSquare = null, townInTargetMapSquare = null) {
+    canMoveToOrAttack(targetMapSquare:MapSquare, startingMapSquare:MapSquare = null, townInTargetMapSquare = null, unitsInTargetMapSquare:Array<Unit> = []) {
 
-        if (!this.getCouldEnter(targetMapSquare, townInTargetMapSquare)) { return false }
-        const movementCost = this.getMovementCost(startingMapSquare, targetMapSquare)
+        if (areSamePlace(this, targetMapSquare) || !this.isAdjacentTo(targetMapSquare)) { return false }
+        if (!this.getCouldEnter(targetMapSquare, townInTargetMapSquare, unitsInTargetMapSquare)) { return false }
 
-        return this.isAdjacentTo(targetMapSquare)
-            && !(targetMapSquare.x === this.x && targetMapSquare.y === this.y)
-            && (this.remainingMoves >= movementCost || this.remainingMoves === this.type.moves)
+        const movementCost = this.getMovementCost(startingMapSquare, targetMapSquare, townInTargetMapSquare, unitsInTargetMapSquare)
+        return this.remainingMoves >= movementCost || this.remainingMoves === this.type.moves
     }
 
     canMakeNoMoreMoves(mapGrid, towns, units) {
@@ -80,8 +83,12 @@ class Unit {
         let surroundingArea = getAreaSurrounding(this, mapGrid);
 
         return !surroundingArea.some(mapSquare => {
-            if (units.some(unit => unit.x === mapSquare.x && unit.y === mapSquare.y && unit.faction !== this.faction)) { return true }
-            return this.canMoveTo(mapSquare, mapGrid[y][x], towns.filter(town => town.mapSquare === mapSquare)[0])
+            return this.canMoveToOrAttack(
+                mapSquare,
+                mapGrid[y][x],
+                towns.filter(town => town.mapSquare === mapSquare)[0],
+                units.filter(unit => areSamePlace(mapSquare, unit))
+            )
         })
     }
 

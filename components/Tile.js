@@ -80,10 +80,10 @@ export default class Tile extends React.Component {
 
     render() {
         const { mapSquare, handleClick, isSelected, notInSight,
-            selectedUnit, inInfoRow, squareSelectedUnitIsIn, interfaceMode,
+            selectedUnit, inInfoRow, squareSelectedUnitIsIn, interfaceMode, unitsInMapSquare,
             gameHasOpenDialogue, showYields, town, onMapSection, occupier, showVoid, mapSquareOnFactionWorldMap } = this.props
 
-        const selectedUnitCanMoveTo = selectedUnit && !selectedUnit.onGoingOrder && selectedUnit.canMoveTo(mapSquare, squareSelectedUnitIsIn, town);
+        const selectedUnitCanMoveTo = selectedUnit && !selectedUnit.onGoingOrder && selectedUnit.canMoveToOrAttack(mapSquare, squareSelectedUnitIsIn, town, unitsInMapSquare);
 
         let figureClassList = [styles.tile]
         let bgSpriteClassList = [styles.spriteHolder]

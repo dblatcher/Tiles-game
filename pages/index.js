@@ -1,19 +1,15 @@
-import Head from 'next/head'
 import Link from 'next/link'
+import { StandardHead, siteTitle } from '../components/Layout'
 import styles from '../styles/Home.module.css'
+
 
 export default function Home() {
   return (
     <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <StandardHead/>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Tiles
-        </h1>
+        <h1 className={styles.title}>{siteTitle}</h1>
 
         <p className={styles.description}>
           <Link href="/game-page">start game</Link>
@@ -21,8 +17,6 @@ export default function Home() {
         <p className={styles.description}>
           <Link href="/info">info index</Link>
         </p>
-
-
       </main>
 
       <footer className={styles.footer}>

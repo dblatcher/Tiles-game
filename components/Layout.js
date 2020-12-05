@@ -3,26 +3,30 @@ import styles from './layout.module.css'
 
 import Link from 'next/link'
 
-export const siteTitle = 'Tiles App'
+export const siteTitle = 'Conquest'
 
-export function standardHead() {
+export function StandardHead({gamePage}) {
     return (
         <Head>
             <link rel="icon" href="/favicon.ico" />
+            <title>
+                {siteTitle}
+                {gamePage ? ' - game' : ''}
+            </title>
             <meta
                 name="description"
-                content="Tiles App"
+                content={siteTitle}
             />
             <meta name="og:title" content={siteTitle} />
         </Head>
     )
 }
 
-export default function Layout({ children, home, gamePage, backLinkUrl, backLinkText }) {
+export default function Layout({ children, gamePage, backLinkUrl, backLinkText }) {
 
     if (gamePage) {
         return <>
-            {standardHead()}
+            <StandardHead gamePage />
             {children}
         </>
     }
@@ -30,33 +34,23 @@ export default function Layout({ children, home, gamePage, backLinkUrl, backLink
 
     return (
         <div className={styles.container}>
-            {standardHead()}
+            <StandardHead />
 
             <header className={styles.header}>
-                {home ? (
-                    <>
-                        <h1>{siteTitle}</h1>
-                    </>
-                ) : (
-                        <>
-                            <h2>
-                                <Link href="/">
-                                    <a>{siteTitle}</a>
-                                </Link>
-                            </h2>
-                        </>
-                    )}
+                <h2>
+                    <Link href="/">
+                        <a>{siteTitle}</a>
+                    </Link>
+                </h2>
             </header>
 
             <main className={styles.main}>{children}</main>
 
-            { !home && (
-                <div className={styles.backToHome}>
-                    <Link href={backLinkUrl || "/"}>
-                        <a>← {backLinkUrl ? backLinkText ||"Back" : "Back to home"}</a>
-                    </Link>
-                </div>
-            )}
+            <div className={styles.backToHome}>
+                <Link href={backLinkUrl || "/"}>
+                    <a>← {backLinkUrl ? backLinkText || "Back" : "Back to home"}</a>
+                </Link>
+            </div>
         </div >
     )
 }

@@ -1,6 +1,6 @@
 import styles from './dialogue.module.scss'
 
-export default class BattleDialogue extends React.Component {
+export default class MessageDialogue extends React.Component {
 
     render() {
         const { message, acknowledgeMessage } = this.props
@@ -10,9 +10,16 @@ export default class BattleDialogue extends React.Component {
             <aside className={styles.dialogueHolder}>
                 <div className={styles.dialogueFrame}>
 
-                    <ul className={styles.messageList}>
-                        {text.map(line => <li>{line}</li>)}
-                    </ul>
+                    {text.length > 1
+                        ? (
+                            <ul className={styles.messageList}>
+                                {text.map((line, index) => <li key={index}>{line}</li>)}
+                            </ul>
+                        )
+                        : (
+                            <p>{text[0]}</p>
+                        )
+                    }
 
                     <div className={styles.buttonRow}>
                         <button className={styles.button} onClick={acknowledgeMessage}>ok</button>

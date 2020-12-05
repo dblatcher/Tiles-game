@@ -33,13 +33,13 @@ export default class TileBoard extends React.Component {
     renderTile(mapSquare, placesInSight) {
         const {
             handleMapSquareClick, selectedSquare, selectedUnit,
-            handleTileHoverEnter, mapGrid, interfaceMode, infoPage,
+            handleTileHoverEnter, mapGrid, interfaceMode, infoPage, decorative,
             gameHasOpenDialogue, towns = [], activeFaction, units=[] } = this.props;
 
         const town = towns.filter(town => town.mapSquare === mapSquare)[0]
         const unitsInMapSquare = units.filter(unit => areSamePlace(unit, mapSquare));
 
-        const notInSight = infoPage
+        const notInSight = infoPage || decorative
             ? false
             : !placesInSight.some(square => {
                 return square.x === mapSquare.x && square.y === mapSquare.y

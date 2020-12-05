@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import DecorativeMap from '../components/DecorativeMap'
 import { StandardHead, siteTitle } from '../components/Layout'
 import styles from '../styles/Home.module.css'
 
@@ -17,6 +18,8 @@ export default function Home() {
         <p className={styles.description}>
           <Link href="/info">info index</Link>
         </p>
+        
+        <DecorativeMap scale={.5}/>
       </main>
 
       <footer className={styles.footer}>

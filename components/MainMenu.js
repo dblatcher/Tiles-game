@@ -4,6 +4,7 @@ import styles from './mainMenu.module.scss'
 
 import makeGameState from '../lib/makeGameState'
 import * as Storage from '../lib/storage'
+import DecorativeMap from './DecorativeMap'
 
 const savedGameFolder = "TILE_SAVES"
 
@@ -86,6 +87,7 @@ export default class MainMenu extends React.Component {
 
         return <>
             <aside className={asideStyle}>
+                {noActiveGame && <DecorativeMap scale={1}/>}
                 <nav className={navStyle}>
 
                     {noActiveGame ? (

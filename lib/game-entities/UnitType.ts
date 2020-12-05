@@ -75,6 +75,11 @@ class UnitType {
             return this.attack > 0
         }
 
+        //check for friendly transports
+        if (unitsInMapSquare.some(otherUnit => otherUnit.faction === unit.faction && otherUnit.type.passengerCapacity)) {
+            return true
+        }
+
         return !mapSquare.terrain.isWater
     }
 
@@ -90,20 +95,23 @@ class UnitType {
 }
 
 class NavalUnitType extends UnitType {
+    passengerCapacity: number;
     constructor(name: string, config: any = {}) {
         super(name, config);
+
+        this.passengerCapacity = config.passengerCapacity || 0
     }
 
     get isNaval() { return true }
 
     canEnterMapSquare(mapSquare, townInMapSquare, unitsInMapSquare=[], unit) {
-        const enemyPresence = (
-            townInMapSquare && unit.faction !== townInMapSquare.faction || 
+        const enemyUnitPresence = (
             unitsInMapSquare.some(otherUnit => unit.faction !== otherUnit.faction)
         );
 
         // allows sea units to attack land units from the sea
-        if (enemyPresence) {
+        // but not occupy towns
+        if (enemyUnitPresence) {
             return this.attack > 0
         }
 
@@ -232,6 +240,7 @@ const unitTypes = {
         spriteSheetName: 'units2',
         prerequisite: 'mapMaking',
         getsLostAtSea: true, // TO DO
+        passengerCapacity: 1, // TO DO
     }),
     caravel: new NavalUnitType('caravel', {
         defend: 2, attack: 2,
@@ -239,7 +248,7 @@ const unitTypes = {
         productionCost: 30,
         spriteSheetName: 'units2',
         prerequisite: 'navigation',
-        passengers: 2, // TO DO
+        passengerCapacity: 2, // TO DO
     }),
 }
 

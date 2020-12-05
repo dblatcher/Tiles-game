@@ -16,7 +16,9 @@ class Unit {
     remainingMoves: number;
     indexNumber: number;
     onGoingOrder: OnGoingOrder;
+    passengers: Array<Unit>;
     missions: Array<UnitMission>
+    isPassengerOf: Unit | number | null
     constructor(type: UnitType, faction: Faction, config: any = {}) {
         this.type = type
         this.faction = faction
@@ -31,6 +33,8 @@ class Unit {
             ? config.indexNumber
             : unitIndexNumber++
         this.onGoingOrder = config.ongoingOrder || null
+        this.passengers = config.passengers || []
+        this.isPassengerOf = config.isPassengerOf || null
         this.missions = config.missions || []
     }
 
@@ -51,6 +55,8 @@ class Unit {
     get description() {
         return `${this.vetran ? ' vetran' : ''} ${this.type.displayName}`
     }
+
+
 
     isAdjacentTo(target) {
         return !(Math.abs(this.x - target.x) > 1 || Math.abs(this.y - target.y) > 1)
@@ -92,6 +98,25 @@ class Unit {
         })
     }
 
+    boardTransport(transport:Unit) {
+        if (this.isPassengerOf !== null && typeof this.isPassengerOf !== 'number') {return false}
+        this.isPassengerOf = transport
+        transport.passengers.push(this)
+        return true
+    }
+
+    leaveTransport() {
+        const transport = this.isPassengerOf
+        if (!transport) {return false}
+        this.isPassengerOf = null
+
+        if (typeof transport === 'object') {
+            transport.passengers.splice(transport.passengers.indexOf(this),1)
+        }
+        return true
+    }
+
+
     processTurn(state) {
         this.remainingMoves = this.type.moves
         const { onGoingOrder } = this
@@ -123,6 +148,12 @@ class Unit {
             type: this.type.name,
             faction: this.faction.name,
             onGoingOrder: this.onGoingOrder ? this.onGoingOrder.serialised : null,
+            isPassengerOf: this.isPassengerOf === null 
+                ? null 
+                : typeof this.isPassengerOf === 'object'
+                    ? this.isPassengerOf.indexNumber 
+                    : this.isPassengerOf,
+            passengers: [], // list is repopulated in  SerialisedGame.deserialise, needs to be set here so not added below 
             missions: this.missions.map(unitMission => unitMission.serialised)
         }
         Object.keys(this).forEach(key => {
@@ -152,6 +183,7 @@ class Unit {
                 remainingMoves: data.remainingMoves,
                 indexNumber: data.indexNumber,
                 ongoingOrder: deserialisedOrder,
+                isPassengerOf: data.isPassengerOf, // needs to be deserialised from number to Unit in deserialiseGame
                 missions: deserialisedMissions,
             }
         )

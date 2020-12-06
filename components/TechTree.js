@@ -3,19 +3,21 @@ import { techDiscoveries } from '../lib/game-entities/TechDiscovery.tsx'
 import styles from './techTree.module.scss'
 
 class TechBubble {
-    constructor(tech, tier, bubbleIndexInTier, isKnown, isPossibleResearchGoal, isCurrentResearchGoal, sizing) {
+    constructor(tech, tier, bubbleIndexInTier, isKnown, isPossibleResearchGoal, isCurrentResearchGoal, isFocus, noNewTab, sizing) {
         this.tech = tech
         this.tier = tier
         this.bubbleIndexInTier = bubbleIndexInTier
         this.isKnown = isKnown
         this.isPossibleResearchGoal = isPossibleResearchGoal
         this.isCurrentResearchGoal = isCurrentResearchGoal
+        this.isFocus = isFocus
+        this.noNewTab = noNewTab
         this.sizing = sizing
     }
 
     get x() {
         const { sizing, tier } = this
-        return tier * (sizing.width + sizing.spaceBetweenTiers)
+        return (tier - sizing.lowestTier) * (sizing.width + sizing.spaceBetweenTiers)
     }
 
     get y() {
@@ -54,7 +56,9 @@ class TechBubble {
     get height() { return this.sizing.cornerSize * 2 }
 
     render(handleClickOnTech) {
-        const { x, y, tech, polygonPoints, isKnown, isPossibleResearchGoal, isCurrentResearchGoal } = this
+        const { x, y, tech, polygonPoints,
+            isKnown, isPossibleResearchGoal, isCurrentResearchGoal, isFocus, noNewTab = false
+        } = this
         const { cornerSize, width } = this.sizing
 
         const polygonClassList = [styles.techPolygon]
@@ -68,7 +72,7 @@ class TechBubble {
             polygonClassList.push(styles.possibleResearchGoal)
             gClassList.push(styles.possibleResearchGoal)
         }
-        if (isCurrentResearchGoal) {
+        if (isCurrentResearchGoal || isFocus) {
             polygonClassList.push(styles.currentResearchGoal)
             gClassList.push(styles.currentResearchGoal)
         }
@@ -92,23 +96,23 @@ class TechBubble {
                     {tech.description}{isKnown ? "✓" : ""}
                 </text>
 
-                <a href={this.tech.infoPageUrl} 
-                target="_blank" 
-                className={styles.infoLink}
-                onClick={event => event.stopPropagation()}>
+                {!isFocus && <a href={this.tech.infoPageUrl}
+                    target={noNewTab ? "_self" : "_blank"}
+                    className={styles.infoLink}
+                    onClick={event => event.stopPropagation()}>
                     <circle
-                        cx={x + width - cornerSize*1.5}
+                        cx={x + width - cornerSize * 1.5}
                         cy={y + (cornerSize * 1.25) - 5}
                         r="10"
                         className={styles.infoLinkCircle}
                     >
                     </circle>
                     <text
-                        x={x + width - cornerSize*1.5 - 5}
+                        x={x + width - cornerSize * 1.5 - 5}
                         y={y + (cornerSize * 1.25)}
                         className={styles.infoLinkText}
                     >?</text>
-                </a>
+                </a>}
 
             </g>
         )
@@ -143,23 +147,44 @@ class TechBubble {
 export default class TechTree extends React.Component {
 
     render() {
-        const { knownTech = [], possibleResearchGoals = [], currentResearchGoal = null, handleClickOnTech } = this.props
-        const techBubbles = [];
-        let tier, highestTier = 0, bubbleIndexInTier;
+        const { knownTech = [], possibleResearchGoals = [], currentResearchGoal = null, handleClickOnTech, focus } = this.props
+        const techBubbles = [], namesOfTechsToInclude = [];
+        let tier, bubbleIndexInTier;
 
         const sizing = {
             width: 150,
             spaceBetweenTiers: 100,
-            spaceBetweenBubbles: 30,
+            spaceBetweenBubbles: !!focus ? 80 : 30,
             cornerSize: 15,
             longestTierLength: 0,
             tierLengths: [],
+            lowestTier: Infinity,
+            highestTier: 0,
+        }
+
+        if (focus) {
+            namesOfTechsToInclude.push(focus.name, ...focus.prerequisites)
+            for (let techName in techDiscoveries) {
+                if (techDiscoveries[techName].prerequisites.includes(focus.name)) {
+                    namesOfTechsToInclude.push(
+                        techName,
+                        ...techDiscoveries[techName].prerequisites
+                    )
+                }
+            }
         }
 
         for (let techName in techDiscoveries) {
+
+            if (focus && !namesOfTechsToInclude.includes(techName)) {
+                continue
+            }
+
             tier = techDiscoveries[techName].getTier(techDiscoveries)
             bubbleIndexInTier = techBubbles.filter(techBubble => techBubble.tier === tier).length
-            if (tier > highestTier) { highestTier = tier }
+            if (tier > sizing.highestTier) { sizing.highestTier = tier }
+            if (tier < sizing.lowestTier) { sizing.lowestTier = tier }
+
             if (bubbleIndexInTier + 1 > sizing.longestTierLength) { sizing.longestTierLength = bubbleIndexInTier + 1 }
 
             sizing.tierLengths[tier] = sizing.tierLengths[tier] ? sizing.tierLengths[tier] + 1 : 1;
@@ -171,6 +196,8 @@ export default class TechTree extends React.Component {
                 knownTech.includes(techDiscoveries[techName]),
                 possibleResearchGoals.includes(techDiscoveries[techName]),
                 currentResearchGoal === techDiscoveries[techName],
+                focus === techDiscoveries[techName],
+                !!focus,
                 sizing,
             ))
         }
@@ -187,12 +214,16 @@ export default class TechTree extends React.Component {
 
 
         const viewBox = {
-            width: ((highestTier + 1) * sizing.width) + highestTier * sizing.spaceBetweenTiers,
+            width: ((sizing.highestTier - sizing.lowestTier + 1) * (sizing.width + sizing.spaceBetweenTiers)) - sizing.spaceBetweenTiers,
             height: (sizing.longestTierLength * (2 * sizing.cornerSize)) + (sizing.longestTierLength - 1) * sizing.spaceBetweenBubbles
         }
 
+        const articleClassList = !!focus 
+            ? [styles.border, styles.article]
+            : [styles.box, styles.article];
+
         return (
-            <article className={styles.article}>
+            <article className={articleClassList.join(" ")}>
                 <svg className={styles.svg}
                     style={{ width: `${viewBox.width * (2 / 3)}px` }}
                     viewBox={`0 0 ${viewBox.width} ${viewBox.height}`}

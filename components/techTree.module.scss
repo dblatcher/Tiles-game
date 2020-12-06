@@ -1,12 +1,21 @@
 @import '../styles/design.scss';
 
 .article {
-    @include box();
     overflow: auto;
     max-width: 100%;
     width: 100%;
     box-sizing: border-box;
     padding-bottom: .5em;
+}
+
+.border {
+    border-top: 1px solid black;
+    padding-top: 1em;
+    margin-top: 1em;
+}
+
+.box {
+    @include box();
 }
 
 .svg {

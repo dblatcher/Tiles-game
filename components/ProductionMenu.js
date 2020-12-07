@@ -34,13 +34,11 @@ export default class ProductionMenu extends React.Component {
 
     renderUnitTypeOptions() {
         const { town } = this.props
+        const { turnsToCompleteCurrentProduction } = town
         return Object.keys(unitTypes)
             .map(key => unitTypes[key])
             .filter(unitType => unitType.checkCanBuildWith(town.faction.knownTech))
             .map(unitType => {
-
-                const remainingProduction = unitType.productionCost - town.productionStore
-                let turnsToComplete = getTurnsToComplete(remainingProduction, town.output.productionYield)
 
                 return (
                     <li key={`unitOption-${unitType.name}`}
@@ -52,7 +50,7 @@ export default class ProductionMenu extends React.Component {
                         </figure>
 
                         <span>{`${unitType.displayName}(${unitType.productionCost})`}</span>
-                        <span>{`${turnsToComplete} turn${turnsToComplete == 1 ? '' : 's'}`}</span>
+                        <span>{`${turnsToCompleteCurrentProduction} turn${turnsToCompleteCurrentProduction == 1 ? '' : 's'}`}</span>
                         <InfoLink subject={unitType}/>
                     </li>
                 )
@@ -61,14 +59,12 @@ export default class ProductionMenu extends React.Component {
 
     renderBuildingTypeOptions() {
         const { town } = this.props
+        const { turnsToCompleteCurrentProduction } = town
         return Object.keys(buildingTypes)
             .map(key => buildingTypes[key])
             .filter(buildingType => !town.buildings.includes(buildingType))
             .filter(buildingType => buildingType.checkCanBuildWith(town.faction.knownTech))
             .map(buildingType => {
-
-                const remainingProduction = buildingType.productionCost - town.productionStore
-                let turnsToComplete = getTurnsToComplete(remainingProduction, town.output.productionYield)
 
                 return (
                     <li key={`buildingOption-${buildingType.name}`}
@@ -76,7 +72,7 @@ export default class ProductionMenu extends React.Component {
                         onClick={() => { this.handleProductionItemPick(buildingType) }}>
 
                         <span>{`${buildingType.displayName}(${buildingType.productionCost})`}</span>
-                        <span>{`${turnsToComplete} turn${turnsToComplete == 1 ? '' : 's'}`}</span>
+                        <span>{`${turnsToCompleteCurrentProduction} turn${turnsToCompleteCurrentProduction == 1 ? '' : 's'}`}</span>
                         <InfoLink subject={buildingType}/>
                     </li>
                 )

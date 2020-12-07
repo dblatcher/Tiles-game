@@ -2,6 +2,7 @@ import Window from "./Window";
 import SvgIcon from "./SvgIcon"
 import TradeReport from "./TradeReport"
 import ProgressBox from "./ProgressBox"
+import ProductionMenu from "./ProductionMenu"
 import TechTree from "./TechTree";
 import { getTurnsToComplete } from '../lib/utility'
 import CitizenRow from "./CitizenRow";
@@ -60,7 +61,7 @@ export default class FactionWindow extends React.Component {
     }
 
     render() {
-        const { faction, closeWindow, towns, openTownView } = this.props
+        const { faction, closeWindow, towns, openTownView, handleTownAction } = this.props
         const factionTowns = towns.filter(town => town.faction === faction)
         const allocatedBudget = faction.calcuateAllocatedBudget(factionTowns, true)
         const budgetKeys = Object.keys(faction.budget.store)
@@ -110,6 +111,12 @@ export default class FactionWindow extends React.Component {
                                 </td>
                                 <td><CitizenRow town={town} onFactionWindow={true}/></td>
                                 <td><TradeReport town={town} /></td>
+                                <td>
+                                    <span>
+                                        {town.isProducing ? town.isProducing.displayName : 'no production'}
+                                        {town.isProducing ? `(${town.turnsToCompleteCurrentProduction} turns)` : ''}
+                                    </span>
+                                    <ProductionMenu handleTownAction={handleTownAction} town={town} /></td>
                             </tr>
                         )}
                     </tbody>

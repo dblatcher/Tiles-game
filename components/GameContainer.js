@@ -344,6 +344,7 @@ export default class GameContainer extends React.Component {
                     towns={towns}
                     openTownView={this.openTownView}
                     handleFactionAction={this.handleFactionAction}
+                    handleTownAction={this.handleTownAction}
                     closeWindow={this.toggleFactionWindow} />
             )
         }

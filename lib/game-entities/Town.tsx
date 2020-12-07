@@ -8,6 +8,7 @@ import { BuildingType, buildingTypes } from './BuildingType.tsx'
 
 import { hurryCostPerUnit } from '../game-logic/constants'
 import { UNHAPPINESS_ALLOWANCE, UNHAPPINESS_RATE, BASE_POPULATION_LIMIT } from '../game-logic/constants'
+import { getTurnsToComplete } from '../utility'
 
 let townIndex = 0
 
@@ -124,6 +125,11 @@ class Town {
         let value = BASE_POPULATION_LIMIT;
         this.buildings.forEach(buildingType => { value += buildingType.allowExtraPopulation })
         return value
+    }
+
+    get turnsToCompleteCurrentProduction() {
+        if (!this.isProducing) {return 0}
+        return getTurnsToComplete(this.isProducing.productionCost - this.productionStore, this.output.productionYield)
     }
 
     hasBuilding(name) {

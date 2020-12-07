@@ -14,7 +14,7 @@ export default class TechInfo extends React.Component {
         const techDiscovery = subject
         if (!techDiscovery) { return null }
 
-        const unitTypesEnabled = [], buildingTypesEnabled = []
+        const unitTypesEnabled = [], buildingTypesEnabled = [], techDiscoveriesEnabled = [];
 
         Object.keys(unitTypes)
             .map(key => unitTypes[key])
@@ -32,6 +32,15 @@ export default class TechInfo extends React.Component {
                 ]
             })
 
+        Object.keys(techDiscoveries)
+            .map(key => techDiscoveries[key])
+            .forEach(otherTechDiscovery => {
+                if (otherTechDiscovery.prerequisites.includes(techDiscovery.name)) [
+                    techDiscoveriesEnabled.push(otherTechDiscovery)
+                ]
+            })
+
+        const allowsList = unitTypesEnabled.length + buildingTypesEnabled.length + techDiscoveriesEnabled.length > 0
 
         return (
             <article className={styles.article}>
@@ -41,9 +50,20 @@ export default class TechInfo extends React.Component {
                     ? <p>{content.description}</p>
                     : <p>{techDiscovery.description} is a techDiscovery.</p>}
 
+                <div className={styles.clear}></div>
 
-                {unitTypesEnabled.length + buildingTypesEnabled.length >0 
-                ? (<>
+                {techDiscovery.prerequisites.length > 0 && <div className={styles.float}>
+                    <h4>Requires</h4>
+                    <ul>
+                    {techDiscovery.prerequisites.map(prerequisiteName => (
+                        <li key={`prerequisites-list-${prerequisiteName}`}>
+                            <InfoLink subject={techDiscoveries[prerequisiteName]} sameWindow useDescription/> 
+                        </li>
+                    ))}
+                    </ul>
+                </div>}
+
+                {allowsList && <div className={styles.float}>
                     <h4>Allows</h4>
                     <ul>
                         {unitTypesEnabled.map(unitType => (
@@ -56,22 +76,13 @@ export default class TechInfo extends React.Component {
                                 <InfoLink subject={buildingType} sameWindow useDescription/> 
                             </li>
                         ))}
+                        {techDiscoveriesEnabled.map(techDiscovery => (
+                            <li key={`tech-list-${techDiscovery.name}`}>
+                                <InfoLink subject={techDiscovery} sameWindow useDescription/> 
+                            </li>
+                        ))}
                     </ul>
-                </>)
-                : (null)}
-
-                {techDiscovery.prerequisites.length > 0 && (
-                    <>
-                    <h4>Requires</h4>
-                    <ul>
-                    {techDiscovery.prerequisites.map(prerequisiteName => (
-                        <li key={`prerequisites-list-${prerequisiteName}`}>
-                            <InfoLink subject={techDiscoveries[prerequisiteName]} sameWindow useDescription/> 
-                        </li>
-                    ))}
-                    </ul>
-                    </>
-                )}
+                </div>}
 
                 <div className={styles.clear}></div>
 

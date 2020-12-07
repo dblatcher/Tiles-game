@@ -153,7 +153,7 @@ export default class TechTree extends React.Component {
 
         const sizing = {
             width: 150,
-            spaceBetweenTiers: 100,
+            spaceBetweenTiers: !!focus ? 70 : 100,
             spaceBetweenBubbles: !!focus ? 80 : 30,
             cornerSize: 15,
             longestTierLength: 0,

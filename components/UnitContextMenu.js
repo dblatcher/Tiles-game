@@ -32,24 +32,25 @@ export default function UnitContextMenu(props) {
 
     let navClassList = [styles.contextMenu]
 
-    if (placement.includes('BELOW')) { 
+    if (placement.includes('BELOW')) {
         if (placement.includes('RIGHT')) {
-            navClassList.push(styles.contextMenuBelowRight) 
+            navClassList.push(styles.contextMenuBelowRight)
         } else if (placement.includes('LEFT')) {
-            navClassList.push(styles.contextMenuBelowLeft) 
+            navClassList.push(styles.contextMenuBelowLeft)
         } else {
-            navClassList.push(styles.contextMenuBelow) 
+            navClassList.push(styles.contextMenuBelow)
         }
     } else {
         if (placement.includes('RIGHT')) {
-            navClassList.push(styles.contextMenuAboveRight) 
+            navClassList.push(styles.contextMenuAboveRight)
         } else if (placement.includes('LEFT')) {
-            navClassList.push(styles.contextMenuAboveLeft) 
+            navClassList.push(styles.contextMenuAboveLeft)
         } else {
-            navClassList.push(styles.contextMenuAbove) 
-        } 
+            navClassList.push(styles.contextMenuAbove)
+        }
     }
-    
+
+
 
     return <nav className={navClassList.join(" ")}>
         {availableOrders.map(availableOrder => (
@@ -57,7 +58,10 @@ export default function UnitContextMenu(props) {
                 key={"order-" + availableOrder.orderType.name}
                 title={availableOrder.orderType.name}
                 onClick={availableOrder.onClickFunction}>
-                {availableOrder.orderType.letterCode}
+                {availableOrder.orderType.materialIcon
+                    ? <i className={"material-icons md-24"}>{availableOrder.orderType.materialIcon}</i>
+                    : <>{availableOrder.orderType.letterCode}</>
+                }
             </button>
         ))}
     </nav>

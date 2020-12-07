@@ -60,7 +60,7 @@ export default class FactionWindow extends React.Component {
     }
 
     render() {
-        const { faction, closeWindow, towns } = this.props
+        const { faction, closeWindow, towns, openTownView } = this.props
         const factionTowns = towns.filter(town => town.faction === faction)
         const allocatedBudget = faction.calcuateAllocatedBudget(factionTowns, true)
         const budgetKeys = Object.keys(faction.budget.store)
@@ -105,7 +105,9 @@ export default class FactionWindow extends React.Component {
                     <tbody>
                         {factionTowns.map(town =>
                             <tr key={`trade-report-${town.indexNumber}`}>
-                                <td>{town.name}</td>
+                                <td>
+                                    <span style={{cursor: 'pointer'}} onClick={() => {openTownView(town)}}>{town.name}</span>
+                                </td>
                                 <td><CitizenRow town={town} onFactionWindow={true}/></td>
                                 <td><TradeReport town={town} /></td>
                             </tr>

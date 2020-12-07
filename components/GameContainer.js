@@ -63,6 +63,7 @@ export default class GameContainer extends React.Component {
         this.setMainMenuOpen = this.setMainMenuOpen.bind(this)
         this.toggleFactionWindow = this.toggleFactionWindow.bind(this)
         this.setMapZoomLevel = this.setMapZoomLevel.bind(this)
+        this.openTownView = this.openTownView.bind(this)
 
         this.handleStorageAction = handleStorageAction.bind(this)
     }
@@ -162,7 +163,18 @@ export default class GameContainer extends React.Component {
 
     toggleFactionWindow() {
         this.setState(state => {
-            return { factionWindowIsOpen: !state.factionWindowIsOpen, fallenUnits: [] }
+            return { 
+                factionWindowIsOpen: !state.factionWindowIsOpen, 
+                fallenUnits: [] 
+            }
+        })
+    }
+
+    openTownView(town) {
+        this.setState({
+            factionWindowIsOpen: false, 
+            fallenUnits: [],
+            openTown: town
         })
     }
 
@@ -318,6 +330,8 @@ export default class GameContainer extends React.Component {
                     towns={towns}
                     closeTownView={this.closeTownView}
                     handleTownAction={this.handleTownAction}
+                    towns={towns}
+                    openTownView={this.openTownView}
                     mapGrid={mapGrid}
                     units={units} />
             )
@@ -328,6 +342,7 @@ export default class GameContainer extends React.Component {
                 <FactionWindow
                     faction={activeFaction}
                     towns={towns}
+                    openTownView={this.openTownView}
                     handleFactionAction={this.handleFactionAction}
                     closeWindow={this.toggleFactionWindow} />
             )

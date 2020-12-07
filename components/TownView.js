@@ -54,10 +54,34 @@ export default class TownView extends React.Component {
     }
 
     render() {
-        const { town, closeTownView, mapGrid, handleTownAction, towns, units } = this.props
+        const { town, closeTownView, mapGrid, handleTownAction, towns, units, openTownView } = this.props
+
+        const buttonList = [
+            { text: 'close', clickFunction: closeTownView },
+        ]
+
+        const factionTowns = towns.filter(otherTown => otherTown.faction === town.faction)
+
+        if (factionTowns.length > 1) {
+            const indexOfThisTown = factionTowns.indexOf(town)
+            const nextTown = factionTowns[indexOfThisTown + 1] || factionTowns[0]
+            const previousTown = factionTowns[indexOfThisTown - 1] || factionTowns[factionTowns.length - 1]
+
+            if (nextTown !== town) {
+                buttonList.unshift(
+                    {text:`${nextTown.name} >`, clickFunction: ()=>{openTownView(nextTown)}}
+                )
+            }
+            if (previousTown !== town && previousTown !== nextTown) {
+                buttonList.unshift(
+                    {text:`< ${previousTown.name}`, clickFunction: ()=>{openTownView(previousTown)}}
+                )
+            }
+        }
+
 
         return (
-            <Window title={`${town.name} - pop.${town.population},000 `} buttons={[{ text: 'close', clickFunction: closeTownView }]}>
+            <Window title={`${town.name} - pop.${town.population},000 `} buttons={buttonList}>
                 <div className={styles.frame}>
 
                     <section className={[styles.section, styles.mapSection].join(" ")}>

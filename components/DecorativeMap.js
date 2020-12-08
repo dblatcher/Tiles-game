@@ -12,9 +12,11 @@ export default class DecorativeMap extends React.Component {
     }
 
     componentDidMount() {
-        const { width = 20, height = 20, treeChance = .25 } = this.props
+        const { width = 60, height = 30, treeChance = .35, gridFunction } = this.props
         this.setState({
-            mapGrid: MapSquare.makeRandomGrid(width, height, treeChance, 0)
+            mapGrid: gridFunction
+                ? gridFunction(width, height, treeChance, 0)
+                : MapSquare.makeRandomGrid(width, height, treeChance, 0)
         })
     }
 

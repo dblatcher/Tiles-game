@@ -51,6 +51,23 @@ const terrainTypes = {
             backgroundImage: 'repeating-radial-gradient(green, transparent 0.6px)',
         },
     }),
+    arctic: new TerrainType('arctic', {
+        yields: [0, 0, 0],
+        canIrrigate: false,
+        neverTrees: true,
+        css: {
+            background: 'lightgray',
+            backgroundImage: 'repeating-linear-gradient(7deg, transparent -.1em, white .5em)',
+        },
+    }),
+    tundra: new TerrainType('tundra', {
+        yields: [1, 0, 0],
+        canIrrigate: true,
+        css: {
+            background: 'sandybrown',
+            backgroundImage: 'repeating-linear-gradient(9deg, transparent -.1em, white .5em)',
+        },
+    }),
     desert: new TerrainType('desert', {
         yields: [1, 1, 0],
         canIrrigate: true,

@@ -95,7 +95,6 @@ const terrainTypes = {
     }),
     ocean: new TerrainType('ocean', {
         yields: [2, 0, 1],
-        movementCost: 2,
         isWater: true,
         css: {
             background: 'lightseagreen',

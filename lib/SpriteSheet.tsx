@@ -231,7 +231,7 @@ const units = new SpriteSheet ('units',{
 })
 
 const units2 = new SpriteSheet ('units2',{
-    cols: 3,
+    cols: 4,
     rows: 4,
     css: {
         backgroundImage: 'url(/units_2.png)'
@@ -240,15 +240,18 @@ const units2 = new SpriteSheet ('units2',{
         'explorer': [0,0],
         'pikeman': [1,0],
         'musketeer': [2,0],
-        'catapult': [0,1],
-        'chariot': [1,1],
-        'cannon': [2,1],
-        'elephant':[0,2],
-        'crusader':[1,2],
-        'dragoon':[2,2],
-        'caravan':[0,3],
-        'trireme':[1,3],
-        'caravel':[2,3],
+        'catapult': [3,0],
+        'chariot': [0,1],
+        'cannon': [1,1],
+        'elephant':[2,1],
+        'crusader':[3,1],
+        'dragoon':[0,2],
+        'caravan':[1,2],
+        'trireme':[2,2],
+        'caravel':[3,2],
+        'frigate':[0,3],
+        'galleon':[1,3],
+        'entertainer':[2,3],
     }
 })
 

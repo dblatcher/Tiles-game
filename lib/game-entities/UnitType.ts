@@ -240,7 +240,7 @@ const unitTypes = {
         spriteSheetName: 'units2',
         prerequisite: 'mapMaking',
         getsLostAtSea: true, // TO DO
-        passengerCapacity: 1, // TO DO
+        passengerCapacity: 1, 
     }),
     caravel: new NavalUnitType('caravel', {
         defend: 2, attack: 2,
@@ -248,7 +248,22 @@ const unitTypes = {
         productionCost: 30,
         spriteSheetName: 'units2',
         prerequisite: 'navigation',
-        passengerCapacity: 2, // TO DO
+        passengerCapacity: 2, 
+    }),
+    frigate: new NavalUnitType('frigate', {
+        defend: 4, attack: 4,
+        moves: 24,
+        productionCost: 40,
+        spriteSheetName: 'units2',
+        prerequisite: 'magnetism',
+    }),
+    galleon: new NavalUnitType('galleon', {
+        defend: 3, attack: 2,
+        moves: 24,
+        productionCost: 40,
+        spriteSheetName: 'units2',
+        prerequisite: 'magnetism',
+        passengerCapacity: 4, 
     }),
 }
 

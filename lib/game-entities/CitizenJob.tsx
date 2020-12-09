@@ -18,10 +18,11 @@ class CitizenJob {
 
 const citizenJobs = {
     entertainer: new CitizenJob('entertainer', {
-        revenueAdditionBonus: { entertainment: 4 }
+        revenueAdditionBonus: { entertainment: 4 },
+        spriteSheetName: 'units2',
     }),
     scientist: new CitizenJob('scientist', {
-        revenueAdditionBonus: { research: 4 }
+        revenueAdditionBonus: { research: 4 },
     }),
     merchant: new CitizenJob('merchant', {
         revenueAdditionBonus: { treasury: 4 },

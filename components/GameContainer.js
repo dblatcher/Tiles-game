@@ -45,7 +45,8 @@ export default class GameContainer extends React.Component {
             pendingDialogues: [],
             mainMenuOpen: false,
             mapZoomLevel: 1,
-            browserSupportsLocalStorage: undefined
+            browserSupportsLocalStorage: undefined,
+            debug: props.debugMode ? {revealMap: true} : {}
         });
 
         this.gameHolderElement = React.createRef()
@@ -321,7 +322,9 @@ export default class GameContainer extends React.Component {
         const { mapGrid, selectedSquare, units, towns, activeFaction,
             selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
             pendingDialogues, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
-            mapZoomLevel, browserSupportsLocalStorage } = this.state
+            mapZoomLevel, browserSupportsLocalStorage,
+            debug
+         } = this.state
 
         if (openTown) {
             return (
@@ -375,6 +378,7 @@ export default class GameContainer extends React.Component {
                         gameHasOpenDialogue={this.hasOpenDialogue}
                         mapZoomLevel={mapZoomLevel}
                         activeFaction={activeFaction}
+                        debug={debug}
                     />
                 </main>
 

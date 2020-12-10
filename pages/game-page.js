@@ -8,7 +8,10 @@ export default class GamePage extends React.Component {
     render() {
         return (
             <Layout gamePage>
-                <GameContainer startingGameState={makeGameState.blank()}/>
+                <GameContainer 
+                startingGameState={makeGameState.blank()}
+                debugMode={true}
+            />
             </Layout>
         )
     }

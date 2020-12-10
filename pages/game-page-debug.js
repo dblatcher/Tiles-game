@@ -10,6 +10,7 @@ export default class GamePage extends React.Component {
             <Layout gamePage>
                 <GameContainer 
                 startingGameState={makeGameState.blank()}
+                debugMode={true}
             />
             </Layout>
         )

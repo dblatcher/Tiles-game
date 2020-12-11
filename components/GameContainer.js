@@ -59,7 +59,6 @@ export default class GameContainer extends React.Component {
         this.handleTownAction = this.handleTownAction.bind(this)
         this.handleFactionAction = this.handleFactionAction.bind(this)
         this.handleOrderButton = this.handleOrderButton.bind(this)
-        this.handleTileHoverEnter = this.handleTileHoverEnter.bind(this)
         this.handleDialogueButton = this.handleDialogueButton.bind(this)
         this.setMainMenuOpen = this.setMainMenuOpen.bind(this)
         this.toggleFactionWindow = this.toggleFactionWindow.bind(this)
@@ -274,12 +273,6 @@ export default class GameContainer extends React.Component {
         })
     }
 
-    handleTileHoverEnter(mapSquare) {
-        if (this.state.interfaceMode === 'VIEW') {
-            this.setState({ selectedSquare: mapSquare })
-        }
-    }
-
     scrollToSelection() {
         return this.scrollToSquare(
             this.state.interfaceMode === 'MOVE'
@@ -391,7 +384,6 @@ export default class GameContainer extends React.Component {
                         towns={towns}
                         mapGrid={mapGrid}
                         handleMapSquareClick={this.handleMapSquareClick}
-                        handleTileHoverEnter={this.handleTileHoverEnter}
                         handleOrderButton={this.handleOrderButton}
                         interfaceMode={interfaceMode}
                         selectedSquare={selectedSquare}

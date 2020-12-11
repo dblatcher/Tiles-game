@@ -1,4 +1,4 @@
-import React, { version } from 'react'
+import React from 'react'
 import SvgIcon from './SvgIcon'
 import TownFigure from './TownFigure';
 import styles from './tile.module.scss'
@@ -9,23 +9,6 @@ export default class Tile extends React.Component {
 
     constructor(props) {
         super(props)
-
-        this.state = {
-            isHoveredOn: false
-        }
-        this.handleHover = this.handleHover.bind(this)
-    }
-
-    handleHover(wasEnterEvent) {
-        const { inInfoRow, handleTileHoverEnter, mapSquare, mapSquareOnFactionWorldMap, showVoid } = this.props
-
-        const viewerVersionOfMapSquare = mapSquareOnFactionWorldMap || mapSquare;
-
-        this.setState({ isHoveredOn: wasEnterEvent }, () => {
-            if (!inInfoRow && this.state.isHoveredOn && !showVoid && handleTileHoverEnter) {
-                handleTileHoverEnter(viewerVersionOfMapSquare)
-            }
-        })
     }
 
     get needsCoastline() {
@@ -113,8 +96,6 @@ export default class Tile extends React.Component {
             <figure
                 className={figureClassList.join(" ")}
                 onClick={handleClick || function () { }}
-                onPointerEnter={() => { this.handleHover(true) }}
-                onPointerLeave={() => { this.handleHover(false) }}
             >
                 {showVoid
                     ? (null)

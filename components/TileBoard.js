@@ -33,7 +33,7 @@ export default class TileBoard extends React.Component {
     renderTile(mapSquare, placesInSight) {
         const {
             handleMapSquareClick, selectedSquare, selectedUnit,
-            handleTileHoverEnter, mapGrid, interfaceMode, infoPage, decorative,
+            mapGrid, interfaceMode, infoPage, decorative,
             gameHasOpenDialogue, towns = [], watchingFaction, units=[],
             debug = {}
         } = this.props;
@@ -69,7 +69,6 @@ export default class TileBoard extends React.Component {
                 selectedUnit={selectedUnit}
                 squareSelectedUnitIsIn={selectedUnit ? mapGrid[selectedUnit.y][selectedUnit.x] : null}
                 isSelected={mapSquare === selectedSquare}
-                handleTileHoverEnter={handleTileHoverEnter}
                 adjacentSquares={this.getAdjacentSquares(mapSquare.x, mapSquare.y)}
                 gameHasOpenDialogue={gameHasOpenDialogue}
                 notInSight={notInSight}

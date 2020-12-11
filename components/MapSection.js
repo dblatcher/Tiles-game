@@ -22,7 +22,7 @@ export default class MapSection extends React.Component {
     }
 
     renderTile(mapSquare, excludeCorners, occupier) {
-        const { handleMapSectionClick, selectedSquare, handleTileHoverEnter, xStart, xSpan, yStart, ySpan, town } = this.props;
+        const { handleMapSectionClick, selectedSquare, xStart, xSpan, yStart, ySpan, town } = this.props;
         if (mapSquare.x < xStart || mapSquare.x > xStart + xSpan - 1) { return null }
 
         const isCorner = (mapSquare.x === xStart || mapSquare.x === xStart + xSpan - 1) && (mapSquare.y === yStart || mapSquare.y === yStart + ySpan - 1)
@@ -41,7 +41,6 @@ export default class MapSection extends React.Component {
                 onMapSection={true}
                 town={isTownTile ? town : null}
                 isSelected={mapSquare === selectedSquare}
-                handleTileHoverEnter={handleTileHoverEnter}
                 showYields={showYields}
                 occupier={occupier}
                 citizenOutput={citizen ? citizen.getOutput(town) : null}

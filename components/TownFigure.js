@@ -28,7 +28,7 @@ export default class TownFigure extends React.Component {
         const spriteStyle = {
             backgroundColor: town.faction.color,
             border: town.hasBuilding('cityWalls')
-                ? '5px dashed white'
+                ? '.5em dashed white'
                 : ''
         }
 

@@ -125,7 +125,7 @@ export default class GameContainer extends React.Component {
                     console.log(`****Move took: ${Date.now() - moveTimeStamp}ms`)
                     if (unitThatMovedWasInViewAfterMove || unitThatMovedWasInViewBeforeMove) {
                         this.scrollToSquare(unitThatMoved)
-                        await sleep(500)
+                        await sleep(210)
                     } else {
                         await sleep(10)
                     }

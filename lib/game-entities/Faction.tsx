@@ -17,7 +17,7 @@ class Faction {
     budget: TradeBudget;
     researchGoal: TechDiscovery | null;
     knownTech: Array<TechDiscovery>;
-    worldMap: Array<Array<MapSquare>>;
+    worldMap: Array<Array<MapSquare | null> | null>;
     computerPersonality: null
     constructor(name: string, config: any = {}) {
         this.name = name;

@@ -134,7 +134,7 @@ class ComputerPersonality {
                 new UnitMission('EXPLORE'),
             )
         }
-        if (unit.role === "SCOUT") {
+        if (unit.role === "SCOUT" || unit.role === "WORKER" ) {
             unit.missions.push(
                 new UnitMission('EXPLORE'),
             )

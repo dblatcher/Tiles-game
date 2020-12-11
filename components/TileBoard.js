@@ -34,7 +34,7 @@ export default class TileBoard extends React.Component {
         const {
             handleMapSquareClick, selectedSquare, selectedUnit,
             handleTileHoverEnter, mapGrid, interfaceMode, infoPage, decorative,
-            gameHasOpenDialogue, towns = [], activeFaction, units=[],
+            gameHasOpenDialogue, towns = [], watchingFaction, units=[],
             debug = {}
         } = this.props;
 
@@ -48,14 +48,14 @@ export default class TileBoard extends React.Component {
             })
 
 
-        const notOnFactionWorldMap = activeFaction && !infoPage && notInSight
-            ? !activeFaction.worldMap[mapSquare.y] || !activeFaction.worldMap[mapSquare.y][mapSquare.x]
+        const notOnFactionWorldMap = watchingFaction && !infoPage && notInSight
+            ? !watchingFaction.worldMap[mapSquare.y] || !watchingFaction.worldMap[mapSquare.y][mapSquare.x]
             : false
 
         let mapSquareOnFactionWorldMap = null
-        if (activeFaction && !infoPage) {
+        if (watchingFaction && !infoPage) {
             if (!notInSight || debug.revealMap) {mapSquareOnFactionWorldMap = mapSquare}
-            else if (!notOnFactionWorldMap ) {mapSquareOnFactionWorldMap = activeFaction.worldMap[mapSquare.y][mapSquare.x]}
+            else if (!notOnFactionWorldMap ) {mapSquareOnFactionWorldMap = watchingFaction.worldMap[mapSquare.y][mapSquare.x]}
         }
 
 
@@ -117,11 +117,11 @@ export default class TileBoard extends React.Component {
     }
 
     render() {
-        const { mapGrid, units = [], fallenUnits = [], towns = [], mapZoomLevel = 1, activeFaction } = this.props
+        const { mapGrid, units = [], fallenUnits = [], towns = [], mapZoomLevel = 1, watchingFaction } = this.props
         const sectionStyle = { fontSize: `${mapZoomLevel * 100}%` }
 
-        const placesInSight = activeFaction
-            ? activeFaction.getPlacesInSight(towns, units)
+        const placesInSight = watchingFaction
+            ? watchingFaction.getPlacesInSight(towns, units)
             : []
 
         return (

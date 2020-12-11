@@ -22,7 +22,7 @@ import { browserHasLocalStorage } from '../lib/storage'
 import handleStorageAction from './gameContainer.handleStorageAction'
 
 import styles from './gameContainer.module.scss'
-
+import {areSamePlace} from '../lib/utility'
 
 export default class GameContainer extends React.Component {
 
@@ -73,6 +73,11 @@ export default class GameContainer extends React.Component {
         this.setState({ browserSupportsLocalStorage: browserHasLocalStorage() })
     }
 
+    get primaryPlayerFaction() {
+        const humanPlayers = this.state.factions.filter(faction => !faction.isComputerPlayer)
+        return humanPlayers[0] || null
+    }
+
     get isComputerPlayersTurn() {
         return this.state.activeFaction.isComputerPlayer
     }
@@ -89,9 +94,16 @@ export default class GameContainer extends React.Component {
     }
 
     letComputerTakeItsTurn() {
-        const { activeFaction } = this.state
+        const { activeFaction, towns, units } = this.state
+        const { primaryPlayerFaction } = this
+        const placesInSight = primaryPlayerFaction.getPlacesInSight(towns, units)
+
         let computerHasFinished = false
+        let unitThatMoved = null
+        let unitThatMovedWasInViewBeforeMove = undefined
+        let unitThatMovedWasInViewAfterMove = undefined
         let movesMade = 0
+        let moveTimeStamp
 
         function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
@@ -101,13 +113,23 @@ export default class GameContainer extends React.Component {
 
             this.setState(
                 state => {
+                    moveTimeStamp = Date.now()
+                    unitThatMoved = state.selectedUnit
+                    unitThatMovedWasInViewBeforeMove = placesInSight.some(place => areSamePlace(place, unitThatMoved) )
                     activeFaction.computerPersonality.makeMove(state)
                     movesMade++
                     computerHasFinished = activeFaction.computerPersonality.checkIfFinished(state, movesMade)
                     return state
                 },
                 async () => {
-                    await sleep(500)
+                    unitThatMovedWasInViewAfterMove = placesInSight.some(place => areSamePlace(place, unitThatMoved) )
+                    console.log(`****Move took: ${Date.now() - moveTimeStamp}ms`)
+
+                    if (unitThatMovedWasInViewAfterMove || unitThatMovedWasInViewBeforeMove) {
+                        this.scrollToSquare(unitThatMoved)
+                        await sleep(500)
+                    }
+
                     if (computerHasFinished) {
                         this.setState(
                             gameActions.END_OF_TURN()(this.state),
@@ -319,7 +341,7 @@ export default class GameContainer extends React.Component {
     }
 
     render() {
-        const { mapGrid, selectedSquare, units, towns, activeFaction,
+        const { mapGrid, selectedSquare, units, towns, activeFaction, factions,
             selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
             pendingDialogues, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
             mapZoomLevel, browserSupportsLocalStorage,
@@ -377,7 +399,7 @@ export default class GameContainer extends React.Component {
                         fallenUnits={fallenUnits}
                         gameHasOpenDialogue={this.hasOpenDialogue}
                         mapZoomLevel={mapZoomLevel}
-                        activeFaction={activeFaction}
+                        watchingFaction={this.primaryPlayerFaction}
                         debug={debug}
                     />
                 </main>

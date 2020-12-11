@@ -22,7 +22,7 @@ import { browserHasLocalStorage } from '../lib/storage'
 import handleStorageAction from './gameContainer.handleStorageAction'
 
 import styles from './gameContainer.module.scss'
-import {areSamePlace} from '../lib/utility'
+import { areSamePlace } from '../lib/utility'
 
 export default class GameContainer extends React.Component {
 
@@ -46,7 +46,7 @@ export default class GameContainer extends React.Component {
             mainMenuOpen: false,
             mapZoomLevel: 1,
             browserSupportsLocalStorage: undefined,
-            debug: props.debugMode ? {revealMap: true} : {}
+            debug: props.debugMode ? { revealMap: true } : {}
         });
 
         this.gameHolderElement = React.createRef()
@@ -78,7 +78,7 @@ export default class GameContainer extends React.Component {
     }
 
     get isComputerPlayersTurn() {
-        return this.state.activeFaction.isComputerPlayer
+        return this.state.activeFaction && this.state.activeFaction.isComputerPlayer
     }
 
     get hasOpenDialogue() {
@@ -114,19 +114,20 @@ export default class GameContainer extends React.Component {
                 state => {
                     moveTimeStamp = Date.now()
                     unitThatMoved = state.selectedUnit
-                    unitThatMovedWasInViewBeforeMove = placesInSight.some(place => areSamePlace(place, unitThatMoved) )
+                    unitThatMovedWasInViewBeforeMove = placesInSight.some(place => areSamePlace(place, unitThatMoved))
                     activeFaction.computerPersonality.makeMove(state)
                     movesMade++
                     computerHasFinished = activeFaction.computerPersonality.checkIfFinished(state, movesMade)
                     return state
                 },
                 async () => {
-                    unitThatMovedWasInViewAfterMove = placesInSight.some(place => areSamePlace(place, unitThatMoved) )
+                    unitThatMovedWasInViewAfterMove = placesInSight.some(place => areSamePlace(place, unitThatMoved))
                     console.log(`****Move took: ${Date.now() - moveTimeStamp}ms`)
-
                     if (unitThatMovedWasInViewAfterMove || unitThatMovedWasInViewBeforeMove) {
                         this.scrollToSquare(unitThatMoved)
                         await sleep(500)
+                    } else {
+                        await sleep(10)
                     }
 
                     if (computerHasFinished) {
@@ -136,7 +137,7 @@ export default class GameContainer extends React.Component {
                                 if (this.isComputerPlayersTurn) {
                                     this.letComputerTakeItsTurn()
                                 } else {
-                                    this.scrollToSelection()
+                                    this.scrollToSelection('letComputerMakeMove, computerHasFinished')
                                 }
                             }
                         )
@@ -185,16 +186,16 @@ export default class GameContainer extends React.Component {
 
     toggleFactionWindow() {
         this.setState(state => {
-            return { 
-                factionWindowIsOpen: !state.factionWindowIsOpen, 
-                fallenUnits: [] 
+            return {
+                factionWindowIsOpen: !state.factionWindowIsOpen,
+                fallenUnits: []
             }
         })
     }
 
     openTownView(town) {
         this.setState({
-            factionWindowIsOpen: false, 
+            factionWindowIsOpen: false,
             fallenUnits: [],
             openTown: town
         })
@@ -234,8 +235,10 @@ export default class GameContainer extends React.Component {
         return this.setState(
             gameActions[command](input),
             () => {
-                this.scrollToSelection()
                 if (this.isComputerPlayersTurn) { this.letComputerTakeItsTurn() }
+                else {
+                    this.scrollToSelection()
+                }
             }
         )
     }
@@ -313,7 +316,7 @@ export default class GameContainer extends React.Component {
             return <BattleDialogue
                 battle={pendingDialogues[0]}
                 cancelBattle={() => this.handleDialogueButton('CANCEL_BATTLE', {})}
-                confirmBattle={() => this.handleDialogueButton('RESOLVE_BATTLE', {battle: pendingDialogues[0]})}
+                confirmBattle={() => this.handleDialogueButton('RESOLVE_BATTLE', { battle: pendingDialogues[0] })}
             />
         }
 
@@ -339,7 +342,7 @@ export default class GameContainer extends React.Component {
             pendingDialogues, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
             mapZoomLevel, browserSupportsLocalStorage,
             debug
-         } = this.state
+        } = this.state
 
         if (openTown) {
             return (
@@ -396,7 +399,13 @@ export default class GameContainer extends React.Component {
                     />
                 </main>
 
-                {!this.noActiveGame ? (<>
+                {!this.noActiveGame && this.isComputerPlayersTurn && (
+                    <aside className={styles.lowerInterfaceWindow} >
+                        <p className={styles.waitMessage}>{activeFaction.name} is taking its turn...</p>
+                    </aside>
+                )}
+
+                {!this.noActiveGame && !this.isComputerPlayersTurn && (
                     <aside className={styles.upperInterfaceWindow} ref={this.upperWindowElement} >
 
                         <InfoBar
@@ -425,9 +434,9 @@ export default class GameContainer extends React.Component {
                             </i>
                         </div>
                     </aside>
-                </>) : null}
+                )}
 
-                {!this.noActiveGame && !this.isComputerPlayersTurn ? (<>
+                {!this.noActiveGame && !this.isComputerPlayersTurn && (
                     <aside className={styles.lowerInterfaceWindow} >
                         <ModeButtons
                             interfaceMode={interfaceMode}
@@ -440,16 +449,16 @@ export default class GameContainer extends React.Component {
                             handleOrderButton={this.handleOrderButton}
                         />
                     </aside>
-                </>) : null}
+                )}
 
-                {mainMenuOpen || this.noActiveGame ? (
+                {(mainMenuOpen || this.noActiveGame) && (
                     <MainMenu
                         setOpenFunction={this.setMainMenuOpen}
                         noActiveGame={this.noActiveGame}
                         storageAction={this.handleStorageAction}
                         browserSupportsLocalStorage={browserSupportsLocalStorage}
                     />
-                ) : null}
+                )}
             </>
         )
     }

@@ -81,10 +81,10 @@ export default class TileBoard extends React.Component {
     }
 
     renderRow(row, y, placesInSight) {
-        const {rowStartsAt} = this.props;
+        const {mapXOffset} = this.props;
 
-        const shiftedRow = typeof rowStartsAt === 'number' 
-            ? [].concat(row.slice(rowStartsAt), row.slice(0,rowStartsAt))
+        const shiftedRow = typeof mapXOffset === 'number' 
+            ? [].concat(row.slice(mapXOffset), row.slice(0,mapXOffset))
             : row
 
         return (
@@ -97,7 +97,7 @@ export default class TileBoard extends React.Component {
     renderUnit(unit, placesInSight) {
         const { 
             handleMapSquareClick, selectedUnit, fallenUnits, mapGrid, handleOrderButton, interfaceMode, 
-            rowStartsAt,
+            mapXOffset,
             debug ={}
         } = this.props;
         const squareUnitIsOn = mapGrid[unit.y][unit.x]
@@ -120,7 +120,7 @@ export default class TileBoard extends React.Component {
             stack={this.getStackedUnits(unit)}
             gridWidth={mapGrid[0].length}
             notInSight={notInSight && !debug.revealMap}
-            rowStartsAt={rowStartsAt}
+            mapXOffset={mapXOffset}
         />)
     }
 

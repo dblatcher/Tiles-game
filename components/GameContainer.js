@@ -289,7 +289,11 @@ export default class GameContainer extends React.Component {
     scrollToSquare(target) {
         if (!target) { return false }
         const { x, y } = target
-        const { mapZoomLevel } = this.state
+        const { mapZoomLevel, mapXOffset, mapGrid } = this.state
+        const mapWidth = mapGrid[0].length
+
+        let shiftedX = x - mapXOffset
+        if (shiftedX < 0) {shiftedX += mapWidth} 
 
         //to do - support left aligned interface window 
         const tileSize = (4 * 16 * mapZoomLevel)
@@ -298,8 +302,7 @@ export default class GameContainer extends React.Component {
             ? this.upperWindowElement.current.offsetHeight
             : (12 * 16);
 
-
-        let pixelX = (x * tileSize) - window.innerWidth / 2 + leftBorderSize + tileSize / 2
+        let pixelX = (shiftedX * tileSize) - window.innerWidth / 2 + leftBorderSize + tileSize / 2
         let pixelY = (y * tileSize) - window.innerHeight / 2 + topBorderSize + tileSize / 2
         window.scrollTo(pixelX, pixelY)
     }
@@ -398,7 +401,7 @@ export default class GameContainer extends React.Component {
                         mapZoomLevel={mapZoomLevel}
                         watchingFaction={this.primaryPlayerFaction}
                         debug={debug}
-                        rowStartsAt={mapXOffset}
+                        mapXOffset={mapXOffset}
                     />
                 </main>
 

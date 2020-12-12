@@ -57,27 +57,29 @@ class Unit {
     }
 
 
-
-    isAdjacentTo(target) {
-        return !(Math.abs(this.x - target.x) > 1 || Math.abs(this.y - target.y) > 1)
+    isAdjacentTo(target, mapWidth) {
+        let xDiff = this.x - target.x
+        if (this.x === 0 && target.x === mapWidth - 1) { xDiff = 1 }
+        if (target.x === 0 && this.x === mapWidth - 1) { xDiff = 1 }
+        return !(Math.abs(xDiff) > 1 || Math.abs(this.y - target.y) > 1)
     }
 
-    getMovementCost(startingMapSquare:MapSquare, targetMapSquare:MapSquare, townInTargetMapSquare = null, unitsInTargetMapSquare:Array<Unit> = []) {
+    getMovementCost(startingMapSquare: MapSquare, targetMapSquare: MapSquare, townInTargetMapSquare = null, unitsInTargetMapSquare: Array<Unit> = []) {
         // attack movement cost = 1
-        if (unitsInTargetMapSquare.some(otherUnit => otherUnit.faction !== this.faction)) {return 1}
+        if (unitsInTargetMapSquare.some(otherUnit => otherUnit.faction !== this.faction)) { return 1 }
 
         return (startingMapSquare.road && targetMapSquare.road) || this.type.isPathfinder
             ? 1
             : targetMapSquare.movementCost
     }
 
-    getCouldEnter(targetMapSquare:MapSquare, townInTargetMapSquare = null, unitsInTargetMapSquare:Array<Unit> = []) {
+    getCouldEnter(targetMapSquare: MapSquare, townInTargetMapSquare = null, unitsInTargetMapSquare: Array<Unit> = []) {
         return this.type.canEnterMapSquare(targetMapSquare, townInTargetMapSquare, unitsInTargetMapSquare, this)
     }
 
-    canMoveToOrAttack(targetMapSquare:MapSquare, startingMapSquare:MapSquare = null, townInTargetMapSquare = null, unitsInTargetMapSquare:Array<Unit> = []) {
+    canMoveToOrAttack(targetMapSquare: MapSquare, startingMapSquare: MapSquare = null, townInTargetMapSquare = null, unitsInTargetMapSquare: Array<Unit> = [], mapWidth: number) {
 
-        if (areSamePlace(this, targetMapSquare) || !this.isAdjacentTo(targetMapSquare)) { return false }
+        if (areSamePlace(this, targetMapSquare) || !this.isAdjacentTo(targetMapSquare, mapWidth)) { return false }
         if (!this.getCouldEnter(targetMapSquare, townInTargetMapSquare, unitsInTargetMapSquare)) { return false }
 
         const movementCost = this.getMovementCost(startingMapSquare, targetMapSquare, townInTargetMapSquare, unitsInTargetMapSquare)
@@ -93,13 +95,14 @@ class Unit {
                 mapSquare,
                 mapGrid[y][x],
                 towns.filter(town => town.mapSquare === mapSquare)[0],
-                units.filter(unit => areSamePlace(mapSquare, unit))
+                units.filter(unit => areSamePlace(mapSquare, unit)),
+                mapGrid[0].length
             )
         })
     }
 
-    boardTransport(transport:Unit) {
-        if (this.isPassengerOf !== null && typeof this.isPassengerOf !== 'number') {return false}
+    boardTransport(transport: Unit) {
+        if (this.isPassengerOf !== null && typeof this.isPassengerOf !== 'number') { return false }
         this.isPassengerOf = transport
         transport.passengers.push(this)
         return true
@@ -107,11 +110,11 @@ class Unit {
 
     leaveTransport() {
         const transport = this.isPassengerOf
-        if (!transport) {return false}
+        if (!transport) { return false }
         this.isPassengerOf = null
 
         if (typeof transport === 'object') {
-            transport.passengers.splice(transport.passengers.indexOf(this),1)
+            transport.passengers.splice(transport.passengers.indexOf(this), 1)
         }
         return true
     }
@@ -148,10 +151,10 @@ class Unit {
             type: this.type.name,
             faction: this.faction.name,
             onGoingOrder: this.onGoingOrder ? this.onGoingOrder.serialised : null,
-            isPassengerOf: this.isPassengerOf === null 
-                ? null 
+            isPassengerOf: this.isPassengerOf === null
+                ? null
                 : typeof this.isPassengerOf === 'object'
-                    ? this.isPassengerOf.indexNumber 
+                    ? this.isPassengerOf.indexNumber
                     : this.isPassengerOf,
             passengers: [], // list is repopulated in  SerialisedGame.deserialise, needs to be set here so not added below 
             missions: this.missions.map(unitMission => unitMission.serialised)

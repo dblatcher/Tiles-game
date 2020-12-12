@@ -209,10 +209,11 @@ export default class GameContainer extends React.Component {
 
     handleMapSquareClick(input) {
         const { mapSquare } = input
+        const { selectedUnit, interfaceMode, mapGrid } = this.state
 
         if (this.hasOpenDialogue || this.isComputerPlayersTurn) { return false }
 
-        if (this.state.selectedUnit && this.state.interfaceMode === 'MOVE' && !this.state.selectedUnit.isAdjacentTo(mapSquare)) {
+        if (selectedUnit && interfaceMode === 'MOVE' && !selectedUnit.isAdjacentTo(mapSquare, mapGrid[0].length)) {
             return this.scrollToSquare(mapSquare)
         }
 
@@ -396,6 +397,7 @@ export default class GameContainer extends React.Component {
                         mapZoomLevel={mapZoomLevel}
                         watchingFaction={this.primaryPlayerFaction}
                         debug={debug}
+                        rowStartsAt={0}
                     />
                 </main>
 

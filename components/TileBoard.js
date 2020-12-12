@@ -75,14 +75,21 @@ export default class TileBoard extends React.Component {
                 showVoid={notOnFactionWorldMap && !debug.revealMap}
                 mapSquareOnFactionWorldMap={mapSquareOnFactionWorldMap}
                 showYields={infoPage}
+                mapGridWidth = {mapGrid[0].length}
             />
         )
     }
 
     renderRow(row, y, placesInSight) {
+        const {rowStartsAt} = this.props;
+
+        const shiftedRow = typeof rowStartsAt === 'number' 
+            ? [].concat(row.slice(rowStartsAt), row.slice(0,rowStartsAt))
+            : row
+
         return (
             <div className={styles.row} key={`row ${y}`}>
-                {row.map(mapSquare => this.renderTile(mapSquare, placesInSight))}
+                {shiftedRow.map(mapSquare => this.renderTile(mapSquare, placesInSight))}
             </div>
         )
     }
@@ -90,6 +97,7 @@ export default class TileBoard extends React.Component {
     renderUnit(unit, placesInSight) {
         const { 
             handleMapSquareClick, selectedUnit, fallenUnits, mapGrid, handleOrderButton, interfaceMode, 
+            rowStartsAt,
             debug ={}
         } = this.props;
         const squareUnitIsOn = mapGrid[unit.y][unit.x]
@@ -112,6 +120,7 @@ export default class TileBoard extends React.Component {
             stack={this.getStackedUnits(unit)}
             gridWidth={mapGrid[0].length}
             notInSight={notInSight && !debug.revealMap}
+            rowStartsAt={rowStartsAt}
         />)
     }
 

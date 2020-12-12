@@ -1,5 +1,6 @@
 
 import { onGoingOrderTypes } from "../game-entities/OngoingOrder.tsx";
+import { Unit } from "../game-entities/Unit";
 import { areSamePlace } from "../utility";
 import { unitMissionTypes} from "./UnitMissionTypes.ts"
 
@@ -18,11 +19,11 @@ class UnitMission {
         this.untilCancelled = !!config.untilCancelled
     }
 
-    checkIfFinished(unit, state) {
+    checkIfFinished(unit:Unit, state) {
         return unitMissionTypes[this.type].checkIfFinished.apply(this, [unit, state])
     }
 
-    chooseMove(unit, state) {
+    chooseMove(unit:Unit, state) {
         let possibleMoves = state.mapGrid
             .slice(unit.y - 1, unit.y + 2)
             .map(row => row.slice(unit.x - 1, unit.x + 2))
@@ -30,7 +31,7 @@ class UnitMission {
             .filter(mapSquare => {
                 const townInMapSquare = state.towns.filter(town => town.x == mapSquare.x && town.y === mapSquare.y)[0]
                 const unitsInMapSquare = state.units.filter(otherUnit => areSamePlace(otherUnit, mapSquare))
-                return unit.canMoveToOrAttack(mapSquare, state.mapGrid[unit.y][unit.x], townInMapSquare, unitsInMapSquare)
+                return unit.canMoveToOrAttack(mapSquare, state.mapGrid[unit.y][unit.x], townInMapSquare, unitsInMapSquare, state.mapGrid[0].length)
             })
 
         let possibleActions = unit.onGoingOrder

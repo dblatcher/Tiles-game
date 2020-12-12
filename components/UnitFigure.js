@@ -23,7 +23,7 @@ export default class UnitFigure extends React.Component {
     }
 
     render() {
-        const { unit, handleClick, isSelected, inInfoRow, stack, isFallen, interfaceMode, notInSight } = this.props
+        const { unit, handleClick, isSelected, inInfoRow, stack, isFallen, interfaceMode, notInSight, rowStartsAt, gridWidth } = this.props
 
         const placeInStack = inInfoRow
             ? 0
@@ -50,8 +50,12 @@ export default class UnitFigure extends React.Component {
 
         if (placeInStack > 0) { spriteClassList.push(styles.behind) }
 
+        const shiftedX = unit.x - rowStartsAt >= 0
+            ? unit.x - rowStartsAt
+            : gridWidth - (unit.x - rowStartsAt) - 2
+
         const figureStyle = {
-            left: inInfoRow ? 'unset' : `${unit.x * 4}em`,
+            left: inInfoRow ? 'unset' : `${shiftedX * 4}em`,
             top: inInfoRow ? 'unset' : `${unit.y * 4}em`,
             backgroundImage: isFallen
                 ? ''

@@ -5,7 +5,7 @@ import attemptMove from '../game-logic/attemptMove'
 
 import gameActions from '../game-logic/gameActions'
 import townActions from '../game-logic/townActions'
-import { areSamePlace, getDistanceBetween } from '../utility';
+import { unsafelyCheckAreSamePlace, unsafelyGetDistanceBetween } from '../utility';
 import { MINIMUM_DISTANCE_BETWEEN_TOWNS} from '../game-logic/constants'
 
 class ComputerPersonality {
@@ -63,14 +63,14 @@ class ComputerPersonality {
         let enemyUnits = this.getKnownEnemyUnits(state)
 
         return enemyUnits
-            .filter(unit => !enemyTowns.some(town => areSamePlace(town, unit)))
+            .filter(unit => !enemyTowns.some(town => unsafelyCheckAreSamePlace(town.mapSquare, unit)))
     }
 
     getPossibleNewTownLocations(state) {
         const squaresTownsCouldBeBuiltOn = this.faction.worldMap
             .flat()
             .filter(mapSquare => !mapSquare.terrain.neverTown)
-            .filter(mapSquare => !state.towns.some(town => getDistanceBetween(town, mapSquare) < MINIMUM_DISTANCE_BETWEEN_TOWNS ))
+            .filter(mapSquare => !state.towns.some(town => unsafelyGetDistanceBetween(town.mapSquare, mapSquare) < MINIMUM_DISTANCE_BETWEEN_TOWNS ))
 
         return squaresTownsCouldBeBuiltOn
     }

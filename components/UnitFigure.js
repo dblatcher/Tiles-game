@@ -5,13 +5,13 @@ import styles from './unitFigure.module.scss'
 
 export default class UnitFigure extends React.Component {
 
-    renderUnitMenu() {
+    renderUnitMenu(shiftedX) {
         const { unit, handleOrderButton, squareUnitIsOn, gridWidth } = this.props
         let placement = []
 
         if (squareUnitIsOn.y < 3) { placement.push('BELOW') }
-        if (squareUnitIsOn.x < 3) { placement.push('RIGHT') }
-        if (gridWidth && (squareUnitIsOn.x > gridWidth - 3)) { placement.push('LEFT') }
+        if (shiftedX < 3) { placement.push('RIGHT') }
+        if (gridWidth && (shiftedX > gridWidth - 3)) { placement.push('LEFT') }
 
         return (
             <UnitContextMenu
@@ -50,9 +50,8 @@ export default class UnitFigure extends React.Component {
 
         if (placeInStack > 0) { spriteClassList.push(styles.behind) }
 
-        const shiftedX = unit.x - rowStartsAt >= 0
-            ? unit.x - rowStartsAt
-            : gridWidth - (unit.x - rowStartsAt) - 2
+        let shiftedX = unit.x - rowStartsAt
+        if (shiftedX < 0) {shiftedX += gridWidth} 
 
         const figureStyle = {
             left: inInfoRow ? 'unset' : `${shiftedX * 4}em`,
@@ -88,7 +87,7 @@ export default class UnitFigure extends React.Component {
                     </p>
                     : null}
 
-                { !unit.faction.isComputerPlayer && isSelected && interfaceMode === 'MOVE' ? this.renderUnitMenu() : null}
+                { !unit.faction.isComputerPlayer && isSelected && interfaceMode === 'MOVE' ? this.renderUnitMenu(shiftedX) : null}
             </figure >
         )
 

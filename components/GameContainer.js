@@ -45,6 +45,7 @@ export default class GameContainer extends React.Component {
             pendingDialogues: [],
             mainMenuOpen: false,
             mapZoomLevel: 1,
+            mapXOffset: 3,
             browserSupportsLocalStorage: undefined,
             debug: props.debugMode ? { revealMap: true } : {}
         });
@@ -341,8 +342,8 @@ export default class GameContainer extends React.Component {
         const { mapGrid, selectedSquare, units, towns, activeFaction, factions,
             selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
             pendingDialogues, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
-            mapZoomLevel, browserSupportsLocalStorage,
-            debug
+            mapZoomLevel, mapXOffset,
+            browserSupportsLocalStorage, debug
         } = this.state
 
         if (openTown) {
@@ -397,7 +398,7 @@ export default class GameContainer extends React.Component {
                         mapZoomLevel={mapZoomLevel}
                         watchingFaction={this.primaryPlayerFaction}
                         debug={debug}
-                        rowStartsAt={0}
+                        rowStartsAt={mapXOffset}
                     />
                 </main>
 

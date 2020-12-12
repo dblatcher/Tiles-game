@@ -11,7 +11,7 @@ export default class InfoBar extends React.Component {
 
 
     render() {
-        const { selectedSquare, selectedUnit, scrollToSquare, activeFaction, towns, toggleFactionWindow, interfaceMode } = this.props;
+        const { selectedSquare, selectedUnit, centerWindowOn, activeFaction, towns, toggleFactionWindow, interfaceMode } = this.props;
 
         const activeFactionTowns = towns.filter(town => town.faction === activeFaction)
 
@@ -48,7 +48,7 @@ export default class InfoBar extends React.Component {
 
                 {selectedUnit && interfaceMode == 'MOVE' ? (<>
                     <article className={styles.infoBlock}
-                        onClick={() => { scrollToSquare(selectedUnit) }}>
+                        onClick={() => { centerWindowOn(selectedUnit) }}>
                         <UnitFigure unit={selectedUnit} inInfoRow />
 
                         <ul className={styles.infoList}>

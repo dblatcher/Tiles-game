@@ -1,7 +1,15 @@
 
+Mapping / logic
+- faction getPlacesInSight not lost when unit moves
+- change mapXOfset to keep map centered on player focus
+
+
 AI
 - proper AI functions to pick computer moves well...
 - debug component to reveal AI priorities / goals
+- learn to use naval units...
+- strategic goals? which units and techs
+- minimum town placement score (don't just settle in highest place you can see - explore unit somewhere good enough)
 
 map
  - special resources
@@ -13,7 +21,6 @@ TechDiscoveries
 units
 - obseleting units
 - implement special rules
-- naval units!
 
 towns
 - prevent duplicate names
@@ -25,13 +32,11 @@ towns
 
 Buildings
 - define more BuildingTypes, add rules to existing code
-- find way to include common rules (eg yield bonuses) on the type data instead of coding rule for every building
 
 informational text
 - more content
 - support HTML / markdown instead of json?
 - internationalisation suport
-- render unit special rules / skills on info pages
 - building effect descriptions
 
 Diplomacy

@@ -129,7 +129,7 @@ export default class TileBoard extends React.Component {
         const sectionStyle = { fontSize: `${mapZoomLevel * 100}%` }
 
         const placesInSight = watchingFaction
-            ? watchingFaction.getPlacesInSight(towns, units)
+            ? watchingFaction.getPlacesInSight(towns, units, mapGrid[0].length)
             : []
 
         return (

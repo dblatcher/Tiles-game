@@ -42,7 +42,7 @@ class Faction {
 
     updateWorldMap(state) {
         const { towns, units, mapGrid } = state
-        let placesInSight = this.getPlacesInSight(towns, units)
+        let placesInSight = this.getPlacesInSight(towns, units, mapGrid[0].length)
             .filter(place => place.y >= 0 && place.x >= 0 && place.y < mapGrid.length && place.x < mapGrid[0].length)
 
         placesInSight.forEach(place => {
@@ -51,7 +51,7 @@ class Faction {
         })
     }
 
-    allocateTownRevenue(town: Town, excludeCitizenBonus:boolean = false) {
+    allocateTownRevenue(town: Town, excludeCitizenBonus: boolean = false) {
         let townRevenue = this.budget.allocate(town.output.tradeYield)
 
         if (!excludeCitizenBonus) {
@@ -76,7 +76,7 @@ class Faction {
         return townRevenue
     }
 
-    calcuateAllocatedBudget(myTowns: Array<Town>, excludeCitizenBonus:boolean = false) {
+    calcuateAllocatedBudget(myTowns: Array<Town>, excludeCitizenBonus: boolean = false) {
         let total = {
             treasury: 0,
             research: 0,
@@ -127,7 +127,7 @@ class Faction {
         return true
     }
 
-    getPlacesInSight(towns: Array<Town>, units: Array<Unit>) {
+    getPlacesInSight(towns: Array<Town>, units: Array<Unit>, mapWidth: number) {
         const myTowns = towns.filter(town => town.faction === this)
         const myUnits = units.filter(unit => unit.faction === this)
 
@@ -137,8 +137,16 @@ class Faction {
             let x, y;
             for (x = item.x - range; x < item.x + range + 1; x++) {
                 for (y = item.y - range; y < item.y + range + 1; y++) {
-                    places.push({ x, y })
+                    places.push({ x: wrapXValue(x), y })
                 }
+            }
+
+            function wrapXValue(x) {
+                return x < 0
+                    ? x + mapWidth
+                    : x >= mapWidth
+                        ? x - mapWidth
+                        : x
             }
         }
 

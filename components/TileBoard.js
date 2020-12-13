@@ -61,7 +61,10 @@ export default class TileBoard extends React.Component {
 
         return (
             <Tile key={`${mapSquare.x},${mapSquare.y}`}
-                handleClick={() => { handleMapSquareClick({ mapSquare, source: 'tile' }) }}
+                handleClick={  handleMapSquareClick 
+                    ? () => { handleMapSquareClick({ mapSquare, source: 'tile' }) }
+                    : null
+                }
                 interfaceMode={interfaceMode}
                 mapSquare={mapSquare}
                 town={town}

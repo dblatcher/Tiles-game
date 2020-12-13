@@ -4,8 +4,7 @@
 }
 
 .tileBoard {
-    transition: font-size .2s;
-    transition-timing-function: linear;
+    transition: font-size .4s;
     position: relative;
 }
 
@@ -20,10 +19,15 @@
     flex-shrink: 0;
 
 
-    &.selected, &:not(.inRange):hover {
+    &.selected { 
         filter: drop-shadow(-1px -1px 1px white) drop-shadow(1px 1px 1px white) drop-shadow(-1px 1px 1px white) drop-shadow(1px -1px 1px white);
         z-index: 2;
     }
+
+    // &:not(.inRange):hover {
+    //     filter: drop-shadow(-1px -1px 1px white) drop-shadow(1px 1px 1px white) drop-shadow(-1px 1px 1px white) drop-shadow(1px -1px 1px white);
+    //     z-index: 2;
+    // }
 
     &.inRange {
         &::after {

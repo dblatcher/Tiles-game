@@ -6,8 +6,6 @@
 
     &.onMap {
         position: absolute;
-        transition: left .2s, top .2s;
-        transition-timing-function: linear;
     }
 
     &.inInfoRow {
@@ -16,6 +14,11 @@
 
     &.topOfStack {
         z-index: 11;
+    }
+
+    &.slide {
+        transition: left .2s, top .2s;
+        transition-timing-function: linear;
     }
 }
 

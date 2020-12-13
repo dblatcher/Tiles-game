@@ -23,7 +23,14 @@ export default class UnitFigure extends React.Component {
     }
 
     render() {
-        const { unit, handleClick, isSelected, inInfoRow, stack, isFallen, interfaceMode, notInSight, mapXOffset, gridWidth } = this.props
+        const { 
+            unit, handleClick, isSelected, inInfoRow, stack, isFallen, interfaceMode, notInSight, 
+            mapXOffset, gridWidth, mapShiftInProgress
+        } = this.props
+
+        if (unit.isPassengerOf && !isSelected && !inInfoRow) {
+            return null // TO DO - render list of passengers with transport? use orderFlag style? 
+        }
 
         const placeInStack = inInfoRow
             ? 0
@@ -38,6 +45,10 @@ export default class UnitFigure extends React.Component {
             figureClassList.push(styles.topOfStack)
             spriteClassList.push(styles.flashingSprite, styles.topOfStack)
             orderFlagClassList.push(styles.topOfStack)
+
+        }
+        if (!mapShiftInProgress) {
+            figureClassList.push(styles.slide)
         }
 
         if (isFallen) {

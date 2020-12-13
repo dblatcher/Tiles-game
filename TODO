@@ -29,6 +29,7 @@ towns
 - suggested names
 - render obstables in townView (unit or citizen of other town)
 - corruption rate
+- units present can quell unrest
 
 Buildings
 - define more BuildingTypes, add rules to existing code

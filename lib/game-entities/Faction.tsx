@@ -98,11 +98,11 @@ class Faction {
     }
 
     processTurn(state) {
-        const { towns } = state
+        const { towns, units } = state
         const myTowns = towns.filter(town => town.faction === this)
         let notices = []
 
-        const allocatedBudget = this.calcuateAllocatedBudget(myTowns.filter(town => !town.isInRevolt))
+        const allocatedBudget = this.calcuateAllocatedBudget(myTowns.filter(town => !town.getIsInRevolt(units)))
         const buildingMaintenanceCost = this.calculateTotalMaintenceCost(myTowns)
         this.research += allocatedBudget.research
         this.treasury -= buildingMaintenanceCost

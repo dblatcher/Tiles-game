@@ -7,8 +7,8 @@ import { Citizen } from './Citizen.tsx'
 import { BuildingType, buildingTypes } from './BuildingType.tsx'
 
 import { hurryCostPerUnit } from '../game-logic/constants'
-import { UNHAPPINESS_ALLOWANCE, UNHAPPINESS_RATE, BASE_POPULATION_LIMIT } from '../game-logic/constants'
-import { getTurnsToComplete } from '../utility'
+import { UNHAPPINESS_ALLOWANCE, UNHAPPINESS_RATE, BASE_POPULATION_LIMIT, MAX_UNHAPPINESS_REDUCTION_FROM_UNITS  } from '../game-logic/constants'
+import { getTurnsToComplete, areSamePlace } from '../utility'
 
 let townIndex = 0
 
@@ -86,22 +86,29 @@ class Town {
         return Math.ceil((this.population - UNHAPPINESS_ALLOWANCE) / UNHAPPINESS_RATE)
     }
 
-    get unhappinessReduction() {
+    getUnitsHere(units:Array<Unit>) {
+        return units
+            .filter(unit => unit.faction === this.faction)
+            .filter(unit => areSamePlace(unit, this))
+    }
+
+    getUnhappinessReduction(units:Array<Unit>) {
         let value = 0;
         this.buildings.forEach(buildingType => { value += buildingType.reduceUnhappiness })
+        value += Math.min(MAX_UNHAPPINESS_REDUCTION_FROM_UNITS, this.getUnitsHere(units).length)
         return value
     }
 
-    get unhappiness() {
-        return Math.max(this.baseUnhappiness - this.unhappinessReduction, 0)
+    getUnhappiness(units:Array<Unit>) {
+        return Math.max(this.baseUnhappiness - this.getUnhappinessReduction(units), 0)
     }
 
     get happiness() {
         return Math.floor(this.faction.allocateTownRevenue(this).entertainment / 2)
     }
 
-    get isInRevolt() {
-        return this.unhappiness > this.happiness
+    getIsInRevolt(units:Array<Unit>) {
+        return this.getUnhappiness(units) > this.happiness
     }
 
     get buildingMaintenanceCost() {
@@ -226,7 +233,7 @@ class Town {
     processTurn(state) {
         let notices = []
 
-        if (this.isInRevolt) {
+        if (this.getIsInRevolt(state.units)) {
             notices.push(`Unrest in ${this.name}!`)
         } else {
             this.foodStore += this.output.foodYield

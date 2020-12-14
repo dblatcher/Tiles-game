@@ -1,8 +1,10 @@
 import styles from "./citizenRow.module.scss";
 
 export default function CitizenRow(props) {
-    const { town, handleCitizenClick, onFactionWindow } = props
-    const { population, happiness, unhappiness } = town
+    const { town, handleCitizenClick, onFactionWindow, units } = props
+    const { population, happiness } = town
+
+    const unhappiness = town.getUnhappiness(units)
 
     let bunchUp = 0 // fits 10
     if (population > 10) {

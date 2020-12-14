@@ -3,6 +3,7 @@ import React from 'react';
 import Tile from './Tile'
 import styles from './mapSection.module.scss'
 import VoidMapSquare from "../lib/game-entities/VoidMapSquare.tsx";
+import { areSamePlace } from '../lib/utility';
 
 
 export default class MapSection extends React.Component {
@@ -22,7 +23,7 @@ export default class MapSection extends React.Component {
     }
 
     renderTile(mapSquare, excludeCorners, occupier) {
-        const { handleMapSectionClick, selectedSquare, xStart, xSpan, yStart, ySpan, town } = this.props;
+        const { handleMapSectionClick, selectedSquare, xStart, xSpan, yStart, ySpan, town, units } = this.props;
         if (mapSquare.x < xStart || mapSquare.x > xStart + xSpan - 1) { return null }
 
         const isCorner = (mapSquare.x === xStart || mapSquare.x === xStart + xSpan - 1) && (mapSquare.y === yStart || mapSquare.y === yStart + ySpan - 1)
@@ -43,6 +44,7 @@ export default class MapSection extends React.Component {
                 isSelected={mapSquare === selectedSquare}
                 showYields={showYields}
                 occupier={occupier}
+                unitsInMapSquare={units.filter(unit => areSamePlace(unit, mapSquare))}
                 citizenOutput={citizen ? citizen.getOutput(town) : null}
                 adjacentSquares={this.getAdjacentSquares(mapSquare.x, mapSquare.y)}
             />

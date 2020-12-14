@@ -1,7 +1,7 @@
 import MapSection from "./MapSection";
 import ProductionMenu from "./ProductionMenu";
 import Window from "./Window";
-import SupportedUnitsList from "./SupportedUnitsList";
+import UnitListBox from "./UnitListBox";
 import TradeReport from "./TradeReport";
 import ProgressBox from "./ProgressBox";
 import CitizenRow from "./CitizenRow";
@@ -85,7 +85,7 @@ export default class TownView extends React.Component {
                 <div className={styles.frame}>
 
                     <section className={[styles.section, styles.mapSection].join(" ")}>
-                        <CitizenRow town={town} handleCitizenClick={this.handleCitizenClick} />
+                        <CitizenRow town={town} units={units} handleCitizenClick={this.handleCitizenClick} />
                         <MapSection
                             handleMapSectionClick={this.handleMapSectionClick}
                             xStart={town.x - 2} yStart={town.y - 2}
@@ -124,7 +124,12 @@ export default class TownView extends React.Component {
 
                     <section className={styles.section}>
                         <h2>{`${town.supportedUnits.length} units supported`}</h2>
-                        <SupportedUnitsList town={town} />
+                        <UnitListBox units={town.supportedUnits} />
+                    </section>
+
+                    <section className={styles.section}>
+                        <h2>{`${town.getUnitsHere(units).length} units here`}</h2>
+                        <UnitListBox units={town.getUnitsHere(units)} />
                     </section>
                 </div>
             </Window>

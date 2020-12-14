@@ -3,7 +3,7 @@ import styles from './townFigure.module.scss'
 export default class TownFigure extends React.Component {
 
     render() {
-        const { town, handleClick, isFallen, onMapSection} = this.props
+        const { town, handleClick, isFallen, onMapSection, units} = this.props
 
         let figureClassList = [styles.figure]
         let spriteClassList = [styles.sprite]
@@ -16,7 +16,7 @@ export default class TownFigure extends React.Component {
             spriteClassList.push(styles.fallenSprite)
         }
 
-        if (town.isInRevolt) {
+        if (town.getIsInRevolt(units)) {
             spriteClassList.push(styles.unrest)
         }
 

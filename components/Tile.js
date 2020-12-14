@@ -116,7 +116,7 @@ export default class Tile extends React.Component {
 
                         {viewerVersionOfMapSquare.road ? this.renderDirectionedSprite(spriteSheets.roads, bgClasses) : (null)}
 
-                        { town ? <TownFigure town={town} onMapSection={onMapSection} /> : null}
+                        { town ? <TownFigure town={town} onMapSection={onMapSection} units={unitsInMapSquare}/> : null}
 
                         {viewerVersionOfMapSquare.tree ? this.renderDirectionedSprite(spriteSheets.trees, bgClasses) : (null)}
 

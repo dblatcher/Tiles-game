@@ -61,8 +61,8 @@ export default class FactionWindow extends React.Component {
     }
 
     render() {
-        const { faction, closeWindow, towns, openTownView, handleTownAction } = this.props
-        const factionTowns = towns.filter(town => town.faction === faction)
+        const { faction, closeWindow, openTownView, handleTownAction, stateOfPlay } = this.props
+        const factionTowns = stateOfPlay.towns.filter(town => town.faction === faction)
         const allocatedBudget = faction.calcuateAllocatedBudget(factionTowns, true)
         const budgetKeys = Object.keys(faction.budget.store)
 
@@ -109,7 +109,7 @@ export default class FactionWindow extends React.Component {
                                 <td>
                                     <span style={{cursor: 'pointer'}} onClick={() => {openTownView(town)}}>{town.name}</span>
                                 </td>
-                                <td><CitizenRow town={town} onFactionWindow={true}/></td>
+                                <td><CitizenRow town={town} onFactionWindow={true} stateOfPlay={stateOfPlay}/></td>
                                 <td><TradeReport town={town} /></td>
                                 <td>
                                     <span>

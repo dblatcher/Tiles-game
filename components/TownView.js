@@ -19,25 +19,25 @@ export default class TownView extends React.Component {
     }
 
     handleCitizenClick(citizen) {
-        const { town, handleTownAction } = this.props
-        return handleTownAction('CITIZEN_CLICK', { citizen, town })
+        const { stateOfPlay, handleTownAction } = this.props
+        return handleTownAction('CITIZEN_CLICK', { citizen, town: stateOfPlay.openTown })
     }
 
     handleMapSectionClick(mapSquare) {
-        const { town, handleTownAction } = this.props
-        return handleTownAction('MAP_CLICK', { mapSquare, town })
+        const { stateOfPlay, handleTownAction } = this.props
+        return handleTownAction('MAP_CLICK', { mapSquare, town: stateOfPlay.openTown })
     }
 
     get productionCaption() {
-        const { isProducing } = this.props.town
+        const { isProducing } = this.props.stateOfPlay.openTown
         return isProducing
             ? `Producing: ${isProducing.displayName}`
             : `Producing: nothing`
     }
 
     get foodStoreCaption() {
-        const { foodStoreRequiredForGrowth, foodStore, population, populationLimit } = this.props.town
-        const { foodYield } = this.props.town.output
+        const { foodStoreRequiredForGrowth, foodStore, population, populationLimit } = this.props.stateOfPlay.openTown
+        const { foodYield } = this.props.stateOfPlay.openTown.output
         let figure
 
         if (foodYield > 0 && population < populationLimit) {
@@ -54,7 +54,9 @@ export default class TownView extends React.Component {
     }
 
     render() {
-        const { town, closeTownView, mapGrid, handleTownAction, towns, units, openTownView } = this.props
+        const { closeTownView, handleTownAction, openTownView, stateOfPlay } = this.props
+        const { mapGrid, towns, units, openTown } = stateOfPlay
+        const town = openTown
 
         const buttonList = [
             { text: 'close', clickFunction: closeTownView },
@@ -69,12 +71,12 @@ export default class TownView extends React.Component {
 
             if (nextTown !== town) {
                 buttonList.unshift(
-                    {text:`${nextTown.name} >`, clickFunction: ()=>{openTownView(nextTown)}}
+                    { text: `${nextTown.name} >`, clickFunction: () => { openTownView(nextTown) } }
                 )
             }
             if (previousTown !== town && previousTown !== nextTown) {
                 buttonList.unshift(
-                    {text:`< ${previousTown.name}`, clickFunction: ()=>{openTownView(previousTown)}}
+                    { text: `< ${previousTown.name}`, clickFunction: () => { openTownView(previousTown) } }
                 )
             }
         }
@@ -85,12 +87,12 @@ export default class TownView extends React.Component {
                 <div className={styles.frame}>
 
                     <section className={[styles.section, styles.mapSection].join(" ")}>
-                        <CitizenRow town={town} units={units} handleCitizenClick={this.handleCitizenClick} />
+                        <CitizenRow stateOfPlay={stateOfPlay} town={town} handleCitizenClick={this.handleCitizenClick} />
                         <MapSection
                             handleMapSectionClick={this.handleMapSectionClick}
-                            xStart={town.x - 2} yStart={town.y - 2}
-                            xSpan={5} ySpan={5}
-                            town={town} mapGrid={mapGrid} towns={towns} units={units} />
+                            radius={2}
+                            town={town} stateOfPlay={stateOfPlay}
+                        />
                     </section>
 
                     <section className={styles.section}>

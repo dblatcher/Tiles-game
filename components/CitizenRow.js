@@ -1,7 +1,8 @@
 import styles from "./citizenRow.module.scss";
 
 export default function CitizenRow(props) {
-    const { town, handleCitizenClick, onFactionWindow, units } = props
+    const { town, handleCitizenClick, onFactionWindow, stateOfPlay } = props
+    const { units } = stateOfPlay
     const { population, happiness } = town
 
     const unhappiness = town.getUnhappiness(units)

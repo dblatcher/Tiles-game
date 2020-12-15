@@ -87,6 +87,25 @@ export default class GameContainer extends React.Component {
         this.setState({ browserSupportsLocalStorage: browserHasLocalStorage() })
     }
 
+    get stateOfPlay () {
+        const {mapWidth} = this
+        const { mapGrid, selectedSquare, units, towns, activeFaction, factions,
+            selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
+            pendingDialogues, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
+            mapZoomLevel, mapXOffset, mapShiftInProgress,
+            browserSupportsLocalStorage, debug,
+        } = this.state
+
+        return {
+            mapWidth,
+            mapGrid, selectedSquare, units, towns, activeFaction, factions,
+            selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
+            pendingDialogues, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
+            mapZoomLevel, mapXOffset, mapShiftInProgress,
+            browserSupportsLocalStorage, debug,
+        }
+    }
+
     get mapWidth() {
         return this.state.mapGrid && this.state.mapGrid[0]
             ? this.state.mapGrid[0].length
@@ -449,14 +468,10 @@ export default class GameContainer extends React.Component {
         if (openTown) {
             return (
                 <TownView
-                    town={openTown}
-                    towns={towns}
+                    stateOfPlay={this.stateOfPlay}
                     closeTownView={this.closeTownView}
                     handleTownAction={this.handleTownAction}
-                    towns={towns}
-                    openTownView={this.openTownView}
-                    mapGrid={mapGrid}
-                    units={units} />
+                    openTownView={this.openTownView}/>
             )
         }
 
@@ -464,7 +479,7 @@ export default class GameContainer extends React.Component {
             return (
                 <FactionWindow
                     faction={activeFaction}
-                    towns={towns}
+                    stateOfPlay={this.stateOfPlay}
                     openTownView={this.openTownView}
                     handleFactionAction={this.handleFactionAction}
                     handleTownAction={this.handleTownAction}
@@ -488,18 +503,19 @@ export default class GameContainer extends React.Component {
                         units={units}
                         towns={towns}
                         mapGrid={mapGrid}
-                        handleMapSquareClick={this.handleMapSquareClick}
-                        handleOrderButton={this.handleOrderButton}
                         interfaceMode={interfaceMode}
                         selectedSquare={selectedSquare}
                         selectedUnit={selectedUnit}
+
                         fallenUnits={fallenUnits}
                         gameHasOpenDialogue={this.hasOpenDialogue}
                         mapZoomLevel={mapZoomLevel}
                         watchingFaction={this.primaryPlayerFaction}
-                        debug={debug}
                         mapXOffset={mapXOffset}
                         mapShiftInProgress={mapShiftInProgress}
+                        debug={debug}
+                        handleMapSquareClick={this.handleMapSquareClick}
+                        handleOrderButton={this.handleOrderButton}
                     />
                 </main>
 
@@ -515,11 +531,11 @@ export default class GameContainer extends React.Component {
                         <InfoBar
                             selectedUnit={selectedUnit}
                             selectedSquare={selectedSquare}
-                            centerWindowOn={this.centerWindowOn}
-                            toggleFactionWindow={this.isComputerPlayersTurn ? null : this.toggleFactionWindow}
                             activeFaction={activeFaction}
                             interfaceMode={interfaceMode}
                             towns={towns}
+                            toggleFactionWindow={this.isComputerPlayersTurn ? null : this.toggleFactionWindow}
+                            centerWindowOn={this.centerWindowOn}
                         />
 
                         <div>

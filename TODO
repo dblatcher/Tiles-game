@@ -1,8 +1,4 @@
 
-Mapping / logic
-- faction getPlacesInSight not lost when unit moves
-
-
 AI
 - proper AI functions to pick computer moves well...
 - debug component to reveal AI priorities / goals

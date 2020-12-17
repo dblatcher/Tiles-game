@@ -8,6 +8,7 @@ import { MapSquare } from './MapSquare.tsx'
 import { ComputerPersonality } from '../game-ai/ComputerPersonality.ts'
 
 import { TOWN_SIGHT_RADIUS, UNIT_SIGHT_RADIUS } from '../game-logic/constants'
+import { areSamePlace } from '../utility.js'
 
 class Faction {
     name: string;
@@ -18,7 +19,8 @@ class Faction {
     researchGoal: TechDiscovery | null;
     knownTech: Array<TechDiscovery>;
     worldMap: Array<Array<MapSquare | null> | null>;
-    computerPersonality: null
+    computerPersonality: null;
+    placesInSightThisTurn: Array<object>;
     constructor(name: string, config: any = {}) {
         this.name = name;
         this.color = config.color || "#FFF";
@@ -35,6 +37,8 @@ class Faction {
             entertainment: 0,
         })
 
+
+        this.placesInSightThisTurn = config.placesInSightThisTurn || []
         this.computerPersonality = null
     }
 
@@ -127,6 +131,18 @@ class Faction {
         return true
     }
 
+    updatePlacesInSightThisTurn(state) {
+        const { towns, units, mapGrid } = state
+        const mapWidth = mapGrid && mapGrid[0]
+            ? mapGrid[0].length
+            : 0
+
+        const newPlaces = this.getPlacesInSight(towns, units, mapWidth)
+        .filter(place => !this.placesInSightThisTurn.some(existingPlace => areSamePlace(existingPlace, place)))
+
+        this.placesInSightThisTurn = this.placesInSightThisTurn.concat(newPlaces)
+    }
+
     getPlacesInSight(towns: Array<Town>, units: Array<Unit>, mapWidth: number) {
         const myTowns = towns.filter(town => town.faction === this)
         const myUnits = units.filter(unit => unit.faction === this)
@@ -214,6 +230,7 @@ class Faction {
                 researchGoal: data.researchGoal ? techDiscoveries[data.researchGoal] : null,
                 knownTech: data.knownTech.map(techName => techDiscoveries[techName]),
                 worldMap: MapSquare.deserialiseGrid(data.worldMap),
+                placesInSightThisTurn: data.placesInSightThisTurn,
             },
             data.computerPersonality)
     }

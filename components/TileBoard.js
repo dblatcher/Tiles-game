@@ -145,12 +145,12 @@ export default class TileBoard extends React.Component {
 
     render() {
         const { stateOfPlay = {}, watchingFaction } = this.props
-        const { units = [], towns = [], fallenUnits = [], mapZoomLevel = 1 } = stateOfPlay
-        const { mapGrid, mapGridWidth } = this
+        const { units = [], fallenUnits = [], mapZoomLevel = 1 } = stateOfPlay
+        const { mapGrid } = this
         const sectionStyle = { fontSize: `${mapZoomLevel * 100}%` }
 
         const placesInSight = watchingFaction
-            ? watchingFaction.getPlacesInSight(towns, units, mapGridWidth)
+            ? watchingFaction.placesInSightThisTurn
             : []
 
         return (

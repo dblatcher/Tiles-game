@@ -163,7 +163,7 @@ export default class GameContainer extends React.Component {
     letComputerTakeItsTurn() {
         const { activeFaction, towns, units, mapGrid } = this.state
         const { primaryPlayerFaction } = this
-        const placesInSight = primaryPlayerFaction.getPlacesInSight(towns, units, mapGrid[0].length)
+        const placesInSight = primaryPlayerFaction.placesInSightThisTurn
 
         let computerHasFinished = false
         let unitThatMoved = null

@@ -113,10 +113,10 @@ export default class TileBoard extends React.Component {
     renderUnit(unit, placesInSight) {
         const {
             stateOfPlay = {},
-            handleMapSquareClick, handleOrderButton, interfaceMode,
+            handleMapSquareClick, handleOrderButton,
             debug = {}
         } = this.props;
-        const { selectedUnit, mapXOffset = 0, mapShiftInProgress = false, fallenUnits = [] } = stateOfPlay
+        const { selectedUnit, mapXOffset = 0, mapShiftInProgress = false, fallenUnits = [], interfaceMode } = stateOfPlay
         const { mapGrid } = this
         const squareUnitIsOn = mapGrid[unit.y][unit.x]
 

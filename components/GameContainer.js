@@ -82,7 +82,7 @@ export default class GameContainer extends React.Component {
     }
 
     get stateOfPlay() {
-        const { mapWidth } = this
+        const { mapWidth, isComputerPlayersTurn } = this
         const { mapGrid, selectedSquare, units, towns, activeFaction, factions,
             selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
             pendingDialogues, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
@@ -91,7 +91,7 @@ export default class GameContainer extends React.Component {
         } = this.state
 
         return {
-            mapWidth,
+            mapWidth, isComputerPlayersTurn,
             mapGrid, selectedSquare, units, towns, activeFaction, factions,
             selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
             pendingDialogues, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,

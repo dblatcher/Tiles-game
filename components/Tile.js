@@ -66,7 +66,7 @@ export default class Tile extends React.Component {
     }
 
     render() {
-        const { mapSquare, handleClick, isSelected, notInSight,
+        const { mapSquare, handleClick, isSelected, notInSight, isComputerPlayersTurn,
             selectedUnit, inInfoRow, squareSelectedUnitIsIn, interfaceMode, unitsInMapSquare,
             gameHasOpenDialogue, showYields, town, onMapSection, occupier, showVoid, mapSquareOnFactionWorldMap,
             mapGridWidth
@@ -81,10 +81,8 @@ export default class Tile extends React.Component {
         if (!inInfoRow && !onMapSection) {
             if (interfaceMode === 'VIEW') {
                 if (isSelected) { figureClassList.push(styles.selected) }
-            } else if (interfaceMode === 'MOVE' && !gameHasOpenDialogue) {
-
-                figureClassList.push(styles.inMoveMode)
-                if (selectedUnitCanMoveTo) { figureClassList.push(styles.inRange) }
+            } else if (interfaceMode === 'MOVE') {
+                if (selectedUnitCanMoveTo && !isComputerPlayersTurn && !gameHasOpenDialogue) { figureClassList.push(styles.inRange) }
             }
 
         }

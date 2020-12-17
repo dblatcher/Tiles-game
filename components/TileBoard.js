@@ -47,7 +47,7 @@ export default class TileBoard extends React.Component {
             debug = {}
         } = this.props;
 
-        const { towns = [], units = [], selectedSquare, selectedUnit, interfaceMode } = stateOfPlay
+        const { towns = [], units = [], selectedSquare, selectedUnit, interfaceMode, isComputerPlayersTurn } = stateOfPlay
         const { mapGrid, mapGridWidth } = this
 
         const town = towns.filter(town => town.mapSquare === mapSquare)[0]
@@ -80,6 +80,7 @@ export default class TileBoard extends React.Component {
                 interfaceMode={interfaceMode}
                 mapSquare={mapSquare}
                 town={town}
+                isComputerPlayersTurn={isComputerPlayersTurn}
                 unitsInMapSquare={unitsInMapSquare}
                 selectedUnit={selectedUnit}
                 squareSelectedUnitIsIn={selectedUnit ? mapGrid[selectedUnit.y][selectedUnit.x] : null}

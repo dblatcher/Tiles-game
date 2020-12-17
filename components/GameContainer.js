@@ -525,6 +525,7 @@ export default class GameContainer extends React.Component {
 
                         <InfoBar
                             stateOfPlay={this.stateOfPlay}
+                            watchingFaction={this.primaryPlayerFaction}
                             toggleFactionWindow={this.isComputerPlayersTurn ? null : this.toggleFactionWindow}
                             centerWindowOn={this.centerWindowOn}
                         />

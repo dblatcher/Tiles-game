@@ -11,7 +11,7 @@ export default class InfoBar extends React.Component {
 
 
     render() {
-        const {stateOfPlay, centerWindowOn, toggleFactionWindow} = this.props;
+        const {stateOfPlay, centerWindowOn, toggleFactionWindow, watchingFaction} = this.props;
         const { selectedSquare, selectedUnit, activeFaction, towns, interfaceMode } = stateOfPlay;
 
         const activeFactionTowns = towns.filter(town => town.faction === activeFaction)
@@ -24,6 +24,12 @@ export default class InfoBar extends React.Component {
         const treasuryChange = activeFaction
             ? allocatedBudget.treasury - activeFaction.calculateTotalMaintenceCost(activeFactionTowns)
             : 0
+
+        const visibleSelectedSquare = selectedSquare 
+            ? watchingFaction.worldMap && watchingFaction.worldMap[selectedSquare.y] 
+                ? watchingFaction.worldMap[selectedSquare.y][selectedSquare.x] 
+                : null
+            : null;
 
         return (
             <section className={styles.infoRow}>
@@ -64,11 +70,11 @@ export default class InfoBar extends React.Component {
                     </article>
                 </>) : (null)}
 
-                {selectedSquare && interfaceMode == 'VIEW' ? (<>
+                {visibleSelectedSquare && interfaceMode == 'VIEW' ? (<>
                     <article className={styles.infoBlock}>
-                        <Tile mapSquare={selectedSquare} inInfoRow showYields />
+                        <Tile mapSquare={visibleSelectedSquare} inInfoRow showYields />
                         <ul className={styles.infoList}>
-                            {selectedSquare.infoList.map((infoPoint, index) => <li className={styles.infoLine} key={`selectedSquaretInfo#${index}`}>{infoPoint}</li>)}
+                            {visibleSelectedSquare.infoList.map((infoPoint, index) => <li className={styles.infoLine} key={`selectedSquaretInfo#${index}`}>{infoPoint}</li>)}
                         </ul>
 
                     </article>

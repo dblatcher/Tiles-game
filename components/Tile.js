@@ -61,6 +61,10 @@ export default class Tile extends React.Component {
         </>
     }
 
+    renderVoid(bgClasses) {
+        return <i className={[bgClasses, styles.unknown].join(" ")}></i>
+    }
+
     render() {
         const { mapSquare, handleClick, isSelected, notInSight,
             selectedUnit, inInfoRow, squareSelectedUnitIsIn, interfaceMode, unitsInMapSquare,
@@ -101,7 +105,7 @@ export default class Tile extends React.Component {
                 onClick={handleClick || function () { }}
             >
                 {showVoid
-                    ? (null)
+                    ? this.renderVoid(bgClasses)
                     : (<>
                         <i className={bgClasses} style={mapSquare.css}></i>
                         {this.needsCoastline

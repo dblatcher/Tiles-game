@@ -56,7 +56,6 @@
     &.occupied {
         border: 3px dotted red;
     }
-
 }
 
 
@@ -72,6 +71,12 @@
 
     &.notInSight {
         filter: brightness(.5);
+    }
+
+    &.unknown {
+        background-color: gray;
+        background-image: radial-gradient(white 20%, transparent 80%);
+        filter: none;
     }
 }
 

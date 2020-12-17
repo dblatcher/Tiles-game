@@ -458,8 +458,8 @@ export default class GameContainer extends React.Component {
     }
 
     render() {
-        const { mapGrid, selectedSquare, towns, activeFaction,
-            selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
+        const { mapGrid, activeFaction,
+            selectedUnit, interfaceMode, interfaceModeOptions,
             pendingDialogues, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
             browserSupportsLocalStorage, debug,
         } = this.state
@@ -489,18 +489,17 @@ export default class GameContainer extends React.Component {
         return (
 
             <>
-                {pendingDialogues.length > 0 ? this.renderDialogue() : null}
+                {pendingDialogues.length > 0 && this.renderDialogue()}
 
-                {unitPickDialogueChoices.length > 0
-                    ? <PickUnitDialogue
+                {unitPickDialogueChoices.length &&
+                    <PickUnitDialogue
                         units={unitPickDialogueChoices}
                         handleDialogueButton={this.handleDialogueButton} />
-                    : null}
+                }
 
                 <main className={styles.tileBoardHolder} ref={this.gameHolderElement}>
                     <TileBoard
                         stateOfPlay={this.stateOfPlay}
-                        fallenUnits={fallenUnits}
                         gameHasOpenDialogue={this.hasOpenDialogue}
                         debug={debug}
                         watchingFaction={this.primaryPlayerFaction}
@@ -519,11 +518,7 @@ export default class GameContainer extends React.Component {
                     <aside className={styles.upperInterfaceWindow} ref={this.upperWindowElement} >
 
                         <InfoBar
-                            selectedUnit={selectedUnit}
-                            selectedSquare={selectedSquare}
-                            activeFaction={activeFaction}
-                            interfaceMode={interfaceMode}
-                            towns={towns}
+                            stateOfPlay={this.stateOfPlay}
                             toggleFactionWindow={this.isComputerPlayersTurn ? null : this.toggleFactionWindow}
                             centerWindowOn={this.centerWindowOn}
                         />

@@ -11,7 +11,8 @@ export default class InfoBar extends React.Component {
 
 
     render() {
-        const { selectedSquare, selectedUnit, centerWindowOn, activeFaction, towns, toggleFactionWindow, interfaceMode } = this.props;
+        const {stateOfPlay, centerWindowOn, toggleFactionWindow} = this.props;
+        const { selectedSquare, selectedUnit, activeFaction, towns, interfaceMode } = stateOfPlay;
 
         const activeFactionTowns = towns.filter(town => town.faction === activeFaction)
 

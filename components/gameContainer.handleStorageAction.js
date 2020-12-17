@@ -48,11 +48,15 @@ export default function handleStorageAction(command, input) {
             Town.setIndexNumber();
             let deserialisedLoadedState = new SerialisedGame(loadedGameData, true).deserialise()
 
+            Unit.setIndexNumber(Math.max(...deserialisedLoadedState.units.map(unit => unit.indexNumber)) + 1);
+            Town.setIndexNumber(Math.max(...deserialisedLoadedState.towns.map(town => town.indexNumber)) + 1);
+
             this.setState(state => {
                 state.pendingDialogues.push(new Message(`GAME LOADED: ${input.itemName}`))
                 let modification = {
                     pendingDialogues: state.pendingDialogues,
                     mainMenuOpen: false,
+                    interfaceMode: "VIEW",
                 }
                 Object.keys(deserialisedLoadedState).forEach(key => {
                     modification[key] = deserialisedLoadedState[key]

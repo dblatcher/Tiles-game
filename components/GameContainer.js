@@ -458,10 +458,9 @@ export default class GameContainer extends React.Component {
     }
 
     render() {
-        const { mapGrid, selectedSquare, units, towns, activeFaction, factions,
+        const { mapGrid, selectedSquare, towns, activeFaction,
             selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
             pendingDialogues, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
-            mapZoomLevel, mapXOffset, mapShiftInProgress,
             browserSupportsLocalStorage, debug,
         } = this.state
 
@@ -500,20 +499,11 @@ export default class GameContainer extends React.Component {
 
                 <main className={styles.tileBoardHolder} ref={this.gameHolderElement}>
                     <TileBoard
-                        units={units}
-                        towns={towns}
-                        mapGrid={mapGrid}
-                        interfaceMode={interfaceMode}
-                        selectedSquare={selectedSquare}
-                        selectedUnit={selectedUnit}
-
+                        stateOfPlay={this.stateOfPlay}
                         fallenUnits={fallenUnits}
                         gameHasOpenDialogue={this.hasOpenDialogue}
-                        mapZoomLevel={mapZoomLevel}
-                        watchingFaction={this.primaryPlayerFaction}
-                        mapXOffset={mapXOffset}
-                        mapShiftInProgress={mapShiftInProgress}
                         debug={debug}
+                        watchingFaction={this.primaryPlayerFaction}
                         handleMapSquareClick={this.handleMapSquareClick}
                         handleOrderButton={this.handleOrderButton}
                     />

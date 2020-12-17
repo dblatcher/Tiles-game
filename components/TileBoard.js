@@ -8,8 +8,17 @@ import { areSamePlace } from '../lib/utility';
 
 export default class TileBoard extends React.Component {
 
+    get mapGrid() {
+        const { mapGrid, stateOfPlay } = this.props
+        return mapGrid || stateOfPlay.mapGrid
+    }
+
+    get mapGridWidth() {
+        return this.mapGrid && this.mapGrid[0] && this.mapGrid[0].length ? this.mapGrid[0].length : 0
+    }
+
     getAdjacentSquares(x, y) {
-        const { mapGrid } = this.props
+        const { mapGrid } = this
         return {
             below: mapGrid[y + 1] && mapGrid[y + 1][x] ? mapGrid[y + 1][x] : null,
             above: mapGrid[y - 1] && mapGrid[y - 1][x] ? mapGrid[y - 1][x] : null,
@@ -19,7 +28,8 @@ export default class TileBoard extends React.Component {
     }
 
     getStackedUnits(currentUnit) {
-        const { units, selectedUnit } = this.props
+        const { stateOfPlay = {} } = this.props;
+        const { units, selectedUnit } = stateOfPlay
         return units
             .filter(unit => currentUnit.x == unit.x && unit.y == currentUnit.y)
             .reverse()
@@ -32,11 +42,13 @@ export default class TileBoard extends React.Component {
 
     renderTile(mapSquare, placesInSight) {
         const {
-            handleMapSquareClick, selectedSquare, selectedUnit,
-            mapGrid, interfaceMode, infoPage, decorative,
-            gameHasOpenDialogue, towns = [], watchingFaction, units=[],
+            stateOfPlay = {},handleMapSquareClick, infoPage, decorative,
+            gameHasOpenDialogue, watchingFaction,
             debug = {}
         } = this.props;
+
+        const { towns = [], units = [], selectedSquare, selectedUnit, interfaceMode } = stateOfPlay
+        const { mapGrid, mapGridWidth } = this
 
         const town = towns.filter(town => town.mapSquare === mapSquare)[0]
         const unitsInMapSquare = units.filter(unit => areSamePlace(unit, mapSquare));
@@ -54,14 +66,14 @@ export default class TileBoard extends React.Component {
 
         let mapSquareOnFactionWorldMap = null
         if (watchingFaction && !infoPage) {
-            if (!notInSight || debug.revealMap) {mapSquareOnFactionWorldMap = mapSquare}
-            else if (!notOnFactionWorldMap ) {mapSquareOnFactionWorldMap = watchingFaction.worldMap[mapSquare.y][mapSquare.x]}
+            if (!notInSight || debug.revealMap) { mapSquareOnFactionWorldMap = mapSquare }
+            else if (!notOnFactionWorldMap) { mapSquareOnFactionWorldMap = watchingFaction.worldMap[mapSquare.y][mapSquare.x] }
         }
 
 
         return (
             <Tile key={`${mapSquare.x},${mapSquare.y}`}
-                handleClick={  handleMapSquareClick 
+                handleClick={handleMapSquareClick
                     ? () => { handleMapSquareClick({ mapSquare, source: 'tile' }) }
                     : null
                 }
@@ -78,16 +90,17 @@ export default class TileBoard extends React.Component {
                 showVoid={notOnFactionWorldMap && !debug.revealMap}
                 mapSquareOnFactionWorldMap={mapSquareOnFactionWorldMap}
                 showYields={infoPage}
-                mapGridWidth = {mapGrid[0].length}
+                mapGridWidth={mapGridWidth}
             />
         )
     }
 
     renderRow(row, y, placesInSight) {
-        const {mapXOffset} = this.props;
+        const { stateOfPlay = {} } = this.props;
+        const { mapXOffset = 0 } = stateOfPlay
 
-        const shiftedRow = typeof mapXOffset === 'number' 
-            ? [].concat(row.slice(mapXOffset), row.slice(0,mapXOffset))
+        const shiftedRow = typeof mapXOffset === 'number'
+            ? [].concat(row.slice(mapXOffset), row.slice(0, mapXOffset))
             : row
 
         return (
@@ -98,11 +111,13 @@ export default class TileBoard extends React.Component {
     }
 
     renderUnit(unit, placesInSight) {
-        const { 
-            handleMapSquareClick, selectedUnit, fallenUnits, mapGrid, handleOrderButton, interfaceMode, 
-            mapXOffset, mapShiftInProgress,
-            debug ={}
+        const {
+            stateOfPlay = {},
+            handleMapSquareClick, handleOrderButton, interfaceMode,
+            debug = {}
         } = this.props;
+        const { selectedUnit, mapXOffset = 0, mapShiftInProgress = false, fallenUnits = [] } = stateOfPlay
+        const { mapGrid } = this
         const squareUnitIsOn = mapGrid[unit.y][unit.x]
 
         const notInSight = !placesInSight.some(square => {
@@ -129,11 +144,13 @@ export default class TileBoard extends React.Component {
     }
 
     render() {
-        const { mapGrid, units = [], fallenUnits = [], towns = [], mapZoomLevel = 1, watchingFaction } = this.props
+        const { stateOfPlay = {}, watchingFaction } = this.props
+        const { units = [], towns = [], fallenUnits = [], mapZoomLevel = 1 } = stateOfPlay
+        const { mapGrid, mapGridWidth } = this
         const sectionStyle = { fontSize: `${mapZoomLevel * 100}%` }
 
         const placesInSight = watchingFaction
-            ? watchingFaction.getPlacesInSight(towns, units, mapGrid[0].length)
+            ? watchingFaction.getPlacesInSight(towns, units, mapGridWidth)
             : []
 
         return (

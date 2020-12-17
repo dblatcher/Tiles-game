@@ -66,8 +66,9 @@ export default class GameContainer extends React.Component {
 
         this.changeMode = this.changeMode.bind(this)
         this.scrollToSquare = this.scrollToSquare.bind(this)
-        this.centerOnSelection = this.centerOnSelection.bind(this)
+        this.scrollToSelection = this.scrollToSelection.bind(this)
         this.centerWindowOn = this.centerWindowOn.bind(this)
+        this.centerOnSelection = this.centerOnSelection.bind(this)
         this.closeTownView = this.closeTownView.bind(this)
         this.handleMapSquareClick = this.handleMapSquareClick.bind(this)
         this.handleTownAction = this.handleTownAction.bind(this)
@@ -87,8 +88,8 @@ export default class GameContainer extends React.Component {
         this.setState({ browserSupportsLocalStorage: browserHasLocalStorage() })
     }
 
-    get stateOfPlay () {
-        const {mapWidth} = this
+    get stateOfPlay() {
+        const { mapWidth } = this
         const { mapGrid, selectedSquare, units, towns, activeFaction, factions,
             selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
             pendingDialogues, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
@@ -113,9 +114,9 @@ export default class GameContainer extends React.Component {
     }
 
     getDistanceFromLeftEdge(target) {
-        const {mapWidth} = this
-        const {x} = target
-        const {mapXOffset} = this.state
+        const { mapWidth } = this
+        const { x } = target
+        const { mapXOffset } = this.state
 
         return x < mapXOffset
             ? x - mapXOffset + mapWidth
@@ -123,9 +124,9 @@ export default class GameContainer extends React.Component {
     }
 
     getDistanceFromRightEdge(target) {
-        const {mapWidth} = this
-        const {x} = target
-        const {mapXOffset} = this.state
+        const { mapWidth } = this
+        const { x } = target
+        const { mapXOffset } = this.state
         let rightEdge = mapXOffset > 0
             ? mapXOffset - 1
             : mapWidth
@@ -230,23 +231,28 @@ export default class GameContainer extends React.Component {
 
     setMapZoomLevel(directive) {
 
-        asyncSetState(this, state => {
-            const changeAmount = .2, max = 2, min = .2
-            let newZoomLevel = state.mapZoomLevel
+        const zoomLevels = [.125, .25, .5, 1, 1.5, 2]
+        let newZoomLevel
 
-            if (directive === "IN") {
-                newZoomLevel = Math.min(max, state.mapZoomLevel + changeAmount)
-            } else if (directive === "OUT") {
-                newZoomLevel = Math.max(min, state.mapZoomLevel - changeAmount)
-            } else if (directive === "RESET") {
-                newZoomLevel = 1
-            }
-            return {
-                mapZoomLevel: newZoomLevel,
-                mapShiftInProgress: true
-            }
+        if (directive === "IN") {
+            newZoomLevel = zoomLevels
+                .filter(zoomLevel => zoomLevel > this.state.mapZoomLevel)[0]
+                || zoomLevels[zoomLevels.length - 1]
+        } else if (directive === "OUT") {
+            newZoomLevel = zoomLevels
+                .filter(zoomLevel => zoomLevel < this.state.mapZoomLevel)
+                .reverse()[0]
+                || zoomLevels[0]
+        } else if (directive === "RESET") {
+            newZoomLevel = 1
+        }
+
+        asyncSetState(this, {
+            mapZoomLevel: newZoomLevel,
+            mapShiftInProgress: true
         })
-        .then(this.endMapShift)
+            .then(() => { this.endMapShift(20) })
+            .then(this.centerOnSelection)
     }
 
     toggleFactionWindow() {
@@ -268,7 +274,7 @@ export default class GameContainer extends React.Component {
 
     closeTownView() {
         this.setState(
-            {openTown: null, fallenUnits: []},
+            { openTown: null, fallenUnits: [] },
             this.centerOnSelection
         )
     }
@@ -283,22 +289,22 @@ export default class GameContainer extends React.Component {
             return this.centerWindowOn(mapSquare)
         }
 
-        return asyncSetState(this, processMapClick(input) )
-        .then( async() => {
-            if (interfaceMode === 'MOVE' && selectedUnit !== this.state.selectedUnit) {
+        return asyncSetState(this, processMapClick(input))
+            .then(async () => {
+                if (interfaceMode === 'MOVE' && selectedUnit !== this.state.selectedUnit) {
 
-                if (this.getDistanceFromEdge(this.state.selectedUnit) < 6 ) {
-                    await sleep(225)
-                    return this.centerWindowOn(this.state.selectedUnit)
+                    if (this.getDistanceFromEdge(this.state.selectedUnit) < 6) {
+                        await sleep(225)
+                        return this.centerWindowOn(this.state.selectedUnit)
+                    }
+
+                    await sleep(250)
+                    return this.scrollToSquare(this.state.selectedUnit)
                 }
-
-                await sleep(250)
-                return this.scrollToSquare(this.state.selectedUnit)
-            }
-            if (interfaceMode === 'VIEW') {
-                return this.centerWindowOn(mapSquare)
-            }
-        })
+                if (interfaceMode === 'VIEW') {
+                    return this.centerWindowOn(mapSquare)
+                }
+            })
     }
 
 
@@ -370,7 +376,7 @@ export default class GameContainer extends React.Component {
     }
 
     centerWindowOn(target) {
-        const {x} = target
+        const { x } = target
         if (!target) { return false }
         const { mapZoomLevel, mapGrid } = this.state
         const mapWidth = mapGrid[0].length
@@ -379,26 +385,26 @@ export default class GameContainer extends React.Component {
         const windowWidthInTiles = Math.floor(window.innerWidth / tileSize)
 
         let newOffsetValue = x - Math.floor(windowWidthInTiles / 2)
-        newOffsetValue -= Math.floor ((mapWidth - windowWidthInTiles)/2)
+        newOffsetValue -= Math.floor((mapWidth - windowWidthInTiles) / 2)
         while (newOffsetValue < 0) { newOffsetValue += mapWidth }
         while (newOffsetValue >= mapWidth) { newOffsetValue -= mapWidth }
 
 
-        asyncSetState(this,{
+        asyncSetState(this, {
             mapXOffset: newOffsetValue,
             mapShiftInProgress: true
         })
-        .then( () => {
-            this.scrollToSquare(target)
-            this.endMapShift()
-        })
+            .then(() => {
+                this.scrollToSquare(target)
+                this.endMapShift()
+            })
     }
 
-    endMapShift() {
+    endMapShift(delay = 500) {
         const that = this
-        return async function() {
-            await sleep(500)
-            await asyncSetState(that,{mapShiftInProgress:false})
+        return async function () {
+            await sleep(delay)
+            await asyncSetState(that, { mapShiftInProgress: false })
         }()
     }
 
@@ -470,7 +476,7 @@ export default class GameContainer extends React.Component {
                     stateOfPlay={this.stateOfPlay}
                     closeTownView={this.closeTownView}
                     handleTownAction={this.handleTownAction}
-                    openTownView={this.openTownView}/>
+                    openTownView={this.openTownView} />
             )
         }
 

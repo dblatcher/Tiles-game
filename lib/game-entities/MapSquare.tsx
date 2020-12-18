@@ -87,15 +87,25 @@ class MapSquare {
         return MapSquare.deserialise(this.serialised)
     }
 
-    static serialiseGrid(mapGrid:Array<Array<MapSquare>>) {
+    static serialiseGrid(mapGrid:Array<Array<MapSquare|null>>|null) {
+        if (!mapGrid) return [[]];
         const serialisedMapGrid = []
-        mapGrid.forEach(row => {
-            let newRow = []
-            row.forEach(mapSquare => {
-                newRow.push(mapSquare.serialised)
-            })
-            serialisedMapGrid.push(newRow)
-        })
+
+        let row, col;
+        
+        for (row = 0; row < mapGrid.length; row++) {
+            serialisedMapGrid[row] = []
+            if (!mapGrid[row]) {continue}
+
+            for (col =0; col< mapGrid[row].length; col++) {
+                if (!mapGrid[row][col]) {
+                    serialisedMapGrid[row][col] = null
+                    continue
+                }
+                serialisedMapGrid[row][col] = mapGrid[row][col].serialised
+            }
+        }
+        console.log({mapGrid, serialisedMapGrid})
         return serialisedMapGrid
     }
 
@@ -116,6 +126,9 @@ class MapSquare {
     }
 
     static deserialise(data) {
+
+        if (data === null) {return null}
+
         return new MapSquare(
             {
                 terrain: terrainTypes[data.terrain],

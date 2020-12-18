@@ -311,8 +311,8 @@ export default class GameContainer extends React.Component {
     }
 
     centerWindowOn(target) {
-        const { x } = target
         if (!target) { return false }
+        const { x } = target
         const { mapZoomLevel, mapGrid } = this.state
         const mapWidth = mapGrid[0].length
 

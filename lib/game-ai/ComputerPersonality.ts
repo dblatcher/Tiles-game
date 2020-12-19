@@ -49,6 +49,7 @@ class ComputerPersonality {
             .filter(town => town.faction !== this.faction)
             .filter(town => this.faction.worldMap
                 .flat()
+                .filter(mapSquare => mapSquare !== null)
                 .some(mapSquare => mapSquare.x === town.mapSquare.x && mapSquare.y === town.mapSquare.y))
     }
 
@@ -69,6 +70,7 @@ class ComputerPersonality {
     getPossibleNewTownLocations(state) {
         const squaresTownsCouldBeBuiltOn = this.faction.worldMap
             .flat()
+            .filter(mapSquare => mapSquare !== null)
             .filter(mapSquare => !mapSquare.terrain.neverTown)
             .filter(mapSquare => !state.towns.some(town => unsafelyGetDistanceBetween(town.mapSquare, mapSquare) < MINIMUM_DISTANCE_BETWEEN_TOWNS ))
 

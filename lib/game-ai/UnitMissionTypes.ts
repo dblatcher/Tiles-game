@@ -158,6 +158,7 @@ const unitMissionTypes = {
             const map = ai.faction.worldMap
 
             function hasSpaceNearby(mapSquare) {
+                if (!mapSquare) {return false}
                 const { x, y } = mapSquare
                 const gridHeight = state.mapGrid.length
                 const gridWidth = state.mapGrid[0].length
@@ -180,6 +181,7 @@ const unitMissionTypes = {
 
             if (!this.target || areSamePlace(unit, this.target)) {
                 let placesWithSpacesNearby = map.flat()
+                    .filter(mapSquare => mapSquare !== null)
                     .filter(mapSquare => hasSpaceNearby(mapSquare))
                     .filter(mapSquare => unit.getCouldEnter(mapSquare))
                     .sort(sortByDistanceFrom(unit))

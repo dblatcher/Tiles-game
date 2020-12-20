@@ -1,6 +1,5 @@
 import { unitTypes } from '../lib/game-entities/UnitType.ts'
 import { buildingTypes } from '../lib/game-entities/BuildingType.tsx'
-import { getTurnsToComplete } from '../lib/utility'
 import styles from './productionMenu.module.scss'
 import dialogueStyles from './dialogue.module.scss'
 import SvgIcon from './SvgIcon'
@@ -34,12 +33,12 @@ export default class ProductionMenu extends React.Component {
 
     renderUnitTypeOptions() {
         const { town } = this.props
-        const { turnsToCompleteCurrentProduction } = town
+
         return Object.keys(unitTypes)
             .map(key => unitTypes[key])
             .filter(unitType => unitType.checkCanBuildWith(town.faction.knownTech))
             .map(unitType => {
-
+                const turnsToComplete = town.getTurnsToComplete(unitType)
                 return (
                     <li key={`unitOption-${unitType.name}`}
                         className={styles.productionItem}
@@ -50,7 +49,7 @@ export default class ProductionMenu extends React.Component {
                         </figure>
 
                         <span>{`${unitType.displayName}(${unitType.productionCost})`}</span>
-                        <span>{`${turnsToCompleteCurrentProduction} turn${turnsToCompleteCurrentProduction == 1 ? '' : 's'}`}</span>
+                        <span>{`${turnsToComplete} turn${turnsToComplete == 1 ? '' : 's'}`}</span>
                         <InfoLink subject={unitType}/>
                     </li>
                 )
@@ -59,20 +58,20 @@ export default class ProductionMenu extends React.Component {
 
     renderBuildingTypeOptions() {
         const { town } = this.props
-        const { turnsToCompleteCurrentProduction } = town
+
         return Object.keys(buildingTypes)
             .map(key => buildingTypes[key])
             .filter(buildingType => !town.buildings.includes(buildingType))
             .filter(buildingType => buildingType.checkCanBuildWith(town.faction.knownTech))
             .map(buildingType => {
-
+                const turnsToComplete = town.getTurnsToComplete(buildingType)
                 return (
                     <li key={`buildingOption-${buildingType.name}`}
                         className={styles.productionItem}
                         onClick={() => { this.handleProductionItemPick(buildingType) }}>
 
                         <span>{`${buildingType.displayName}(${buildingType.productionCost})`}</span>
-                        <span>{`${turnsToCompleteCurrentProduction} turn${turnsToCompleteCurrentProduction == 1 ? '' : 's'}`}</span>
+                        <span>{`${turnsToComplete} turn${turnsToComplete == 1 ? '' : 's'}`}</span>
                         <InfoLink subject={buildingType}/>
                     </li>
                 )

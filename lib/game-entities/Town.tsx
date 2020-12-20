@@ -139,6 +139,10 @@ class Town {
         return getTurnsToComplete(this.isProducing.productionCost - this.productionStore, this.output.productionYield)
     }
 
+    getTurnsToComplete(item: UnitType|BuildingType) {
+        return getTurnsToComplete(item.productionCost - this.productionStore, this.output.productionYield)
+    }
+
     hasBuilding(name) {
         return this.buildings
             .map(buildingType => buildingType.name)

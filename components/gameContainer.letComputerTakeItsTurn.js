@@ -3,8 +3,7 @@ import gameActions from '../lib/game-logic/gameActions'
 
 export default function letComputerTakeItsTurn() {
     const { activeFaction } = this.state
-    const { primaryPlayerFaction } = this
-    const placesInSight = primaryPlayerFaction.placesInSightThisTurn
+    const placesInSight = this.primaryPlayerFaction.placesInSightThisTurn
 
     let computerHasFinished = false
     let unitThatMoved = null
@@ -14,43 +13,38 @@ export default function letComputerTakeItsTurn() {
     let moveTimeStamp
 
 
-    const letComputerMakeMove = () => {
+    const letComputerMakeMove = async () => {
 
-        this.setState(
-            state => {
-                moveTimeStamp = Date.now()
-                unitThatMoved = state.selectedUnit
-                unitThatMovedWasInViewBeforeMove = placesInSight.some(place => areSamePlace(place, unitThatMoved))
-                activeFaction.computerPersonality.makeMove(state)
-                movesMade++
-                computerHasFinished = activeFaction.computerPersonality.checkIfFinished(state, movesMade)
-                return state
-            },
-            async () => {
-                unitThatMovedWasInViewAfterMove = placesInSight.some(place => areSamePlace(place, unitThatMoved))
-                console.log(`****Move took: ${Date.now() - moveTimeStamp}ms`)
-                if (unitThatMovedWasInViewAfterMove || unitThatMovedWasInViewBeforeMove) {
-                    this.scrollToSquare(unitThatMoved)
-                    await sleep(250)
-                } else {
-                    await sleep(10)
-                }
+        await asyncSetState(this, state => {
+            moveTimeStamp = Date.now()
+            unitThatMoved = state.selectedUnit
+            unitThatMovedWasInViewBeforeMove = placesInSight.some(place => areSamePlace(place, unitThatMoved))
+            activeFaction.computerPersonality.makeMove(state)
+            movesMade++
+            computerHasFinished = activeFaction.computerPersonality.checkIfFinished(state, movesMade)
+            return state
+        })
 
-                if (computerHasFinished) {
-                    this.setState(
-                        gameActions.END_OF_TURN()(this.state),
-                        () => {
-                            if (this.isComputerPlayersTurn) {
-                                this.letComputerTakeItsTurn()
-                            } else {
-                                this.scrollToSelection('letComputerMakeMove, computerHasFinished')
-                            }
-                        }
-                    )
-                } else {
-                    letComputerMakeMove()
-                }
-            })
+        unitThatMovedWasInViewAfterMove = placesInSight.some(place => areSamePlace(place, unitThatMoved))
+        console.log(`****Move took: ${Date.now() - moveTimeStamp}ms`)
+
+        if (unitThatMovedWasInViewAfterMove || unitThatMovedWasInViewBeforeMove) {
+            this.scrollToSquare(unitThatMoved)
+            await sleep(250)
+        } else {
+            await sleep(10)
+        }
+
+        if (computerHasFinished) {
+            await asyncSetState(this, gameActions.END_OF_TURN()(this.state))
+            if (this.isComputerPlayersTurn) {
+                this.letComputerTakeItsTurn()
+            } else {
+                this.scrollToSelection()
+            }
+        } else {
+            letComputerMakeMove()
+        }
     }
 
     console.log(`___${activeFaction.name.toUpperCase()} STARTING TURN____`)

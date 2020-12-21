@@ -22,8 +22,7 @@ export default function IconRow(props) {
     let numberOfOnes = useTens ? number % 10 : number;
 
     if (useTens) {
-        if (numberOfOnes == 0 ) {tensKeyArray.push(`TenIcon-First`)}
-        for (let i = 0; i < number; i = i + 10) {
+        for (let i = 0; i <= number; i = i + 10) {
             if (i == 0) { continue }
             tensKeyArray.push(`TenIcon-${i}`)
         }

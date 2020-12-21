@@ -3,11 +3,18 @@ import styles from "./tradeReport.module.scss"
 
 export default function TradeReport(props) {
 
-    const { town, townView, includeName, separateLines } = props
+    const { town, townView, includeName, separateLines, inRevolt } = props
     const allocatedBudget = town.faction.allocateTownRevenue(town)
 
-    return <article className={townView ? styles.articleTownView : styles.articleOneLine}>
+    const articleClassList = [townView ? styles.articleTownView : styles.articleOneLine]
+
+
+    return <article className={articleClassList.join(" ")}>
         {includeName ? (<p className={styles.name}>{town.name}:&nbsp;</p>) : null}
+
+        {inRevolt && (
+            <span className={styles.revoltMessage}>in revolt</span>
+        )}
 
         {separateLines
             ? <>

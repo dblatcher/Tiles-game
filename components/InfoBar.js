@@ -4,6 +4,7 @@ import SvgIcon from './SvgIcon'
 import UnitFigure from './UnitFigure'
 import styles from './infoBar.module.scss'
 import InfoLink from './InfoLink'
+import { displayTurnsToComplete, getTurnsToComplete } from '../lib/utility'
 
 
 
@@ -15,15 +16,17 @@ export default class InfoBar extends React.Component {
         const { selectedSquare, selectedUnit, activeFaction, towns, interfaceMode } = stateOfPlay;
 
         const activeFactionTowns = towns.filter(town => town.faction === activeFaction)
+        const factionTownsNotInRevolt = activeFactionTowns.filter(town => !town.getIsInRevolt(stateOfPlay.units))
 
         const allocatedBudget = activeFaction
-            ? activeFaction.calcuateAllocatedBudget(activeFactionTowns)
+            ? activeFaction.calcuateAllocatedBudget(factionTownsNotInRevolt, false)
             : null
-
 
         const treasuryChange = activeFaction
             ? allocatedBudget.treasury - activeFaction.calculateTotalMaintenceCost(activeFactionTowns)
             : 0
+
+        const turnsToNextBreakthrough = getTurnsToComplete(activeFaction.researchGoal.researchCost - activeFaction.research, allocatedBudget.research)  
 
         const visibleSelectedSquare = selectedSquare 
             ? watchingFaction.worldMap && watchingFaction.worldMap[selectedSquare.y] 
@@ -47,7 +50,7 @@ export default class InfoBar extends React.Component {
                         </p>
                         <p>
                             <span><SvgIcon iconName="lightBulb" />{activeFaction.research}</span>
-                            <span>{`(${allocatedBudget.research >= 0 ? '+' : ''}${allocatedBudget.research})`}</span>
+                            <span>{displayTurnsToComplete(turnsToNextBreakthrough)}</span>
                             <span>{activeFaction.budget.displayPercentage.research}</span>
                         </p>
                     </article>)

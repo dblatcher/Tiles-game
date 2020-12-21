@@ -63,20 +63,22 @@ export default class FactionWindow extends React.Component {
     render() {
         const { faction, closeWindow, openTownView, handleTownAction, stateOfPlay } = this.props
         const factionTowns = stateOfPlay.towns.filter(town => town.faction === faction)
-        
-        const allocatedBudget = faction.calcuateAllocatedBudget(factionTowns, false)
-        const allocatedBudgetWithoutSpecialists = faction.calcuateAllocatedBudget(factionTowns, true)
+
+        const factionTownsNotInRevolt = factionTowns.filter(town => !town.getIsInRevolt(stateOfPlay.units))
+
+        const allocatedBudget = faction.calcuateAllocatedBudget(factionTownsNotInRevolt, false)
+        const allocatedBudgetWithoutSpecialists = faction.calcuateAllocatedBudget(factionTownsNotInRevolt, true)
         const budgetKeys = Object.keys(faction.budget.store)
 
         const totalMaintenanceCosts = faction.calculateTotalMaintenceCost(factionTowns)
-        const turnsToNextBreakthrough = getTurnsToComplete(faction.researchGoal.researchCost - faction.research,allocatedBudget.research)
+        const turnsToNextBreakthrough = getTurnsToComplete(faction.researchGoal.researchCost - faction.research, allocatedBudget.research)
 
         return (
             <Window title={faction.name} buttons={[{ text: 'close', clickFunction: closeWindow }]}>
                 <h2>Budget</h2>
                 <ul>
                     <li>{allocatedBudget.totalTrade}<SvgIcon iconName="trade" /> total trade</li>
-                    <li>{totalMaintenanceCosts}<SvgIcon iconName="coins" color="red"/> maintenance costs</li>
+                    <li>{totalMaintenanceCosts}<SvgIcon iconName="coins" color="red" /> maintenance costs</li>
                 </ul>
 
                 <table>
@@ -110,10 +112,12 @@ export default class FactionWindow extends React.Component {
                         {factionTowns.map(town =>
                             <tr key={`trade-report-${town.indexNumber}`}>
                                 <td>
-                                    <span style={{cursor: 'pointer'}} onClick={() => {openTownView(town)}}>{town.name}</span>
+                                    <span style={{ cursor: 'pointer' }} onClick={() => { openTownView(town) }}>{town.name}</span>
                                 </td>
-                                <td><CitizenRow town={town} onFactionWindow={true} stateOfPlay={stateOfPlay}/></td>
-                                <td><TradeReport town={town} /></td>
+                                <td><CitizenRow town={town} onFactionWindow={true} stateOfPlay={stateOfPlay} /></td>
+                                <td>
+                                    <TradeReport town={town} inRevolt={factionTownsNotInRevolt.indexOf(town) === -1}/>
+                                </td>
                                 <td>
                                     <span>
                                         {town.isProducing ? town.isProducing.displayName : 'no production'}
@@ -126,12 +130,12 @@ export default class FactionWindow extends React.Component {
                 </table>
 
                 <h2>Research</h2>
-                <section style={{display:"flex", justifyContent:"space-between", marginBottom:'1em'}}>
-                    <p style={{margin:"0"}}>
+                <section style={{ display: "flex", justifyContent: "space-between", marginBottom: '1em' }}>
+                    <p style={{ margin: "0" }}>
                         <span>Researching {faction.researchGoal ? faction.researchGoal.description : 'nothing'}&nbsp;</span>
                         {faction.researchGoal ? (
-                            <span>({displayTurnsToComplete (turnsToNextBreakthrough)})</span>
-                        ) : null }
+                            <span>({displayTurnsToComplete(turnsToNextBreakthrough)})</span>
+                        ) : null}
                     </p>
 
                     {faction.researchGoal ? (<>
@@ -143,7 +147,7 @@ export default class FactionWindow extends React.Component {
                     </>) : null}
                 </section>
 
-                <TechTree knownTech={faction.knownTech} currentResearchGoal={faction.researchGoal}/>
+                <TechTree knownTech={faction.knownTech} currentResearchGoal={faction.researchGoal} />
             </Window>
         )
     }

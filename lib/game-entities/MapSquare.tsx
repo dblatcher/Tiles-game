@@ -20,7 +20,7 @@ class MapSquare {
         this.y = y
     }
 
-    get classIs() {return "MapSquare"} 
+    get classIs() {return "MapSquare"}
 
     get css() {
         return this.terrain.css || {}
@@ -92,7 +92,6 @@ class MapSquare {
         const serialisedMapGrid = []
 
         let row, col;
-        
         for (row = 0; row < mapGrid.length; row++) {
             serialisedMapGrid[row] = []
             if (!mapGrid[row]) {continue}
@@ -105,7 +104,6 @@ class MapSquare {
                 serialisedMapGrid[row][col] = mapGrid[row][col].serialised
             }
         }
-        console.log({mapGrid, serialisedMapGrid})
         return serialisedMapGrid
     }
 

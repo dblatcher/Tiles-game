@@ -2,7 +2,7 @@ import { UnitType, unitTypes } from "./UnitType.ts"
 import { OnGoingOrder } from "./OngoingOrder.tsx";
 import { Faction } from "./Faction";
 import { UnitMission } from '../game-ai/UnitMission.ts'
-import { getAreaSurrounding, areSamePlace } from '../utility'
+import { getAreaSurrounding, areSamePlace, displayTurnsToComplete } from '../utility'
 import { MapSquare } from './MapSquare.tsx'
 
 let unitIndexNumber = 0
@@ -43,7 +43,9 @@ class Unit {
             this.description,
             `Att:${this.type.attack} Def:${this.type.defend}`,
             this.onGoingOrder
-                ? `${this.onGoingOrder.type.name}, ${this.onGoingOrder.timeRemaining} turns left`
+                ? isFinite(this.onGoingOrder.timeRemaining)
+                    ?`${this.onGoingOrder.type.name}, ${displayTurnsToComplete(this.onGoingOrder.timeRemaining)} left`
+                    : this.onGoingOrder.type.name
                 : `${this.remainingMoves}/${this.type.moves} movement`,
         ]
     }

@@ -4,7 +4,7 @@ import TradeReport from "./TradeReport"
 import ProgressBox from "./ProgressBox"
 import ProductionMenu from "./ProductionMenu"
 import TechTree from "./TechTree";
-import { getTurnsToComplete } from '../lib/utility'
+import { displayTurnsToComplete, getTurnsToComplete } from '../lib/utility'
 import CitizenRow from "./CitizenRow";
 
 export default class FactionWindow extends React.Component {
@@ -67,6 +67,7 @@ export default class FactionWindow extends React.Component {
         const budgetKeys = Object.keys(faction.budget.store)
 
         const totalMaintenanceCosts = faction.calculateTotalMaintenceCost(factionTowns)
+        const turnsToNextBreakthrough = getTurnsToComplete(faction.researchGoal.researchCost - faction.research,allocatedBudget.research)
 
         return (
             <Window title={faction.name} buttons={[{ text: 'close', clickFunction: closeWindow }]}>
@@ -114,7 +115,7 @@ export default class FactionWindow extends React.Component {
                                 <td>
                                     <span>
                                         {town.isProducing ? town.isProducing.displayName : 'no production'}
-                                        {town.isProducing ? `(${town.turnsToCompleteCurrentProduction} turns)` : ''}
+                                        {town.isProducing ? `(${displayTurnsToComplete(town.turnsToCompleteCurrentProduction)})` : ''}
                                     </span>
                                     <ProductionMenu handleTownAction={handleTownAction} town={town} /></td>
                             </tr>
@@ -127,7 +128,7 @@ export default class FactionWindow extends React.Component {
                     <p style={{margin:"0"}}>
                         <span>Researching {faction.researchGoal ? faction.researchGoal.description : 'nothing'}&nbsp;</span>
                         {faction.researchGoal ? (
-                            <span>({getTurnsToComplete(faction.researchGoal.researchCost - faction.research,allocatedBudget.research)} turns)</span>
+                            <span>({displayTurnsToComplete (turnsToNextBreakthrough)})</span>
                         ) : null }
                     </p>
 

@@ -4,6 +4,7 @@ import styles from './productionMenu.module.scss'
 import dialogueStyles from './dialogue.module.scss'
 import SvgIcon from './SvgIcon'
 import InfoLink from './InfoLink'
+import { displayTurnsToComplete } from '../lib/utility'
 
 export default class ProductionMenu extends React.Component {
     constructor(props) {
@@ -49,7 +50,7 @@ export default class ProductionMenu extends React.Component {
                         </figure>
 
                         <span>{`${unitType.displayName}(${unitType.productionCost})`}</span>
-                        <span>{`${turnsToComplete} turn${turnsToComplete == 1 ? '' : 's'}`}</span>
+                        <span>{displayTurnsToComplete(turnsToComplete)}</span>
                         <InfoLink subject={unitType}/>
                     </li>
                 )
@@ -71,7 +72,7 @@ export default class ProductionMenu extends React.Component {
                         onClick={() => { this.handleProductionItemPick(buildingType) }}>
 
                         <span>{`${buildingType.displayName}(${buildingType.productionCost})`}</span>
-                        <span>{`${turnsToComplete} turn${turnsToComplete == 1 ? '' : 's'}`}</span>
+                        <span>{displayTurnsToComplete(turnsToComplete)}</span>
                         <InfoLink subject={buildingType}/>
                     </li>
                 )

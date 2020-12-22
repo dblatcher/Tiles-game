@@ -12,7 +12,7 @@ export default class InfoBar extends React.Component {
 
 
     render() {
-        const {stateOfPlay, centerWindowOn, toggleFactionWindow, watchingFaction} = this.props;
+        const { stateOfPlay, centerWindowOn, toggleFactionWindow, watchingFaction } = this.props;
         const { selectedSquare, selectedUnit, activeFaction, towns, interfaceMode } = stateOfPlay;
 
         const activeFactionTowns = towns.filter(town => town.faction === activeFaction)
@@ -26,11 +26,13 @@ export default class InfoBar extends React.Component {
             ? allocatedBudget.treasury - activeFaction.calculateTotalMaintenceCost(activeFactionTowns)
             : 0
 
-        const turnsToNextBreakthrough = getTurnsToComplete(activeFaction.researchGoal.researchCost - activeFaction.research, allocatedBudget.research)  
+        const turnsToNextBreakthrough = activeFaction.researchGoal
+            ? getTurnsToComplete(activeFaction.researchGoal.researchCost - activeFaction.research, allocatedBudget.research)
+            : 0
 
-        const visibleSelectedSquare = selectedSquare 
-            ? watchingFaction.worldMap && watchingFaction.worldMap[selectedSquare.y] 
-                ? watchingFaction.worldMap[selectedSquare.y][selectedSquare.x] 
+        const visibleSelectedSquare = selectedSquare
+            ? watchingFaction.worldMap && watchingFaction.worldMap[selectedSquare.y]
+                ? watchingFaction.worldMap[selectedSquare.y][selectedSquare.x]
                 : null
             : null;
 
@@ -62,11 +64,11 @@ export default class InfoBar extends React.Component {
                         <UnitFigure unit={selectedUnit} inInfoRow />
 
                         <ul className={styles.infoList}>
-                            
+
                             {selectedUnit.infoList.map((infoPoint, index) => (
                                 <li className={styles.infoLine} key={`selectedUnitInfo#${index}`}>
                                     {infoPoint}
-                                    {index == 0 ? <InfoLink subject={selectedUnit}/> :null}
+                                    {index == 0 ? <InfoLink subject={selectedUnit} /> : null}
                                 </li>
                             ))}
                         </ul>

@@ -2,13 +2,18 @@ class TextQuestion {
     questionText: string;
     answerHandler: Function;
     cancelHandler: Function;
-    constructor(questionText, answerHandler, cancelHandler) {
+    initialAnswer: string|null;
+    errorText: string|null;
+    constructor(questionText, answerHandler, cancelHandler, initialAnswer, errorText=null) {
         this.questionText = questionText;
         this.answerHandler = answerHandler;
         this.cancelHandler = cancelHandler;
+        this.initialAnswer = initialAnswer;
+        this.errorText = errorText;
     }
 
     get type() { return 'TextQuestion' }
+    clearError() {this.errorText = null}
 }
 
 class OptionsQuestion {

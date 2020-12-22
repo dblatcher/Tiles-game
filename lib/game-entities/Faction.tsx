@@ -21,6 +21,7 @@ class Faction {
     worldMap: Array<Array<MapSquare | null> | null>;
     computerPersonality: null;
     placesInSightThisTurn: Array<object>;
+    townNames: Array<String>;
     constructor(name: string, config: any = {}) {
         this.name = name;
         this.color = config.color || "#FFF";
@@ -37,6 +38,7 @@ class Faction {
             entertainment: 0,
         })
 
+        this.townNames = config.townNames || []
 
         this.placesInSightThisTurn = config.placesInSightThisTurn || []
         this.computerPersonality = null
@@ -138,7 +140,7 @@ class Faction {
             : 0
 
         const newPlaces = this.getPlacesInSight(towns, units, mapWidth)
-        .filter(place => !this.placesInSightThisTurn.some(existingPlace => areSamePlace(existingPlace, place)))
+            .filter(place => !this.placesInSightThisTurn.some(existingPlace => areSamePlace(existingPlace, place)))
 
         this.placesInSightThisTurn = this.placesInSightThisTurn.concat(newPlaces)
     }
@@ -207,7 +209,8 @@ class Faction {
             researchGoal: this.researchGoal ? this.researchGoal.name : false,
             knownTech: this.knownTech.map(techDiscovery => techDiscovery.name),
             worldMap: MapSquare.serialiseGrid(this.worldMap),
-            computerPersonality: null
+            townNames: this.townNames.map(name => name),
+            computerPersonality: null,
         }
         Object.keys(this).forEach(key => {
             if (typeof output[key] == 'undefined') {
@@ -231,6 +234,7 @@ class Faction {
                 knownTech: data.knownTech.map(techName => techDiscoveries[techName]),
                 worldMap: MapSquare.deserialiseGrid(data.worldMap),
                 placesInSightThisTurn: data.placesInSightThisTurn,
+                townNames: data.townNames,
             },
             data.computerPersonality)
     }

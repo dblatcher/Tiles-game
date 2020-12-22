@@ -1,13 +1,17 @@
 
+Victories / game overs
+
 AI
 - proper AI functions to pick computer moves well...
 - debug component to reveal AI priorities / goals
 - learn to use naval units...
 - strategic goals? which units and techs
 - minimum town placement score (don't just settle in highest place you can see - explore unit somewhere good enough)
+- quell unrest in towns
 
 map
  - special resources
+ - customisable makeMap function
 
 
 TechDiscoveries
@@ -16,14 +20,16 @@ TechDiscoveries
 units
 - obseleting units
 - implement special rules
+- should not be able to  attack while on transport, unless marines/vikings
 
 towns
-- prevent duplicate names
 - take treasury and tech on town conquest
 - trade routes
-- suggested names
 - render obstables in townView (unit or citizen of other town)
 - corruption rate
+- choose best square when auto-assigning citizens
+- click on 'units here' to activate and close town screen
+- absent units can increase unrest (govermentType!)
 
 Buildings
 - define more BuildingTypes, add rules to existing code
@@ -33,9 +39,11 @@ informational text
 - support HTML / markdown instead of json?
 - internationalisation suport
 - building effect descriptions
+- page descriptions / titles for info pages
 
 Diplomacy
 
+GovermentTypes
 
 'Wonders'
 - extends BuildingTypes? 

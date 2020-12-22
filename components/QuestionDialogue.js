@@ -13,14 +13,18 @@ export default class QuestionDialogue extends React.Component {
     }
 
     componentDidMount() {
+        const { question } = this.props
         if (this.inputRef.current) {
+
+            if (question.initialAnswer) {this.inputRef.current.value = question.initialAnswer}
             this.inputRef.current.focus()
         }
     }
 
     render() {
         const { question, handleDialogueButton } = this.props
-        const { questionText, answerHandler, cancelHandler, options, type } = question
+        const { questionText, answerHandler, cancelHandler, options, type, errorText } = question
+
 
         return (
             <aside className={styles.dialogueHolder}>
@@ -56,7 +60,7 @@ export default class QuestionDialogue extends React.Component {
                             {options.map((option, index) => (
                                 <button className={styles.button} key={`option-${index}`}
                                     onClick={() => {
-                                        handleDialogueButton("EXECUTE_STATE_FUNCTION", option.handler )
+                                        handleDialogueButton("EXECUTE_STATE_FUNCTION", option.handler)
                                     }}>
                                     {option.label}
                                 </button>
@@ -64,6 +68,10 @@ export default class QuestionDialogue extends React.Component {
 
                         </div>
                     </>) : null}
+
+                    {type === 'TextQuestion' &&
+                        <p className={styles.errorText}>{errorText}</p>
+                    }
 
                 </div>
             </aside>

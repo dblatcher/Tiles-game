@@ -7,7 +7,7 @@ import { Citizen } from './Citizen.tsx'
 import { BuildingType, buildingTypes } from './BuildingType.tsx'
 
 import { hurryCostPerUnit } from '../game-logic/constants'
-import { UNHAPPINESS_ALLOWANCE, UNHAPPINESS_RATE, BASE_POPULATION_LIMIT, MAX_UNHAPPINESS_REDUCTION_FROM_UNITS  } from '../game-logic/constants'
+import { UNHAPPINESS_ALLOWANCE, UNHAPPINESS_RATE, BASE_POPULATION_LIMIT, MAX_UNHAPPINESS_REDUCTION_FROM_UNITS } from '../game-logic/constants'
 import { getTurnsToComplete, areSamePlace } from '../utility'
 
 let townIndex = 0
@@ -23,8 +23,8 @@ class Town {
     foodStore: number;
     productionStore: number;
     isProducing: UnitType | BuildingType | null;
-    citizens: Array<Citizen>;
-    supportedUnits: Array<Unit>;
+    citizens: Citizen[];
+    supportedUnits: Unit[];
     buildings: Array<BuildingType>
     constructor(faction: Faction, mapSquare: MapSquare, config: any = {}) {
         this.faction = faction;
@@ -86,20 +86,20 @@ class Town {
         return Math.ceil((this.population - UNHAPPINESS_ALLOWANCE) / UNHAPPINESS_RATE)
     }
 
-    getUnitsHere(units:Array<Unit>) {
+    getUnitsHere(units: Unit[]) {
         return units
             .filter(unit => unit.faction === this.faction)
             .filter(unit => areSamePlace(unit, this))
     }
 
-    getUnhappinessReduction(units:Array<Unit>) {
+    getUnhappinessReduction(units: Unit[]) {
         let value = 0;
         this.buildings.forEach(buildingType => { value += buildingType.reduceUnhappiness })
         value += Math.min(MAX_UNHAPPINESS_REDUCTION_FROM_UNITS, this.getUnitsHere(units).length)
         return value
     }
 
-    getUnhappiness(units:Array<Unit>) {
+    getUnhappiness(units: Unit[]) {
         return Math.max(this.baseUnhappiness - this.getUnhappinessReduction(units), 0)
     }
 
@@ -107,7 +107,11 @@ class Town {
         return Math.floor(this.faction.allocateTownRevenue(this).entertainment / 2)
     }
 
-    getIsInRevolt(units:Array<Unit>) {
+    /** 
+    @param units all the units in the GameState, or all this factions' units
+    @return whether the town is in revolt
+    **/
+    getIsInRevolt(units: Unit[]) {
         return this.getUnhappiness(units) > this.happiness
     }
 
@@ -135,11 +139,11 @@ class Town {
     }
 
     get turnsToCompleteCurrentProduction() {
-        if (!this.isProducing) {return 0}
+        if (!this.isProducing) { return 0 }
         return getTurnsToComplete(this.isProducing.productionCost - this.productionStore, this.output.productionYield)
     }
 
-    getTurnsToComplete(item: UnitType|BuildingType) {
+    getTurnsToComplete(item: UnitType | BuildingType) {
         return getTurnsToComplete(item.productionCost - this.productionStore, this.output.productionYield)
     }
 

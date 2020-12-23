@@ -4,8 +4,8 @@ import { Town } from './Town'
 import { CitizenJob, citizenJobs } from './CitizenJob.tsx'
 
 class Citizen {
-    mapSquare: MapSquare | null;
-    job: CitizenJob | null;
+    mapSquare: MapSquare;
+    job: CitizenJob;
 
     constructor(mapSquare = null, job = citizenJobs.entertainer) {
         this.mapSquare = mapSquare
@@ -15,6 +15,11 @@ class Citizen {
     putToWorkInSquare(mapSquare: MapSquare) {
         this.mapSquare = mapSquare
         this.job = citizenJobs.worker
+    }
+
+    changeJobTo(job: CitizenJob) {
+        this.mapSquare = null
+        this.job = job
     }
 
     changeJob() {
@@ -31,22 +36,25 @@ class Citizen {
     }
 
     getOutput(town: Town) {
-        if (this.mapSquare) {
-
-            let output = {
-                foodYield: this.mapSquare.foodYield,
-                tradeYield: this.mapSquare.tradeYield,
-                productionYield: this.mapSquare.productionYield,
-            }
-            town.buildings.forEach(buildingType => {
-                if (buildingType.addSquareOutputBonus) {
-                    buildingType.addSquareOutputBonus(this.mapSquare, output)
-                }
-            })
-            return output
+        let output = {
+            foodYield: 0,
+            tradeYield: 0,
+            productionYield: 0,
         }
 
-        return {}
+        if (!this.mapSquare) { return output }
+
+        output.foodYield = this.mapSquare.foodYield
+        output.tradeYield = this.mapSquare.tradeYield
+        output.productionYield = this.mapSquare.productionYield
+
+        town.buildings.forEach(buildingType => {
+            if (buildingType.addSquareOutputBonus) {
+                buildingType.addSquareOutputBonus(this.mapSquare, output)
+            }
+        })
+
+        return output
     }
 
     get serialised() {
@@ -60,7 +68,7 @@ class Citizen {
         return output
     }
 
-    static deserialise(data, mapGrid:Array<Array<MapSquare>>) {
+    static deserialise(data, mapGrid: Array<Array<MapSquare>>) {
         const mapSquare = data.mapSquare ? mapGrid[data.mapSquare.y][data.mapSquare.x] : undefined
         const job = data.job ? citizenJobs[data.job] : undefined
         return new Citizen(mapSquare, job)

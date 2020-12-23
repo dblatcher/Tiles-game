@@ -7,20 +7,18 @@ AI
 - learn to use naval units...
 - strategic goals? which units and techs
 - minimum town placement score (don't just settle in highest place you can see - explore unit somewhere good enough)
-- quell unrest in towns
+- use AI config to prioritise citizen jobs
 
 map
  - special resources
  - customisable makeMap function
 
 
-TechDiscoveries
--obseleting units
-
 units
-- obseleting units
+- obseleting units based on TechDiscoveries
 - implement special rules
 - should not be able to  attack while on transport, unless marines/vikings
+- trieme lost at sea rule
 
 towns
 - take treasury and tech on town conquest
@@ -30,9 +28,11 @@ towns
 - choose best square when auto-assigning citizens
 - click on 'units here' to activate and close town screen
 - absent units can increase unrest (govermentType!)
+- faction window button on town view
 
 Buildings
-- define more BuildingTypes, add rules to existing code
+- court house and corruption rule
+- Palace (limit one per faction)
 
 informational text
 - more content

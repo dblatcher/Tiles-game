@@ -11,6 +11,8 @@ import { GameState } from '../game-entities/GameState'
 import { Faction } from '../game-entities/Faction';
 import { Unit } from '../game-entities/Unit';
 import { MapSquare } from '../game-entities/MapSquare';
+import { citizenJobs } from '../game-entities/CitizenJob.tsx';
+import { Citizen } from '../game-entities/Citizen';
 
 
 class ComputerPersonality {
@@ -26,6 +28,24 @@ class ComputerPersonality {
 
         myTowns.forEach(town => {
             town.autoAssignFreeCitizens(state);
+
+            if (town.getIsInRevolt(state.units)) {
+                let happinessNeeded = town.getUnhappiness(state.units) - town.happiness
+                let entertainersNeeded = Math.ceil(happinessNeeded / citizenJobs.entertainer.revenueAdditionBonus.entertainment)
+
+                // TO DO - use this.config to determine priority - allow starvation over unrest / underproduction? 
+                let citizensSortedByFoodYield: Citizen[] = town.citizens
+                    .map((citizen: Citizen) => citizen)
+                    .filter((citizen: Citizen) => citizen.job !== citizenJobs.entertainer)
+                    .sort((citizenA: Citizen, citizenB: Citizen) => {
+                        return citizenA.getOutput(town).foodYield - citizenB.getOutput(town).foodYield
+                    })
+
+                for (let i = 0; i < entertainersNeeded; i++) {
+                    citizensSortedByFoodYield[i].changeJobTo(citizenJobs.entertainer)
+                }
+
+            }
 
             if (!town.isProducing) {
                 const { producableUnits, producableBuildings } = this.faction

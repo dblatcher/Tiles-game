@@ -1,7 +1,7 @@
 
 import { onGoingOrderTypes } from "../game-entities/OngoingOrder.tsx";
 import { Unit } from "../game-entities/Unit";
-import { areSamePlace } from "../utility";
+import { areSamePlace, getAreaSurrounding } from "../utility";
 import { unitMissionTypes} from "./UnitMissionTypes.ts"
 import { GameState } from '../game-entities/GameState'
 
@@ -24,12 +24,9 @@ class UnitMission {
     }
 
     chooseMove(unit:Unit, state:GameState) {
-        let possibleMoves = state.mapGrid
-            .slice(unit.y - 1, unit.y + 2)
-            .map(row => row.slice(unit.x - 1, unit.x + 2))
-            .flat()
-            .filter(mapSquare => mapSquare !== null)
+        let possibleMoves = getAreaSurrounding(unit,state.mapGrid)
             .filter(mapSquare => {
+                if (mapSquare === null) {return false}
                 const townInMapSquare = state.towns.filter(town => town.x == mapSquare.x && town.y === mapSquare.y)[0]
                 const unitsInMapSquare = state.units.filter(otherUnit => areSamePlace(otherUnit, mapSquare))
                 return unit.canMoveToOrAttack(mapSquare, state.mapGrid[unit.y][unit.x], townInMapSquare, unitsInMapSquare, state.mapGrid[0].length)

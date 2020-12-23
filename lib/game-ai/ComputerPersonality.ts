@@ -168,12 +168,6 @@ class ComputerPersonality {
             )
         }
 
-        else {
-            unit.missions.push(
-                new UnitMission('WAIT', {})
-            )
-        }
-
         if (unit.missions.length == 0) {
             unit.missions.push(new UnitMission("WAIT"))
         }

@@ -123,16 +123,23 @@ const unitMissionTypes = {
         },
         function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OngoingOrderType>) {
 
+            const minimumTownLocationScore = 30
+
             if (!this.target) {
                 let possibleNewTownLocationsWithScores = ai.getPossibleNewTownLocations(state)
                     .map(mapSquare => {
                         return { mapSquare, score: ai.assesNewTownLocation(mapSquare, ai.faction.worldMap).score }
                     })
+                    .filter(item => item.score >= minimumTownLocationScore)
                     .sort((itemA, itemB) => itemB.score - itemA.score)
 
                 if (possibleNewTownLocationsWithScores.length > 0) {
                     this.target = possibleNewTownLocationsWithScores[0].mapSquare
-                    console.log(`${unit.description} has choosed a place to build town:`, this.target)
+                    console.log(
+                        `${unit.description} has choosed a place to build town, with score:`, 
+                        this.target, 
+                        possibleNewTownLocationsWithScores[0].score
+                    )
                 } else {
                     console.log(`${unit.description} has no a place to build town.`)
                 }

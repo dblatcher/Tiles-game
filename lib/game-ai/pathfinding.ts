@@ -1,7 +1,11 @@
 import { Graph, astar } from "../vendor/astar";
 import { areSamePlace } from "../utility"
 
-function chooseMoveTowards(target, unit, state, possibleMoves) {
+import { GameState } from '../game-entities/GameState'
+import { Unit } from '../game-entities/Unit';
+import { MapSquare } from '../game-entities/MapSquare';
+
+function chooseMoveTowards(target, unit:Unit, state:GameState, possibleMoves:MapSquare[]) {
     if (!target) { return null }
     if (unit.x == target.x && unit.y == target.y) { return null }
     if (possibleMoves.length === 0) { return null }

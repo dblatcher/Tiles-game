@@ -1,12 +1,17 @@
 import { UnitMission } from './UnitMission.ts';
-import { Faction } from '../game-entities/Faction.tsx';
 import { techDiscoveries } from '../game-entities/TechDiscovery.tsx';
 import attemptMove from '../game-logic/attemptMove'
 
 import gameActions from '../game-logic/gameActions'
 import townActions from '../game-logic/townActions'
 import { unsafelyCheckAreSamePlace, unsafelyGetDistanceBetween } from '../utility';
-import { MINIMUM_DISTANCE_BETWEEN_TOWNS} from '../game-logic/constants'
+import { MINIMUM_DISTANCE_BETWEEN_TOWNS } from '../game-logic/constants'
+
+import { GameState } from '../game-entities/GameState'
+import { Faction } from '../game-entities/Faction';
+import { Unit } from '../game-entities/Unit';
+import { MapSquare } from '../game-entities/MapSquare';
+
 
 class ComputerPersonality {
     faction: Faction;
@@ -16,23 +21,24 @@ class ComputerPersonality {
         this.config = config
     }
 
-    manageTowns(state) {
+    manageTowns(state: GameState) {
         const myTowns = state.towns.filter(town => town.faction === this.faction)
 
         myTowns.forEach(town => {
             town.autoAssignFreeCitizens(state);
+
             if (!town.isProducing) {
                 const { producableUnits, producableBuildings } = this.faction
                 //TO DO - logic for computer picking a production item
                 let item
                 item = producableUnits[Math.floor(Math.random() * producableUnits.length)]
-                townActions.PRODUCTION_PICK({town, item})(state)
+                townActions.PRODUCTION_PICK({ town, item })(state)
                 console.log(`** ${town.name} now producing ${town.isProducing.name}`)
             }
         })
     }
 
-    pickNewTech(state) {
+    pickNewTech(state: GameState) {
         const possibleChoices = Object.keys(techDiscoveries)
             .map(techName => techDiscoveries[techName])
             .filter(tech => tech.checkCanResearchWith(this.faction.knownTech))
@@ -44,7 +50,7 @@ class ComputerPersonality {
         gameActions.CHOOSE_RESEARCH_GOAL({ activeFaction: this.faction, techDiscovery: choosenTechDiscovery })(state)
     }
 
-    getKnownEnemyTowns(state) {
+    getKnownEnemyTowns(state: GameState) {
         return state.towns
             .filter(town => town.faction !== this.faction)
             .filter(town => this.faction.worldMap
@@ -53,13 +59,13 @@ class ComputerPersonality {
                 .some(mapSquare => mapSquare.x === town.mapSquare.x && mapSquare.y === town.mapSquare.y))
     }
 
-    getKnownEnemyUnits(state) {
+    getKnownEnemyUnits(state: GameState) {
         return state.units
             .filter(unit => unit.faction !== this.faction)
             .filter(unit => this.faction.worldMap[unit.y] && this.faction.worldMap[unit.y][unit.x])
     }
 
-    getKnownEnemyUnitInOpen(state) {
+    getKnownEnemyUnitInOpen(state: GameState) {
         let enemyTowns = this.getKnownEnemyTowns(state)
         let enemyUnits = this.getKnownEnemyUnits(state)
 
@@ -67,24 +73,24 @@ class ComputerPersonality {
             .filter(unit => !enemyTowns.some(town => unsafelyCheckAreSamePlace(town.mapSquare, unit)))
     }
 
-    getPossibleNewTownLocations(state) {
+    getPossibleNewTownLocations(state: GameState) {
         const squaresTownsCouldBeBuiltOn = this.faction.worldMap
             .flat()
             .filter(mapSquare => mapSquare !== null)
             .filter(mapSquare => !mapSquare.terrain.neverTown)
-            .filter(mapSquare => !state.towns.some(town => unsafelyGetDistanceBetween(town.mapSquare, mapSquare) < MINIMUM_DISTANCE_BETWEEN_TOWNS ))
+            .filter(mapSquare => !state.towns.some(town => unsafelyGetDistanceBetween(town.mapSquare, mapSquare) < MINIMUM_DISTANCE_BETWEEN_TOWNS))
 
         return squaresTownsCouldBeBuiltOn
     }
 
-    assesNewTownLocation(mapSquare, mapGrid) {
+    assesNewTownLocation(mapSquare: MapSquare, mapGrid: Array<Array<MapSquare | null> | null>) {
 
         const workableSquares = mapSquare.getWorkableSquaresAround(mapGrid)
         // TO DO - better scoring system 
         // one square that  yields 8 is more valuable than two that yields 4
         // balance matters - town with high production yield but v low food yield isnt good
 
-        let foodYield=0, productionYield=0, tradeYield=0; 
+        let foodYield = 0, productionYield = 0, tradeYield = 0;
         workableSquares.forEach(square => {
             foodYield += square.foodYield;
             productionYield += square.productionYield;
@@ -92,9 +98,9 @@ class ComputerPersonality {
         })
 
         // give double weight to home square
-        foodYield += mapSquare.foodYield*2;
-        productionYield += mapSquare.productionYield*2;
-        tradeYield += mapSquare.tradeYield*2;
+        foodYield += mapSquare.foodYield * 2;
+        productionYield += mapSquare.productionYield * 2;
+        tradeYield += mapSquare.tradeYield * 2;
 
         return {
             mapSquare,
@@ -102,11 +108,11 @@ class ComputerPersonality {
             foodYield,
             productionYield,
             tradeYield,
-            score: foodYield+productionYield+tradeYield
+            score: foodYield + productionYield + tradeYield
         }
     }
 
-    assignNewMission(unit, state) {
+    assignNewMission(unit: Unit, state: GameState) {
         // TO DO - logic for picking a mission...
 
 
@@ -136,7 +142,7 @@ class ComputerPersonality {
                 new UnitMission('EXPLORE'),
             )
         }
-        if (unit.role === "SCOUT" || unit.role === "WORKER" ) {
+        if (unit.role === "SCOUT" || unit.role === "WORKER") {
             unit.missions.push(
                 new UnitMission('EXPLORE'),
             )
@@ -153,7 +159,7 @@ class ComputerPersonality {
         }
     }
 
-    makeMove(state) {
+    makeMove(state: GameState) {
         let moveSuceeded = false;
         const unit = state.selectedUnit;
 
@@ -189,7 +195,7 @@ class ComputerPersonality {
         }
     }
 
-    checkIfFinished(state, movesMade) {
+    checkIfFinished(state: GameState, movesMade: number) {
         let result
         const myUnitsWithMovesLeft = state.units
             .filter(unit => unit.faction === this.faction)

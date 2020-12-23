@@ -4,6 +4,7 @@ import { chooseMoveTowards } from './pathfinding.ts'
 import { ComputerPersonality } from "./ComputerPersonality";
 import { Unit } from "../game-entities/Unit";
 import { MapSquare } from "../game-entities/MapSquare";
+import { GameState } from '../game-entities/GameState'
 
 class UnitMissionType {
     name: string;
@@ -21,40 +22,40 @@ class UnitMissionType {
 const unitMissionTypes = {
 
     WAIT: new UnitMissionType('WAIT',
-        function (unit, state) {
+        function (unit: Unit, state: GameState) {
             return this.untilCancelled
         },
-        function (ai:ComputerPersonality, unit:Unit, state:object, possibleMoves:Array<MapSquare>, possibleActions:Array<OngoingOrderType>) {
+        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OngoingOrderType>) {
             return null
         }
     ),
 
     GO_TO: new UnitMissionType('GO_TO',
-        function (unit, state) {
+        function (unit: Unit, state: GameState) {
             return unit.x == this.xTarget && unit.y == this.yTarget
         },
-        function (ai:ComputerPersonality, unit:Unit, state:object, possibleMoves:Array<MapSquare>, possibleActions:Array<OngoingOrderType>) {
+        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OngoingOrderType>) {
             const { target } = this
             return chooseMoveTowards(target, unit, state, possibleMoves)
         },
     ),
     RANDOM: new UnitMissionType('RANDOM',
-        function (unit, state) {
+        function (unit: Unit, state: GameState) {
             return true
         },
-        function (ai:ComputerPersonality, unit:Unit, state:object, possibleMoves:Array<MapSquare>, possibleActions:Array<OngoingOrderType>) {
+        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OngoingOrderType>) {
             return possibleMoves[Math.floor(Math.random() * possibleMoves.length)]
         },
     ),
     CONQUER: new UnitMissionType('CONQUER',
-        function (unit, state) {
+        function (unit: Unit, state: GameState) {
             const { target } = this
             if (!target) { return true }
             const ai = unit.faction.computerPersonality
             let enemyTowns = ai.getKnownEnemyTowns(state)
             return !enemyTowns.some(town => town.mapSquare.x === target.x && town.mapSquare.y === target.y)
         },
-        function (ai:ComputerPersonality, unit:Unit, state:object, possibleMoves:Array<MapSquare>, possibleActions:Array<OngoingOrderType>) {
+        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OngoingOrderType>) {
             if (!this.target) {
                 let enemyTowns = ai.getKnownEnemyTowns(state)
                     .sort((enemyTownA, enemyTownB) => unsafelyGetDistanceBetween(enemyTownA.mapSquare, unit) - unsafelyGetDistanceBetween(enemyTownB.mapSquare, unit))
@@ -71,7 +72,7 @@ const unitMissionTypes = {
         }
     ),
     INTERCEPT: new UnitMissionType('INTERCEPT',
-        function (unit, state) {
+        function (unit: Unit, state: GameState) {
             if (this.untilCancelled) { return false }
             const ai = unit.faction.computerPersonality
             return this.range
@@ -81,7 +82,7 @@ const unitMissionTypes = {
                 : ai.getKnownEnemyUnitInOpen(state)
                     .length === 0
         },
-        function (ai:ComputerPersonality, unit:Unit, state:object, possibleMoves:Array<MapSquare>, possibleActions:Array<OngoingOrderType>) {
+        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OngoingOrderType>) {
             let knownEnemyUnitInOpen = ai.getKnownEnemyUnitInOpen(state)
                 .sort((enemyUnitA, enemyUnitB) => unsafelyGetDistanceBetween(enemyUnitA, unit) - unsafelyGetDistanceBetween(enemyUnitB, unit))
 
@@ -90,10 +91,10 @@ const unitMissionTypes = {
         }
     ),
     GO_TO_MY_NEAREST_TOWN: new UnitMissionType('GO_TO_MY_NEAREST_TOWN',
-        function (unit, state) {
+        function (unit: Unit, state: GameState) {
             return state.towns.some(town => town.faction === unit.faction && areSamePlace(town, unit))
         },
-        function (ai:ComputerPersonality, unit:Unit, state:object, possibleMoves:Array<MapSquare>, possibleActions:Array<OngoingOrderType>) {
+        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OngoingOrderType>) {
 
             let myTowns = state.towns
                 .filter(town => town.faction === unit.faction)
@@ -106,10 +107,10 @@ const unitMissionTypes = {
         }
     ),
     DEFEND_CURRENT_PLACE: new UnitMissionType('DEFEND_CURRENT_PLACE',
-        function (unit, state) {
+        function (unit: Unit, state: GameState) {
             return false
         },
-        function (ai:ComputerPersonality, unit:Unit, state:object, possibleMoves:Array<MapSquare>, possibleActions:Array<OngoingOrderType>) {
+        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OngoingOrderType>) {
             if (possibleActions.includes(orderTypesMap['Fortify'])) {
                 return orderTypesMap['Fortify']
             }
@@ -117,10 +118,10 @@ const unitMissionTypes = {
         }
     ),
     BUILD_NEW_TOWN: new UnitMissionType('BUILD_NEW_TOWN',
-        function (unit, state) {
+        function (unit: Unit, state: GameState) {
             return false
         },
-        function (ai:ComputerPersonality, unit:Unit, state:object, possibleMoves:Array<MapSquare>, possibleActions:Array<OngoingOrderType>) {
+        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OngoingOrderType>) {
 
             if (!this.target) {
                 let possibleNewTownLocationsWithScores = ai.getPossibleNewTownLocations(state)
@@ -150,15 +151,15 @@ const unitMissionTypes = {
         },
     ),
     EXPLORE: new UnitMissionType('EXPLORE',
-        function (unit, state) {
+        function (unit: Unit, state: GameState) {
             return false
         },
-        function (ai:ComputerPersonality, unit:Unit, state:object, possibleMoves:Array<MapSquare>, possibleActions:Array<OngoingOrderType>) {
+        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OngoingOrderType>) {
 
             const map = ai.faction.worldMap
 
             function hasSpaceNearby(mapSquare) {
-                if (!mapSquare) {return false}
+                if (!mapSquare) { return false }
                 const { x, y } = mapSquare
                 const gridHeight = state.mapGrid.length
                 const gridWidth = state.mapGrid[0].length

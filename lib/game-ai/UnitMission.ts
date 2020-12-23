@@ -3,7 +3,7 @@ import { onGoingOrderTypes } from "../game-entities/OngoingOrder.tsx";
 import { Unit } from "../game-entities/Unit";
 import { areSamePlace } from "../utility";
 import { unitMissionTypes} from "./UnitMissionTypes.ts"
-
+import { GameState } from '../game-entities/GameState'
 
 class UnitMission {
     type: string;
@@ -19,11 +19,11 @@ class UnitMission {
         this.untilCancelled = !!config.untilCancelled
     }
 
-    checkIfFinished(unit:Unit, state) {
+    checkIfFinished(unit:Unit, state:GameState) {
         return unitMissionTypes[this.type].checkIfFinished.apply(this, [unit, state])
     }
 
-    chooseMove(unit:Unit, state) {
+    chooseMove(unit:Unit, state:GameState) {
         let possibleMoves = state.mapGrid
             .slice(unit.y - 1, unit.y + 2)
             .map(row => row.slice(unit.x - 1, unit.x + 2))

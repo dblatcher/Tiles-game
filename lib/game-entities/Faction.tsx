@@ -255,6 +255,7 @@ class ComputerFaction extends Faction {
             researchGoal: this.researchGoal ? this.researchGoal.name : false,
             knownTech: this.knownTech.map(techDiscovery => techDiscovery.name),
             worldMap: MapSquare.serialiseGrid(this.worldMap),
+            townNames: this.townNames.map(name => name),
             computerPersonality: this.computerPersonality.serialised
         }
         Object.keys(this).forEach(key => {

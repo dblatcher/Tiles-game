@@ -2,12 +2,12 @@
 Victories / game overs
 
 AI
-- proper AI functions to pick computer moves well...
-- debug component to reveal AI priorities / goals
-- learn to use naval units...
-- strategic goals? which units and techs
 - minimum town placement score (don't just settle in highest place you can see - explore unit somewhere good enough)
+- learn to use naval units...
+- proper AI functions to pick computer moves well...
 - use AI config to prioritise citizen jobs
+- debug component to reveal AI priorities / goals
+- strategic goals? which units and techs
 
 map
  - special resources

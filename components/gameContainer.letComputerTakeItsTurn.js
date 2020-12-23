@@ -1,5 +1,6 @@
 import { areSamePlace, sleep, asyncSetState } from '../lib/utility'
 import gameActions from '../lib/game-logic/gameActions'
+import { debugLogAtLevel } from '../lib/logging'
 
 export default function letComputerTakeItsTurn() {
     const { activeFaction } = this.state
@@ -26,7 +27,7 @@ export default function letComputerTakeItsTurn() {
         })
 
         unitThatMovedWasInViewAfterMove = placesInSight.some(place => areSamePlace(place, unitThatMoved))
-        console.log(`****Move took: ${Date.now() - moveTimeStamp}ms`)
+        debugLogAtLevel(2)(`****Move took: ${Date.now() - moveTimeStamp}ms`)
 
         if (unitThatMovedWasInViewAfterMove || unitThatMovedWasInViewBeforeMove) {
             this.scrollToSquare(unitThatMoved)
@@ -47,7 +48,7 @@ export default function letComputerTakeItsTurn() {
         }
     }
 
-    console.log(`___${activeFaction.name.toUpperCase()} STARTING TURN____`)
+    debugLogAtLevel(1)(`___${activeFaction.name.toUpperCase()} STARTING TURN____`)
     letComputerMakeMove()
 
 }

@@ -4,6 +4,7 @@ import { areSamePlace } from "../utility"
 import { GameState } from '../game-entities/GameState'
 import { Unit } from '../game-entities/Unit';
 import { MapSquare } from '../game-entities/MapSquare';
+import { debugLogAtLevel } from "../logging";
 
 function chooseMoveTowards(target, unit:Unit, state:GameState, possibleMoves:MapSquare[]) {
     if (!target) { return null }
@@ -36,7 +37,7 @@ function chooseMoveTowards(target, unit:Unit, state:GameState, possibleMoves:Map
     // co-ordinates are reversed on path result - unsure why. Graph maybe uses array of coloumns, not array or rows?
     const firstSquareOnPath = state.mapGrid[path[0].x][path[0].y]
 
-    // console.log(`[${firstStep.x},${firstStep.y}]`, possibleMoves.includes(firstSquareOnPath))
+    debugLogAtLevel(4)(`PATHFINDING: [${firstSquareOnPath.x},${firstSquareOnPath.y}]`, possibleMoves.includes(firstSquareOnPath))
     return firstSquareOnPath
 }
 

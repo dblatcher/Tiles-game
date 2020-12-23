@@ -14,6 +14,7 @@ import { MapSquare } from '../game-entities/MapSquare';
 import { citizenJobs } from '../game-entities/CitizenJob.tsx';
 import { Citizen } from '../game-entities/Citizen';
 
+import { debugLogAtLevel } from '../logging'
 
 class ComputerPersonality {
     faction: Faction;
@@ -53,7 +54,7 @@ class ComputerPersonality {
                 let item
                 item = producableUnits[Math.floor(Math.random() * producableUnits.length)]
                 townActions.PRODUCTION_PICK({ town, item })(state)
-                console.log(`** ${town.name} now producing ${town.isProducing.name}`)
+                debugLogAtLevel(2)(`** ${town.name} now producing ${town.isProducing.name}`)
             }
         })
     }
@@ -66,7 +67,7 @@ class ComputerPersonality {
         //TO DO - logic for computer picking a tech based on computerPersonality goals
         const choosenTechDiscovery = possibleChoices[0]
 
-        console.log(`** ${this.faction.name} AI is now researching ${choosenTechDiscovery.name}`)
+        debugLogAtLevel(1)(`** ${this.faction.name} AI is now researching ${choosenTechDiscovery.name}`)
         gameActions.CHOOSE_RESEARCH_GOAL({ activeFaction: this.faction, techDiscovery: choosenTechDiscovery })(state)
     }
 
@@ -179,7 +180,7 @@ class ComputerPersonality {
 
 
         if (unit && unit.remainingMoves > 0) {
-            console.log(`*${unit.indexNumber}* ${this.faction.name} moving ${unit.description} (${unit.role})`)
+            debugLogAtLevel(2)(`*${unit.indexNumber}* ${this.faction.name} moving ${unit.description} (${unit.role})`)
             unit.missions = unit.missions.filter(mission => !mission.checkIfFinished(unit, state))
             if (unit.missions.length == 0) { this.assignNewMission(unit, state) }
 
@@ -217,7 +218,7 @@ class ComputerPersonality {
 
         result = myUnitsWithMovesLeft.length === 0
 
-        console.log(`__${movesMade} MOVES MADE__`, result ? 'FINISHED' : '')
+        debugLogAtLevel(1)(`__${movesMade} MOVES MADE__`, result ? 'FINISHED' : '')
         return result
     }
 

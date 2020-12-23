@@ -6,6 +6,8 @@ import { Unit } from "../game-entities/Unit";
 import { MapSquare } from "../game-entities/MapSquare";
 import { GameState } from '../game-entities/GameState'
 
+import { debugLogAtLevel } from '../logging'
+
 class UnitMissionType {
     name: string;
     checkIfFinished: Function;
@@ -65,7 +67,7 @@ const unitMissionTypes = {
             const { target } = this
             if (!target) { return null }
             const distance = getDistanceBetween(target, unit)
-            console.log(`*${unit.indexNumber}*${unit.description} at [${unit.x}, ${unit.y}] and wants to conquer the town at [${target.x}, ${target.y}] - ${distance} away`)
+            debugLogAtLevel(3)(`*${unit.indexNumber}*${unit.description} at [${unit.x}, ${unit.y}] and wants to conquer the town at [${target.x}, ${target.y}] - ${distance} away`)
 
             const moveToAttack = possibleMoves.filter(mapSquare => areSamePlace(mapSquare, target))[0]
             return moveToAttack || chooseMoveTowards(target, unit, state, possibleMoves)
@@ -135,13 +137,13 @@ const unitMissionTypes = {
 
                 if (possibleNewTownLocationsWithScores.length > 0) {
                     this.target = possibleNewTownLocationsWithScores[0].mapSquare
-                    console.log(
+                    debugLogAtLevel(3)(
                         `${unit.description} has choosed a place to build town, with score:`, 
                         this.target, 
                         possibleNewTownLocationsWithScores[0].score
                     )
                 } else {
-                    console.log(`${unit.description} has no a place to build town.`)
+                    debugLogAtLevel(3)(`${unit.description} has no a place to build town.`)
                 }
             }
 
@@ -196,7 +198,7 @@ const unitMissionTypes = {
 
                 if (placesWithSpacesNearby.length > 0) {
                     this.target = placesWithSpacesNearby[0]
-                    console.log(`Exploring ${unit.description} [${unit.x},${unit.y}] going to`, this.target)
+                    debugLogAtLevel(3)(`Exploring ${unit.description} [${unit.x},${unit.y}] going to`, this.target)
                 }
             }
 

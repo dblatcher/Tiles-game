@@ -3,6 +3,7 @@ Victories / game overs
 
 AI
 - minimum town placement score (don't just settle in highest place you can see - explore unit somewhere good enough)
+- learn to cross map edge
 - learn to use naval units...
 - proper AI functions to pick computer moves well...
 - use AI config to prioritise citizen jobs
@@ -21,7 +22,7 @@ units
 - trieme lost at sea rule
 
 towns
-- take treasury and tech on town conquest
+- take tech on town conquest
 - trade routes
 - render obstables in townView (unit or citizen of other town)
 - corruption rate

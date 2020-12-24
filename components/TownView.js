@@ -54,11 +54,12 @@ export default class TownView extends React.Component {
     }
 
     render() {
-        const { closeTownView, handleTownAction, openTownView, stateOfPlay } = this.props
+        const { closeTownView, handleTownAction, openTownView, stateOfPlay, openFactionWindow } = this.props
         const { mapGrid, towns, units, openTown } = stateOfPlay
         const town = openTown
 
         const buttonList = [
+            { text: town.faction.name, clickFunction: openFactionWindow },
             { text: 'close', clickFunction: closeTownView },
         ]
 

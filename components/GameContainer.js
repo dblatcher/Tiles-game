@@ -70,6 +70,7 @@ export default class GameContainer extends React.Component {
         this.handleDialogueButton = this.handleDialogueButton.bind(this)
         this.setMainMenuOpen = this.setMainMenuOpen.bind(this)
         this.toggleFactionWindow = this.toggleFactionWindow.bind(this)
+        this.openFactionWindow = this.openFactionWindow.bind(this)
         this.setMapZoomLevel = this.setMapZoomLevel.bind(this)
         this.openTownView = this.openTownView.bind(this)
         this.endMapShift = this.endMapShift.bind(this)
@@ -198,6 +199,13 @@ export default class GameContainer extends React.Component {
                 fallenUnits: []
             }
         })
+    }
+
+    openFactionWindow() {
+       this.setState({
+           factionWindowIsOpen: true,
+           openTown: null
+       }) 
     }
 
     openTownView(town) {
@@ -420,7 +428,8 @@ export default class GameContainer extends React.Component {
                     stateOfPlay={this.stateOfPlay}
                     closeTownView={this.closeTownView}
                     handleTownAction={this.handleTownAction}
-                    openTownView={this.openTownView} />
+                    openTownView={this.openTownView} 
+                    openFactionWindow={this.openFactionWindow}/>
             )
         }
 

@@ -53,7 +53,7 @@ const unitMissionTypes = {
         function (unit: Unit, state: GameState) {
             const { target } = this
             if (!target) { return true }
-            const ai = unit.faction.computerPersonality
+            const ai = unit.faction.computerPersonality as ComputerPersonality
             let enemyTowns = ai.getKnownEnemyTowns(state)
             return !enemyTowns.some(town => town.mapSquare.x === target.x && town.mapSquare.y === target.y)
         },
@@ -76,7 +76,7 @@ const unitMissionTypes = {
     INTERCEPT: new UnitMissionType('INTERCEPT',
         function (unit: Unit, state: GameState) {
             if (this.untilCancelled) { return false }
-            const ai = unit.faction.computerPersonality
+            const ai = unit.faction.computerPersonality as ComputerPersonality
             return this.range
                 ? ai.getKnownEnemyUnitInOpen(state)
                     .filter(enemyUnit => unsafelyGetDistanceBetween(enemyUnit, unit) < this.range)

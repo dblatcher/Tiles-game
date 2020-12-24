@@ -1,5 +1,5 @@
 import { UnitMission } from './UnitMission.ts';
-import { techDiscoveries } from '../game-entities/TechDiscovery.tsx';
+import { techDiscoveries } from '../game-entities/TechDiscovery';
 import attemptMove from '../game-logic/attemptMove'
 
 import gameActions from '../game-logic/gameActions'
@@ -11,7 +11,7 @@ import { GameState } from '../game-entities/GameState'
 import { Faction } from '../game-entities/Faction';
 import { Unit } from '../game-entities/Unit';
 import { MapSquare } from '../game-entities/MapSquare';
-import { citizenJobs } from '../game-entities/CitizenJob.tsx';
+import { citizenJobs } from '../game-entities/CitizenJob';
 import { Citizen } from '../game-entities/Citizen';
 
 import { debugLogAtLevel } from '../logging'

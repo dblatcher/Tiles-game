@@ -1,8 +1,8 @@
 
-import { onGoingOrderTypes } from "../game-entities/OngoingOrder.tsx";
+import { onGoingOrderTypes } from "../game-entities/OngoingOrder";
 import { Unit } from "../game-entities/Unit";
 import { areSamePlace, getAreaSurrounding } from "../utility";
-import { unitMissionTypes} from "./UnitMissionTypes.ts"
+import { unitMissionTypes} from "./UnitMissionTypes"
 import { GameState } from '../game-entities/GameState'
 
 class UnitMission {

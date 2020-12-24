@@ -1,9 +1,9 @@
-import { Message } from '../game-entities/Message.tsx'
-import { Faction } from '../game-entities/Faction.tsx'
-import { GameState } from '../game-entities/GameState.tsx'
-import { Town } from '../game-entities/Town.tsx'
+import { Message } from '../game-entities/Message'
+import { Faction } from '../game-entities/Faction'
+import { GameState } from '../game-entities/GameState'
+import { Town } from '../game-entities/Town'
 
-function calculateSpoils(state: GameState, conqueredTown: town) {
+function calculateSpoils(state: GameState, conqueredTown: Town) {
 
     const totalPopulation = state.towns
         .filter(town => town.faction === conqueredTown.faction)

@@ -1,5 +1,5 @@
-import { MapSquare } from "./MapSquare.tsx";
-import {TerrainType } from "./TerrainType.tsx";
+import { MapSquare } from "./MapSquare";
+import { TerrainType } from "./TerrainType";
 
 const voidTerrain = new TerrainType('void', {
     css: {
@@ -8,7 +8,7 @@ const voidTerrain = new TerrainType('void', {
 })
 
 export default class VoidMapSquare extends MapSquare {
-    constructor(x,y) {
-        super({terrain:voidTerrain },x,y);
+    constructor(x, y) {
+        super({ terrain: voidTerrain }, x, y);
     }
 }

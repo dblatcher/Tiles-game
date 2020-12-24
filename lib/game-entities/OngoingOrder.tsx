@@ -1,4 +1,5 @@
 import { Citizen } from "./Citizen";
+import { Unit } from "./Unit";
 
 class OnGoingOrderType {
     name: String;
@@ -32,7 +33,7 @@ class OnGoingOrderType {
 
     get classIs() { return "OnGoingOrderType" }
 
-    canUnitUse(unit) {
+    canUnitUse(unit:Unit) {
         if (this.onlyOnMenuToCancel) {
             return unit.onGoingOrder && unit.onGoingOrder.type === this
         }
@@ -181,4 +182,4 @@ class OnGoingOrder {
 let orderTypesMap = {}
 onGoingOrderTypes.forEach(type => { orderTypesMap[type.name] = type })
 
-export { onGoingOrderTypes, OnGoingOrder, orderTypesMap }
+export { onGoingOrderTypes, OnGoingOrder, OnGoingOrderType, orderTypesMap }

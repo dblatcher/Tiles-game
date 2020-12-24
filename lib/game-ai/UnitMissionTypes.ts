@@ -1,6 +1,6 @@
 import { getDistanceBetween, areSamePlace, sortByDistanceFrom, unsafelyGetDistanceBetween } from "../utility"
-import { orderTypesMap, OngoingOrderType } from "../game-entities/OngoingOrder.tsx";
-import { chooseMoveTowards } from './pathfinding.ts'
+import { orderTypesMap, OnGoingOrderType } from "../game-entities/OngoingOrder";
+import { chooseMoveTowards } from './pathfinding'
 import { ComputerPersonality } from "./ComputerPersonality";
 import { Unit } from "../game-entities/Unit";
 import { MapSquare } from "../game-entities/MapSquare";
@@ -27,7 +27,7 @@ const unitMissionTypes = {
         function (unit: Unit, state: GameState) {
             return this.untilCancelled
         },
-        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OngoingOrderType>) {
+        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OnGoingOrderType>) {
             return null
         }
     ),
@@ -36,7 +36,7 @@ const unitMissionTypes = {
         function (unit: Unit, state: GameState) {
             return unit.x == this.xTarget && unit.y == this.yTarget
         },
-        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OngoingOrderType>) {
+        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OnGoingOrderType>) {
             const { target } = this
             return chooseMoveTowards(target, unit, state, possibleMoves)
         },
@@ -45,7 +45,7 @@ const unitMissionTypes = {
         function (unit: Unit, state: GameState) {
             return true
         },
-        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OngoingOrderType>) {
+        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OnGoingOrderType>) {
             return possibleMoves[Math.floor(Math.random() * possibleMoves.length)]
         },
     ),
@@ -57,7 +57,7 @@ const unitMissionTypes = {
             let enemyTowns = ai.getKnownEnemyTowns(state)
             return !enemyTowns.some(town => town.mapSquare.x === target.x && town.mapSquare.y === target.y)
         },
-        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OngoingOrderType>) {
+        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OnGoingOrderType>) {
             if (!this.target) {
                 let enemyTowns = ai.getKnownEnemyTowns(state)
                     .sort((enemyTownA, enemyTownB) => unsafelyGetDistanceBetween(enemyTownA.mapSquare, unit) - unsafelyGetDistanceBetween(enemyTownB.mapSquare, unit))
@@ -84,7 +84,7 @@ const unitMissionTypes = {
                 : ai.getKnownEnemyUnitInOpen(state)
                     .length === 0
         },
-        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OngoingOrderType>) {
+        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OnGoingOrderType>) {
             let knownEnemyUnitInOpen = ai.getKnownEnemyUnitInOpen(state)
                 .sort((enemyUnitA, enemyUnitB) => unsafelyGetDistanceBetween(enemyUnitA, unit) - unsafelyGetDistanceBetween(enemyUnitB, unit))
 
@@ -96,7 +96,7 @@ const unitMissionTypes = {
         function (unit: Unit, state: GameState) {
             return state.towns.some(town => town.faction === unit.faction && areSamePlace(town, unit))
         },
-        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OngoingOrderType>) {
+        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OnGoingOrderType>) {
 
             let myTowns = state.towns
                 .filter(town => town.faction === unit.faction)
@@ -112,7 +112,7 @@ const unitMissionTypes = {
         function (unit: Unit, state: GameState) {
             return false
         },
-        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OngoingOrderType>) {
+        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OnGoingOrderType>) {
             if (possibleActions.includes(orderTypesMap['Fortify'])) {
                 return orderTypesMap['Fortify']
             }
@@ -123,7 +123,7 @@ const unitMissionTypes = {
         function (unit: Unit, state: GameState) {
             return false
         },
-        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OngoingOrderType>) {
+        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OnGoingOrderType>) {
 
             const minimumTownLocationScore = 30
 
@@ -163,7 +163,7 @@ const unitMissionTypes = {
         function (unit: Unit, state: GameState) {
             return false
         },
-        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OngoingOrderType>) {
+        function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OnGoingOrderType>) {
 
             const map = ai.faction.worldMap
 

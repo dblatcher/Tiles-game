@@ -1,8 +1,8 @@
 import { SerialisedGame } from '../lib/serialiseGame'
 import * as Storage from '../lib/storage'
-import { Message } from '../lib/game-entities/Message.tsx'
-import { Unit } from '../lib/game-entities/Unit.tsx'
-import { Town } from '../lib/game-entities/Town.tsx'
+import { Message } from '../lib/game-entities/Message'
+import { Unit } from '../lib/game-entities/Unit'
+import { Town } from '../lib/game-entities/Town'
 
 import startOfTurn from '../lib/game-logic/startOfTurn'
 

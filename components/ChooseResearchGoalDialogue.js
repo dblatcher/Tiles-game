@@ -1,4 +1,4 @@
-import { techDiscoveries, TechDiscovery } from '../lib/game-entities/TechDiscovery.tsx'
+import { techDiscoveries, TechDiscovery } from '../lib/game-entities/TechDiscovery'
 
 import TechTree from './TechTree';
 import styles from './dialogue.module.scss'

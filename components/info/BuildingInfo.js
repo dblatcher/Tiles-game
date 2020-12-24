@@ -1,7 +1,7 @@
 import InfoLink from '../InfoLink'
 
 
-import { techDiscoveries } from '../../lib/game-entities/TechDiscovery.tsx'
+import { techDiscoveries } from '../../lib/game-entities/TechDiscovery'
 import styles from './info.module.scss'
 import SvgIcon from '../SvgIcon'
 import { BASE_POPULATION_LIMIT } from '../../lib/game-logic/constants'

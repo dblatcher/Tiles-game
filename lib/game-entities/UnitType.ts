@@ -1,4 +1,4 @@
-import { TechDiscovery, techDiscoveries } from './TechDiscovery.tsx'
+import { TechDiscovery, techDiscoveries } from './TechDiscovery'
 import { spriteSheets } from '../SpriteSheet.ts'
 
 class UnitType {

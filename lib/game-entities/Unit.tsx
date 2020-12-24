@@ -1,9 +1,9 @@
 import { UnitType, unitTypes } from "./UnitType.ts"
-import { OnGoingOrder } from "./OngoingOrder.tsx";
+import { OnGoingOrder } from "./OngoingOrder";
 import { Faction } from "./Faction";
 import { UnitMission } from '../game-ai/UnitMission.ts'
 import { getAreaSurrounding, areSamePlace, displayTurnsToComplete } from '../utility'
-import { MapSquare } from './MapSquare.tsx'
+import { MapSquare } from './MapSquare'
 
 let unitIndexNumber = 0
 

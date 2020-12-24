@@ -2,7 +2,7 @@ import React from 'react';
 
 import Tile from './Tile'
 import styles from './mapSection.module.scss'
-import VoidMapSquare from "../lib/game-entities/VoidMapSquare.tsx";
+import VoidMapSquare from "../lib/game-entities/VoidMapSquare";
 import { areSamePlace } from '../lib/utility';
 
 

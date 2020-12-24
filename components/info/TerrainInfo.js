@@ -1,5 +1,5 @@
 import TileBoard from '../TileBoard'
-import { MapSquare } from '../../lib/game-entities/MapSquare.tsx'
+import { MapSquare } from '../../lib/game-entities/MapSquare'
 import styles from './info.module.scss'
 
 export default class TerrainInfo extends React.Component {

@@ -11,9 +11,9 @@ import TechInfo from '../../components/info/TechInfo'
 import IndexList from '../../components/info/IndexList'
 
 import { unitTypes } from '../../lib/game-entities/UnitType.ts'
-import { terrainTypes } from '../../lib/game-entities/TerrainType.tsx'
-import { buildingTypes } from '../../lib/game-entities/BuildingType.tsx'
-import { techDiscoveries } from '../../lib/game-entities/TechDiscovery.tsx'
+import { terrainTypes } from '../../lib/game-entities/TerrainType'
+import { buildingTypes } from '../../lib/game-entities/BuildingType'
+import { techDiscoveries } from '../../lib/game-entities/TechDiscovery'
 
 import { findValueWithLowerCasedKey } from '../../lib/utility'
 

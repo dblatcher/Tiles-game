@@ -1,6 +1,6 @@
 import TileBoard from './TileBoard'
 import styles from './decorativeMap.module.css'
-import { MapSquare } from '../lib/game-entities/MapSquare.tsx';
+import { MapSquare } from '../lib/game-entities/MapSquare';
 
 export default class DecorativeMap extends React.Component {
 

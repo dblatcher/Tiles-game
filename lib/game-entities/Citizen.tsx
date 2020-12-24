@@ -1,7 +1,7 @@
 import { MapSquare } from './MapSquare'
 import { Town } from './Town'
 
-import { CitizenJob, citizenJobs } from './CitizenJob.tsx'
+import { CitizenJob, citizenJobs } from './CitizenJob'
 
 class Citizen {
     mapSquare: MapSquare;

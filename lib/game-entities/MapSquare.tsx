@@ -1,5 +1,5 @@
-import { terrainTypes } from './TerrainType.tsx'
-import { TerrainType, randomTerrainType } from './TerrainType.tsx'
+import { terrainTypes } from './TerrainType'
+import { TerrainType, randomTerrainType } from './TerrainType'
 
 class MapSquare {
     terrain: TerrainType

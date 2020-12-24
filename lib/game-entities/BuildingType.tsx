@@ -1,5 +1,5 @@
 import { MapSquare } from './MapSquare';
-import { TechDiscovery, techDiscoveries } from './TechDiscovery.tsx'
+import { TechDiscovery, techDiscoveries } from './TechDiscovery'
 import { camelToSentence } from '../utility';
 
 class BuildingType {

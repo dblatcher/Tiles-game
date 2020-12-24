@@ -54,7 +54,7 @@ export default class TownView extends React.Component {
     }
 
     render() {
-        const { closeTownView, handleTownAction, openTownView, stateOfPlay, openFactionWindow } = this.props
+        const { closeTownView, handleTownAction, openTownView, stateOfPlay, openFactionWindow, activateUnit } = this.props
         const { mapGrid, towns, units, openTown } = stateOfPlay
         const town = openTown
 
@@ -136,7 +136,7 @@ export default class TownView extends React.Component {
 
                     <section className={styles.section}>
                         <h2>{`${town.getUnitsHere(units).length} units here`}</h2>
-                        <UnitListBox units={town.getUnitsHere(units)} />
+                        <UnitListBox units={town.getUnitsHere(units)} handleClickOnUnit={activateUnit}/>
                     </section>
                 </div>
             </Window>

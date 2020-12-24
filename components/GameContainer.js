@@ -62,6 +62,7 @@ export default class GameContainer extends React.Component {
         this.scrollToSelection = this.scrollToSelection.bind(this)
         this.centerWindowOn = this.centerWindowOn.bind(this)
         this.centerOnSelection = this.centerOnSelection.bind(this)
+        this.activateUnit = this.activateUnit.bind(this)
         this.closeTownView = this.closeTownView.bind(this)
         this.handleMapSquareClick = this.handleMapSquareClick.bind(this)
         this.handleTownAction = this.handleTownAction.bind(this)
@@ -336,12 +337,22 @@ export default class GameContainer extends React.Component {
 
         asyncSetState(this, {
             mapXOffset: newOffsetValue,
-            mapShiftInProgress: true
+            mapShiftInProgress: true,
+            interfaceMode: 'MOVE',
         })
             .then(() => {
                 this.scrollToSquare(target)
                 this.endMapShift()
             })
+    }
+
+    activateUnit(unit) {
+        asyncSetState(this,{
+            factionWindowIsOpen: false,
+            openTown: null,
+            selectedUnit: unit,
+        })
+        .then(this.centerOnSelection)
     }
 
     endMapShift(delay = 500) {
@@ -428,6 +439,7 @@ export default class GameContainer extends React.Component {
                     stateOfPlay={this.stateOfPlay}
                     closeTownView={this.closeTownView}
                     handleTownAction={this.handleTownAction}
+                    activateUnit={this.activateUnit}
                     openTownView={this.openTownView} 
                     openFactionWindow={this.openFactionWindow}/>
             )

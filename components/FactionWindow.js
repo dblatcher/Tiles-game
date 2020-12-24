@@ -71,7 +71,9 @@ export default class FactionWindow extends React.Component {
         const budgetKeys = Object.keys(faction.budget.store)
 
         const totalMaintenanceCosts = faction.calculateTotalMaintenceCost(factionTowns)
-        const turnsToNextBreakthrough = getTurnsToComplete(faction.researchGoal.researchCost - faction.research, allocatedBudget.research)
+        const turnsToNextBreakthrough = faction.researchGoal
+            ? getTurnsToComplete(faction.researchGoal.researchCost - faction.research, allocatedBudget.research)
+            : 1
 
         return (
             <Window title={faction.name} buttons={[{ text: 'close', clickFunction: closeWindow }]}>
@@ -116,7 +118,7 @@ export default class FactionWindow extends React.Component {
                                 </td>
                                 <td><CitizenRow town={town} onFactionWindow={true} stateOfPlay={stateOfPlay} /></td>
                                 <td>
-                                    <TradeReport town={town} inRevolt={factionTownsNotInRevolt.indexOf(town) === -1}/>
+                                    <TradeReport town={town} inRevolt={factionTownsNotInRevolt.indexOf(town) === -1} />
                                 </td>
                                 <td>
                                     <span>

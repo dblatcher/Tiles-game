@@ -9,6 +9,7 @@ import ModeButtons from './ModeButtons'
 import TurnButtons from './TurnButtons'
 import PickUnitDialogue from './PickUnitDialogue'
 import ChooseResearchGoalDialogue from './ChooseResearchGoalDialogue'
+import ChooseStolenTechDialogue from './ChooseStolenTechDialogue'
 import TownView from './TownView'
 import MainMenu from './MainMenu'
 import FactionWindow from './FactionWindow'
@@ -391,6 +392,14 @@ export default class GameContainer extends React.Component {
 
         if (pendingDialogues[0].type === "TechDiscoveryChoice") {
             return <ChooseResearchGoalDialogue
+                activeFaction={activeFaction}
+                handleDialogueButton={this.handleDialogueButton}
+            />
+        }
+
+        if (pendingDialogues[0].type === "TechStealQuestion") {
+            return <ChooseStolenTechDialogue
+                question={pendingDialogues[0]}
                 activeFaction={activeFaction}
                 handleDialogueButton={this.handleDialogueButton}
             />

@@ -2,8 +2,8 @@ import { Town } from '../game-entities/Town'
 import { Faction } from '../game-entities/Faction';
 import { Unit } from '../game-entities/Unit';
 import { MapSquare } from '../game-entities/MapSquare';
-import { Message } from '../game-entities/Message';
-import { TextQuestion, OptionsQuestion } from './Questions';
+import { Message, TechDiscoveryChoice } from '../game-entities/Message';
+import { TextQuestion, OptionsQuestion, TechStealQuestion } from './Questions';
 
 class GameState {
     towns: Array<Town>
@@ -12,7 +12,7 @@ class GameState {
     selectedUnit: Unit | null
     mapGrid: Array<Array<MapSquare | null> | null>
     activeFaction: Faction
-    pendingDialogues: Array<Message | TextQuestion | OptionsQuestion>
+    pendingDialogues: Array<Message | TextQuestion | OptionsQuestion | TechDiscoveryChoice | TechStealQuestion>
     mapZoomLevel: number
     mapXOffset: number
     mapShiftInProgress: boolean

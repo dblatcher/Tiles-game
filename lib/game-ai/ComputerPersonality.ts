@@ -1,5 +1,5 @@
 import { UnitMission } from './UnitMission';
-import { techDiscoveries } from '../game-entities/TechDiscovery';
+import { techDiscoveries, TechDiscovery } from '../game-entities/TechDiscovery';
 import attemptMove from '../game-logic/attemptMove'
 
 import gameActions from '../game-logic/gameActions'
@@ -172,6 +172,11 @@ class ComputerPersonality {
         if (unit.missions.length == 0) {
             unit.missions.push(new UnitMission("WAIT"))
         }
+    }
+
+    pickStolenTech(options: TechDiscovery[], state:GameState) {
+        let index = Math.floor(Math.random() * options.length)
+        return options[index]
     }
 
     makeMove(state: GameState) {

@@ -67,6 +67,24 @@
     }
 }
 
+.techBlock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10%;
+
+    &:not(:last-child) {
+        margin-bottom: .5rem;
+    }
+
+    .button {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+
+}
+
 .scoreSummary {
 
     p {

@@ -1,3 +1,5 @@
+import { TechDiscovery } from "./TechDiscovery";
+
 class TextQuestion {
     questionText: string;
     answerHandler: Function;
@@ -26,4 +28,14 @@ class OptionsQuestion {
     get type() { return 'OptionsQuestion' }
 }
 
-export { TextQuestion, OptionsQuestion }
+class TechStealQuestion {
+    questionText:string;
+    options: Array<TechDiscovery>
+    constructor(questionText:string, options:Array<TechDiscovery>) {
+        this.questionText = questionText;
+        this.options = options
+    }
+    get type() { return 'TechStealQuestion' }
+}
+
+export { TextQuestion, OptionsQuestion, TechStealQuestion }

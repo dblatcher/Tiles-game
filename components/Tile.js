@@ -2,7 +2,7 @@ import React from 'react'
 import SvgIcon from './SvgIcon'
 import TownFigure from './TownFigure';
 import styles from './tile.module.scss'
-import { spriteSheets } from '../lib/SpriteSheet.ts'
+import { spriteSheets } from '../lib/SpriteSheet'
 
 
 export default class Tile extends React.Component {

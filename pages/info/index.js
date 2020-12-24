@@ -1,7 +1,7 @@
 import React from 'react'
 import Layout from '../../components/Layout'
 
-import { unitTypes } from '../../lib/game-entities/UnitType.ts'
+import { unitTypes } from '../../lib/game-entities/UnitType'
 import { terrainTypes } from '../../lib/game-entities/TerrainType'
 import { buildingTypes } from '../../lib/game-entities/BuildingType'
 import { techDiscoveries } from '../../lib/game-entities/TechDiscovery'

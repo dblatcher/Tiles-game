@@ -1,7 +1,7 @@
-import { UnitType, unitTypes } from "./UnitType.ts"
+import { UnitType, unitTypes } from "./UnitType"
 import { OnGoingOrder } from "./OngoingOrder";
 import { Faction } from "./Faction";
-import { UnitMission } from '../game-ai/UnitMission.ts'
+import { UnitMission } from '../game-ai/UnitMission'
 import { getAreaSurrounding, areSamePlace, displayTurnsToComplete } from '../utility'
 import { MapSquare } from './MapSquare'
 

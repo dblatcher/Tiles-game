@@ -1,5 +1,5 @@
 import { TechDiscovery, techDiscoveries } from './TechDiscovery'
-import { spriteSheets } from '../SpriteSheet.ts'
+import { spriteSheets } from '../SpriteSheet'
 
 class UnitType {
     name: string;

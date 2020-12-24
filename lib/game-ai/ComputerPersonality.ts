@@ -1,4 +1,4 @@
-import { UnitMission } from './UnitMission.ts';
+import { UnitMission } from './UnitMission';
 import { techDiscoveries } from '../game-entities/TechDiscovery';
 import attemptMove from '../game-logic/attemptMove'
 

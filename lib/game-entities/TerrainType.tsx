@@ -1,4 +1,4 @@
-import { spriteSheets } from '../SpriteSheet.ts'
+import { spriteSheets } from '../SpriteSheet'
 
 
 class TerrainType {

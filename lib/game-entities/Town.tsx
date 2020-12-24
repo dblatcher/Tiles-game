@@ -1,7 +1,7 @@
 import { Faction } from './Faction'
 import { MapSquare } from './MapSquare'
 import { Unit } from './Unit'
-import { UnitType, unitTypes } from './UnitType.ts'
+import { UnitType, unitTypes } from './UnitType'
 import { citizenJobs } from './CitizenJob'
 import { Citizen } from './Citizen'
 import { BuildingType, buildingTypes } from './BuildingType'
@@ -289,12 +289,12 @@ class Town {
                         y: this.y,
                         vetran: this.buildings.includes(buildingTypes.barracks)
                     })
-                    if (newUnit.townBuilding > 0 && this.population > 1) { this.citizens.pop() }
+                    if (newUnit.type.townBuilding > 0 && this.population > 1) { this.citizens.pop() }
 
                     state.units.push(newUnit)
                     this.supportedUnits.push(newUnit)
                 } else if (this.isProducing.classIs === 'BuildingType') {
-                    this.buildings.push(this.isProducing)
+                    this.buildings.push(this.isProducing as BuildingType)
                     this.isProducing = null
                 }
                 this.productionStore = 0

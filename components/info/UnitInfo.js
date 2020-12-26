@@ -10,6 +10,11 @@ export default class UnitInfo extends React.Component {
         const unitType = subject
 
         const prerequisite = techDiscoveries[unitType.prerequisite]
+        const obseletedByList = unitType.obseletedBy
+            ? unitType.obseletedBy
+                .filter(techName => techDiscoveries[techName])
+                .map(techName => techDiscoveries[techName])
+            : []
 
         return (
             <article className={styles.article}>
@@ -31,6 +36,16 @@ export default class UnitInfo extends React.Component {
                         <tr><td>requires</td><td>{prerequisite
                             ? <InfoLink sameWindow useDescription subject={prerequisite} />
                             : 'none'}</td></tr>
+                        {obseletedByList.length > 0 && <tr>
+                            <td>made obselete by</td>
+                            <td>
+                                {obseletedByList.map((obseletingTech, index) => (<>
+                                    <InfoLink key={`obseletingTech-${obseletingTech.name}`} sameWindow useDescription subject={obseletingTech} />
+                                    {index+1 < obseletedByList.length && <span>,&nbsp;</span> }
+                                </>))}
+                            </td>
+                        </tr>}
+
                     </tbody>
                 </table>
                 <p>{content

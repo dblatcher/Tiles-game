@@ -21,6 +21,7 @@ class UnitType {
     isEffectiveAgainstTowns: boolean;
     productionCost: number;
     prerequisite: string | null;
+    obseletedBy: string[] | null;
     constructor(name: string, config: any = {}) {
         this.name = name;
         this.displayName = config.displayName || name;
@@ -42,6 +43,8 @@ class UnitType {
 
         this.productionCost = config.productionCost || 10;
         this.prerequisite = config.prerequisite || null
+        this.obseletedBy = config.obseletedBy || null
+
     }
     get classIs() { return 'UnitType' }
     get isNaval() { return false }
@@ -84,9 +87,19 @@ class UnitType {
     }
 
     checkCanBuildWith(knowTech: Array<TechDiscovery>) {
+        if (this.obseletedBy) {
+            for (let i=0; i<this.obseletedBy.length; i++) {
+                if (!techDiscoveries[this.obseletedBy[i]]) {
+                    console.warn(`Tech obseletedBy[${this.obseletedBy[i]}] for UnitType ${this.name} does not exist.`)
+                } else if (knowTech.includes(techDiscoveries[this.obseletedBy[i]])) {
+                    return false
+                }
+            }
+        }
+
         if (!this.prerequisite) { return true }
         if (!techDiscoveries[this.prerequisite]) {
-            console.warn(`Tech prerequisite[${this.prerequisite}] for BuildingType ${this.name} does not exist.`)
+            console.warn(`Tech prerequisite[${this.prerequisite}] for UnitType ${this.name} does not exist.`)
             return true
         }
         return knowTech.includes(techDiscoveries[this.prerequisite])
@@ -143,15 +156,18 @@ const unitTypes = {
         defend: 2, attack: 1,
         productionCost: 15,
         prerequisite: 'bronzeWorking',
+        obseletedBy: ['feudalism'],
     }),
     warrior: new UnitType('warrior', {
         defend: 1, attack: 1,
         productionCost: 10,
+        obseletedBy: ['warriorCode']
     }),
     horseman: new UnitType('horseman', {
         defend: 1, attack: 2, moves: 12,
         productionCost: 20,
         prerequisite: 'horsebackRiding',
+        obseletedBy: ['chivalry','theWheel'],
         isMounted: true,
     }),
     knight: new UnitType('knight', {
@@ -159,6 +175,7 @@ const unitTypes = {
         productionCost: 40,
         prerequisite: 'chivalry',
         isMounted: true,
+        obseletedBy: ['leadership'],
     }),
     archer: new UnitType('archer', {
         defend: 2, attack: 3,
@@ -178,12 +195,14 @@ const unitTypes = {
         spriteSheetName: 'units2',
         prerequisite: 'feudalism',
         hasDefenseBonusVsMounted: true,
+        obseletedBy: ['gunpowder'],
     }),
     catapult: new UnitType('catapult', {
         defend: 1, attack: 6,
         productionCost: 40,
         spriteSheetName: 'units2',
         prerequisite: 'mathematics',
+        obseletedBy: ['metallurgy'],
     }),
     chariot: new UnitType('chariot', {
         defend: 1, attack: 3,
@@ -191,6 +210,7 @@ const unitTypes = {
         spriteSheetName: 'units2',
         prerequisite: 'theWheel',
         isMounted: true,
+        obseletedBy: ['chivalry', 'polytheism'],
     }),
     cannon: new UnitType('cannon', {
         defend: 1, attack: 8,
@@ -205,6 +225,7 @@ const unitTypes = {
         spriteSheetName: 'units2',
         prerequisite: 'polytheism',
         isMounted: true,
+        obseletedBy: ['chivalry', 'monotheism'],
     }),
     crusader: new UnitType('crusader', {
         defend: 1, attack: 5, moves: 12,
@@ -212,6 +233,7 @@ const unitTypes = {
         spriteSheetName: 'units2',
         prerequisite: 'monotheism',
         isMounted: true,
+        obseletedBy: 'leadership',
     }),
     dragoon: new UnitType('dragoon', {
         defend: 2, attack: 5, moves: 12,
@@ -241,6 +263,7 @@ const unitTypes = {
         prerequisite: 'mapMaking',
         getsLostAtSea: true, // TO DO
         passengerCapacity: 1, 
+        obseletedBy: ['navigation'],
     }),
     caravel: new NavalUnitType('caravel', {
         defend: 2, attack: 2,
@@ -249,6 +272,7 @@ const unitTypes = {
         spriteSheetName: 'units2',
         prerequisite: 'navigation',
         passengerCapacity: 2, 
+        obseletedBy: ['magnetism'],
     }),
     frigate: new NavalUnitType('frigate', {
         defend: 4, attack: 4,

@@ -15,9 +15,8 @@ map
 
 
 units
-- obseleting units based on TechDiscoveries
 - implement special rules
-- should not be able to  attack while on transport, unless marines/vikings
+- should not be able to attack while on transport, unless marines/vikings
 - trieme lost at sea rule
 
 towns

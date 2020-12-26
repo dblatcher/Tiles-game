@@ -4,8 +4,12 @@ import conquerTown from './conquerTown'
 import selectNextOrPreviousUnit from './selectNextOrPreviousUnit'
 import resolveBattle from './resolveBattle'
 import { areSamePlace } from '../utility'
+import { GameState } from '../game-entities/GameState'
+import { Unit } from '../game-entities/Unit'
+import { MapSquare } from '../game-entities/MapSquare'
+import { type } from 'os'
 
-const attemptMove = (state, unit, mapSquare) => {
+const attemptMove = (state:GameState, unit:Unit, mapSquare:MapSquare) => {
     if (unit.onGoingOrder) { return false }
     if (!unit.isAdjacentTo(mapSquare, state.mapGrid[0].length ) || unit.remainingMoves <= 0) { return false }
 
@@ -17,6 +21,13 @@ const attemptMove = (state, unit, mapSquare) => {
 
     // TO DO - change this logic - not very clear
     if (enemyUnitsInMapSquare.length > 0) {
+
+        if (!unit.type.isNaval && unit.isPassengerOf) {
+            if (!unit.type.isAmphibious || unit.type.attack === 0) {
+                return false
+            }
+        }
+
         // TO DO apply 'fatigue penalty' if remainingMoves < 3? can do from Battle
         const dialogueObject = state.selectedUnit.type.attack > 0
             ? new Battle(state.selectedUnit, enemyUnitsInMapSquare, mapSquare, townInMapSquare)
@@ -65,7 +76,7 @@ const attemptMove = (state, unit, mapSquare) => {
 
         if (transports.length === 0) {return false}
 
-        //TO DO - make unit board transport...
+        //TO DO - make unit board right transport...
         //use dialogue to pick if more than one transport (human player)
         //add ai function for computer player to paick from multiple transports
         if (unit.isPassengerOf) { unit.leaveTransport() }

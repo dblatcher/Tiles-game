@@ -45,6 +45,14 @@ export default class UnitInfo extends React.Component {
                                 </>))}
                             </td>
                         </tr>}
+                        {unitType.specialRuleList.length > 0 && <tr>
+                            <td colSpan={2}>
+                                {unitType.specialRuleList.map((specialRuleDescriptions, index) => (<>
+                                    <span>{specialRuleDescriptions}</span>
+                                    {index+1 < unitType.specialRuleList.length && <span>,&nbsp;</span> }
+                                </>))}
+                            </td>
+                        </tr>}
 
                     </tbody>
                 </table>

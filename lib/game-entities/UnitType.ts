@@ -1,5 +1,8 @@
 import { TechDiscovery, techDiscoveries } from './TechDiscovery'
 import { spriteSheets } from '../SpriteSheet'
+import { Unit } from './Unit';
+import { Town } from './Town';
+import { MapSquare } from './MapSquare';
 
 class UnitType {
     name: string;
@@ -18,10 +21,12 @@ class UnitType {
     isTrader: boolean; //TODO implement rule
     hasDefenseBonusVsMounted: boolean;
     isMounted: boolean;
+    isAmphibious:boolean;
     isEffectiveAgainstTowns: boolean;
     productionCost: number;
     prerequisite: string | null;
     obseletedBy: string[] | null;
+    passengerCapacity: number
     constructor(name: string, config: any = {}) {
         this.name = name;
         this.displayName = config.displayName || name;
@@ -39,11 +44,13 @@ class UnitType {
         this.isTrader = !!config.isTrader || false;
         this.hasDefenseBonusVsMounted = !!config.hasDefenseBonusVsMounted || false;
         this.isMounted = !!config.isMounted || false;
+        this.isAmphibious = !!config.isAmphibious || false;
         this.isEffectiveAgainstTowns = !!config.isEffectiveAgainstTowns || false;
 
         this.productionCost = config.productionCost || 10;
         this.prerequisite = config.prerequisite || null
         this.obseletedBy = config.obseletedBy || null
+        this.passengerCapacity = 0
 
     }
     get classIs() { return 'UnitType' }
@@ -67,14 +74,29 @@ class UnitType {
         return spriteSheets[this.spriteSheetName].getStyleForFrameCalled(this.spriteFrameName)
     }
 
-    canEnterMapSquare(mapSquare, townInMapSquare=null, unitsInMapSquare=[], unit) {
+    get specialRuleList() {
+        let list = []
+        if (this.isAmphibious) {list.push('Amphibious attack')}
+        if (this.isEffectiveAgainstTowns) {list.push('Ignores town defense bonus')}
+        if (this.isMounted) {list.push('mounted')}
+        if (this.hasDefenseBonusVsMounted) {list.push('defense bonus against mounted')}
+        if (this.isPathfinder) {list.push('treats all squares as roads')}
+        if (this.isTrader) {list.push('creates trade routes')}
+
+        return list
+    }
+
+    canEnterMapSquare(mapSquare: MapSquare, townInMapSquare: Town = null, unitsInMapSquare: Unit[] = [], unit: Unit) {
         const enemyPresence = (
-            townInMapSquare && unit.faction !== townInMapSquare.faction || 
+            townInMapSquare && unit.faction !== townInMapSquare.faction ||
             unitsInMapSquare.some(otherUnit => unit.faction !== otherUnit.faction)
         );
 
         // allows land units to attack sea units from the shore
         if (enemyPresence) {
+            if (!unit.type.isNaval && unit.isPassengerOf) {
+                return unit.type.isAmphibious && this.attack > 0
+            }
             return this.attack > 0
         }
 
@@ -88,7 +110,7 @@ class UnitType {
 
     checkCanBuildWith(knowTech: Array<TechDiscovery>) {
         if (this.obseletedBy) {
-            for (let i=0; i<this.obseletedBy.length; i++) {
+            for (let i = 0; i < this.obseletedBy.length; i++) {
                 if (!techDiscoveries[this.obseletedBy[i]]) {
                     console.warn(`Tech obseletedBy[${this.obseletedBy[i]}] for UnitType ${this.name} does not exist.`)
                 } else if (knowTech.includes(techDiscoveries[this.obseletedBy[i]])) {
@@ -117,7 +139,7 @@ class NavalUnitType extends UnitType {
 
     get isNaval() { return true }
 
-    canEnterMapSquare(mapSquare, townInMapSquare, unitsInMapSquare=[], unit) {
+    canEnterMapSquare(mapSquare, townInMapSquare, unitsInMapSquare = [], unit) {
         const enemyUnitPresence = (
             unitsInMapSquare.some(otherUnit => unit.faction !== otherUnit.faction)
         );
@@ -167,7 +189,7 @@ const unitTypes = {
         defend: 1, attack: 2, moves: 12,
         productionCost: 20,
         prerequisite: 'horsebackRiding',
-        obseletedBy: ['chivalry','theWheel'],
+        obseletedBy: ['chivalry', 'theWheel'],
         isMounted: true,
     }),
     knight: new UnitType('knight', {
@@ -233,7 +255,7 @@ const unitTypes = {
         spriteSheetName: 'units2',
         prerequisite: 'monotheism',
         isMounted: true,
-        obseletedBy: 'leadership',
+        obseletedBy: ['leadership'],
     }),
     dragoon: new UnitType('dragoon', {
         defend: 2, attack: 5, moves: 12,
@@ -262,7 +284,7 @@ const unitTypes = {
         spriteSheetName: 'units2',
         prerequisite: 'mapMaking',
         getsLostAtSea: true, // TO DO
-        passengerCapacity: 1, 
+        passengerCapacity: 1,
         obseletedBy: ['navigation'],
     }),
     caravel: new NavalUnitType('caravel', {
@@ -271,7 +293,7 @@ const unitTypes = {
         productionCost: 30,
         spriteSheetName: 'units2',
         prerequisite: 'navigation',
-        passengerCapacity: 2, 
+        passengerCapacity: 2,
         obseletedBy: ['magnetism'],
     }),
     frigate: new NavalUnitType('frigate', {
@@ -287,7 +309,7 @@ const unitTypes = {
         productionCost: 40,
         spriteSheetName: 'units2',
         prerequisite: 'magnetism',
-        passengerCapacity: 4, 
+        passengerCapacity: 4,
     }),
 }
 

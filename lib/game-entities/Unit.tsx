@@ -4,6 +4,8 @@ import { Faction } from "./Faction";
 import { UnitMission } from '../game-ai/UnitMission'
 import { getAreaSurrounding, areSamePlace, displayTurnsToComplete } from '../utility'
 import { MapSquare } from './MapSquare'
+import { GameState } from "./GameState";
+import killUnit from "../game-logic/killUnit.tsx";
 
 let unitIndexNumber = 0
 
@@ -122,9 +124,10 @@ class Unit {
     }
 
 
-    processTurn(state) {
+    processTurn(state: GameState) {
         this.remainingMoves = this.type.moves
         const { onGoingOrder } = this
+        let notices = []
 
         if (onGoingOrder) {
             onGoingOrder.reduceTime(this)
@@ -144,8 +147,19 @@ class Unit {
             if (onGoingOrder.type.applyEffectOnUnit) {
                 onGoingOrder.type.applyEffectOnUnit(this, state)
             }
-
         }
+
+        if (this.type.getsLostAtSea) {
+            const areaSurrounding = getAreaSurrounding(this, state.mapGrid) as Array<MapSquare>
+            const awayFromLand = areaSurrounding.filter(mapSquare => !mapSquare.isWater).length === 0
+
+            if (awayFromLand) {
+                killUnit(state, this)
+                notices.push(`${this.type.name} was lost at sea!`)
+            }
+        }
+
+        return notices
     }
 
     get serialised() {

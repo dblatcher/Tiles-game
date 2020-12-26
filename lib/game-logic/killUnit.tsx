@@ -1,6 +1,8 @@
+import { GameState } from '../game-entities/GameState'
 import {Message} from '../game-entities/Message'
+import { Unit } from '../game-entities/Unit'
 
-const killUnit = (state, casualty) => {
+const killUnit = (state:GameState, casualty:Unit) => {
 
     state.fallenUnits = [casualty]
     if (state.units.includes(casualty)) {
@@ -16,6 +18,9 @@ const killUnit = (state, casualty) => {
     if (casualty.faction.checkIfAlive(state) === false) {
         state.pendingDialogues.push(new Message(`${casualty.faction.name} was eradicated!`))
     }
+
+    const passengers = state.units.filter(unit => unit.isPassengerOf === casualty) 
+    passengers.forEach(passenger => killUnit(state, passenger))
 
     return state
 }

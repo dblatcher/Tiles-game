@@ -23,6 +23,7 @@ class UnitType {
     isMounted: boolean;
     isAmphibious:boolean;
     isEffectiveAgainstTowns: boolean;
+    getsLostAtSea: boolean;
     productionCost: number;
     prerequisite: string | null;
     obseletedBy: string[] | null;
@@ -46,6 +47,7 @@ class UnitType {
         this.isMounted = !!config.isMounted || false;
         this.isAmphibious = !!config.isAmphibious || false;
         this.isEffectiveAgainstTowns = !!config.isEffectiveAgainstTowns || false;
+        this.getsLostAtSea = !!config.getsLostAtSea || false;
 
         this.productionCost = config.productionCost || 10;
         this.prerequisite = config.prerequisite || null

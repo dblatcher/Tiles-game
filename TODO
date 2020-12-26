@@ -15,8 +15,7 @@ map
 
 
 units
-- implement special rules
-- trieme lost at sea rule
+? implement special rules
 
 towns
 - choose best square when auto-assigning citizens

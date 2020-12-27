@@ -2,9 +2,11 @@ import Link from 'next/link'
 import dialogueStyles from './dialogue.module.scss'
 import styles from './mainMenu.module.scss'
 
-import makeGameState from '../lib/makeGameState'
+import makeGameStateFunction from '../lib/makeGameState'
 import * as Storage from '../lib/storage'
 import DecorativeMap from './DecorativeMap'
+
+import { MapConfig } from '../lib/game-maps/MapConfig.ts'
 
 const savedGameFolder = "TILE_SAVES"
 
@@ -69,7 +71,7 @@ export default class MainMenu extends React.Component {
         this.setState({ saveFileNames: Storage.getItemNames(savedGameFolder) })
     }
 
-    newGame(makeStateFunction = makeGameState.randomWorld) {
+    newGame(makeStateFunction = makeGameStateFunction.randomWorld()) {
         const { storageAction } = this.props
         storageAction("NEW_GAME", { makeStateFunction })
     }
@@ -87,7 +89,7 @@ export default class MainMenu extends React.Component {
 
         return <>
             <aside className={asideStyle}>
-                {noActiveGame && <DecorativeMap scale={1}/>}
+                {noActiveGame && <DecorativeMap scale={1} />}
                 <nav className={navStyle}>
 
                     {noActiveGame ? (
@@ -106,8 +108,39 @@ export default class MainMenu extends React.Component {
 
 
                     <section className={dialogueStyles.buttonRow}>
-                        <button className={dialogueStyles.button} onClick={() => {this.newGame(makeGameState.randomWorld)}}>new game</button>
-                        <button className={dialogueStyles.button} onClick={() => {this.newGame(makeGameState.test)}}>test world</button>
+                        <button className={dialogueStyles.button} onClick={() => {
+                            this.newGame(makeGameStateFunction.randomWorld(
+                                new MapConfig({
+                                    width: 25,
+                                    height: 10,
+                                    treeChance: .1,
+                                })
+                            ))
+                        }}>new tiny game</button>
+
+                        <button className={dialogueStyles.button} onClick={() => {
+                            this.newGame(makeGameStateFunction.randomWorld(
+                                new MapConfig({
+                                    width: 50,
+                                    height: 20,
+                                    treeChance: .3,
+                                })
+                            ))
+                        }}>new game</button>
+
+                        <button className={dialogueStyles.button} onClick={() => {
+                            this.newGame(makeGameStateFunction.randomWorld(
+                                new MapConfig({
+                                    width: 100,
+                                    height: 40,
+                                    treeChance: .4,
+                                })
+                            ))
+                        }}>new game big</button>
+
+                        <button className={dialogueStyles.button} onClick={() => {
+                            this.newGame(makeGameStateFunction.test())
+                        }}>test world</button>
                     </section>
 
                     {browserSupportsLocalStorage

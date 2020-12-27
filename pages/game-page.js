@@ -1,7 +1,7 @@
 import React from 'react'
 import Layout from '../components/Layout'
 import GameContainer from '../components/GameContainer'
-import makeGameState from '../lib/makeGameState' 
+import makeGameStateFunction from '../lib/makeGameState' 
 
 export default class GamePage extends React.Component {
 
@@ -9,7 +9,7 @@ export default class GamePage extends React.Component {
         return (
             <Layout gamePage>
                 <GameContainer 
-                startingGameState={makeGameState.blank()}
+                startingGameState={makeGameStateFunction.blank()()}
             />
             </Layout>
         )

@@ -15,13 +15,12 @@ map
 
 
 units
-? implement special rules
+
 
 towns
 - choose best square when auto-assigning citizens
 - trade routes
 - corruption rate
-- absent units can increase unrest (govermentType!)
 - render obstables in townView (unit or citizen of other town)
 
 Buildings
@@ -38,6 +37,9 @@ informational text
 Diplomacy
 
 GovermentTypes
+- corruption rates
+- absent units can increase unrest (govermentType!)
+- info pages!
 
 'Wonders'
 - extends BuildingTypes? 

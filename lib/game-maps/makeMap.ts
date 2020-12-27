@@ -1,63 +1,27 @@
-import { terrainTypes } from './game-entities/TerrainType'
-import { MapSquare } from '../lib/game-entities/MapSquare';
+import { terrainTypes } from '../game-entities/TerrainType'
+import { MapSquare } from '../game-entities/MapSquare';
+import { MapConfig } from '../game-maps/MapConfig'
 
+import { randomInt } from '../utility'
+import { Continent, ContinentSizes } from './Continent';
 
 const climates = {
     arctic: [terrainTypes.arctic],
     cold: [terrainTypes.arctic, terrainTypes.tundra, terrainTypes.tundra, terrainTypes.tundra, terrainTypes.mountains, terrainTypes.plain],
     temperate: [terrainTypes.plain, terrainTypes.plain, terrainTypes.hills, terrainTypes.grass, terrainTypes.grass, terrainTypes.grass],
-    subtropical: [terrainTypes.plain, terrainTypes.desert, terrainTypes.desert,  terrainTypes.desert, terrainTypes.mountains],
+    subtropical: [terrainTypes.plain, terrainTypes.desert, terrainTypes.desert, terrainTypes.desert, terrainTypes.mountains],
     tropical: [terrainTypes.swamp, terrainTypes.grass, terrainTypes.hills]
 }
 
-const randomInt = (range, min = 0) => Math.max(Math.floor(Math.random() * range), min);
-
-function Continent(mapWidth, mapHeight, previousContinent = null) {
-    const maxOceanSize = 6
-    const minOceanSize = 0
-    const minimumContinentHeight = 6
-    const minimumContinentWidth = 5
-    const maximumContinentWidth = 12
 
 
-    this.places = []
-    this.height = randomInt(mapHeight, minimumContinentHeight)
-    this.y = randomInt(mapHeight - this.height)
+function makeMap(mapConfig: MapConfig) {
 
-
-    if (!previousContinent) {
-        this.width = randomInt(maximumContinentWidth, minimumContinentWidth)
-        this.x = randomInt(maxOceanSize, minOceanSize)
-    } else {
-        this.x = randomInt(maxOceanSize, minOceanSize) + previousContinent.x + previousContinent.width
-
-        this.width = Math.min(
-            randomInt(maximumContinentWidth, minimumContinentWidth),
-            mapWidth - this.x
-        )
-    }
-
-    let widthAtLongitude = 0, coastLatitude = 0
-    for (let y = 0; y < this.height; y++) {
-
-        widthAtLongitude = randomInt(this.width) + 1
-        coastLatitude = randomInt(this.width - widthAtLongitude)
-
-        for (let x = coastLatitude; x <= coastLatitude + widthAtLongitude; x++) {
-            if (x + this.x < mapWidth && y + this.y < mapHeight) {
-                this.places.push({ x: x + this.x, y: y + this.y })
-            }
-        }
-    }
-
-}
-
-
-function makeMap(width, height, treeChance = .25) {
+    const { width, height, treeChance } = mapConfig
 
     let grid = MapSquare.makeGridOf(width, height, {
         terrain: terrainTypes.ocean
-    })
+    }) as MapSquare[][]
 
 
     //draw arctic and antarctic
@@ -68,7 +32,7 @@ function makeMap(width, height, treeChance = .25) {
 
     let continents = [], previousContinent = null;
     for (let i = 0; i < 6; i++) {
-        continents.push(new Continent(width, height, previousContinent))
+        continents.push(new Continent(width, height, {} as ContinentSizes, previousContinent))
         previousContinent = continents[continents.length - 1]
 
         for (let i = 0; i < previousContinent.places.length; i++) {
@@ -76,10 +40,10 @@ function makeMap(width, height, treeChance = .25) {
         }
     }
 
-    continents = []; 
+    continents = [];
     previousContinent = null;
     for (let i = 0; i < 6; i++) {
-        continents.push(new Continent(width, height, previousContinent))
+        continents.push(new Continent(width, height, {} as ContinentSizes, previousContinent))
         previousContinent = continents[continents.length - 1]
 
         for (let i = 0; i < previousContinent.places.length; i++) {

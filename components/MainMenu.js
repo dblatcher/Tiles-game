@@ -4,9 +4,12 @@ import styles from './mainMenu.module.scss'
 
 import makeGameStateFunction from '../lib/makeGameState'
 import * as Storage from '../lib/storage'
-import DecorativeMap from './DecorativeMap'
 
-import { MapConfig } from '../lib/game-maps/MapConfig.ts'
+import DecorativeMap from './DecorativeMap'
+import CustomiseWorldControl from './menu/CustomiseWorldControl'
+import SavedGameList from './menu/SavedGameList'
+import NewGameOptions from './menu/NewGameOptions'
+
 
 const savedGameFolder = "TILE_SAVES"
 
@@ -18,11 +21,13 @@ export default class MainMenu extends React.Component {
         this.state = {
             saveFileNames: [],
             saveAsInputValue: "",
+            customiseWorldControlIsOpen: false,
         }
 
         this.saveGame = this.saveGame.bind(this)
         this.saveAs = this.saveAs.bind(this)
         this.loadGame = this.loadGame.bind(this)
+        this.deleteGame = this.deleteGame.bind(this)
         this.newGame = this.newGame.bind(this)
         this.handleTextChange = this.handleTextChange.bind(this)
     }
@@ -78,21 +83,21 @@ export default class MainMenu extends React.Component {
 
     render() {
         const { setOpenFunction, noActiveGame, browserSupportsLocalStorage } = this.props
-        const { saveFileNames } = this.state
+        const { saveFileNames, customiseWorldControlIsOpen } = this.state
 
-        const asideStyle = noActiveGame
+        const asideStyle = noActiveGame || customiseWorldControlIsOpen
             ? styles.background
             : dialogueStyles.dialogueHolder
-        const navStyle = noActiveGame
+        const navStyle = noActiveGame || customiseWorldControlIsOpen
             ? styles.frame
             : dialogueStyles.dialogueFrame
 
         return <>
             <aside className={asideStyle}>
-                {noActiveGame && <DecorativeMap scale={1} />}
+                {(noActiveGame || customiseWorldControlIsOpen) && <DecorativeMap scale={1} />}
                 <nav className={navStyle}>
 
-                    {noActiveGame ? (
+                    {(noActiveGame || customiseWorldControlIsOpen) ? (
                         <header>
                             <h1>Single Player</h1>
                         </header>
@@ -107,74 +112,46 @@ export default class MainMenu extends React.Component {
                         )}
 
 
-                    <section className={dialogueStyles.buttonRow}>
-                        <button className={dialogueStyles.button} onClick={() => {
-                            this.newGame(makeGameStateFunction.randomWorld(
-                                new MapConfig({
-                                    width: 25,
-                                    height: 10,
-                                    treeChance: .1,
-                                })
-                            ))
-                        }}>new tiny game</button>
+                    {customiseWorldControlIsOpen
+                        ? <CustomiseWorldControl newGame={this.newGame}>
+                            <button className={dialogueStyles.button} onClick={() => {
+                                this.setState({ customiseWorldControlIsOpen: false })
+                            }}>cancel</button>
+                        </CustomiseWorldControl>
+                        : <>
+                            <NewGameOptions newGame={this.newGame}>
+                                <button className={dialogueStyles.button} onClick={() => {
+                                    this.setState({ customiseWorldControlIsOpen: true })
+                                }}>customise world</button>
+                            </NewGameOptions>
 
-                        <button className={dialogueStyles.button} onClick={() => {
-                            this.newGame(makeGameStateFunction.randomWorld(
-                                new MapConfig({
-                                    width: 50,
-                                    height: 20,
-                                    treeChance: .3,
-                                })
-                            ))
-                        }}>new game</button>
+                            {browserSupportsLocalStorage
+                                ? (<>
+                                    {(noActiveGame || customiseWorldControlIsOpen) ? null : (
+                                        <section>
+                                            <h3>New Saved Game:</h3>
+                                            <div className={dialogueStyles.buttonRow}>
+                                                <button className={dialogueStyles.button} onClick={this.saveAs}>save as</button>
+                                                <input type="text"
+                                                    value={this.state.saveAsInputValue}
+                                                    onChange={this.handleTextChange} />
+                                            </div>
+                                        </section>
+                                    )}
 
-                        <button className={dialogueStyles.button} onClick={() => {
-                            this.newGame(makeGameStateFunction.randomWorld(
-                                new MapConfig({
-                                    width: 100,
-                                    height: 40,
-                                    treeChance: .4,
-                                })
-                            ))
-                        }}>new game big</button>
+                                    <SavedGameList
+                                        saveFileNames={saveFileNames}
+                                        noActiveGame={noActiveGame}
+                                        loadGame={this.loadGame}
+                                        saveGame={this.saveGame}
+                                        deleteGame={this.deleteGame}
+                                    />
 
-                        <button className={dialogueStyles.button} onClick={() => {
-                            this.newGame(makeGameStateFunction.test())
-                        }}>test world</button>
-                    </section>
-
-                    {browserSupportsLocalStorage
-                        ? (<>
-                            {noActiveGame ? null : (
-                                <section className={dialogueStyles.buttonRow}>
-                                    <button className={dialogueStyles.button} onClick={this.saveAs}>save as</button>
-                                    <input type="text"
-                                        value={this.state.saveAsInputValue}
-                                        onChange={this.handleTextChange} />
-                                </section>
-                            )}
-
-                            <section>
-                                <h3>Saved Games:</h3>
-                                {saveFileNames.map(fileName => (
-                                    <div className={dialogueStyles.buttonRow} key={`file-buttons-${fileName}`}>
-                                        <span className={dialogueStyles.buttonRowLabel}>{fileName}</span>
-                                        <button className={dialogueStyles.button}
-                                            onClick={() => { this.loadGame(fileName) }}>load</button>
-                                        {noActiveGame
-                                            ? null
-                                            : (<button className={dialogueStyles.button}
-                                                onClick={() => { this.saveGame(fileName) }}>save</button>
-                                            )}
-                                        <button className={dialogueStyles.button}
-                                            onClick={() => { this.deleteGame(fileName) }}>delete</button>
-                                    </div>
-                                ))}
-                            </section>
-
-                        </>) : (
-                            <p>Browser does not support local storage</p>
-                        )
+                                </>) : (
+                                    <p>Browser does not support local storage</p>
+                                )
+                            }
+                        </>
                     }
 
 

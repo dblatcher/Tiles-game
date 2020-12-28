@@ -55,6 +55,7 @@ const terrainTypes = {
         yields: [0, 0, 0],
         canIrrigate: false,
         neverTrees: true,
+        neverTown: true,
         css: {
             background: 'lightgray',
             backgroundImage: 'repeating-linear-gradient(7deg, transparent -.1em, white .5em)',
@@ -71,6 +72,7 @@ const terrainTypes = {
     desert: new TerrainType('desert', {
         yields: [1, 1, 0],
         canIrrigate: true,
+        neverTrees: true,
         css: {
             background: 'khaki',
             backgroundImage: 'repeating-radial-gradient(goldenrod, transparent 0.6px)'

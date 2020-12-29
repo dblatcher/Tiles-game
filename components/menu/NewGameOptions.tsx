@@ -1,8 +1,7 @@
 import React from 'react'
 import dialogueStyles from '../dialogue.module.scss'
-
 import makeGameStateFunction from '../../lib/makeGameState'
-import { MapConfig } from '../../lib/game-maps/MapConfig'
+
 
 export default class NewGameOptions extends React.Component {
     props: {
@@ -20,11 +19,11 @@ export default class NewGameOptions extends React.Component {
 
                 <button className={dialogueStyles.button} onClick={() => {
                     newGame(makeGameStateFunction.randomWorld(
-                        new MapConfig({
+                        {
                             width: 50,
                             height: 20,
                             treeChance: .3,
-                        })
+                        }
                     ))
                 }}>new game</button>
 

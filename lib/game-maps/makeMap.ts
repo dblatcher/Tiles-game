@@ -3,7 +3,7 @@ import { MapSquare } from '../game-entities/MapSquare';
 import { MapConfig } from '../game-maps/MapConfig'
 
 import { randomInt } from '../utility'
-import { LandForm, Continent, LandFormSizes, IceCap } from './Continent';
+import { LandForm, Continent, LandFormSizes, IceCap, Pangea } from './Continent';
 
 const climates = {
     arctic: [terrainTypes.arctic],
@@ -23,12 +23,23 @@ function makeMap(mapConfig: MapConfig) {
     let grid = MapSquare.makeGridOf(width, height, {
         terrain: terrainTypes.ocean
     }) as MapSquare[][]
-    
+
     let landForms: LandForm[] = [];
     let northPole = new IceCap(width, height, false)
     let southPole = new IceCap(width, height, true)
 
-    landForms.push(northPole, southPole, ...makeRowOfContinents(), ...makeRowOfContinents())
+    landForms.push(northPole, southPole)
+
+    switch (mapConfig.landFormOption.id) {
+        case 'PANGEA':
+            landForms.push(new Pangea(width, height))
+            break
+        case 'CONTINENTS':
+        default:
+            landForms.push(...makeRowOfContinents(), ...makeRowOfContinents())
+            break
+    }
+
 
     landForms.forEach(landForm => {
         landForm.places.forEach(place => addLand(place.x, place.y))

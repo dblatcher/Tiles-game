@@ -11,8 +11,7 @@ AI
 
 map
  - special resources
- - customisable makeMap function
-
+ - coastline on map edge!
 
 units
 

@@ -4,6 +4,7 @@ class LandFormSizes {
     maxOceanSize: number
     minOceanSize: number
     minimumContinentHeight: number
+    maximumContinentHeight: number
     minimumContinentWidth: number
     maximumContinentWidth: number
 
@@ -11,6 +12,7 @@ class LandFormSizes {
         this.maxOceanSize = input.maxOceanSize || 6;
         this.minOceanSize = input.minOceanSize || 3;
         this.minimumContinentHeight = input.minimumContinentHeight || 6;
+        this.maximumContinentHeight = input.maximumContinentHeight || 1000;
         this.minimumContinentWidth = input.minimumContinentWidth || 5;
         this.maximumContinentWidth = input.maximumContinentWidth || 10;
     }
@@ -36,11 +38,11 @@ class LandForm {
         this.y = 0
     }
 
-    static fillPlaces(landform: LandForm, mapWidth: number, mapHeight: number) {
+    static fillPlaces(landform: LandForm, mapWidth: number, mapHeight: number, minimumWidthAtLongitude: number = 0) {
         let widthAtLongitude = 0, coastLeftEdge = 0
         for (let y = 0; y < landform.height; y++) {
 
-            widthAtLongitude = randomInt(landform.width) + 1
+            widthAtLongitude = randomInt(landform.width, minimumWidthAtLongitude) + 1
             coastLeftEdge = randomInt(landform.width - widthAtLongitude)
 
             for (let x = coastLeftEdge; x <= coastLeftEdge + widthAtLongitude; x++) {
@@ -69,7 +71,7 @@ class LandForm {
     }
 
     static placeVertically(landform: LandForm, sizes: LandFormSizes, mapHeight: number) {
-        landform.height = randomInt(mapHeight, sizes.minimumContinentHeight)
+        landform.height = randomInt(Math.min(mapHeight, sizes.maximumContinentHeight), sizes.minimumContinentHeight)
         landform.y = randomInt(mapHeight - landform.height)
     }
 
@@ -88,6 +90,26 @@ class Continent extends LandForm {
 
 }
 
+class Pangea extends LandForm {
+    constructor(mapWidth, mapHeight) {
+        super()
+
+        let sizes = new LandFormSizes({
+            maxOceanSize: 5,
+            minOceanSize: 2,
+            minimumContinentHeight: Math.round(mapHeight * .6),
+            maximumContinentHeight: Math.round(mapHeight * .8),
+            minimumContinentWidth: Math.round(mapWidth * .8),
+            maximumContinentWidth: Math.round(mapWidth * .95),
+        })
+
+        LandForm.placeVertically(this, sizes, mapHeight)
+        LandForm.placeToRightOf(this, null, sizes, mapWidth)
+        LandForm.fillPlaces(this, mapWidth, mapHeight, Math.round(this.width * .8))
+
+    }
+}
+
 class IceCap extends LandForm {
     constructor(mapWidth: number, mapHeight: number, isSouth: boolean) {
         super()
@@ -102,4 +124,4 @@ class IceCap extends LandForm {
     }
 }
 
-export {LandForm, Continent, LandFormSizes, IceCap }
+export { LandForm, Continent, LandFormSizes, IceCap, Pangea }

@@ -2,7 +2,7 @@ import React from 'react'
 import dialogueStyles from '../dialogue.module.scss'
 
 import makeGameStateFunction from '../../lib/makeGameState'
-import { MapConfig } from '../../lib/game-maps/MapConfig'
+import { MapConfig, landFormOptions, LandFormOption } from '../../lib/game-maps/MapConfig'
 
 export default class CustomiseWorldControl extends React.Component {
     props: {
@@ -18,9 +18,11 @@ export default class CustomiseWorldControl extends React.Component {
             width: 40,
             height: 20,
             treeChance: .3,
+            landFormOption: landFormOptions[0]
         }
 
         this.setRangeValue = this.setRangeValue.bind(this)
+        this.setSelectValue = this.setSelectValue.bind(this)
     }
 
     setRangeValue(property, inputElement) {
@@ -29,9 +31,19 @@ export default class CustomiseWorldControl extends React.Component {
         this.setState(modification)
     }
 
+    setSelectValue(property, inputElement) {
+        let modification = {}
+
+        if (property === 'landFormOption') {
+            modification[property] = LandFormOption.map[inputElement.value]
+        }
+
+        this.setState(modification)
+    }
+
     render() {
         const { children, newGame } = this.props
-        const { width, height, treeChance } = this.state
+        const { width, height, treeChance, landFormOption } = this.state
 
         return <section>
             <h3>Customise World</h3>
@@ -60,7 +72,25 @@ export default class CustomiseWorldControl extends React.Component {
                             <input type="range" min="0" max="1" step=".05" value={treeChance}
                                 onChange={(event) => { this.setRangeValue('treeChance', event.target) }} />
                         </td>
-                        <td><span>{(treeChance*100).toFixed(0)}%</span></td>
+                        <td><span>{(treeChance * 100).toFixed(0)}%</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><label>land form</label></td>
+                        <td>
+                            <select value={landFormOption.id}
+                            onChange={(event) => { this.setSelectValue('landFormOption', event.target) }}
+                            >
+                                {landFormOptions.map(landFormChoice => (
+                                    <option
+                                        key={`landFormOption-${landFormChoice.id}`}
+                                        value={landFormChoice.id}>
+                                        {landFormChoice.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </td>
+                        <td><span>{landFormOption.description}</span></td>
                     </tr>
                 </tbody>
             </table>

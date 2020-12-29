@@ -22,6 +22,7 @@ class LandFormOption {
 const landFormOptions = [
     new LandFormOption({id:'CONTINENTS', name:'Continents', description:'Several continents separated by oceans' }),
     new LandFormOption({id:'PANGEA', name:'Pangea', description:'One huge landmass.' }),
+    new LandFormOption({id:'HEMISPHERES', name:'Hemisphere', description:'Two big continents' }),
 ]
 
 class MapConfig {

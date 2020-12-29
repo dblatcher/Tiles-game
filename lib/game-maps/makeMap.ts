@@ -18,7 +18,7 @@ const climates = {
 function makeMap(mapConfig: MapConfig) {
 
     const { width, height, treeChance } = mapConfig
-    const continentSize = new LandFormSizes()
+    let continentSize = new LandFormSizes()
 
     let grid = MapSquare.makeGridOf(width, height, {
         terrain: terrainTypes.ocean
@@ -28,15 +28,31 @@ function makeMap(mapConfig: MapConfig) {
     let northPole = new IceCap(width, height, false)
     let southPole = new IceCap(width, height, true)
 
-    landForms.push(northPole, southPole)
+
 
     switch (mapConfig.landFormOption.id) {
         case 'PANGEA':
             landForms.push(new Pangea(width, height))
             break
+        case 'HEMISPHERES':
+            landForms.push(northPole, southPole)
+            continentSize = new LandFormSizes({
+                minOceanSize: Math.floor(8),
+                maxOceanSize: Math.floor(width*.2),
+
+                minimumContinentHeight: Math.floor(height*.65),
+                maximumContinentHeight: Math.floor(height*.8),
+
+                minimumContinentWidth: Math.floor(width*.35),
+                maximumContinentWidth: Math.floor(width*.35),
+            })
+            landForms.push(...makeRowOfContinents(continentSize), ...makeRowOfContinents(continentSize))
+            break
         case 'CONTINENTS':
         default:
-            landForms.push(...makeRowOfContinents(), ...makeRowOfContinents())
+            landForms.push(northPole, southPole)
+            continentSize = new LandFormSizes()
+            landForms.push(...makeRowOfContinents(continentSize), ...makeRowOfContinents(continentSize))
             break
     }
 
@@ -47,7 +63,7 @@ function makeMap(mapConfig: MapConfig) {
 
     return grid
 
-    function makeRowOfContinents() {
+    function makeRowOfContinents(continentSize) {
         let continents: Continent[] = [];
         let newContinent: Continent = null
         let reachedEnd = false

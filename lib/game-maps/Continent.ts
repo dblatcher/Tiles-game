@@ -97,8 +97,8 @@ class Pangea extends LandForm {
         let sizes = new LandFormSizes({
             maxOceanSize: 5,
             minOceanSize: 2,
-            minimumContinentHeight: Math.round(mapHeight * .6),
-            maximumContinentHeight: Math.round(mapHeight * .8),
+            minimumContinentHeight: Math.round(mapHeight * .75),
+            maximumContinentHeight: Math.round(mapHeight * .9),
             minimumContinentWidth: Math.round(mapWidth * .8),
             maximumContinentWidth: Math.round(mapWidth * .95),
         })

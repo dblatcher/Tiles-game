@@ -30,28 +30,31 @@ function makeMap(mapConfig: MapConfig) {
         addLand(i, height - 1);
     }
 
-    let continents = [], previousContinent = null;
-    for (let i = 0; i < 6; i++) {
-        continents.push(new Continent(width, height, {} as ContinentSizes, previousContinent))
-        previousContinent = continents[continents.length - 1]
+    let standardSize = new ContinentSizes()
 
-        for (let i = 0; i < previousContinent.places.length; i++) {
-            addLand(previousContinent.places[i].x, previousContinent.places[i].y)
-        }
-    }
+    let continents:Continent[] = [];
 
-    continents = [];
-    previousContinent = null;
-    for (let i = 0; i < 6; i++) {
-        continents.push(new Continent(width, height, {} as ContinentSizes, previousContinent))
-        previousContinent = continents[continents.length - 1]
+    placeContinents()
+    placeContinents()
 
-        for (let i = 0; i < previousContinent.places.length; i++) {
-            addLand(previousContinent.places[i].x, previousContinent.places[i].y)
-        }
-    }
+
 
     return grid
+
+    function placeContinents() {
+        continents = [];
+        let newContinent = null
+        let reachedEnd = false
+        while (reachedEnd === false) {
+            newContinent = new Continent(width, height, standardSize, continents)
+            continents.push(newContinent)
+
+            for (let i = 0; i < newContinent.places.length; i++) {
+                addLand(newContinent.places[i].x, newContinent.places[i].y)
+            }
+            reachedEnd = newContinent.places.length == 0
+        }
+    }
 
     function getClimate(y) {
         if (y == 0 || y == height - 1) {

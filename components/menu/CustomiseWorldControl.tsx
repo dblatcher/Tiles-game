@@ -24,8 +24,6 @@ export default class CustomiseWorldControl extends React.Component {
     }
 
     setRangeValue(property, inputElement) {
-        console.log({ property, inputElement })
-        console.log(inputElement.value)
         let modification = {}
         modification[property] = inputElement.value
         this.setState(modification)

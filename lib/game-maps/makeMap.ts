@@ -3,7 +3,7 @@ import { MapSquare } from '../game-entities/MapSquare';
 import { MapConfig } from '../game-maps/MapConfig'
 
 import { randomInt } from '../utility'
-import { Continent, ContinentSizes } from './Continent';
+import { LandForm, Continent, LandFormSizes, IceCap } from './Continent';
 
 const climates = {
     arctic: [terrainTypes.arctic],
@@ -18,42 +18,34 @@ const climates = {
 function makeMap(mapConfig: MapConfig) {
 
     const { width, height, treeChance } = mapConfig
+    const continentSize = new LandFormSizes()
 
     let grid = MapSquare.makeGridOf(width, height, {
         terrain: terrainTypes.ocean
     }) as MapSquare[][]
+    
+    let landForms: LandForm[] = [];
+    let northPole = new IceCap(width, height, false)
+    let southPole = new IceCap(width, height, true)
 
+    landForms.push(northPole, southPole, ...makeRowOfContinents(), ...makeRowOfContinents())
 
-    //draw arctic and antarctic
-    for (let i = 0; i < width; i++) {
-        addLand(i, 0);
-        addLand(i, height - 1);
-    }
-
-    let standardSize = new ContinentSizes()
-
-    let continents:Continent[] = [];
-
-    placeContinents()
-    placeContinents()
-
-
+    landForms.forEach(landForm => {
+        landForm.places.forEach(place => addLand(place.x, place.y))
+    })
 
     return grid
 
-    function placeContinents() {
-        continents = [];
-        let newContinent = null
+    function makeRowOfContinents() {
+        let continents: Continent[] = [];
+        let newContinent: Continent = null
         let reachedEnd = false
         while (reachedEnd === false) {
-            newContinent = new Continent(width, height, standardSize, continents)
+            newContinent = new Continent(width, height, continentSize, continents)
             continents.push(newContinent)
-
-            for (let i = 0; i < newContinent.places.length; i++) {
-                addLand(newContinent.places[i].x, newContinent.places[i].y)
-            }
             reachedEnd = newContinent.places.length == 0
         }
+        return continents
     }
 
     function getClimate(y) {

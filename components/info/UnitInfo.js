@@ -39,18 +39,22 @@ export default class UnitInfo extends React.Component {
                         {obseletedByList.length > 0 && <tr>
                             <td>made obselete by</td>
                             <td>
-                                {obseletedByList.map((obseletingTech, index) => (<>
-                                    <InfoLink key={`obseletingTech-${obseletingTech.name}`} sameWindow useDescription subject={obseletingTech} />
-                                    {index+1 < obseletedByList.length && <span>,&nbsp;</span> }
-                                </>))}
+                                {obseletedByList.map((obseletingTech, index) => (
+                                    <span key={`obseletingTech-${obseletingTech.name}`}>
+                                        <InfoLink sameWindow useDescription subject={obseletingTech} />
+                                        {index + 1 < obseletedByList.length && <span>&nbsp;|&nbsp;</span>}
+                                    </span>
+                                ))}
                             </td>
                         </tr>}
                         {unitType.specialRuleList.length > 0 && <tr>
                             <td colSpan={2}>
-                                {unitType.specialRuleList.map((specialRuleDescriptions, index) => (<>
-                                    <span>{specialRuleDescriptions}</span>
-                                    {index+1 < unitType.specialRuleList.length && <span>,&nbsp;</span> }
-                                </>))}
+                                {unitType.specialRuleList.map((specialRuleDescriptions, index) => (
+                                    <span key={`specialRule-${index}`}>
+                                        <span>{specialRuleDescriptions}</span>
+                                        {index + 1 < unitType.specialRuleList.length && <span>,&nbsp;</span>}
+                                    </span>
+                                ))}
                             </td>
                         </tr>}
 

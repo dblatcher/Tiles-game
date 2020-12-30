@@ -52,10 +52,12 @@ const NotFound = ({ params, badType }) => {
 
 const InfoPage = ({ content, params }) => {
     let subject = null;
+    let category = null; 
     let pageContent = null;
 
     // params are loaded asynchronously - will be null at first
     if (params) {
+        category = (params.type && folderNameMap[params.type]) ? folderNameMap[params.type].listTitle : null
         if (params.itemName && params.type && folderNameMap[params.type]) { // have valid type and item name
             subject = findValueWithLowerCasedKey(folderNameMap[params.type].target, params.itemName)
             const InfoComponentType = folderNameMap[params.type].component
@@ -72,7 +74,11 @@ const InfoPage = ({ content, params }) => {
     }
 
     return (
-        <Layout backLinkText="Back to Index" backLinkUrl="/info">
+        <Layout 
+        backLinkText="Back to Index" 
+        backLinkUrl="/info" 
+        infoPageSubject={subject} 
+        infoPageCategory={category}>
             {pageContent || "loading..."}
         </Layout>
     )

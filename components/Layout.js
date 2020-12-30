@@ -5,13 +5,16 @@ import Link from 'next/link'
 
 export const siteTitle = 'Conquest'
 
-export function StandardHead({gamePage}) {
+export function StandardHead({gamePage, infoPageSubject, infoPageCategory}) {
     return (
         <Head>
             <link rel="icon" href="/favicon.ico" />
             <title>
                 {siteTitle}
                 {gamePage ? ' - game' : ''}
+                {infoPageCategory && infoPageSubject ? `|${infoPageCategory}` : ''}
+                {infoPageCategory && !infoPageSubject ? `|${infoPageCategory} Index` : ''}
+                {infoPageSubject ? `|${infoPageSubject.name}` : ''}
             </title>
             <meta
                 name="description"
@@ -22,7 +25,7 @@ export function StandardHead({gamePage}) {
     )
 }
 
-export default function Layout({ children, gamePage, backLinkUrl, backLinkText }) {
+export default function Layout({ children, gamePage, backLinkUrl, backLinkText, infoPageSubject=null, infoPageCategory=null }) {
 
     if (gamePage) {
         return <>
@@ -34,7 +37,7 @@ export default function Layout({ children, gamePage, backLinkUrl, backLinkText }
 
     return (
         <div className={styles.container}>
-            <StandardHead />
+            <StandardHead infoPageSubject={infoPageSubject} infoPageCategory={infoPageCategory}/>
 
             <header className={styles.header}>
                 <h2>

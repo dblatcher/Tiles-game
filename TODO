@@ -19,33 +19,32 @@ units
 
 towns
 - choose best square when auto-assigning citizens
-- trade routes
-- corruption rate
+? trade routes
+? corruption rate
 - render obstables in townView (unit or citizen of other town)
 
 Buildings
-- court house and corruption rule
-- Palace (limit one per faction)
+? court house and corruption rule
+? Palace (limit one per faction)
 
 informational text
 - more content
 - support HTML / markdown instead of json?
 - internationalisation suport
 - building effect descriptions
-- page descriptions / titles for info pages
 
-Diplomacy
+?Diplomacy
 
-GovermentTypes
+?GovermentTypes
 - corruption rates
 - absent units can increase unrest (govermentType!)
 - info pages!
 
-'Wonders'
+?'Wonders'
 - extends BuildingTypes? 
 - limit to one per world
 
-Options
+?Options
 - add options menu to MainMenu
 - language option
 - view options - shade squarea out of view

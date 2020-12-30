@@ -11,7 +11,7 @@ import IndexList from '../../components/info/IndexList'
 const InfoIndexPage = () => {
 
     return (
-        <Layout>
+        <Layout infoPageCategory="Main">
             <IndexList title="Units" listObject = {unitTypes} />
             <IndexList title="Buildings" listObject = {buildingTypes} />
             <IndexList title="Terrain" listObject = {terrainTypes} />

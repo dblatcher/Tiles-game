@@ -22,6 +22,7 @@ class GameState {
     mainMenuOpen: boolean
     factionWindowIsOpen: boolean
     interfaceMode: string
+    gameOver: boolean
 }
 
 export { GameState }

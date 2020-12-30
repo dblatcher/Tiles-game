@@ -30,6 +30,10 @@ export default class NewGameOptions extends React.Component {
                 <button className={dialogueStyles.button} onClick={() => {
                     newGame(makeGameStateFunction.test())
                 }}>test world</button>
+
+                <button className={dialogueStyles.button} onClick={() => {
+                    newGame(makeGameStateFunction.test2())
+                }}>test world2</button>
             </section>
         )
     }

@@ -13,6 +13,7 @@ import ChooseStolenTechDialogue from './ChooseStolenTechDialogue'
 import TownView from './TownView'
 import MainMenu from './MainMenu'
 import FactionWindow from './FactionWindow'
+import GameOverDialogue from './GameOverDialogue'
 
 import processMapClick from '../lib/game-logic/processMapClick'
 import gameActions from '../lib/game-logic/gameActions'
@@ -26,33 +27,40 @@ import letComputerTakeItsTurn from './gameContainer.letComputerTakeItsTurn'
 import styles from './gameContainer.module.scss'
 import { areSamePlace, sleep, asyncSetState } from '../lib/utility'
 
+const interfaceModeOptions = [
+    { value: "MOVE", description: "move units" },
+    { value: "VIEW", description: "examine map" },
+]
+
+const startingInterfaceState = {
+    selectedSquare: null,
+    interfaceMode: "MOVE",
+    fallenUnits: [],
+    unitPickDialogueChoices: [],
+    openTown: null,
+    factionWindowIsOpen: false,
+    pendingDialogues: [],
+    mainMenuOpen: false,
+    mapZoomLevel: 1,
+    mapXOffset: 3,
+    mapShiftInProgress: false,
+    gameOver: false,
+}
 
 export default class GameContainer extends React.Component {
 
     constructor(props) {
         super(props);
 
-        const interfaceModeOptions = [
-            { value: "MOVE", description: "move units" },
-            { value: "VIEW", description: "examine map" },
-        ]
-
-        this.state = Object.assign(props.startingGameState, {
-            selectedSquare: null,
-            interfaceMode: "MOVE",
-            interfaceModeOptions,
-            fallenUnits: [],
-            unitPickDialogueChoices: [],
-            openTown: null,
-            factionWindowIsOpen: false,
-            pendingDialogues: [],
-            mainMenuOpen: false,
-            mapZoomLevel: 1,
-            mapXOffset: 3,
-            mapShiftInProgress: false,
-            browserSupportsLocalStorage: undefined,
-            debug: props.debugMode ? { revealMap: true } : {}
-        });
+        this.state = Object.assign(
+            {
+                browserSupportsLocalStorage: undefined,
+                debug: props.debugMode ? { revealMap: true } : {},
+                interfaceModeOptions,
+            },
+            props.startingGameState,
+            startingInterfaceState
+        );
 
         this.gameHolderElement = React.createRef()
         this.upperWindowElement = React.createRef()
@@ -75,6 +83,7 @@ export default class GameContainer extends React.Component {
         this.setMapZoomLevel = this.setMapZoomLevel.bind(this)
         this.openTownView = this.openTownView.bind(this)
         this.endMapShift = this.endMapShift.bind(this)
+        this.reset = this.reset.bind(this)
 
         this.handleStorageAction = handleStorageAction.bind(this)
         this.letComputerTakeItsTurn = letComputerTakeItsTurn.bind(this)
@@ -84,13 +93,19 @@ export default class GameContainer extends React.Component {
         this.setState({ browserSupportsLocalStorage: browserHasLocalStorage() })
     }
 
+    reset() {
+        this.setState(Object.assign(
+            {}, this.props.startingGameState,startingInterfaceState)
+        )
+    }
+
     get stateOfPlay() {
         const { mapWidth, isComputerPlayersTurn } = this
         const { mapGrid, selectedSquare, units, towns, activeFaction, factions,
             selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
             pendingDialogues, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
             mapZoomLevel, mapXOffset, mapShiftInProgress,
-            browserSupportsLocalStorage, debug,
+            browserSupportsLocalStorage, debug, gameOver
         } = this.state
 
         return {
@@ -99,7 +114,7 @@ export default class GameContainer extends React.Component {
             selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
             pendingDialogues, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
             mapZoomLevel, mapXOffset, mapShiftInProgress,
-            browserSupportsLocalStorage, debug,
+            browserSupportsLocalStorage, debug, gameOver
         }
     }
 
@@ -142,7 +157,7 @@ export default class GameContainer extends React.Component {
     }
 
     get isComputerPlayersTurn() {
-        return this.state.activeFaction && this.state.activeFaction.isComputerPlayer
+        return this.state.activeFaction && this.state.activeFaction.isComputerPlayer && !this.state.gameOver
     }
 
     get hasOpenDialogue() {
@@ -152,7 +167,7 @@ export default class GameContainer extends React.Component {
 
     get noActiveGame() {
         if (!this.state.mapGrid.length === 0) { return true }
-        if (!this.state.activeFaction) { return true }
+        if (!this.state.activeFaction && !this.state.gameOver) { return true }
         return false
     }
 
@@ -203,10 +218,10 @@ export default class GameContainer extends React.Component {
     }
 
     openFactionWindow() {
-       this.setState({
-           factionWindowIsOpen: true,
-           openTown: null
-       }) 
+        this.setState({
+            factionWindowIsOpen: true,
+            openTown: null
+        })
     }
 
     openTownView(town) {
@@ -254,7 +269,7 @@ export default class GameContainer extends React.Component {
 
 
     handleOrderButton(command, input = {}) {
-        if (this.hasOpenDialogue || this.isComputerPlayersTurn) { return false }
+        if (this.hasOpenDialogue || this.isComputerPlayersTurn || this.state.gameOver) { return false }
         if (!gameActions[command]) {
             console.warn(`unknown order button command ${command}`, input)
             return false
@@ -262,7 +277,9 @@ export default class GameContainer extends React.Component {
         return this.setState(
             gameActions[command](input),
             () => {
-                if (this.isComputerPlayersTurn) { this.letComputerTakeItsTurn() }
+                if (this.isComputerPlayersTurn && !this.state.gameOver) { 
+                    this.letComputerTakeItsTurn() 
+                }
                 else {
                     this.centerWindowOn(this.state.selectedUnit)
                 }
@@ -347,12 +364,12 @@ export default class GameContainer extends React.Component {
     }
 
     activateUnit(unit) {
-        asyncSetState(this,{
+        asyncSetState(this, {
             factionWindowIsOpen: false,
             openTown: null,
             selectedUnit: unit,
         })
-        .then(this.centerOnSelection)
+            .then(this.centerOnSelection)
     }
 
     endMapShift(delay = 500) {
@@ -430,22 +447,22 @@ export default class GameContainer extends React.Component {
         const { mapGrid, activeFaction,
             selectedUnit, interfaceMode, interfaceModeOptions,
             pendingDialogues, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
-            browserSupportsLocalStorage, debug,
+            browserSupportsLocalStorage, debug, gameOver
         } = this.state
 
-        if (openTown) {
+        if (openTown && !gameOver) {
             return (
                 <TownView
                     stateOfPlay={this.stateOfPlay}
                     closeTownView={this.closeTownView}
                     handleTownAction={this.handleTownAction}
                     activateUnit={this.activateUnit}
-                    openTownView={this.openTownView} 
-                    openFactionWindow={this.openFactionWindow}/>
+                    openTownView={this.openTownView}
+                    openFactionWindow={this.openFactionWindow} />
             )
         }
 
-        if (factionWindowIsOpen) {
+        if (factionWindowIsOpen && !gameOver) {
             return (
                 <FactionWindow
                     faction={activeFaction}
@@ -460,9 +477,17 @@ export default class GameContainer extends React.Component {
         return (
 
             <>
-                {pendingDialogues.length > 0 && this.renderDialogue()}
+                {(gameOver) &&
+                    <GameOverDialogue
+                        stateOfPlay={this.stateOfPlay}
+                        watchingFaction={this.primaryPlayerFaction}
+                        reset={this.reset}
+                    />
+                }
 
-                {unitPickDialogueChoices.length &&
+                {(pendingDialogues.length > 0 && !gameOver) && this.renderDialogue()}
+
+                {(unitPickDialogueChoices.length && !gameOver) &&
                     <PickUnitDialogue
                         units={unitPickDialogueChoices}
                         handleDialogueButton={this.handleDialogueButton} />
@@ -513,7 +538,7 @@ export default class GameContainer extends React.Component {
                     </aside>
                 )}
 
-                {!this.noActiveGame && !this.isComputerPlayersTurn && (
+                {!this.noActiveGame && !this.isComputerPlayersTurn && !gameOver && (
                     <aside className={styles.lowerInterfaceWindow} >
                         <ModeButtons
                             interfaceMode={interfaceMode}
@@ -528,7 +553,7 @@ export default class GameContainer extends React.Component {
                     </aside>
                 )}
 
-                {(mainMenuOpen || this.noActiveGame) && (
+                {((mainMenuOpen && !gameOver) || this.noActiveGame) && (
                     <MainMenu
                         setOpenFunction={this.setMainMenuOpen}
                         noActiveGame={this.noActiveGame}

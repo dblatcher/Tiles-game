@@ -58,7 +58,7 @@ export default class GameContainer extends React.Component {
                 debug: props.debugMode ? { revealMap: true } : {},
                 interfaceModeOptions,
             },
-            props.startingGameState,
+            props.startingGameStateFunction(),
             startingInterfaceState
         );
 
@@ -95,7 +95,7 @@ export default class GameContainer extends React.Component {
 
     reset() {
         this.setState(Object.assign(
-            {}, this.props.startingGameState,startingInterfaceState)
+            {}, this.props.startingGameStateFunction(),startingInterfaceState)
         )
     }
 

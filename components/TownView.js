@@ -1,7 +1,7 @@
 import MapSection from "./MapSection";
 import ProductionMenu from "./ProductionMenu";
 import Window from "./Window";
-import UnitListBox from "./UnitListBox";
+import UnitListBox from "./interface/UnitListBox.tsx";
 import TradeReport from "./TradeReport";
 import ProgressBox from "./ProgressBox";
 import CitizenRow from "./CitizenRow";
@@ -131,12 +131,12 @@ export default class TownView extends React.Component {
 
                     <section className={styles.section}>
                         <h2>{`${town.supportedUnits.length} units supported`}</h2>
-                        <UnitListBox units={town.supportedUnits} />
+                        <UnitListBox units={town.supportedUnits} onTownView/>
                     </section>
 
                     <section className={styles.section}>
                         <h2>{`${town.getUnitsHere(units).length} units here`}</h2>
-                        <UnitListBox units={town.getUnitsHere(units)} handleClickOnUnit={activateUnit}/>
+                        <UnitListBox units={town.getUnitsHere(units)} handleClickOnUnit={activateUnit} onTownView/>
                     </section>
                 </div>
             </Window>

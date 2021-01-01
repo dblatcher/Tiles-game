@@ -7,7 +7,7 @@ $lowerWindowHeight: 5rem;
 @mixin interfaceWindow {
     position: fixed;
     background-color: rgba(white, .5);
-    z-index: 100;
+    z-index: 90;
     user-select: none;
 }
 

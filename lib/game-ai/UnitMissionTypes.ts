@@ -1,6 +1,6 @@
 import { getDistanceBetween, areSamePlace, sortByDistanceFrom, unsafelyGetDistanceBetween } from "../utility"
 import { orderTypesMap, OnGoingOrderType } from "../game-entities/OngoingOrder";
-import { chooseMoveTowards } from './pathfinding'
+import { chooseMoveTowards, findShortestTotalMovemoveCostTo } from './pathfinding'
 import { ComputerPersonality } from "./ComputerPersonality";
 import { Unit } from "../game-entities/Unit";
 import { MapSquare } from "../game-entities/MapSquare";

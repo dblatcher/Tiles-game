@@ -6,7 +6,7 @@ class SpriteSheet {
     getRightFromAdjacentSquares: Function;
     css: object;
     frameNames: object;
-    constructor(name: String, config: Object = {}) {
+    constructor(name: String, config: any = {}) {
         this.name = name;
         this.cols = config.cols || 1;
         this.rows = config.rows || 1;

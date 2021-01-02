@@ -18,12 +18,25 @@ export default class TileBoard extends React.Component {
     }
 
     getAdjacentSquares(x, y) {
-        const { mapGrid } = this
+        const { mapGrid, mapGridWidth } = this
         return {
             below: mapGrid[y + 1] && mapGrid[y + 1][x] ? mapGrid[y + 1][x] : null,
             above: mapGrid[y - 1] && mapGrid[y - 1][x] ? mapGrid[y - 1][x] : null,
-            before: mapGrid[y] && mapGrid[y][x - 1] ? mapGrid[y][x - 1] : null,
-            after: mapGrid[y] && mapGrid[y][x + 1] ? mapGrid[y][x + 1] : null,
+            before: mapGrid[y]
+                ? (mapGrid[y][x - 1])
+                    ? (mapGrid[y][x - 1])
+                    : (x == 0 && mapGrid[y][mapGridWidth - 1])
+                        ? mapGrid[y][mapGridWidth - 1]
+                        : null
+                : null,
+
+            after: mapGrid[y]
+                ? (mapGrid[y][x + 1])
+                    ? (mapGrid[y][x + 1])
+                    : (x == mapGridWidth - 1 && mapGrid[y][0])
+                        ? mapGrid[y][0]
+                        : null
+                : null
         }
     }
 
@@ -42,7 +55,7 @@ export default class TileBoard extends React.Component {
 
     renderTile(mapSquare, placesInSight) {
         const {
-            stateOfPlay = {},handleMapSquareClick, infoPage, decorative,
+            stateOfPlay = {}, handleMapSquareClick, infoPage, decorative,
             gameHasOpenDialogue, watchingFaction,
             debug = {}
         } = this.props;

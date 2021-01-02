@@ -355,7 +355,6 @@ export default class GameContainer extends React.Component {
         asyncSetState(this, {
             mapXOffset: newOffsetValue,
             mapShiftInProgress: true,
-            interfaceMode: 'MOVE',
         })
             .then(() => {
                 this.scrollToSquare(target)
@@ -384,13 +383,17 @@ export default class GameContainer extends React.Component {
         if (!target) { return false }
         const { x, y } = target
         const { mapZoomLevel, mapXOffset, mapGrid } = this.state
+        const {gameHolderElement,upperWindowElement} = this
+
+        if (!gameHolderElement.current) {return}
+
         const mapWidth = mapGrid[0].length
 
         //to do - support left aligned interface window
         const tileSize = (4 * 16 * mapZoomLevel)
         const leftBorderSize = (1 * 16)
-        const topBorderSize = this.upperWindowElement.current
-            ? this.upperWindowElement.current.offsetHeight
+        const topBorderSize = upperWindowElement.current
+            ? upperWindowElement.current.offsetHeight
             : (12 * 16);
 
         let shiftedX = x - mapXOffset
@@ -398,7 +401,8 @@ export default class GameContainer extends React.Component {
 
         let pixelX = (shiftedX * tileSize) - window.innerWidth / 2 + leftBorderSize + tileSize / 2
         let pixelY = (y * tileSize) - window.innerHeight / 2 + topBorderSize + tileSize / 2
-        window.scrollTo(pixelX, pixelY)
+
+        gameHolderElement.current.scrollTo(pixelX, pixelY)
     }
 
     renderDialogue() {

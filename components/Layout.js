@@ -20,6 +20,7 @@ export function StandardHead({gamePage, infoPageSubject, infoPageCategory}) {
                 name="description"
                 content={siteTitle}
             />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
             <meta name="og:title" content={siteTitle} />
         </Head>
     )

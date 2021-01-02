@@ -2,10 +2,10 @@ import { Citizen } from "./Citizen";
 import { Unit } from "./Unit";
 
 class OnGoingOrderType {
-    name: String;
-    requiredUnitSkill: String | false;
-    letterCode: String;
-    materialIcon: String | null;
+    name: string;
+    requiredUnitSkill: string | false;
+    letterCode: string;
+    materialIcon: string | null;
     applyEffectOnSquare: Function | null;
     applyEffectOnUnit: Function | null;
     checkIsValidForSquare: Function;

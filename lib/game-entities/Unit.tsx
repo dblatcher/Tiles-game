@@ -5,7 +5,7 @@ import { UnitMission } from '../game-ai/UnitMission'
 import { getAreaSurrounding, areSamePlace, displayTurnsToComplete } from '../utility'
 import { MapSquare } from './MapSquare'
 import { GameState } from "./GameState";
-import killUnit from "../game-logic/killUnit.tsx";
+import killUnit from "../game-logic/killUnit";
 
 let unitIndexNumber = 0
 

@@ -1,6 +1,6 @@
 import { UnitMission } from './UnitMission';
 import { techDiscoveries, TechDiscovery } from '../game-entities/TechDiscovery';
-import attemptMove from '../game-logic/attemptMove.ts'
+import attemptMove from '../game-logic/attemptMove'
 
 import gameActions from '../game-logic/gameActions'
 import townActions from '../game-logic/townActions'

@@ -284,7 +284,7 @@ class Town {
                 notices.push(`${this.name} has finished building ${this.productionItemName}`)
 
                 if (this.isProducing.classIs === 'UnitType') {
-                    const newUnit = new Unit(this.isProducing, this.faction, {
+                    const newUnit = new Unit(this.isProducing as UnitType, this.faction, {
                         x: this.x,
                         y: this.y,
                         vetran: this.buildings.includes(buildingTypes.barracks)

@@ -204,8 +204,12 @@ class Faction {
     }
 
     get serialised() {
+
+        // fix for using function, not class...
+        let {store} = this.budget as any
+
         let output = {
-            budget: this.budget.store,
+            budget: store,
             researchGoal: this.researchGoal ? this.researchGoal.name : false,
             knownTech: this.knownTech.map(techDiscovery => techDiscovery.name),
             worldMap: MapSquare.serialiseGrid(this.worldMap),
@@ -250,8 +254,12 @@ class ComputerFaction extends Faction {
     get isComputerPlayer() { return true }
 
     get serialised() {
+
+        // fix for using function, not class...
+        let {store} = this.budget as any
+
         let output = {
-            budget: this.budget.store,
+            budget: store,
             researchGoal: this.researchGoal ? this.researchGoal.name : false,
             knownTech: this.knownTech.map(techDiscovery => techDiscovery.name),
             worldMap: MapSquare.serialiseGrid(this.worldMap),

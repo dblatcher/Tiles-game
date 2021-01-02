@@ -1,12 +1,12 @@
 
 class SpriteSheet {
-    name: String;
+    name: string;
     cols: number;
     rows: number;
     getRightFromAdjacentSquares: Function;
     css: object;
     frameNames: object;
-    constructor(name: String, config: any = {}) {
+    constructor(name: string, config: any = {}) {
         this.name = name;
         this.cols = config.cols || 1;
         this.rows = config.rows || 1;

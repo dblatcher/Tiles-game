@@ -1,7 +1,7 @@
 import React from 'react'
 import Tile from '../Tile'
 import UnitFigure from '../UnitFigure'
-import styles from './InfoBlock.module.scss'
+import styles from './infoBlock.module.scss'
 import InfoLink from '../InfoLink'
 
 

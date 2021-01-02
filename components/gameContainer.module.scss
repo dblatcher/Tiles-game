@@ -20,7 +20,7 @@ $lowerWindowHeight: 5rem;
     box-sizing: border-box;
     margin: 0;
     overflow: scroll;
-    padding: ($interfaceWindowHeight + $windowPadding) $windowPadding ($lowerWindowHeight + $windowPadding )$windowPadding;
+    padding: ($interfaceWindowHeight + $windowPadding) 0 ($lowerWindowHeight + $windowPadding ) 0;
 }
 
 .upperInterfaceWindow {
@@ -30,18 +30,6 @@ $lowerWindowHeight: 5rem;
     width: 100%;
     padding: $windowPadding;
     height: $interfaceWindowHeight;
-
-    display: flex;
-    align-items: center;
-
-    div:last-child {
-        margin-left: auto;
-    }
-}
-
-.menuButton {
-    cursor: pointer;
-    margin-left: 18px;
 }
 
 .lowerInterfaceWindow {

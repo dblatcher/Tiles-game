@@ -48,7 +48,7 @@ class Unit {
                 ? isFinite(this.onGoingOrder.timeRemaining)
                     ?`${this.onGoingOrder.type.name}, ${displayTurnsToComplete(this.onGoingOrder.timeRemaining)} left`
                     : this.onGoingOrder.type.name
-                : `${this.remainingMoves}/${this.type.moves} movement`,
+                : `${this.remainingMoves}/${this.type.moves} moves`,
         ]
     }
 

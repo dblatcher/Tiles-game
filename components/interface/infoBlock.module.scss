@@ -1,0 +1,31 @@
+.infoBlock {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 4rem;
+    cursor: pointer;
+
+    figure {
+        display: none;
+
+        @media (min-width: 30em) {
+            display: unset;
+        }
+    }
+}
+
+.infoList {
+    margin: 0;
+    list-style: none;
+    padding: 0.5rem;
+}
+
+.infoListRight {
+    text-align: right;
+}
+
+.infoLine {
+    &:not(:first-child) {
+        font-size: 75%;
+    }
+}

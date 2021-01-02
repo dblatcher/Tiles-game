@@ -1,0 +1,42 @@
+@import '../../styles/design.scss';
+
+.holder{
+    cursor: pointer;
+    background-color: black;
+    max-width: 10em;
+    position: relative;
+    padding: .2em;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    p {
+        color: white;
+        margin: 0;
+    }
+}
+
+.report {
+    font-size: 75%;
+    display: flex;
+    justify-content: space-between;
+
+    span {
+        padding: 0 .25em;
+    }
+
+    span:first-child {
+        padding-left: 0;
+    }
+
+    span:last-child {
+        padding-right: 0;
+    }
+}
+
+.factionName {
+    max-width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

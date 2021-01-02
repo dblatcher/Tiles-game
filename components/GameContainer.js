@@ -1,19 +1,23 @@
 import React from 'react'
 
 import TileBoard from './TileBoard'
-import InfoBar from './InfoBar'
-import BattleDialogue from './dialogue/BattleDialogue'
-import MessageDialogue from './dialogue/MessageDialogue'
-import QuestionDialogue from './dialogue/QuestionDialogue'
 import ModeButtons from './ModeButtons'
 import TurnButtons from './TurnButtons'
-import PickUnitDialogue from './dialogue/PickUnitDialogue'
-import ChooseResearchGoalDialogue from './dialogue/ChooseResearchGoalDialogue'
-import ChooseStolenTechDialogue from './dialogue/ChooseStolenTechDialogue'
 import TownView from './TownView'
 import MainMenu from './menu/MainMenu'
 import FactionWindow from './FactionWindow'
+
+import ControlBar from './interface/ControlBar'
+import FactionButton from './interface/FactionButton'
+
+
 import GameOverDialogue from './dialogue/GameOverDialogue'
+import ChooseResearchGoalDialogue from './dialogue/ChooseResearchGoalDialogue'
+import ChooseStolenTechDialogue from './dialogue/ChooseStolenTechDialogue'
+import PickUnitDialogue from './dialogue/PickUnitDialogue'
+import BattleDialogue from './dialogue/BattleDialogue'
+import MessageDialogue from './dialogue/MessageDialogue'
+import QuestionDialogue from './dialogue/QuestionDialogue'
 
 import processMapClick from '../lib/game-logic/processMapClick'
 import gameActions from '../lib/game-logic/gameActions'
@@ -26,6 +30,7 @@ import letComputerTakeItsTurn from './gameContainer.letComputerTakeItsTurn'
 
 import styles from './gameContainer.module.scss'
 import { areSamePlace, sleep, asyncSetState } from '../lib/utility'
+import InfoBlock from './interface/InfoBlock'
 
 const interfaceModeOptions = [
     { value: "MOVE", description: "move units" },
@@ -95,7 +100,7 @@ export default class GameContainer extends React.Component {
 
     reset() {
         this.setState(Object.assign(
-            {}, this.props.startingGameStateFunction(),startingInterfaceState)
+            {}, this.props.startingGameStateFunction(), startingInterfaceState)
         )
     }
 
@@ -277,8 +282,8 @@ export default class GameContainer extends React.Component {
         return this.setState(
             gameActions[command](input),
             () => {
-                if (this.isComputerPlayersTurn && !this.state.gameOver) { 
-                    this.letComputerTakeItsTurn() 
+                if (this.isComputerPlayersTurn && !this.state.gameOver) {
+                    this.letComputerTakeItsTurn()
                 }
                 else {
                     this.centerWindowOn(this.state.selectedUnit)
@@ -383,9 +388,9 @@ export default class GameContainer extends React.Component {
         if (!target) { return false }
         const { x, y } = target
         const { mapZoomLevel, mapXOffset, mapGrid } = this.state
-        const {gameHolderElement,upperWindowElement} = this
+        const { gameHolderElement, upperWindowElement } = this
 
-        if (!gameHolderElement.current) {return}
+        if (!gameHolderElement.current) { return }
 
         const mapWidth = mapGrid[0].length
 
@@ -491,7 +496,7 @@ export default class GameContainer extends React.Component {
 
                 {(pendingDialogues.length > 0 && !gameOver) && this.renderDialogue()}
 
-                {(unitPickDialogueChoices.length && !gameOver) &&
+                {(unitPickDialogueChoices.length > 0 && !gameOver) &&
                     <PickUnitDialogue
                         units={unitPickDialogueChoices}
                         handleDialogueButton={this.handleDialogueButton} />
@@ -516,29 +521,19 @@ export default class GameContainer extends React.Component {
 
                 {!this.noActiveGame && !this.isComputerPlayersTurn && (
                     <aside className={styles.upperInterfaceWindow} ref={this.upperWindowElement} >
-
-                        <InfoBar
-                            stateOfPlay={this.stateOfPlay}
-                            watchingFaction={this.primaryPlayerFaction}
-                            toggleFactionWindow={this.isComputerPlayersTurn ? null : this.toggleFactionWindow}
-                            centerWindowOn={this.centerWindowOn}
-                        />
-
-                        <div>
-                            <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
-                                onClick={() => { this.setMapZoomLevel('OUT') }}
-                            >zoom_out</i>
-                            <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
-                                onClick={() => { this.setMapZoomLevel('RESET') }}
-                            >search</i>
-                            <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
-                                onClick={() => { this.setMapZoomLevel('IN') }}
-                            >zoom_in</i>
-                            <i className={["material-icons", "md-48", styles.menuButton].join(" ")}
-                                onClick={this.setMainMenuOpen}>
-                                {mainMenuOpen ? "menu_open" : "menu"}
-                            </i>
-                        </div>
+                        <ControlBar
+                            setMapZoomLevel={this.setMapZoomLevel}
+                            setMainMenuOpen={this.setMainMenuOpen}
+                            mainMenuOpen={mainMenuOpen}>
+                            <FactionButton
+                                stateOfPlay={this.stateOfPlay}
+                                faction={this.primaryPlayerFaction}
+                                toggleFactionWindow={this.isComputerPlayersTurn ? null : this.toggleFactionWindow} />
+                            <InfoBlock
+                                stateOfPlay={this.stateOfPlay}
+                                watchingFaction={this.primaryPlayerFaction}
+                                centerWindowOn={this.centerWindowOn} />
+                        </ControlBar>
                     </aside>
                 )}
 

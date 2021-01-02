@@ -22,33 +22,56 @@ interface Place {
     y: number
 }
 
-function getMapSquareFromPathStep(step: GridNode, mapGrid: MapSquare[][]) {
-    // co-ordinates are reversed on path result - unsure why. Graph maybe uses array of coloumns, not array or rows?
-    return mapGrid[step.x] ? mapGrid[step.x][step.y] || null : null
-}
-
-
-function makeGraphFromMapGrid(mapGrid: MapSquare[][], unit: Unit) {
-    // TO DO
-        // use unit.faction.worldMap AI magically knows routes through unknown Places
-        // (need to fill in the blanks? decide weight for unknown squares)
-    // TO DO
-        // handle the map edge...
-        // change the row order in the mapGrid so the unit is treated in the middle of the row?
-    const gridIn = mapGrid.map(row => row.map(
-        mapSquare => mapSquare && unit.getCouldEnter(mapSquare) ? mapSquare.movementCost : 0
-    ))
-    return new Graph(gridIn, { diagonal: true })
-}
 
 function getPathToTarget(mapGrid: MapSquare[][], unit: Unit, target: Place) {
-    const graph = makeGraphFromMapGrid(mapGrid, unit)
-    return astar.search(
+    const mapWidth = mapGrid[0].length
+    let shiftAmount = getShiftAmount(mapGrid, unit)
+    let shiftedGrid = makeShiftedGrid(mapGrid, shiftAmount)
+
+    const graph = makeGraphFromMapGrid(shiftedGrid, unit)
+    const pathOfNodes =  astar.search(
         graph,
-        graph.grid[unit.y][unit.x],
-        graph.grid[target.y][target.x],
+        graph.grid[unit.y][shiftXValue(unit.x, shiftAmount, mapWidth)],
+        graph.grid[target.y][shiftXValue(target.x, shiftAmount, mapWidth)],
         { closest: true }
     ) as GridNode[]
+
+    return pathOfNodes.map(gridNode => getMapSquareFromGridNode(gridNode, shiftedGrid))
+
+    function makeShiftedGrid(mapGrid: MapSquare[][], shiftAmount:number) {
+        return mapGrid.map(row => {
+            return [].concat(row.slice(shiftAmount), row.slice(0, shiftAmount))
+        }) as MapSquare[][]
+    }
+
+    function makeGraphFromMapGrid(mapGrid: MapSquare[][], unit: Unit) {
+        // TO DO
+        // use unit.faction.worldMap AI magically knows routes through unknown Places
+        // (need to fill in the blanks? decide weight for unknown squares)
+        const gridIn = mapGrid.map(row => row.map(
+            mapSquare => mapSquare && unit.getCouldEnter(mapSquare) ? mapSquare.movementCost : 0
+        ))
+        return new Graph(gridIn, { diagonal: true })
+    }
+
+    function getMapSquareFromGridNode(step: GridNode, mapGrid: MapSquare[][]) {
+        // co-ordinates are reversed on path result - unsure why. Graph maybe uses array of coloumns, not array or rows?
+        return mapGrid[step.x] ? mapGrid[step.x][step.y] || null : null
+    }
+}
+
+function getShiftAmount(mapGrid: MapSquare[][], center: Place) {
+    const mapWidth = mapGrid[0] ? mapGrid[0].length : 0
+    let shiftAmount = Math.floor(mapWidth / 2) + 1 + center.x
+    if (shiftAmount >= mapWidth) { shiftAmount -= mapWidth }
+
+    return shiftAmount
+}
+
+function shiftXValue(x:number, shiftAmount:number, mapWidth:number) {
+    let value = x - shiftAmount
+    if (value < 0) {value += mapWidth}
+    return value
 }
 
 function chooseMoveTowards(target: Place, unit: Unit, state: GameState, possibleMoves: MapSquare[]) {
@@ -61,11 +84,13 @@ function chooseMoveTowards(target: Place, unit: Unit, state: GameState, possible
     }
 
     const path = getPathToTarget(state.mapGrid, unit, target)
-    const firstSquareOnPath = path.length > 0
-        ? getMapSquareFromPathStep(path[0], state.mapGrid)
-        : null;
+    const firstSquareOnPath =  path[0] || null;
 
-    debugLogAtLevel(4)(`PATHFINDING: [${firstSquareOnPath.x},${firstSquareOnPath.y}]`, possibleMoves.includes(firstSquareOnPath), path)
+    debugLogAtLevel(4)(
+        `PATHFINDING: [${firstSquareOnPath.x},${firstSquareOnPath.y}]`, 
+        possibleMoves.includes(firstSquareOnPath), 
+        path
+    )
     return firstSquareOnPath
 }
 
@@ -75,9 +100,9 @@ function findShortestTotalMovemoveCostTo(target: Place, unit: Unit, state: GameS
 
     const path = getPathToTarget(state.mapGrid, unit, target)
     let count = 0
-    path.forEach(gridNode => count+=gridNode.weight)
+    path.forEach(mapSquare => count += mapSquare.movementCost)
 
-    debugLogAtLevel(4)(`PATHFINDING, findShortestTotalMovemoveCostTo: [${unit.x},${unit.y}] to [${target.x},${target.y}] = ${count}`,path)
+    debugLogAtLevel(4)(`PATHFINDING shortest route: [${unit.x},${unit.y}] to [${target.x},${target.y}] = ${count}`, path)
     return count
 }
 

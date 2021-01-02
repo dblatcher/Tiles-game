@@ -130,12 +130,13 @@ export default class Tile extends React.Component {
                             <i className={bgClasses} style={spriteSheets.misc.getStyleForFrameCalled('mine')}></i>
                         ) : null}
 
-                        {showYields ? this.renderYieldLines() : null}
+                        {showYields && this.renderYieldLines()}
                     </>)
                 }
 
-
-
+                {inInfoRow && (
+                    <span className={styles.coordinates}>{`[${mapSquare.x}, ${mapSquare.y}]`}</span>
+                )}
             </figure>
         )
     }

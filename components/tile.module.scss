@@ -88,3 +88,13 @@
     align-items: center;
     filter: drop-shadow(2px 0 0 black);
 }
+
+.coordinates {
+    color: white;
+    font-size: 60%;
+    z-index: 20;
+    filter: drop-shadow(2px 0 0 black);
+    position: absolute;
+    bottom: 2px;
+    right: 1px;
+}

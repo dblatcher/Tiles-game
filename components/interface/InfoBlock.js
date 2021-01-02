@@ -40,7 +40,12 @@ export default class InfoBlock extends React.Component {
             return <article className={styles.infoBlock}>
                 <Tile mapSquare={visibleSelectedSquare} inInfoRow showYields />
                 <ul className={styles.infoList}>
-                    {visibleSelectedSquare.infoList.map((infoPoint, index) => <li className={styles.infoLine} key={`selectedSquaretInfo#${index}`}>{infoPoint}</li>)}
+                    {visibleSelectedSquare.infoList.map((infoPoint, index) => (
+                        <li className={styles.infoLine} key={`selectedSquaretInfo#${index}`}>
+                            {infoPoint}
+                            {index == 0 ? <InfoLink subject={visibleSelectedSquare.terrain} /> : null}
+                        </li>
+                    ))}
                 </ul>
 
             </article>

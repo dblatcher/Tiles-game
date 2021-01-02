@@ -36,7 +36,6 @@ class MapSquare {
         return [
             `${this.description}`,
             `move: ${this.movementCost}`,
-            `[${this.x}, ${this.y}]`,
         ]
     }
 

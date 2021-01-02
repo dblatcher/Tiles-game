@@ -1,13 +1,13 @@
 import React from 'react'
-import { Faction } from '../lib/game-entities/Faction'
-import { GameState } from '../lib/game-entities/GameState'
-import styles from './dialogue.module.scss'
+import { Faction } from '../../lib/game-entities/Faction'
+import { GameState } from '../../lib/game-entities/GameState'
+import styles from '../../styles/dialogue.module.scss'
 
-import { getUnitScore, getCitizenScore, getTechScore, getTotalScore } from '../lib/game-misc/scoring'
+import { getUnitScore, getCitizenScore, getTechScore, getTotalScore } from '../../lib/game-misc/scoring'
 
-import UnitListBox from './interface/UnitListBox'
-import TechListBox from './interface/TechListBox'
-import CitizenListBox from './interface/CitizenListBox'
+import UnitListBox from '../interface/UnitListBox'
+import TechListBox from '../interface/TechListBox'
+import CitizenListBox from '../interface/CitizenListBox'
 
 class GameOverType {
     id: string

@@ -1,7 +1,7 @@
-import { techDiscoveries, TechDiscovery } from '../lib/game-entities/TechDiscovery'
+import { techDiscoveries, TechDiscovery } from '../../lib/game-entities/TechDiscovery'
 
-import TechTree from './TechTree';
-import styles from './dialogue.module.scss'
+import TechTree from '../TechTree';
+import styles from '../../styles/dialogue.module.scss'
 
 export default class ChooseResearchGoalDialogue extends React.Component {
 

@@ -1,10 +1,10 @@
-import { unitTypes } from '../lib/game-entities/UnitType'
-import { buildingTypes } from '../lib/game-entities/BuildingType'
+import { unitTypes } from '../../lib/game-entities/UnitType'
+import { buildingTypes } from '../../lib/game-entities/BuildingType'
 import styles from './productionMenu.module.scss'
-import dialogueStyles from './dialogue.module.scss'
-import SvgIcon from './SvgIcon'
-import InfoLink from './InfoLink'
-import { displayTurnsToComplete } from '../lib/utility'
+import dialogueStyles from '../../styles/dialogue.module.scss'
+import SvgIcon from '../SvgIcon'
+import InfoLink from '../InfoLink'
+import { displayTurnsToComplete } from '../../lib/utility'
 
 export default class ProductionMenu extends React.Component {
     constructor(props) {

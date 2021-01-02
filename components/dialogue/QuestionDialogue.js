@@ -1,4 +1,4 @@
-import styles from './dialogue.module.scss'
+import styles from '../../styles/dialogue.module.scss'
 
 export default class QuestionDialogue extends React.Component {
 

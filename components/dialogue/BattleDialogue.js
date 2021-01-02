@@ -1,5 +1,5 @@
-import styles from './dialogue.module.scss'
-import UnitFigure from './UnitFigure'
+import styles from '../../styles/dialogue.module.scss'
+import UnitFigure from '../UnitFigure'
 
 export default class BattleDialogue extends React.Component {
 

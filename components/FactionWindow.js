@@ -2,7 +2,7 @@ import Window from "./Window";
 import SvgIcon from "./SvgIcon"
 import TradeReport from "./TradeReport"
 import ProgressBox from "./ProgressBox"
-import ProductionMenu from "./ProductionMenu"
+import ProductionMenu from "./dialogue/ProductionMenu"
 import TechTree from "./TechTree";
 import { displayTurnsToComplete, getTurnsToComplete } from '../lib/utility'
 import CitizenRow from "./CitizenRow";

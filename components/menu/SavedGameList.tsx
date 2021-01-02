@@ -1,5 +1,5 @@
 import React from 'react'
-import dialogueStyles from '../dialogue.module.scss'
+import dialogueStyles from '../../styles/dialogue.module.scss'
 
 
 export default class SavedGameList extends React.Component {

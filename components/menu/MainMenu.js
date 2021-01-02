@@ -1,14 +1,14 @@
 import Link from 'next/link'
-import dialogueStyles from './dialogue.module.scss'
+import dialogueStyles from '../../styles/dialogue.module.scss'
 import styles from './mainMenu.module.scss'
 
-import makeGameStateFunction from '../lib/makeGameState'
-import * as Storage from '../lib/storage'
+import makeGameStateFunction from '../../lib/makeGameState'
+import * as Storage from '../../lib/storage'
 
-import DecorativeMap from './DecorativeMap'
-import CustomiseWorldControl from './menu/CustomiseWorldControl'
-import SavedGameList from './menu/SavedGameList'
-import NewGameOptions from './menu/NewGameOptions'
+import DecorativeMap from '../DecorativeMap'
+import CustomiseWorldControl from './CustomiseWorldControl'
+import SavedGameList from './SavedGameList'
+import NewGameOptions from './NewGameOptions'
 
 
 const savedGameFolder = "TILE_SAVES"

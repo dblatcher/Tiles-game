@@ -1,7 +1,7 @@
-import { Faction } from '../lib/game-entities/Faction'
-import { TechStealQuestion } from '../lib/game-entities/Questions'
-import styles from './dialogue.module.scss'
-import InfoLink from './InfoLink'
+import { Faction } from '../../lib/game-entities/Faction'
+import { TechStealQuestion } from '../../lib/game-entities/Questions'
+import styles from '../../styles/dialogue.module.scss'
+import InfoLink from '../InfoLink'
 
 export default function ChooseStolenTechDialogue(props) {
     const handleDialogueButton: Function = props.handleDialogueButton

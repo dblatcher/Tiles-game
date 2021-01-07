@@ -43,7 +43,11 @@ class UnitMission {
     }
 
     set target(newTarget: any) {
-        if (typeof newTarget !== 'object') {
+
+        if (newTarget === null) {
+            this.xTarget = null
+            this.yTarget = null
+        } else if (typeof newTarget !== 'object') {
             console.warn('invalid Mission target', newTarget)
         } else {
 

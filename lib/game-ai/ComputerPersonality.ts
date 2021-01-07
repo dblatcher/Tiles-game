@@ -16,12 +16,17 @@ import { Citizen } from '../game-entities/Citizen';
 
 import { debugLogAtLevel } from '../logging'
 
+class ComputerPersonalityConfig {
+    minimumTownLocationScore?: number
+}
+
 class ComputerPersonality {
     faction: Faction;
-    config: any;
-    constructor(faction: Faction, config: any) {
+    minimumTownLocationScore: number
+
+    constructor(faction: Faction, config: ComputerPersonalityConfig = {}) {
         this.faction = faction
-        this.config = config
+        this.minimumTownLocationScore = config.minimumTownLocationScore || 20
     }
 
     manageTowns(state: GameState) {
@@ -174,7 +179,7 @@ class ComputerPersonality {
         }
     }
 
-    pickStolenTech(options: TechDiscovery[], state:GameState) {
+    pickStolenTech(options: TechDiscovery[], state: GameState) {
         let index = Math.floor(Math.random() * options.length)
         return options[index]
     }
@@ -228,11 +233,13 @@ class ComputerPersonality {
     }
 
     get serialised() {
-        return this.config
+        return {
+            minimumTownLocationScore: this.minimumTownLocationScore
+        }
     }
 
 }
 
 
 
-export { ComputerPersonality }
+export { ComputerPersonality, ComputerPersonalityConfig }

@@ -178,24 +178,30 @@ const unitMissionTypes = {
             return chooseMoveTowards(this.target, unit, state, possibleMoves)
         },
         chooseTarget(ai: ComputerPersonality, unit: Unit, state: GameState) {
-            const minimumTownLocationScore = 30
-            let possibleNewTownLocationsWithScores = ai.getPossibleNewTownLocations(state)
+
+            const possibleNewTownLocationsWithScores = ai.getPossibleNewTownLocations(state)
                 .map(mapSquare => {
                     return { mapSquare, score: ai.assesNewTownLocation(mapSquare, ai.faction.worldMap).score }
                 })
-                .filter(item => item.score >= minimumTownLocationScore)
                 .sort((itemA, itemB) => itemB.score - itemA.score)
 
             if (possibleNewTownLocationsWithScores.length === 0) {
-                debugLogAtLevel(3)(`${unit.description} has found no place to build a town.`)
+                debugLogAtLevel(4)(`${unit.description} possible found no town locations.`)
+                return null
+            }
+            const acceptableNewTownLocationsWithScores = possibleNewTownLocationsWithScores
+                .filter(item => item.score >= ai.minimumTownLocationScore)
+
+            if (acceptableNewTownLocationsWithScores.length === 0) {
+                debugLogAtLevel(4)(`${unit.description} found no town location with a score of ${ai.minimumTownLocationScore} or more. Highest score was ${possibleNewTownLocationsWithScores[0].score}.`)
                 return null
             }
 
             debugLogAtLevel(3)(
-                `${unit.description} has choosen a place to build town, with score: ${possibleNewTownLocationsWithScores[0].score}`,
-                possibleNewTownLocationsWithScores[0].mapSquare
+                `${unit.description} has choosen a place to build town, with score: ${acceptableNewTownLocationsWithScores[0].score}`,
+                acceptableNewTownLocationsWithScores[0].mapSquare
             )
-            return possibleNewTownLocationsWithScores[0].mapSquare
+            return acceptableNewTownLocationsWithScores[0].mapSquare
         },
     }),
 

@@ -5,7 +5,7 @@ import { Unit } from './Unit'
 import { unitTypes } from './UnitType'
 import { TechDiscovery, techDiscoveries } from './TechDiscovery'
 import { MapSquare } from './MapSquare'
-import { ComputerPersonality } from '../game-ai/ComputerPersonality'
+import { ComputerPersonality, ComputerPersonalityConfig } from '../game-ai/ComputerPersonality'
 
 import { TOWN_SIGHT_RADIUS, UNIT_SIGHT_RADIUS } from '../game-logic/constants'
 import { areSamePlace } from '../utility.js'
@@ -19,7 +19,7 @@ class Faction {
     researchGoal: TechDiscovery | null;
     knownTech: Array<TechDiscovery>;
     worldMap: Array<Array<MapSquare | null> | null>;
-    computerPersonality: null;
+    computerPersonality: ComputerPersonality;
     placesInSightThisTurn: Array<object>;
     townNames: Array<String>;
     constructor(name: string, config: any = {}) {
@@ -245,8 +245,8 @@ class Faction {
 }
 
 class ComputerFaction extends Faction {
-    computerPersonality: any;
-    constructor(name: string, config: any, computerPersonality: any = {}) {
+    computerPersonality: ComputerPersonality;
+    constructor(name: string, config: any, computerPersonality: ComputerPersonalityConfig = {}) {
         super(name, config)
         this.computerPersonality = new ComputerPersonality(this, computerPersonality)
     }

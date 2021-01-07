@@ -106,4 +106,10 @@ function findShortestTotalMovemoveCostTo(target: Place, unit: Unit, state: GameS
     return count
 }
 
-export { chooseMoveTowards, findShortestTotalMovemoveCostTo }
+function sortByTotalMovemoveCostFor(unit, state) {
+    return (placeA, placeB) => {
+        return findShortestTotalMovemoveCostTo(placeA, unit, state) - findShortestTotalMovemoveCostTo(placeB, unit, state)
+    }
+}
+
+export { chooseMoveTowards, findShortestTotalMovemoveCostTo, sortByTotalMovemoveCostFor }

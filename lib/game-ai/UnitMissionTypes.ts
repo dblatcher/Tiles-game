@@ -1,6 +1,6 @@
 import { getDistanceBetween, areSamePlace, sortByDistanceFrom, unsafelyGetDistanceBetween } from "../utility"
 import { orderTypesMap, OnGoingOrderType } from "../game-entities/OngoingOrder";
-import { chooseMoveTowards, findShortestTotalMovemoveCostTo } from './pathfinding'
+import { chooseMoveTowards, sortByTotalMovemoveCostFor } from './pathfinding'
 import { ComputerPersonality } from "./ComputerPersonality";
 import { Unit } from "../game-entities/Unit";
 import { MapSquare } from "../game-entities/MapSquare";
@@ -41,6 +41,7 @@ const unitMissionTypes = {
             return chooseMoveTowards(target, unit, state, possibleMoves)
         },
     ),
+
     RANDOM: new UnitMissionType('RANDOM',
         function (unit: Unit, state: GameState) {
             return true
@@ -49,6 +50,7 @@ const unitMissionTypes = {
             return possibleMoves[Math.floor(Math.random() * possibleMoves.length)]
         },
     ),
+
     CONQUER: new UnitMissionType('CONQUER',
         function (unit: Unit, state: GameState) {
             const { target } = this
@@ -60,7 +62,7 @@ const unitMissionTypes = {
         function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OnGoingOrderType>) {
             if (!this.target) {
                 let enemyTowns = ai.getKnownEnemyTowns(state)
-                    .sort((enemyTownA, enemyTownB) => unsafelyGetDistanceBetween(enemyTownA.mapSquare, unit) - unsafelyGetDistanceBetween(enemyTownB.mapSquare, unit))
+                .sort(sortByTotalMovemoveCostFor(unit,state))
                 this.target = enemyTowns[0]
             }
 
@@ -73,6 +75,7 @@ const unitMissionTypes = {
             return moveToAttack || chooseMoveTowards(target, unit, state, possibleMoves)
         }
     ),
+
     INTERCEPT: new UnitMissionType('INTERCEPT',
         function (unit: Unit, state: GameState) {
             if (this.untilCancelled) { return false }
@@ -86,12 +89,13 @@ const unitMissionTypes = {
         },
         function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OnGoingOrderType>) {
             let knownEnemyUnitInOpen = ai.getKnownEnemyUnitInOpen(state)
-                .sort((enemyUnitA, enemyUnitB) => unsafelyGetDistanceBetween(enemyUnitA, unit) - unsafelyGetDistanceBetween(enemyUnitB, unit))
+                .sort(sortByTotalMovemoveCostFor(unit,state))
 
             return chooseMoveTowards(knownEnemyUnitInOpen[0], unit, state, possibleMoves)
 
         }
     ),
+
     GO_TO_MY_NEAREST_TOWN: new UnitMissionType('GO_TO_MY_NEAREST_TOWN',
         function (unit: Unit, state: GameState) {
             return state.towns.some(town => town.faction === unit.faction && areSamePlace(town, unit))
@@ -100,14 +104,13 @@ const unitMissionTypes = {
 
             let myTowns = state.towns
                 .filter(town => town.faction === unit.faction)
-                .sort(sortByDistanceFrom(unit))
-
+                .sort(sortByTotalMovemoveCostFor(unit, state))
             if (!myTowns[0]) { return null }
 
             return chooseMoveTowards(myTowns[0], unit, state, possibleMoves)
-
         }
     ),
+
     DEFEND_CURRENT_PLACE: new UnitMissionType('DEFEND_CURRENT_PLACE',
         function (unit: Unit, state: GameState) {
             return false
@@ -119,6 +122,7 @@ const unitMissionTypes = {
             return null
         }
     ),
+
     BUILD_NEW_TOWN: new UnitMissionType('BUILD_NEW_TOWN',
         function (unit: Unit, state: GameState) {
             return false
@@ -138,8 +142,8 @@ const unitMissionTypes = {
                 if (possibleNewTownLocationsWithScores.length > 0) {
                     this.target = possibleNewTownLocationsWithScores[0].mapSquare
                     debugLogAtLevel(3)(
-                        `${unit.description} has choosed a place to build town, with score:`, 
-                        this.target, 
+                        `${unit.description} has choosed a place to build town, with score:`,
+                        this.target,
                         possibleNewTownLocationsWithScores[0].score
                     )
                 } else {
@@ -159,6 +163,7 @@ const unitMissionTypes = {
 
         },
     ),
+
     EXPLORE: new UnitMissionType('EXPLORE',
         function (unit: Unit, state: GameState) {
             return false
@@ -195,6 +200,7 @@ const unitMissionTypes = {
                     .filter(mapSquare => hasSpaceNearby(mapSquare))
                     .filter(mapSquare => unit.getCouldEnter(mapSquare))
                     .sort(sortByDistanceFrom(unit))
+                // sortByTotalMovemoveCostFor is too expensive for this misson
 
                 if (placesWithSpacesNearby.length > 0) {
                     this.target = placesWithSpacesNearby[0]

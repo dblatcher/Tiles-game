@@ -146,6 +146,39 @@ const unitMissionTypes = {
         }
     }),
 
+    DEFEND_TOWN_AT: new UnitMissionType('DEFEND_TOWN_AT', {
+        checkIfFinished: function (unit: Unit, state: GameState) {
+            const {target} = this
+            if (!target) {
+                debugLogAtLevel(4)(`${unit.description} cancelling DEFEND_TOWN_AT - no target.`)
+                return true
+            }
+            
+            if (!state.towns.some(town => town.faction === unit.faction && areSamePlace(target,town))) {
+                debugLogAtLevel(4)(`${unit.description} cancelling DEFEND_TOWN_AT - no town in target square.`)
+                return true
+            }
+
+            return false
+        },
+        chooseMove: function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OnGoingOrderType>) {
+            const {target} = this
+            if (!target) {return null}
+            if (!state.towns.some(town => town.faction === unit.faction && areSamePlace(target,town))) {
+                return null
+            }
+
+            if (!areSamePlace(unit, target)) {
+                return chooseMoveTowards(target, unit, state, possibleMoves)
+            }
+
+            if (possibleActions.includes(orderTypesMap['Fortify'])) {
+                return orderTypesMap['Fortify']
+            }
+            return null
+        }
+    }),
+
     DEFEND_CURRENT_PLACE: new UnitMissionType('DEFEND_CURRENT_PLACE', {
         checkIfFinished: function (unit: Unit, state: GameState) {
             return false

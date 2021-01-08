@@ -13,8 +13,14 @@ class UnitMission {
     untilCancelled: boolean;
     constructor(type: string, config: any = {}) {
         this.type = type
-        this.xTarget = config.xTarget || null
-        this.yTarget = config.yTarget || null
+
+        if (config.target) {
+            this.target = config.target
+        } else {
+            this.xTarget = config.xTarget || null
+            this.yTarget = config.yTarget || null
+        }
+
         this.range = config.range || null
         this.untilCancelled = !!config.untilCancelled
     }

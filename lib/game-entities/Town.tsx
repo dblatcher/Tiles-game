@@ -218,19 +218,23 @@ class Town {
     autoAssignCitizen(citizen, state) {
         const { mapGrid, towns, units } = state
         let freeSquares = this.getSquaresAndObstacles(mapGrid, towns, units).freeSquares
+            .sort((squareA, squareB) => {
+                return (squareB.foodYield + squareB.tradeYield + squareB.productionYield) - (squareA.foodYield + squareA.tradeYield + squareA.productionYield)
+            })
+
         citizen.putToWorkInSquare(freeSquares.shift())
         return citizen
     }
 
     autoAssignFreeCitizens(state) {
         const { mapGrid, towns, units } = state
-        let freeSquares = this.getSquaresAndObstacles(mapGrid, towns, units).freeSquares
-        let freeCitizens = this.citizens.filter(citizen => citizen.job !== citizenJobs.worker)
-
         // TO DO - set priorites eg maximise production without starving
-        freeSquares.sort((squareA, squareB) => {
-            return (squareB.foodYield + squareB.tradeYield + squareB.productionYield) - (squareA.foodYield + squareA.tradeYield + squareA.productionYield)
-        })
+        let freeSquares = this.getSquaresAndObstacles(mapGrid, towns, units).freeSquares
+            .sort((squareA, squareB) => {
+                return (squareB.foodYield + squareB.tradeYield + squareB.productionYield) - (squareA.foodYield + squareA.tradeYield + squareA.productionYield)
+            })
+
+        let freeCitizens = this.citizens.filter(citizen => citizen.job !== citizenJobs.worker)
 
         while (freeCitizens.length > 0 && freeSquares.length > 0) {
             freeCitizens.shift().putToWorkInSquare(freeSquares.shift())

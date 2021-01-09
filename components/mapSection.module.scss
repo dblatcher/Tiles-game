@@ -13,21 +13,5 @@
     flex-flow: row nowrap;
 }
 
-.citizenFigure {
-    position: absolute;
-    width: 4em;
-    height: 4em;
-    display: inline-block;
-    color: white;
-    margin: 0;
-    pointer-events: none;
-    z-index: 10;
-}
 
-.spriteOnMapSection {
-    position: absolute;
-    width: 2.5em;
-    height: 2.5em;
-    right: 0;
-    bottom: 0;
-}
+

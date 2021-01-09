@@ -6,7 +6,7 @@ import VoidMapSquare from "../lib/game-entities/VoidMapSquare";
 import { areSamePlace } from '../lib/utility';
 
 import UnitFigure from './UnitFigure';
-
+import CitizenFigure from './figures/CitizenFigure'
 
 export default class MapSection extends React.Component {
 
@@ -110,46 +110,13 @@ export default class MapSection extends React.Component {
     }
 
 
-
-    renderCitizen(citizen, index, occupierTown = null) {
-        const { handleMapSectionClick } = this.props
-        const { mapYOffset, mapXOffset } = this
-        const xPlacement = citizen.mapSquare.x - mapXOffset
-        const yPlacement = citizen.mapSquare.y - mapYOffset
-
-        const figureStyle = {
-            left: `${xPlacement * 4}em`,
-            top: `${yPlacement * 4}em`,
-        }
-
-        return (
-            <figure
-                style={figureStyle}
-                className={styles.citizenFigure}
-                onClick={handleMapSectionClick ? () => { handleMapSectionClick(citizen.mapSquare) } : null}
-                key={`citizenIcon-${index}`}>
-
-                <i className={styles.spriteOnMapSection}
-                    style={{
-                        backgroundImage: occupierTown 
-                            ? `radial-gradient(${occupierTown.faction.color} 65%, rgba(0,0,0,0) 65%)`
-                            : '',
-                    }}
-                />
-                <i className={styles.spriteOnMapSection}
-                    style={citizen.job.spriteStyle}
-                />
-
-            </figure>
-        )
-    }
-
     render() {
         const { town, stateOfPlay } = this.props
         const { mapGrid, towns, units } = stateOfPlay
         const { span, mapYOffset, mapXOffset } = this
-        let emptyRowY
+        const occupiersMap = town.getOccupierMap(mapGrid, towns, units)
 
+        let emptyRowY
         let emptyRowsAbove = []
         if (mapYOffset < 0) {
             for (emptyRowY = mapYOffset; emptyRowY < 0; emptyRowY++) {
@@ -166,23 +133,37 @@ export default class MapSection extends React.Component {
 
         let citizensOnMap = town.citizens
             .filter(citizen => citizen.mapSquare)
-            .map((citizen, index) => this.renderCitizen(citizen, index))
+            .map((citizen, index) => (
+                <CitizenFigure key={index}
+                    citizen={citizen}
+                    mapXOffset={mapXOffset}
+                    mapYOffset={mapYOffset}
+                    handleClick={() => { handleMapSectionClick(citizen.mapSquare) }}
+                />
+            ))
 
-        const occupiersMap = town.getOccupierMap(mapGrid, towns, units)
+
         let occupyingCitizensOnMap = occupiersMap
             .filter(entry => entry.obstacle.citizen && !town.citizens.includes(entry.obstacle.citizen))
             .map(entry => entry.obstacle)
-            .map((obstacle, index) => this.renderCitizen(obstacle.citizen, "occupier" + index, obstacle.town))
+            .map((obstacle, index) => (
+                <CitizenFigure key={"occupier" + index}
+                    citizen={obstacle.citizen}
+                    occupierTown={obstacle.town}
+                    mapXOffset={mapXOffset}
+                    mapYOffset={mapYOffset}
+                />
+            ))
 
         let occupyingUnitsOnMap = occupiersMap
-            .filter(entry => entry.obstacle.classIs === 'Unit')
-            .map(entry => entry.obstacle)
-            .map(unit => (
-                <UnitFigure unit={unit} 
-                    mapXOffset={mapXOffset} 
-                    mapYOffset={mapYOffset} 
-                    isOccupier/>
-            ))
+                .filter(entry => entry.obstacle.classIs === 'Unit')
+                .map(entry => entry.obstacle)
+                .map(unit => (
+                    <UnitFigure unit={unit} key={unit.indexNumber}
+                        mapXOffset={mapXOffset}
+                        mapYOffset={mapYOffset}
+                        isOccupier />
+                ))
 
         return (
             <section className={styles.container}>

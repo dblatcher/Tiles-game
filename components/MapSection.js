@@ -111,10 +111,9 @@ export default class MapSection extends React.Component {
 
 
 
-    renderCitizen(citizen, index, isOccupier = false) {
+    renderCitizen(citizen, index, occupierTown = null) {
         const { handleMapSectionClick } = this.props
         const { mapYOffset, mapXOffset } = this
-
         const xPlacement = citizen.mapSquare.x - mapXOffset
         const yPlacement = citizen.mapSquare.y - mapYOffset
 
@@ -130,6 +129,13 @@ export default class MapSection extends React.Component {
                 onClick={handleMapSectionClick ? () => { handleMapSectionClick(citizen.mapSquare) } : null}
                 key={`citizenIcon-${index}`}>
 
+                <i className={styles.spriteOnMapSection}
+                    style={{
+                        backgroundImage: occupierTown 
+                            ? `radial-gradient(${occupierTown.faction.color} 65%, rgba(0,0,0,0) 65%)`
+                            : '',
+                    }}
+                />
                 <i className={styles.spriteOnMapSection}
                     style={citizen.job.spriteStyle}
                 />
@@ -163,11 +169,10 @@ export default class MapSection extends React.Component {
             .map((citizen, index) => this.renderCitizen(citizen, index))
 
         const occupiersMap = town.getOccupierMap(mapGrid, towns, units)
-
         let occupyingCitizensOnMap = occupiersMap
-            .filter(entry => entry.obstacle.classIs === 'Citizen')
+            .filter(entry => entry.obstacle.citizen && !town.citizens.includes(entry.obstacle.citizen))
             .map(entry => entry.obstacle)
-            .map((citizen, index) => this.renderCitizen(citizen, "occupier" + index, true))
+            .map((obstacle, index) => this.renderCitizen(obstacle.citizen, "occupier" + index, obstacle.town))
 
         let occupyingUnitsOnMap = occupiersMap
             .filter(entry => entry.obstacle.classIs === 'Unit')

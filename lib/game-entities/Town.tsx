@@ -169,7 +169,10 @@ class Town {
                     for (townIndex = 0; townIndex < towns.length; townIndex++) {
                         for (citizenIndex = 0; citizenIndex < towns[townIndex].citizens.length; citizenIndex++) {
                             if (mapGrid[row][col] === towns[townIndex].citizens[citizenIndex].mapSquare) {
-                                obstacle = towns[townIndex].citizens[citizenIndex];
+                                obstacle = {
+                                    citizen: towns[townIndex].citizens[citizenIndex],
+                                    town: towns[townIndex]
+                                };
                                 break;
                             }
                         }
@@ -208,7 +211,7 @@ class Town {
 
         for (let i = 0; i < obstacles.length; i++) {
             if (!obstacles[i]) { continue }
-            if (this.citizens.includes(obstacles[i])) { continue }
+            if (obstacles[i].citizen && this.citizens.includes(obstacles[i].citizen)) { continue }
             result.push({ mapSquare: squares[i], obstacle: obstacles[i] })
         }
 

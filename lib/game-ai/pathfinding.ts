@@ -29,7 +29,7 @@ function getPathToTarget(mapGrid: MapSquare[][], unit: Unit, target: Place) {
     let shiftedGrid = makeShiftedGrid(mapGrid, shiftAmount)
 
     const graph = makeGraphFromMapGrid(shiftedGrid, unit)
-    const pathOfNodes =  astar.search(
+    const pathOfNodes = astar.search(
         graph,
         graph.grid[unit.y][shiftXValue(unit.x, shiftAmount, mapWidth)],
         graph.grid[target.y][shiftXValue(target.x, shiftAmount, mapWidth)],
@@ -38,7 +38,7 @@ function getPathToTarget(mapGrid: MapSquare[][], unit: Unit, target: Place) {
 
     return pathOfNodes.map(gridNode => getMapSquareFromGridNode(gridNode, shiftedGrid))
 
-    function makeShiftedGrid(mapGrid: MapSquare[][], shiftAmount:number) {
+    function makeShiftedGrid(mapGrid: MapSquare[][], shiftAmount: number) {
         return mapGrid.map(row => {
             return [].concat(row.slice(shiftAmount), row.slice(0, shiftAmount))
         }) as MapSquare[][]
@@ -68,9 +68,9 @@ function getShiftAmount(mapGrid: MapSquare[][], center: Place) {
     return shiftAmount
 }
 
-function shiftXValue(x:number, shiftAmount:number, mapWidth:number) {
+function shiftXValue(x: number, shiftAmount: number, mapWidth: number) {
     let value = x - shiftAmount
-    if (value < 0) {value += mapWidth}
+    if (value < 0) { value += mapWidth }
     return value
 }
 
@@ -84,13 +84,19 @@ function chooseMoveTowards(target: Place, unit: Unit, state: GameState, possible
     }
 
     const path = getPathToTarget(state.mapGrid, unit, target)
-    const firstSquareOnPath =  path[0] || null;
+    const firstSquareOnPath = path[0] || null;
 
-    debugLogAtLevel(4)(
-        `PATHFINDING: [${firstSquareOnPath.x},${firstSquareOnPath.y}]`, 
-        possibleMoves.includes(firstSquareOnPath), 
-        path
-    )
+    if (firstSquareOnPath) {
+        debugLogAtLevel(4)(
+            `PATHFINDING: [${firstSquareOnPath.x},${firstSquareOnPath.y}]`,
+            possibleMoves.includes(firstSquareOnPath),
+            path
+        )
+    } else {
+        debugLogAtLevel(4)(
+            `PATHFINDING: no route found from [${unit.x},${unit.y}] to [${target.x},${target.y}].`
+        )
+    }
     return firstSquareOnPath
 }
 

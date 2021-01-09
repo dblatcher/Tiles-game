@@ -5,6 +5,8 @@ import styles from './mapSection.module.scss'
 import VoidMapSquare from "../lib/game-entities/VoidMapSquare";
 import { areSamePlace } from '../lib/utility';
 
+import UnitFigure from './UnitFigure';
+
 
 export default class MapSection extends React.Component {
 
@@ -18,11 +20,11 @@ export default class MapSection extends React.Component {
         }
     }
 
-    get xStart() {
-        return this.props.town.x - 2
+    get mapXOffset() {
+        return this.props.town.x - this.props.radius
     }
-    get yStart() {
-        return this.props.town.y - 2
+    get mapYOffset() {
+        return this.props.town.y - this.props.radius
     }
     get span() {
         return (this.props.radius * 2) + 1
@@ -35,11 +37,11 @@ export default class MapSection extends React.Component {
     renderTile(mapSquare, excludeCorners, occupier) {
         const { handleMapSectionClick, town, stateOfPlay } = this.props;
         const { units, selectedSquare } = stateOfPlay
-        const { span, xStart, yStart, } = this
+        const { span, mapXOffset, mapYOffset, } = this
 
-        if (mapSquare.x < xStart || mapSquare.x > xStart + span - 1) { return null }
+        if (mapSquare.x < mapXOffset || mapSquare.x > mapXOffset + span - 1) { return null }
 
-        const isCorner = (mapSquare.x === xStart || mapSquare.x === xStart + span - 1) && (mapSquare.y === yStart || mapSquare.y === yStart + span - 1)
+        const isCorner = (mapSquare.x === mapXOffset || mapSquare.x === mapXOffset + span - 1) && (mapSquare.y === mapYOffset || mapSquare.y === mapYOffset + span - 1)
         const isTownTile = town.mapSquare === mapSquare
         const citizen = town.citizens.filter(citizen => citizen.mapSquare === mapSquare)[0]
         const showYields = mapSquare === town.mapSquare || citizen;
@@ -65,10 +67,10 @@ export default class MapSection extends React.Component {
     }
 
     renderEmptyRow(y) {
-        const { span, xStart } = this
+        const { span, mapXOffset } = this
         let emptyTiles = []
 
-        for (let x = xStart; x < xStart + span; x++) {
+        for (let x = mapXOffset; x < mapXOffset + span; x++) {
             emptyTiles.push(this.renderEmptyTile(x, y))
         }
         return (
@@ -79,8 +81,8 @@ export default class MapSection extends React.Component {
     renderRow(row, y, occupiersMap) {
         const { stateOfPlay } = this.props
         const { mapGrid } = stateOfPlay
-        const { span, yStart, xStart, } = this
-        if (y < yStart || y > yStart + span - 1) { return null }
+        const { span, mapYOffset, mapXOffset, } = this
+        if (y < mapYOffset || y > mapYOffset + span - 1) { return null }
 
         let tiles = row.map(mapSquare => {
             const occupier = occupiersMap.some(item => item.mapSquare === mapSquare)
@@ -90,14 +92,14 @@ export default class MapSection extends React.Component {
         })
         let emptyTileX
 
-        if (xStart < 0) {
-            for (emptyTileX = xStart; emptyTileX < 0; emptyTileX++) {
+        if (mapXOffset < 0) {
+            for (emptyTileX = mapXOffset; emptyTileX < 0; emptyTileX++) {
                 tiles.unshift(this.renderEmptyTile(emptyTileX, y))
             }
         }
 
-        if (xStart + span >= mapGrid[y].length) {
-            for (emptyTileX = mapGrid[y].length; emptyTileX < xStart + span; emptyTileX++) {
+        if (mapXOffset + span >= mapGrid[y].length) {
+            for (emptyTileX = mapGrid[y].length; emptyTileX < mapXOffset + span; emptyTileX++) {
                 tiles.push(this.renderEmptyTile(emptyTileX, y))
             }
         }
@@ -111,15 +113,14 @@ export default class MapSection extends React.Component {
 
     renderCitizen(citizen, index, isOccupier = false) {
         const { handleMapSectionClick } = this.props
-        const { yStart, xStart } = this
+        const { mapYOffset, mapXOffset } = this
 
-        const xPlacement = citizen.mapSquare.x - xStart
-        const yPlacement = citizen.mapSquare.y - yStart
+        const xPlacement = citizen.mapSquare.x - mapXOffset
+        const yPlacement = citizen.mapSquare.y - mapYOffset
 
         const figureStyle = {
             left: `${xPlacement * 4}em`,
             top: `${yPlacement * 4}em`,
-            filter: isOccupier ? 'grayscale(1)' : '',
         }
 
         return (
@@ -140,19 +141,19 @@ export default class MapSection extends React.Component {
     render() {
         const { town, stateOfPlay } = this.props
         const { mapGrid, towns, units } = stateOfPlay
-        const { span, yStart } = this
+        const { span, mapYOffset, mapXOffset } = this
         let emptyRowY
 
         let emptyRowsAbove = []
-        if (yStart < 0) {
-            for (emptyRowY = yStart; emptyRowY < 0; emptyRowY++) {
+        if (mapYOffset < 0) {
+            for (emptyRowY = mapYOffset; emptyRowY < 0; emptyRowY++) {
                 emptyRowsAbove.push(this.renderEmptyRow(emptyRowY))
             }
         }
 
         let emptyRowsBelow = []
-        if (yStart + span >= mapGrid.length) {
-            for (emptyRowY = mapGrid.length; emptyRowY < yStart + span; emptyRowY++) {
+        if (mapYOffset + span >= mapGrid.length) {
+            for (emptyRowY = mapGrid.length; emptyRowY < mapYOffset + span; emptyRowY++) {
                 emptyRowsBelow.push(this.renderEmptyRow(emptyRowY))
             }
         }
@@ -168,6 +169,16 @@ export default class MapSection extends React.Component {
             .map(entry => entry.obstacle)
             .map((citizen, index) => this.renderCitizen(citizen, "occupier" + index, true))
 
+        let occupyingUnitsOnMap = occupiersMap
+            .filter(entry => entry.obstacle.classIs === 'Unit')
+            .map(entry => entry.obstacle)
+            .map(unit => (
+                <UnitFigure unit={unit} 
+                    mapXOffset={mapXOffset} 
+                    mapYOffset={mapYOffset} 
+                    isOccupier/>
+            ))
+
         return (
             <section className={styles.container}>
                 <div className={styles.frame}>
@@ -176,6 +187,7 @@ export default class MapSection extends React.Component {
                     {emptyRowsBelow}
                     {citizensOnMap}
                     {occupyingCitizensOnMap}
+                    {occupyingUnitsOnMap}
                 </div>
             </section>
         )

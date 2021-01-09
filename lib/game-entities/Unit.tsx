@@ -34,11 +34,13 @@ class Unit {
         this.indexNumber = typeof config.indexNumber === 'number'
             ? config.indexNumber
             : unitIndexNumber++
-        this.onGoingOrder = config.ongoingOrder || null
+        this.onGoingOrder = config.onGoingOrder || null
         this.passengers = config.passengers || []
         this.isPassengerOf = config.isPassengerOf || null
         this.missions = config.missions || []
     }
+
+    get classIs() { return 'Unit' }
 
     get infoList() {
         return [
@@ -201,7 +203,7 @@ class Unit {
                 vetran: data.veteran,
                 remainingMoves: data.remainingMoves,
                 indexNumber: data.indexNumber,
-                ongoingOrder: deserialisedOrder,
+                onGoingOrder: deserialisedOrder,
                 isPassengerOf: data.isPassengerOf, // needs to be deserialised from number to Unit in deserialiseGame
                 missions: deserialisedMissions,
             }

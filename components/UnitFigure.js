@@ -5,8 +5,28 @@ import styles from './unitFigure.module.scss'
 
 export default class UnitFigure extends React.Component {
 
-    renderUnitMenu(shiftedX) {
+    get leftProperty() {
+        if (this.props.inInfoRow) { return 'unset' }
+        return `${this.shiftedX * 4}em`
+    }
+
+    get topProperty() {
+        const { unit, inInfoRow, mapYOffset = 0 } = this.props
+
+        if (inInfoRow) { return 'unset' }
+        return `${(unit.y - mapYOffset) * 4}em`
+    }
+
+    get shiftedX() {
+        const { unit, mapXOffset = 0, gridWidth } = this.props
+        let shiftedX = unit.x - mapXOffset
+        if (shiftedX < 0) { shiftedX += gridWidth }
+        return shiftedX
+    }
+
+    renderUnitMenu() {
         const { unit, handleOrderButton, squareUnitIsOn, gridWidth } = this.props
+        const { shiftedX } = this
         let placement = []
 
         if (squareUnitIsOn.y < 3) { placement.push('BELOW') }
@@ -23,9 +43,9 @@ export default class UnitFigure extends React.Component {
     }
 
     render() {
-        const { 
-            unit, handleClick, isSelected, inInfoRow, stack, isFallen, interfaceMode, notInSight, 
-            mapXOffset, gridWidth, mapShiftInProgress
+        const {
+            unit, handleClick, isSelected, inInfoRow, stack, isFallen, interfaceMode, notInSight,
+            mapShiftInProgress
         } = this.props
 
         if (unit.isPassengerOf && !isSelected && !inInfoRow) {
@@ -61,12 +81,10 @@ export default class UnitFigure extends React.Component {
 
         if (placeInStack > 0) { spriteClassList.push(styles.behind) }
 
-        let shiftedX = unit.x - mapXOffset
-        if (shiftedX < 0) {shiftedX += gridWidth} 
 
         const figureStyle = {
-            left: inInfoRow ? 'unset' : `${shiftedX * 4}em`,
-            top: inInfoRow ? 'unset' : `${unit.y * 4}em`,
+            left: this.leftProperty,
+            top: this.topProperty,
             backgroundImage: isFallen
                 ? ''
                 : unit.vetran
@@ -98,7 +116,7 @@ export default class UnitFigure extends React.Component {
                     </p>
                     : null}
 
-                { !unit.faction.isComputerPlayer && isSelected && interfaceMode === 'MOVE' ? this.renderUnitMenu(shiftedX) : null}
+                { !unit.faction.isComputerPlayer && isSelected && interfaceMode === 'MOVE' ? this.renderUnitMenu() : null}
             </figure >
         )
 

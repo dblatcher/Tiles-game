@@ -4,7 +4,7 @@ import attemptMove from '../game-logic/attemptMove'
 
 import gameActions from '../game-logic/gameActions'
 import townActions from '../game-logic/townActions'
-import { unsafelyCheckAreSamePlace, unsafelyGetDistanceBetween } from '../utility';
+import { areSamePlace, unsafelyCheckAreSamePlace, unsafelyGetDistanceBetween } from '../utility';
 import { MINIMUM_DISTANCE_BETWEEN_TOWNS } from '../game-logic/constants'
 
 import { GameState } from '../game-entities/GameState'
@@ -15,23 +15,29 @@ import { citizenJobs } from '../game-entities/CitizenJob';
 import { Citizen } from '../game-entities/Citizen';
 
 import { debugLogAtLevel } from '../logging'
+import { Town } from '../game-entities/Town';
+import { orderTypesMap } from '../game-entities/OngoingOrder';
+import { UnitType, unitTypes } from '../game-entities/UnitType';
+import { BuildingType, buildingTypes } from '../game-entities/BuildingType';
 
 class ComputerPersonalityConfig {
     minimumTownLocationScore?: number
+    defendersPerTown?: number
 }
 
 class ComputerPersonality {
     faction: Faction;
     minimumTownLocationScore: number
+    defendersPerTown: number
 
     constructor(faction: Faction, config: ComputerPersonalityConfig = {}) {
         this.faction = faction
         this.minimumTownLocationScore = config.minimumTownLocationScore || 20
+        this.defendersPerTown = typeof config.defendersPerTown === 'number' ? config.defendersPerTown : 1
     }
 
     manageTowns(state: GameState) {
         const myTowns = state.towns.filter(town => town.faction === this.faction)
-
         myTowns.forEach(town => {
             town.autoAssignFreeCitizens(state);
 
@@ -50,18 +56,46 @@ class ComputerPersonality {
                 for (let i = 0; i < entertainersNeeded; i++) {
                     citizensSortedByFoodYield[i].changeJobTo(citizenJobs.entertainer)
                 }
-
             }
 
-            if (!town.isProducing) {
-                const { producableUnits, producableBuildings } = this.faction
-                //TO DO - logic for computer picking a production item
-                let item
-                item = producableUnits[Math.floor(Math.random() * producableUnits.length)]
+            let item: UnitType | BuildingType = null
+            if (!town.isProducing || town.productionStore === 0) {
+                item = this.pickNextProductionItem(town, state);
                 townActions.PRODUCTION_PICK({ town, item })(state)
-                debugLogAtLevel(2)(`** ${town.name} now producing ${town.isProducing.name}`)
+            } else if (this.wantsToAddDefender(town, state)) {
+                item = this.faction.bestDefensiveLandUnit
+                townActions.PRODUCTION_PICK({ town, item })(state)
+                debugLogAtLevel(2)(`** ${town.name} building defender ${town.isProducing.name}`)
             }
+
         })
+    }
+
+    pickNextProductionItem(town: Town, state: GameState) {
+        //TO DO - logic for computer picking a production item
+        let { producableUnits, producableBuildings } = this.faction
+        producableBuildings = producableBuildings
+            .filter(buildingType => !town.buildings.includes(buildingType))
+
+        const wantsToAddDefender = this.wantsToAddDefender(town, state)
+        let pickingBuilding = !wantsToAddDefender && false && producableBuildings.length > 0
+
+        let randomBuilding = producableBuildings[Math.floor(Math.random() * producableBuildings.length)]
+        let randomUnit = producableUnits[Math.floor(Math.random() * producableUnits.length)]
+
+
+        let pickedUnit = wantsToAddDefender
+            ? this.faction.bestDefensiveLandUnit
+            : Math.random() > .5
+                ? this.faction.bestCavalryUnit || randomUnit
+                : this.faction.bestLandAttacker || randomUnit
+
+        const item = pickingBuilding
+            ? randomBuilding
+            : pickedUnit
+
+        debugLogAtLevel(2)(`** pickNextProductionItem: ${town.name} picks ${item.name}`)
+        return item
     }
 
     pickNewTech(state: GameState) {
@@ -72,7 +106,7 @@ class ComputerPersonality {
         //TO DO - logic for computer picking a tech based on computerPersonality goals
         const choosenTechDiscovery = possibleChoices[0]
 
-        debugLogAtLevel(1)(`** ${this.faction.name} AI is now researching ${choosenTechDiscovery.name}`)
+        debugLogAtLevel(2)(`** ${this.faction.name} AI is now researching ${choosenTechDiscovery.name}`)
         gameActions.CHOOSE_RESEARCH_GOAL({ activeFaction: this.faction, techDiscovery: choosenTechDiscovery })(state)
     }
 
@@ -107,6 +141,25 @@ class ComputerPersonality {
             .filter(mapSquare => !state.towns.some(town => unsafelyGetDistanceBetween(town.mapSquare, mapSquare) < MINIMUM_DISTANCE_BETWEEN_TOWNS))
 
         return squaresTownsCouldBeBuiltOn
+    }
+
+    wantsToAddDefender(town: Town, state: GameState) {
+        const defendersPresent = state.units
+            .filter(unit => unit.faction === this.faction)
+            .filter(unit => areSamePlace(unit, town))
+            .filter(unit => unit.onGoingOrder)
+            .filter(unit =>
+                unit.onGoingOrder.type == orderTypesMap['Fortify'] || unit.onGoingOrder.type == orderTypesMap['Fortified']
+            )
+
+        const defefendersEnroute = state.units
+            .filter(unit => unit.faction === this.faction)
+            .filter(unit => unit.missions.some(mission => mission.type == "DEFEND_TOWN_AT" && areSamePlace(mission.target, town)))
+
+        debugLogAtLevel(5)({ town, defendersPresent, defefendersEnroute })
+
+        // TO DO - count defefendersEnroute in a smarter way - weight by distance?
+        return defendersPresent.length + (defefendersEnroute.length / 2) < this.defendersPerTown
     }
 
     assesNewTownLocation(mapSquare: MapSquare, mapGrid: Array<Array<MapSquare | null> | null>) {
@@ -190,7 +243,7 @@ class ComputerPersonality {
 
 
         if (unit && unit.remainingMoves > 0) {
-            debugLogAtLevel(2)(`*${unit.indexNumber}* ${this.faction.name} moving ${unit.description} (${unit.role})`)
+            debugLogAtLevel(3)(`*${unit.indexNumber}* ${this.faction.name} moving ${unit.description} (${unit.role})`)
             unit.missions = unit.missions.filter(mission => !mission.checkIfFinished(unit, state))
             if (unit.missions.length == 0) { this.assignNewMission(unit, state) }
 
@@ -228,7 +281,7 @@ class ComputerPersonality {
 
         result = myUnitsWithMovesLeft.length === 0
 
-        debugLogAtLevel(1)(`__${movesMade} MOVES MADE__`, result ? 'FINISHED' : '')
+        debugLogAtLevel(2)(`__${movesMade} MOVES MADE__`, result ? 'FINISHED' : '')
         return result
     }
 

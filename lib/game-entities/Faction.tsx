@@ -1,8 +1,8 @@
 import TradeBudget from '../TradeBudget'
-import { buildingTypes } from './BuildingType'
+import { BuildingType, buildingTypes } from './BuildingType'
 import { Town } from './Town'
 import { Unit } from './Unit'
-import { unitTypes } from './UnitType'
+import { UnitType, unitTypes } from './UnitType'
 import { TechDiscovery, techDiscoveries } from './TechDiscovery'
 import { MapSquare } from './MapSquare'
 import { ComputerPersonality, ComputerPersonalityConfig } from '../game-ai/ComputerPersonality'
@@ -184,13 +184,38 @@ class Faction {
     get producableUnits() {
         return Object.keys(unitTypes)
             .map(key => unitTypes[key])
-            .filter(unitType => unitType.checkCanBuildWith(this.knownTech))
+            .filter(unitType => unitType.checkCanBuildWith(this.knownTech)) as UnitType[]
+    }
+
+    get bestDefensiveLandUnit() {
+        const {producableUnits} = this
+        return producableUnits
+            .filter(unitType => !unitType.isNaval)
+            .filter(unitType => unitType.role === 'DEFENDER')
+            .sort( (typeA, typeB) => typeB.defend - typeA.defend)[0] || null
+    }
+
+    get bestLandAttacker() {
+        const {producableUnits} = this
+        return producableUnits
+            .filter(unitType => !unitType.isNaval)
+            .filter(unitType => unitType.role === 'ATTACKER')
+            .sort( (typeA, typeB) => typeB.attack - typeA.attack)[0] || null
+    }
+
+    get bestCavalryUnit() {
+        const {producableUnits} = this
+
+        return producableUnits
+            .filter(unitType => !unitType.isNaval)
+            .filter(unitType => unitType.role === 'CAVALRY')
+            .sort( (typeA, typeB) => typeB.attack - typeA.attack)[0] || null
     }
 
     get producableBuildings() {
         return Object.keys(buildingTypes)
             .map(key => buildingTypes[key])
-            .filter(buildingType => buildingType.checkCanBuildWith(this.knownTech))
+            .filter(buildingType => buildingType.checkCanBuildWith(this.knownTech)) as BuildingType[]
     }
 
     get possibleResearchGoals() {

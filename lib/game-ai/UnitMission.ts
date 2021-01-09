@@ -54,13 +54,13 @@ class UnitMission {
             this.xTarget = null
             this.yTarget = null
         } else if (typeof newTarget !== 'object') {
-            console.warn('invalid Mission target', newTarget)
+            console.warn('invalid Mission target', newTarget, this)
         } else {
 
             if (newTarget.mapSquare) { newTarget = newTarget.mapSquare }
 
             if (typeof newTarget.x != 'number' || typeof newTarget.y != 'number') {
-                console.warn('invalid Mission target', newTarget)
+                console.warn('invalid Mission target', newTarget, this)
             } else {
                 this.xTarget = newTarget.x
                 this.yTarget = newTarget.y

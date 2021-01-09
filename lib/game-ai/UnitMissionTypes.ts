@@ -107,7 +107,7 @@ const unitMissionTypes = {
         chooseTarget(ai: ComputerPersonality, unit: Unit, state: GameState) {
             let enemyTowns = ai.getKnownEnemyTowns(state)
                 .sort(sortByTotalMovemoveCostFor(unit, state))
-            return enemyTowns[0]
+            return enemyTowns[0] || null
         },
     }),
 

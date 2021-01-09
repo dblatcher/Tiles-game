@@ -11,6 +11,7 @@ class Citizen {
         this.mapSquare = mapSquare
         this.job = job
     }
+    get classIs() { return 'Citizen' }
 
     putToWorkInSquare(mapSquare: MapSquare) {
         this.mapSquare = mapSquare

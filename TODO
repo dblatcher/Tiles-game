@@ -13,7 +13,7 @@ map
 towns
 ? trade routes
 ? corruption rate
-- render obstables in townView (unit or citizen of other town)
+- render unit obstables in townView
 
 Buildings
 ? court house and corruption rule

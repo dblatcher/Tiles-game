@@ -109,7 +109,7 @@ export default class MapSection extends React.Component {
 
 
 
-    renderCitizen(citizen, index) {
+    renderCitizen(citizen, index, isOccupier = false) {
         const { handleMapSectionClick } = this.props
         const { yStart, xStart } = this
 
@@ -119,6 +119,7 @@ export default class MapSection extends React.Component {
         const figureStyle = {
             left: `${xPlacement * 4}em`,
             top: `${yPlacement * 4}em`,
+            filter: isOccupier ? 'grayscale(1)' : '',
         }
 
         return (
@@ -162,6 +163,11 @@ export default class MapSection extends React.Component {
 
         const occupiersMap = town.getOccupierMap(mapGrid, towns, units)
 
+        let occupyingCitizensOnMap = occupiersMap
+            .filter(entry => entry.obstacle.classIs === 'Citizen')
+            .map(entry => entry.obstacle)
+            .map((citizen, index) => this.renderCitizen(citizen, "occupier" + index, true))
+
         return (
             <section className={styles.container}>
                 <div className={styles.frame}>
@@ -169,6 +175,7 @@ export default class MapSection extends React.Component {
                     {mapGrid.map((row, index) => this.renderRow(row, index, occupiersMap))}
                     {emptyRowsBelow}
                     {citizensOnMap}
+                    {occupyingCitizensOnMap}
                 </div>
             </section>
         )

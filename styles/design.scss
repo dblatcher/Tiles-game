@@ -2,6 +2,8 @@ $focus-color: green;
 $dialogueDropShadowFilter: drop-shadow(3px 6px 2px black);
 $windowPadding : .5rem;
 
+$layout-breakpoint: 36em;
+
 @mixin letterButton {
     cursor: pointer;
     position: relative;

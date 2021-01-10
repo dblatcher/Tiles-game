@@ -1,0 +1,74 @@
+@import '../../styles/design.scss';
+
+.tabMenu {
+
+    clear: both;
+
+    &>nav {
+        clear: both;
+        display: flex;
+        justify-content: space-between;
+
+        div {
+            padding: .5em;
+            border: 1px solid black;
+            flex: 1;
+            background-color: lightgray;
+            text-align: center;
+            cursor: pointer;
+            border-top-right-radius: .75em;
+            border-top-left-radius: .75em;
+
+            &.activeLabel {
+                background-color: white;
+                border-bottom-color: white;
+            }
+        }
+    }
+
+    .inactiveTab {
+        display: none; 
+    }
+
+    .activeTab {
+
+        background-color: white;
+        border: 1px solid black;
+        border-top-color: white;
+        padding-bottom: 1em;
+        min-height: 10rem;
+
+        &>section {
+            float: none;
+        }
+    }
+
+    &.mobileOnly {
+
+        @media (min-width: $layout-breakpoint) {
+            clear: unset;
+
+            &>nav {
+                display: none;
+            }
+
+            .inactiveTab {
+                display: unset; 
+                display: contents;
+            }
+
+            .activeTab {
+                display: contents;
+                background-color: unset;
+                border: none;
+                min-height: unset;
+
+                &>section {
+                    float: left;
+                }
+            }
+
+        }
+
+    }
+}

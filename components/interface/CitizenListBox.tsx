@@ -1,10 +1,9 @@
 import { Citizen } from '../../lib/game-entities/Citizen';
-import UnitFigure from '../UnitFigure';
 import styles from './listBox.module.scss'
 
 
 
-export default function UnitListBox(props: {
+export default function CitizenListBox(props: {
     citizens: Citizen[]
     onTownView?: boolean
 }) {

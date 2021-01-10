@@ -1,24 +1,42 @@
 @import '../styles/design.scss';
 
 .window {
-    max-width: 50rem;
-    margin: 0 auto ;
     padding: $windowPadding;
+    width: 100%;
+    margin: 0 auto;
+
+    @media (min-width: $layout-breakpoint) {
+        max-width: 50rem;
+    }
 }
 
 .header {
+
+    flex-direction: column-reverse;
+
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     margin-bottom: .5rem;
 
-    h1 {margin: 0;}
+    h1, p {
+        margin: 0;
+    }
+
+    @media (min-width: $layout-breakpoint) {
+        flex-direction: row;
+    }
 }
 
 .buttonHolder {
+    align-self: flex-end;
     display: flex;
     align-items: center;
     padding: $windowPadding;
+
+    @media (min-width: $layout-breakpoint) {
+        align-self: auto;
+    }
 }
 
 .button {

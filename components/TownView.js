@@ -7,6 +7,9 @@ import ProgressBox from "./ProgressBox";
 import CitizenRow from "./CitizenRow";
 import TownBuildingList from "./TownBuildingList";
 
+import TabMenu from './interface/TabMenu'
+import SvgIcon from './SvgIcon'
+
 import styles from "./townView.module.scss";
 import { displayGain, getTurnsToComplete, pluralise } from '../lib/utility'
 
@@ -82,9 +85,16 @@ export default class TownView extends React.Component {
             }
         }
 
+        const svgStyle = {
+            backgroundColor:'black',
+            height: '2em',
+            width: '2em',
+            borderRadius: '25%',
+            padding: '.1em',
+        }
 
         return (
-            <Window title={`${town.name} - pop.${town.population},000 `} buttons={buttonList}>
+            <Window title={town.name} subtitle={`pop.${town.population},000`} buttons={buttonList}>
                 <div className={styles.frame}>
 
                     <section className={[styles.section, styles.mapSection].join(" ")}>
@@ -96,48 +106,75 @@ export default class TownView extends React.Component {
                         />
                     </section>
 
-                    <section className={styles.section}>
-                        <h2>Food <span>{displayGain(town.output.foodYield)}</span> </h2>
-                        <ProgressBox
-                            current={town.foodStore}
-                            target={town.foodStoreRequiredForGrowth}
-                            unit="food" />
-                        <p className={styles.caption}>{this.foodStoreCaption}</p>
-                    </section>
-
-                    <section className={styles.section}>
-                        <h2>Production<span>{displayGain(town.output.productionYield)}</span></h2>
-                        <ProgressBox
-                            current={town.productionStore}
-                            target={town.isProducing ? town.isProducing.productionCost : 0}
-                            unit="production" />
-                        <p className={styles.caption}>{this.productionCaption}</p>
-                        <ProductionMenu handleTownAction={handleTownAction} town={town} />
-                    </section>
-
-                    <section className={styles.section}>
-                        <h2>Trade<span>{displayGain(town.output.tradeYield)}</span></h2>
-                        <TradeReport
-                            town={town}
-                            townView={true}
-                            separateLines={true}
-                            inRevolt={town.getIsInRevolt(stateOfPlay.units)} />
-                    </section>
-
-                    <section className={styles.section}>
-                        <h2>{`Buildings`}</h2>
-                        <TownBuildingList town={town} />
-                    </section>
-
-                    <section className={styles.section}>
-                        <h2>{`${town.supportedUnits.length} units supported`}</h2>
-                        <UnitListBox units={town.supportedUnits} onTownView/>
-                    </section>
-
-                    <section className={styles.section}>
-                        <h2>{`${town.getUnitsHere(units).length} units here`}</h2>
-                        <UnitListBox units={town.getUnitsHere(units)} handleClickOnUnit={activateUnit} onTownView/>
-                    </section>
+                    <TabMenu mobileOnly tabs={[
+                        {
+                            label: <SvgIcon style={svgStyle} iconName={'production'}/>,
+                            content: (
+                                <section className={styles.section}>
+                                    <h2>Production<span>{displayGain(town.output.productionYield)}</span></h2>
+                                    <ProgressBox
+                                        current={town.productionStore}
+                                        target={town.isProducing ? town.isProducing.productionCost : 0}
+                                        unit="production" />
+                                    <p className={styles.caption}>{this.productionCaption}</p>
+                                    <ProductionMenu handleTownAction={handleTownAction} town={town} />
+                                </section>
+                            )
+                        },
+                        {
+                            label: <SvgIcon style={svgStyle} iconName={'food'}/>,
+                            content: (
+                                <section className={styles.section}>
+                                    <h2>Food <span>{displayGain(town.output.foodYield)}</span> </h2>
+                                    <ProgressBox
+                                        current={town.foodStore}
+                                        target={town.foodStoreRequiredForGrowth}
+                                        unit="food" />
+                                    <p className={styles.caption}>{this.foodStoreCaption}</p>
+                                </section>
+                            )
+                        },
+                        {
+                            label: <SvgIcon style={svgStyle} color={'goldenrod'} iconName={'trade'}/>,
+                            content: (
+                                <section className={styles.section}>
+                                    <h2>Trade<span>{displayGain(town.output.tradeYield)}</span></h2>
+                                    <TradeReport
+                                        town={town}
+                                        townView={true}
+                                        separateLines={true}
+                                        inRevolt={town.getIsInRevolt(stateOfPlay.units)} />
+                                </section>
+                            )
+                        },
+                        {
+                            label: <SvgIcon style={svgStyle} iconName={'building'}/>,
+                            content: (
+                                <section className={styles.section}>
+                                    <h2>{`Buildings`}</h2>
+                                    <TownBuildingList town={town} />
+                                </section>
+                            )
+                        },
+                        {
+                            label: <SvgIcon style={svgStyle} iconName={'shieldPerson'}/>,
+                            content: (
+                                <section className={styles.section}>
+                                    <h2>{`${town.supportedUnits.length} units supported`}</h2>
+                                    <UnitListBox units={town.supportedUnits} onTownView />
+                                </section>
+                            )
+                        },
+                        {
+                            label: <SvgIcon style={svgStyle} iconName={'shield'}/>,
+                            content: (
+                                <section className={styles.section}>
+                                    <h2>{`${town.getUnitsHere(units).length} units here`}</h2>
+                                    <UnitListBox units={town.getUnitsHere(units)} handleClickOnUnit={activateUnit} onTownView />
+                                </section>
+                            )
+                        },
+                    ]} />
                 </div>
             </Window>
         )

@@ -7,6 +7,8 @@ import TechTree from "./TechTree";
 import { displayTurnsToComplete, getTurnsToComplete } from '../lib/utility'
 import CitizenRow from "./CitizenRow";
 
+import styles from './factionWindow.module.scss'
+
 export default class FactionWindow extends React.Component {
 
     constructor(props) {
@@ -77,67 +79,67 @@ export default class FactionWindow extends React.Component {
 
         return (
             <Window title={faction.name} buttons={[{ text: 'close', clickFunction: closeWindow }]}>
-                <h2>Budget</h2>
-                <ul>
-                    <li>{allocatedBudget.totalTrade}<SvgIcon iconName="trade" /> total trade</li>
-                    <li>{totalMaintenanceCosts}<SvgIcon iconName="coins" color="red" /> maintenance costs</li>
-                </ul>
+                <h2 className={styles.reportHeading}>Budget</h2>
 
-                <table>
-                    <tbody>
-                        {budgetKeys.map(category => (
-                            <tr key={`row-${category}`}>
-                                <th>{category}</th>
-                                <td style={{ width: '3rem' }}>{faction.budget.displayPercentage[category]}</td>
-                                <td>
+                <article className={styles.reportTable}>
+                    <section>
+                    <span>{allocatedBudget.totalTrade}<SvgIcon iconName="trade" /> total trade</span>
+                    <span>{totalMaintenanceCosts}<SvgIcon iconName="coins" color="red" /> maintenance costs</span>
+                    </section>
+                    {budgetKeys.map(category => (
+                        <section key={`reportTable-${category}`}>
+                            <h3>{category}</h3>
+                            <div>
+                                <span style={{ width: '3rem', display: 'inline-block' }}>
+                                    {faction.budget.displayPercentage[category]}
+                                </span>
+                                <span>
                                     <input type="range" min="0" max="100"
                                         onChange={event => this.handleRangeEvent(event, category)}
                                         value={faction.budget[category] * 100} />
-                                </td>
-                                <td>
-                                    <input type="checkbox"
-                                        checked={faction.budget.locked[category]}
-                                        onChange={event => this.handleLockEvent(event, category)} />
-                                </td>
-                                <td style={{ minWidth: '6rem', textAlign: 'right' }}>
+                                    <span >
+                                        <input type="checkbox"
+                                            checked={faction.budget.locked[category]}
+                                            onChange={event => this.handleLockEvent(event, category)} />
+                                    </span>
+                                </span>
+                                <span style={{ width: '6rem', display: 'inline-block', textAlign: 'right' }}>
                                     {allocatedBudgetWithoutSpecialists[category]}{this.renderBudgetIcon(category)} / turn
-                                </td>
-                            </tr>
-                        ))}
+                                </span>
+                            </div>
+                        </section>
+                    ))}
+                </article>
 
-                    </tbody>
-                </table>
+                <h2 className={styles.reportHeading}>Towns</h2>
 
-                <h2>Towns</h2>
-                <table>
-                    <tbody>
-                        {factionTowns.map(town =>
-                            <tr key={`trade-report-${town.indexNumber}`}>
-                                <td>
-                                    <span style={{ cursor: 'pointer' }} onClick={() => { openTownView(town) }}>{town.name}</span>
-                                </td>
-                                <td><CitizenRow town={town} onFactionWindow={true} stateOfPlay={stateOfPlay} /></td>
-                                <td>
-                                    <TradeReport town={town} inRevolt={factionTownsNotInRevolt.indexOf(town) === -1} />
-                                </td>
-                                <td>
+                <article className={styles.reportTable}>
+                    {factionTowns.map(town => (
+                        <section key={`townReport-${town.indexNumber}`}>
+                            <h3 style={{ cursor: 'pointer' }} onClick={() => { openTownView(town) }}>{town.name}</h3>
+                            <div>
+                                <CitizenRow town={town} onFactionWindow={true} stateOfPlay={stateOfPlay} />
+                                <TradeReport town={town} inRevolt={factionTownsNotInRevolt.indexOf(town) === -1} />
+
+                                <span>
                                     <span>
                                         {town.isProducing ? town.isProducing.displayName : 'no production'}
                                         {town.isProducing ? `(${displayTurnsToComplete(town.turnsToCompleteCurrentProduction)})` : ''}
                                     </span>
-                                    <ProductionMenu handleTownAction={handleTownAction} town={town} /></td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
+                                    <ProductionMenu handleTownAction={handleTownAction} town={town} />
+                                </span>
+                            </div>
+                        </section>
+                    ))}
+                </article>
 
-                <h2>Research</h2>
+
+                <h2 className={styles.reportHeading}>Researching {faction.researchGoal ? faction.researchGoal.description : 'nothing'}</h2>
                 <section style={{ display: "flex", justifyContent: "space-between", marginBottom: '1em' }}>
                     <p style={{ margin: "0" }}>
-                        <span>Researching {faction.researchGoal ? faction.researchGoal.description : 'nothing'}&nbsp;</span>
-                        {faction.researchGoal ? (
+                        {faction.researchGoal && (
                             <span>({displayTurnsToComplete(turnsToNextBreakthrough)})</span>
-                        ) : null}
+                        )}
                     </p>
 
                     {faction.researchGoal ? (<>

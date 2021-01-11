@@ -59,7 +59,7 @@ class MapSquare {
         return Math.max(0, (this.terrain.foodYield) + (this.tree ? -1 : 0) + (this.irrigation ? 1 : 0))
     }
     get productionYield() {
-        return Math.max(0, (this.terrain.productionYield) + (this.tree ? 1 : 0) + (this.mine ? 2 : 0))
+        return Math.max(0, (this.terrain.productionYield) + (this.tree ? 1 : 0) + (this.mine ? this.terrain.bonusFromMine : 0))
     }
     get tradeYield() {
         return Math.max(0, (this.terrain.tradeYield) + (this.road ? 1 : 0))

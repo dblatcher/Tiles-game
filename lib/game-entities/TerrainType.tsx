@@ -14,6 +14,7 @@ class TerrainType {
     neverTrees: boolean
     neverTown: boolean
     canMine: boolean
+    bonusFromMine: number
     canIrrigate: boolean
 
     constructor(name, config: any = {}) {
@@ -27,6 +28,7 @@ class TerrainType {
         this.neverTrees = config.isWater || config.neverTrees || false
         this.neverTown = config.isWater || config.neverTown || false
         this.canMine = config.canMine || false
+        this.bonusFromMine = config.bonusFromMine || 1
         this.canIrrigate = config.canIrrigate || false
 
         if (config.yields) {
@@ -73,6 +75,7 @@ const terrainTypes = {
         yields: [1, 1, 0],
         canIrrigate: true,
         neverTrees: true,
+        canMine: true,
         css: {
             background: 'khaki',
             backgroundImage: 'repeating-radial-gradient(goldenrod, transparent 0.6px)'
@@ -109,6 +112,7 @@ const terrainTypes = {
         neverTrees: true,
         canIrrigate: true,
         canMine: true,
+        bonusFromMine: 3,
         css: {
             background: 'greenyellow',
             backgroundImage: 'repeating-radial-gradient(green, transparent 0.6px)',
@@ -122,6 +126,7 @@ const terrainTypes = {
         neverTrees: true,
         neverTown: true,
         canMine: true,
+        bonusFromMine: 3,
         css: {
             background: 'khaki',
             backgroundImage: 'repeating-radial-gradient(goldenrod, transparent 0.6px)'

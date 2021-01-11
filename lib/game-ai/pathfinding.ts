@@ -74,6 +74,13 @@ function shiftXValue(x: number, shiftAmount: number, mapWidth: number) {
     return value
 }
 
+function hasPathTo(target:Place, unit:Unit, state:GameState) {
+    if (!target) { return false }
+    if (unit.x == target.x && unit.y == target.y) { return true }
+    const path = getPathToTarget(state.mapGrid, unit, target)
+    return areSamePlace(target, path[path.length-1])
+}
+
 function chooseMoveTowards(target: Place, unit: Unit, state: GameState, possibleMoves: MapSquare[]) {
     if (!target) { return null }
     if (unit.x == target.x && unit.y == target.y) { return null }
@@ -118,4 +125,4 @@ function sortByTotalMovemoveCostFor(unit, state) {
     }
 }
 
-export { chooseMoveTowards, findShortestTotalMovemoveCostTo, sortByTotalMovemoveCostFor }
+export { chooseMoveTowards, findShortestTotalMovemoveCostTo, sortByTotalMovemoveCostFor, hasPathTo }

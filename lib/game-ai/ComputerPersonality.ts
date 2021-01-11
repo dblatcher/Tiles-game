@@ -4,7 +4,7 @@ import attemptMove from '../game-logic/attemptMove'
 
 import gameActions from '../game-logic/gameActions'
 import townActions from '../game-logic/townActions'
-import { areSamePlace, unsafelyCheckAreSamePlace, unsafelyGetDistanceBetween } from '../utility';
+import { areSamePlace, sortByDistanceFrom, unsafelyCheckAreSamePlace, unsafelyGetDistanceBetween } from '../utility';
 import { MINIMUM_DISTANCE_BETWEEN_TOWNS } from '../game-logic/constants'
 
 import { GameState } from '../game-entities/GameState'
@@ -19,6 +19,7 @@ import { Town } from '../game-entities/Town';
 import { orderTypesMap } from '../game-entities/OngoingOrder';
 import { UnitType, unitTypes } from '../game-entities/UnitType';
 import { BuildingType, buildingTypes } from '../game-entities/BuildingType';
+import { hasPathTo, sortByTotalMovemoveCostFor } from './pathfinding';
 
 class ComputerPersonalityConfig {
     minimumTownLocationScore?: number
@@ -210,10 +211,32 @@ class ComputerPersonality {
             )
         }
         if (unit.role === "DEFENDER") {
-            unit.missions.push(
-                new UnitMission('GO_TO_MY_NEAREST_TOWN', {}),
-                new UnitMission('DEFEND_CURRENT_PLACE', {}),
-            )
+
+            const myTownsNeedingDefenders = state.towns
+                .filter(town => town.faction === this.faction)
+                .filter(town => this.wantsToAddDefender(town, state))
+                .sort(sortByDistanceFrom(unit))
+
+            let i, choosenTown = null as Town
+            for (i = 0; i < myTownsNeedingDefenders.length; i++) {
+                if (hasPathTo(myTownsNeedingDefenders[i], unit, state)) {
+                    choosenTown = myTownsNeedingDefenders[i]
+                    break;
+                }
+            }
+
+            if (choosenTown) {
+                debugLogAtLevel(4)(`picking defender mission: ${unit.description} will defend ${choosenTown.name}`)
+                unit.missions.push(
+                    new UnitMission('DEFEND_TOWN_AT', { target: choosenTown })
+                )
+            } else {
+                debugLogAtLevel(4)(`picking defender mission: Are no towns for ${unit.description} to defend `)
+                unit.missions.push(
+                    new UnitMission('EXPLORE', {})
+                )
+            }
+
         }
         if (unit.role === "SETTLER") {
             unit.missions.push(

@@ -1,6 +1,6 @@
 import { getDistanceBetween, areSamePlace, sortByDistanceFrom, unsafelyGetDistanceBetween } from "../utility"
 import { orderTypesMap, OnGoingOrderType } from "../game-entities/OngoingOrder";
-import { chooseMoveTowards, sortByTotalMovemoveCostFor } from './pathfinding'
+import { chooseMoveTowards, hasPathTo, sortByTotalMovemoveCostFor } from './pathfinding'
 import { ComputerPersonality } from "./ComputerPersonality";
 import { Unit } from "../game-entities/Unit";
 import { MapSquare } from "../game-entities/MapSquare";
@@ -57,7 +57,7 @@ const unitMissionTypes = {
 
     WAIT: new UnitMissionType('WAIT', {
         checkIfFinished: function (unit: Unit, state: GameState) {
-            return this.untilCancelled
+            return false
         },
         chooseMove: function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OnGoingOrderType>) {
             return null
@@ -113,8 +113,8 @@ const unitMissionTypes = {
 
     INTERCEPT: new UnitMissionType('INTERCEPT', {
         checkIfFinished: function (unit: Unit, state: GameState) {
-            if (this.untilCancelled) { return false }
             const ai = unit.faction.computerPersonality as ComputerPersonality
+            if (!this.cancelIfNoTargetFound) { return false }
             return this.range
                 ? ai.getKnownEnemyUnitInOpen(state)
                     .filter(enemyUnit => unsafelyGetDistanceBetween(enemyUnit, unit) < this.range)
@@ -126,8 +126,11 @@ const unitMissionTypes = {
             let knownEnemyUnitInOpen = ai.getKnownEnemyUnitInOpen(state)
                 .sort(sortByTotalMovemoveCostFor(unit, state))
 
+            if (this.range) {
+                knownEnemyUnitInOpen = knownEnemyUnitInOpen
+                    .filter(enemyUnit => unsafelyGetDistanceBetween(enemyUnit, unit) < this.range)
+            }
             return chooseMoveTowards(knownEnemyUnitInOpen[0], unit, state, possibleMoves)
-
         }
     }),
 
@@ -146,15 +149,55 @@ const unitMissionTypes = {
         }
     }),
 
+    DEFEND_NEAREST_VULNERABLE_TOWN: new UnitMissionType('DEFEND_NEAREST_VULNERABLE_TOWN', {
+        checkIfFinished: function (unit: Unit, state: GameState) {
+            return false;
+        },
+        chooseMove: function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: OnGoingOrderType[]) {
+            const { target } = this
+            if (!this.target) {
+                this.target = unitMissionTypes[this.type].chooseTarget(ai, unit, state)
+            }
+            if (this.target === null) {
+                return null
+            }
+
+            if (!areSamePlace(unit, target)) {
+                return chooseMoveTowards(target, unit, state, possibleMoves)
+            }
+
+            if (possibleActions.includes(orderTypesMap['Fortify'])) {
+                return orderTypesMap['Fortify']
+            }
+            return null
+        },
+        chooseTarget: function (ai: ComputerPersonality, unit: Unit, state: GameState) {
+
+            const myTownsNeedingDefenders = state.towns
+                .filter(town => town.faction === ai.faction)
+                .filter(town => ai.wantsToAddDefender(town, state))
+                .sort(sortByDistanceFrom(unit))
+
+            let i, choosenTown = null as Town
+            for (i = 0; i < myTownsNeedingDefenders.length; i++) {
+                if (hasPathTo(myTownsNeedingDefenders[i], unit, state)) {
+                    choosenTown = myTownsNeedingDefenders[i]
+                    break;
+                }
+            }
+            return choosenTown
+        }
+    }),
+
     DEFEND_TOWN_AT: new UnitMissionType('DEFEND_TOWN_AT', {
         checkIfFinished: function (unit: Unit, state: GameState) {
-            const {target} = this
+            const { target } = this
             if (!target) {
                 debugLogAtLevel(4)(`${unit.description} cancelling DEFEND_TOWN_AT - no target.`)
                 return true
             }
-            
-            if (!state.towns.some(town => town.faction === unit.faction && areSamePlace(target,town))) {
+
+            if (!state.towns.some(town => town.faction === unit.faction && areSamePlace(target, town))) {
                 debugLogAtLevel(4)(`${unit.description} cancelling DEFEND_TOWN_AT - no town in target square.`)
                 return true
             }
@@ -162,9 +205,9 @@ const unitMissionTypes = {
             return false
         },
         chooseMove: function (ai: ComputerPersonality, unit: Unit, state: GameState, possibleMoves: Array<MapSquare>, possibleActions: Array<OnGoingOrderType>) {
-            const {target} = this
-            if (!target) {return null}
-            if (!state.towns.some(town => town.faction === unit.faction && areSamePlace(target,town))) {
+            const { target } = this
+            if (!target) { return null }
+            if (!state.towns.some(town => town.faction === unit.faction && areSamePlace(target, town))) {
                 return null
             }
 

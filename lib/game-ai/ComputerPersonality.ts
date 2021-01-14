@@ -193,50 +193,27 @@ class ComputerPersonality {
     }
 
     assignNewMission(unit: Unit, state: GameState) {
-        // TO DO - logic for picking a mission...
-
 
         if (unit.role === "ATTACKER") {
             unit.missions.push(
                 new UnitMission('CONQUER', {}),
-                new UnitMission('INTERCEPT', { untilCancelled: false }),
+                new UnitMission('INTERCEPT', {range: 3}),
                 new UnitMission('EXPLORE'),
             )
         }
         if (unit.role === "CAVALRY") {
             unit.missions.push(
-                new UnitMission('INTERCEPT', { range: 5, untilCancelled: true }),
+                new UnitMission('INTERCEPT', {}),
                 new UnitMission('CONQUER', {}),
                 new UnitMission('EXPLORE'),
             )
         }
         if (unit.role === "DEFENDER") {
-
-            const myTownsNeedingDefenders = state.towns
-                .filter(town => town.faction === this.faction)
-                .filter(town => this.wantsToAddDefender(town, state))
-                .sort(sortByDistanceFrom(unit))
-
-            let i, choosenTown = null as Town
-            for (i = 0; i < myTownsNeedingDefenders.length; i++) {
-                if (hasPathTo(myTownsNeedingDefenders[i], unit, state)) {
-                    choosenTown = myTownsNeedingDefenders[i]
-                    break;
-                }
-            }
-
-            if (choosenTown) {
-                debugLogAtLevel(4)(`picking defender mission: ${unit.description} will defend ${choosenTown.name}`)
-                unit.missions.push(
-                    new UnitMission('DEFEND_TOWN_AT', { target: choosenTown })
-                )
-            } else {
-                debugLogAtLevel(4)(`picking defender mission: Are no towns for ${unit.description} to defend `)
-                unit.missions.push(
-                    new UnitMission('EXPLORE', {})
-                )
-            }
-
+            unit.missions.push(
+                new UnitMission('DEFEND_NEAREST_VULNERABLE_TOWN',{}),
+                new UnitMission('INTERCEPT', {range: 1}),
+                new UnitMission('GO_TO_MY_NEAREST_TOWN')
+            )
         }
         if (unit.role === "SETTLER") {
             unit.missions.push(

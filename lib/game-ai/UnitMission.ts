@@ -10,7 +10,8 @@ class UnitMission {
     xTarget: number | null;
     yTarget: number | null;
     range: number | null;
-    untilCancelled: boolean;
+    duration: number;
+    cancelIfNoTargetFound: boolean;
     constructor(type: string, config: any = {}) {
         this.type = type
 
@@ -22,7 +23,8 @@ class UnitMission {
         }
 
         this.range = config.range || null
-        this.untilCancelled = !!config.untilCancelled
+        this.duration = config.duration || 0
+        this.cancelIfNoTargetFound = !!config.cancelIfNoTargetFound
     }
 
     checkIfFinished(unit:Unit, state:GameState) {

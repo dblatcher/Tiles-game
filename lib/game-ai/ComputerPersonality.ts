@@ -8,7 +8,7 @@ import { areSamePlace, sortByDistanceFrom, unsafelyCheckAreSamePlace, unsafelyGe
 import { MINIMUM_DISTANCE_BETWEEN_TOWNS } from '../game-logic/constants'
 
 import { GameState } from '../game-entities/GameState'
-import { Faction } from '../game-entities/Faction';
+import { ComputerFaction, Faction } from '../game-entities/Faction';
 import { Unit } from '../game-entities/Unit';
 import { MapSquare } from '../game-entities/MapSquare';
 import { citizenJobs } from '../game-entities/CitizenJob';
@@ -19,22 +19,80 @@ import { Town } from '../game-entities/Town';
 import { orderTypesMap } from '../game-entities/OngoingOrder';
 import { UnitType, unitTypes } from '../game-entities/UnitType';
 import { BuildingType, buildingTypes } from '../game-entities/BuildingType';
-import { hasPathTo, sortByTotalMovemoveCostFor } from './pathfinding';
 
 class ComputerPersonalityConfig {
     minimumTownLocationScore?: number
     defendersPerTown?: number
+    expandPriority?: number
+    developPriority?: number
+    discoverPriority?: number
+    conquerPriority?: number
+}
+
+class PrioritySpend {
+    "EXPAND": number
+    "DEVELOP": number
+    "DISCOVER": number
+    "CONQUER": number
+    constructor() {
+        this.EXPAND = 0
+        this.DEVELOP = 0
+        this.DISCOVER = 0
+        this.CONQUER = 0
+    }
+
+    /**
+     * Multiply each goal score by the inverse of the ComputerPersonality's corresponding priority
+     * eg a ComputerPersonality with a high conquerPriority will reduce its conquer goal score relative to the others
+     * making a conquer choice high priority
+     * @param ai the ComputerPersonality to adjust for
+     */
+    adjustByAiPriority(ai: ComputerPersonality) {
+        this.CONQUER *= (1 / ai.conquerPriority)
+        this.DEVELOP *= (1 / ai.developPriority)
+        this.DISCOVER *= (1 / ai.discoverPriority)
+        this.EXPAND *= (1 / ai.expandPriority)
+        return this
+    }
+
+    /**
+     * set the scores on a blank PriortySpend object based on a factions knownTech and its ai priorities
+     * @param faction 
+     * @return the modified PriortySpend object
+     */
+    setScoresForTech (faction:ComputerFaction) {
+        faction.knownTech.forEach(tech => {
+            this[tech.aiPriority] += tech.getTier(techDiscoveries) + 1
+        });
+        this.adjustByAiPriority(faction.computerPersonality)
+        return this
+    }
+
+    /**
+     * the list or goals in order - lowest score(highest priority) first
+     */
+    get goalsInOrder() {
+        return Object.keys(this).sort((goalA, goalB) => this[goalA] - this[goalB])
+    }
 }
 
 class ComputerPersonality {
     faction: Faction;
     minimumTownLocationScore: number
     defendersPerTown: number
+    expandPriority: number
+    developPriority: number
+    discoverPriority: number
+    conquerPriority: number
 
     constructor(faction: Faction, config: ComputerPersonalityConfig = {}) {
         this.faction = faction
         this.minimumTownLocationScore = config.minimumTownLocationScore || 20
         this.defendersPerTown = typeof config.defendersPerTown === 'number' ? config.defendersPerTown : 1
+        this.expandPriority = typeof config.expandPriority === 'number' ? config.expandPriority : 1
+        this.developPriority = typeof config.developPriority === 'number' ? config.developPriority : 1
+        this.discoverPriority = typeof config.discoverPriority === 'number' ? config.discoverPriority : 1
+        this.conquerPriority = typeof config.conquerPriority === 'number' ? config.conquerPriority : 1
     }
 
     manageTowns(state: GameState) {
@@ -102,10 +160,19 @@ class ComputerPersonality {
     pickNewTech(state: GameState) {
         const possibleChoices = Object.keys(techDiscoveries)
             .map(techName => techDiscoveries[techName])
-            .filter(tech => tech.checkCanResearchWith(this.faction.knownTech))
+            .filter(tech => tech.checkCanResearchWith(this.faction.knownTech)) as TechDiscovery[]
 
-        //TO DO - logic for computer picking a tech based on computerPersonality goals
-        const choosenTechDiscovery = possibleChoices[0]
+        const goalsInOrder = new PrioritySpend().setScoresForTech(this.faction).goalsInOrder
+        let choosenTechDiscovery = possibleChoices[0] 
+        let possibleChoicesForGoal = []
+
+        for (let i= 0; i<goalsInOrder.length; i++) {
+            possibleChoicesForGoal = possibleChoices.filter(tech => tech.aiPriority === goalsInOrder[i])
+            if (possibleChoicesForGoal.length > 0) {
+                choosenTechDiscovery = possibleChoicesForGoal[Math.floor(Math.random() * possibleChoicesForGoal.length)]
+                break;
+            }
+        }
 
         debugLogAtLevel(2)(`** ${this.faction.name} AI is now researching ${choosenTechDiscovery.name}`)
         gameActions.CHOOSE_RESEARCH_GOAL({ activeFaction: this.faction, techDiscovery: choosenTechDiscovery })(state)
@@ -197,7 +264,7 @@ class ComputerPersonality {
         if (unit.role === "ATTACKER") {
             unit.missions.push(
                 new UnitMission('CONQUER', {}),
-                new UnitMission('INTERCEPT', {range: 3}),
+                new UnitMission('INTERCEPT', { range: 3 }),
                 new UnitMission('EXPLORE'),
             )
         }
@@ -210,8 +277,8 @@ class ComputerPersonality {
         }
         if (unit.role === "DEFENDER") {
             unit.missions.push(
-                new UnitMission('DEFEND_NEAREST_VULNERABLE_TOWN',{}),
-                new UnitMission('INTERCEPT', {range: 1}),
+                new UnitMission('DEFEND_NEAREST_VULNERABLE_TOWN', {}),
+                new UnitMission('INTERCEPT', { range: 1 }),
                 new UnitMission('GO_TO_MY_NEAREST_TOWN')
             )
         }
@@ -287,7 +354,12 @@ class ComputerPersonality {
 
     get serialised() {
         return {
-            minimumTownLocationScore: this.minimumTownLocationScore
+            minimumTownLocationScore: this.minimumTownLocationScore,
+            defendersPerTown: this.defendersPerTown,
+            expandPriority: this.expandPriority,
+            developPriority: this.developPriority,
+            discoverPriority: this.discoverPriority,
+            conquerPriority: this.conquerPriority,
         }
     }
 

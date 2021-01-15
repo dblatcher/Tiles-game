@@ -12,6 +12,7 @@ class BuildingType {
     reduceUnhappiness: number;
     addSquareOutputBonus: Function | null;
     allowExtraPopulation: number;
+    aiPriority: "EXPAND"|"DEVELOP"|"DISCOVER"|"CONQUER"
     constructor(name, input: any = {}) {
         this.name = name
         this.displayName = input.displayName || camelToSentence(name)
@@ -22,6 +23,7 @@ class BuildingType {
         this.reduceUnhappiness = input.reduceUnhappiness || 0
         this.allowExtraPopulation = input.allowExtraPopulation || 0
         this.addSquareOutputBonus = input.addSquareOutputBonus || null
+        this.aiPriority = input.aiPriority || "DEVELOP"
     }
     get classIs() { return 'BuildingType' }
 
@@ -47,6 +49,7 @@ const buildingTypes = {
     barracks: new BuildingType('barracks', {
         productionCost: 20,
         maintenanceCost: 1,
+        aiPriority: "CONQUER",
         // rule is special cased
     }),
     marketplace: new BuildingType('marketplace', {
@@ -73,7 +76,8 @@ const buildingTypes = {
         prerequisite: 'writing',
         revenueMultiplierBonus: {
             research: .5
-        }
+        },
+        aiPriority: "DISCOVER",
     }),
     temple: new BuildingType('temple', {
         productionCost: 40,
@@ -91,6 +95,7 @@ const buildingTypes = {
         productionCost: 50,
         maintenanceCost: 2,
         prerequisite: 'masonry',
+        aiPriority: "CONQUER",
         // rule special cased
     }),
     courtHouse: new BuildingType('courtHouse', {
@@ -110,7 +115,8 @@ const buildingTypes = {
         prerequisite: 'university',
         revenueMultiplierBonus: {
             research: .5
-        }
+        },
+        aiPriority: "DISCOVER",
     }),
     bank: new BuildingType('bank', {
         productionCost: 60,

@@ -1,10 +1,8 @@
 
 AI
 - learn to use naval units...
-- proper AI functions to pick computer moves well...
 - use AI config to prioritise citizen jobs
 - debug component to reveal AI priorities / goals
-- strategic goals? which units and techs
 
 map
  - special resources

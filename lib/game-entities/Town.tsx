@@ -153,6 +153,7 @@ class Town {
             .includes(name)
     }
 
+    //TO DO check this works for towns on map edge
     getSquaresAndObstacles(mapGrid, towns, units = []) {
         const { x, y } = this.mapSquare
         let row, col, townIndex, citizenIndex, unitIndex, squares = [], obstacle = null, obstacles = [];

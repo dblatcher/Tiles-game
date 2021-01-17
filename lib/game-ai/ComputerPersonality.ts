@@ -4,7 +4,7 @@ import attemptMove from '../game-logic/attemptMove'
 
 import gameActions from '../game-logic/gameActions'
 import townActions from '../game-logic/townActions'
-import { areSamePlace, sortByDistanceFrom, unsafelyCheckAreSamePlace, unsafelyGetDistanceBetween } from '../utility';
+import { areSamePlace, pickAtRandom, sortByDistanceFrom, unsafelyCheckAreSamePlace, unsafelyGetDistanceBetween } from '../utility';
 import { MINIMUM_DISTANCE_BETWEEN_TOWNS } from '../game-logic/constants'
 
 import { GameState } from '../game-entities/GameState'
@@ -35,10 +35,10 @@ class PrioritySpend {
     "DISCOVER": number
     "CONQUER": number
     constructor() {
-        this.EXPAND = 0
-        this.DEVELOP = 0
-        this.DISCOVER = 0
-        this.CONQUER = 0
+        this.EXPAND = 1
+        this.DEVELOP = 1
+        this.DISCOVER = 1
+        this.CONQUER = 1
     }
 
     /**
@@ -56,15 +56,53 @@ class PrioritySpend {
     }
 
     /**
-     * set the scores on a blank PriortySpend object based on a factions knownTech and its ai priorities
+     * set the scores on a blank PriortySpend object based on a faction's knownTech and its ai priorities
      * @param faction 
      * @return the modified PriortySpend object
      */
-    setScoresForTech (faction:ComputerFaction) {
+    setScoresForTech(faction: ComputerFaction) {
         faction.knownTech.forEach(tech => {
             this[tech.aiPriority] += tech.getTier(techDiscoveries) + 1
         });
         this.adjustByAiPriority(faction.computerPersonality)
+        return this
+    }
+
+    /**
+     * set the scores on a blank PriortySpend object based on a town's situation, the overal gameState and its ai priorities
+     * @param town 
+     * @param state 
+     * @return the modified PriortySpend object
+     */
+    setScoresForProduction(town: Town, state: GameState) {
+
+        town.buildings.forEach(building => {
+            this[building.aiPriority] += 5
+        });
+
+        // NOTE - this is crude - uses all units the faction has to make a decide about a particular town
+        // doesn't consider proximity to the town
+        state.units
+            .filter(unit => unit.faction === town.faction)
+            .forEach(unit => {
+                switch (unit.type.role) {
+                    case "ATTACKER":
+                    case "CAVALRY":
+                        this.CONQUER += 1
+                        break;
+                    case "SETTLER":
+                        this.EXPAND += 10
+                        break;
+                    case "TRADER":
+                    case "WORKER":
+                        this.DEVELOP += 2
+                        break;
+                    case "SCOUT":
+                        this.DISCOVER += 2
+                }
+            })
+
+        this.adjustByAiPriority(town.faction.computerPersonality)
         return this
     }
 
@@ -132,26 +170,55 @@ class ComputerPersonality {
 
     pickNextProductionItem(town: Town, state: GameState) {
         //TO DO - logic for computer picking a production item
+        let item = null as UnitType | BuildingType;
         let { producableUnits, producableBuildings } = this.faction
         producableBuildings = producableBuildings
             .filter(buildingType => !town.buildings.includes(buildingType))
 
+        // defenders are first priority for the town
         const wantsToAddDefender = this.wantsToAddDefender(town, state)
-        let pickingBuilding = !wantsToAddDefender && false && producableBuildings.length > 0
 
-        let randomBuilding = producableBuildings[Math.floor(Math.random() * producableBuildings.length)]
-        let randomUnit = producableUnits[Math.floor(Math.random() * producableUnits.length)]
+        if (wantsToAddDefender) {
+            item = this.faction.bestDefensiveLandUnit
+        } else {
+            const goalsInOrder = new PrioritySpend().setScoresForProduction(town, state).goalsInOrder
+            let usefulBuildingsForGoal = []; 
+
+            for (let i = 0; i < goalsInOrder.length; i++) {
+                usefulBuildingsForGoal = producableBuildings
+                    .filter(buildingType => buildingType.aiPriority === goalsInOrder[i])
+                    .filter(buildingType => buildingType.checkIfUsefulFor(town, state))
 
 
-        let pickedUnit = wantsToAddDefender
-            ? this.faction.bestDefensiveLandUnit
-            : Math.random() > .5
-                ? this.faction.bestCavalryUnit || randomUnit
-                : this.faction.bestLandAttacker || randomUnit
-
-        const item = pickingBuilding
-            ? randomBuilding
-            : pickedUnit
+                switch (goalsInOrder[i]) {
+                    case "EXPAND":
+                        if (!town.supportedUnits.some(unit => unit.role === 'SETTLER')) {
+                            item = unitTypes.settler
+                        } else{
+                            item = pickAtRandom(usefulBuildingsForGoal)
+                        }
+                        break;
+                    case "DEVELOP":
+                        item = pickAtRandom([...usefulBuildingsForGoal, unitTypes.worker])
+                        break;
+                    case "DISCOVER":
+                        item = pickAtRandom(usefulBuildingsForGoal)
+                        break;
+                    case "CONQUER":
+                        item = Math.random() > .75
+                            ? pickAtRandom(usefulBuildingsForGoal) || pickAtRandom([this.faction.bestLandAttacker, this.faction.bestCavalryUnit])
+                            : pickAtRandom([this.faction.bestLandAttacker, this.faction.bestCavalryUnit])
+                        break;
+                }
+                if (item) { break }
+                debugLogAtLevel(3)(`****${town.name} could not choose a ${goalsInOrder[i]} item.`)
+            }
+            
+            if (!item) {
+                debugLogAtLevel(3)(`****${town.name} picking at random`)
+                item = pickAtRandom([...producableBuildings, ...producableUnits])
+            }
+        }
 
         debugLogAtLevel(2)(`** pickNextProductionItem: ${town.name} picks ${item.name}`)
         return item
@@ -163,10 +230,10 @@ class ComputerPersonality {
             .filter(tech => tech.checkCanResearchWith(this.faction.knownTech)) as TechDiscovery[]
 
         const goalsInOrder = new PrioritySpend().setScoresForTech(this.faction).goalsInOrder
-        let choosenTechDiscovery = possibleChoices[0] 
+        let choosenTechDiscovery = possibleChoices[0]
         let possibleChoicesForGoal = []
 
-        for (let i= 0; i<goalsInOrder.length; i++) {
+        for (let i = 0; i < goalsInOrder.length; i++) {
             possibleChoicesForGoal = possibleChoices.filter(tech => tech.aiPriority === goalsInOrder[i])
             if (possibleChoicesForGoal.length > 0) {
                 choosenTechDiscovery = possibleChoicesForGoal[Math.floor(Math.random() * possibleChoicesForGoal.length)]

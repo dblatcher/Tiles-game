@@ -188,28 +188,30 @@ class Faction {
     }
 
     get bestDefensiveLandUnit() {
-        const {producableUnits} = this
+        const { producableUnits } = this
+        const noUnitsWithMatchingRole = !producableUnits.some(unitType => unitType.role == 'DEFENDER')
         return producableUnits
             .filter(unitType => !unitType.isNaval)
-            .filter(unitType => unitType.role === 'DEFENDER')
-            .sort( (typeA, typeB) => typeB.defend - typeA.defend)[0] || null
+            .filter(unitType => unitType.role === 'DEFENDER' || noUnitsWithMatchingRole)
+            .sort((typeA, typeB) => typeB.defend - typeA.defend)[0] || null
     }
 
     get bestLandAttacker() {
-        const {producableUnits} = this
+        const { producableUnits } = this
+        const noUnitsWithMatchingRole = !producableUnits.some(unitType => unitType.role == 'ATTACKER')
         return producableUnits
             .filter(unitType => !unitType.isNaval)
-            .filter(unitType => unitType.role === 'ATTACKER')
-            .sort( (typeA, typeB) => typeB.attack - typeA.attack)[0] || null
+            .filter(unitType => unitType.role === 'ATTACKER' || noUnitsWithMatchingRole)
+            .sort((typeA, typeB) => typeB.attack - typeA.attack)[0] || null
     }
 
     get bestCavalryUnit() {
-        const {producableUnits} = this
+        const { producableUnits } = this
 
         return producableUnits
             .filter(unitType => !unitType.isNaval)
             .filter(unitType => unitType.role === 'CAVALRY')
-            .sort( (typeA, typeB) => typeB.attack - typeA.attack)[0] || null
+            .sort((typeA, typeB) => typeB.attack - typeA.attack)[0] || null
     }
 
     get producableBuildings() {
@@ -231,7 +233,7 @@ class Faction {
     get serialised() {
 
         // fix for using function, not class...
-        let {store} = this.budget as any
+        let { store } = this.budget as any
 
         let output = {
             budget: store,
@@ -281,7 +283,7 @@ class ComputerFaction extends Faction {
     get serialised() {
 
         // fix for using function, not class...
-        let {store} = this.budget as any
+        let { store } = this.budget as any
 
         let output = {
             budget: store,

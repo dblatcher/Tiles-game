@@ -13,7 +13,7 @@ export default class ChooseResearchGoalDialogue extends React.Component {
             <aside className={styles.dialogueHolder}>
                 <div className={styles.dialogueFrame}>
 
-                    <p>{activeFaction.name} must choose a tech</p>
+                    <p>Choose a technology for {activeFaction.name} to research</p>
 
                     <TechTree
                         knownTech={activeFaction.knownTech}

@@ -9,6 +9,7 @@ import { ComputerPersonality, ComputerPersonalityConfig } from '../game-ai/Compu
 
 import { TOWN_SIGHT_RADIUS, UNIT_SIGHT_RADIUS } from '../game-logic/constants'
 import { areSamePlace } from '../utility.js'
+import { GameState } from './GameState'
 
 class Faction {
     name: string;
@@ -103,12 +104,17 @@ class Faction {
         return myTowns.reduce((accumulator, town) => accumulator + town.buildingMaintenanceCost, 0)
     }
 
-    processTurn(state) {
+    getActualBudget(state: GameState) {
         const { towns, units } = state
         const myTowns = towns.filter(town => town.faction === this)
+        return this.calcuateAllocatedBudget(myTowns.filter(town => !town.getIsInRevolt(units)))
+    }
+
+    processTurn(state: GameState) {
+        const myTowns = state.towns.filter(town => town.faction === this)
         let notices = []
 
-        const allocatedBudget = this.calcuateAllocatedBudget(myTowns.filter(town => !town.getIsInRevolt(units)))
+        const allocatedBudget = this.getActualBudget(state)
         const buildingMaintenanceCost = this.calculateTotalMaintenceCost(myTowns)
         this.research += allocatedBudget.research
         this.treasury -= buildingMaintenanceCost
@@ -125,7 +131,7 @@ class Faction {
         return notices
     }
 
-    checkIfAlive(state) {
+    checkIfAlive(state: GameState) {
         const { towns, units } = state
         if (towns.filter(town => this === town.faction).length === 0 && units.filter(unit => this === unit.faction).length === 0) {
             return false
@@ -133,7 +139,7 @@ class Faction {
         return true
     }
 
-    updatePlacesInSightThisTurn(state) {
+    updatePlacesInSightThisTurn(state: GameState) {
         const { towns, units, mapGrid } = state
         const mapWidth = mapGrid && mapGrid[0]
             ? mapGrid[0].length

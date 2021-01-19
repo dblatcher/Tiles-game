@@ -123,6 +123,83 @@ export default class GameContainer extends React.Component {
         }
     }
 
+
+    scrollToSelection() {
+        return this.scrollToSquare(
+            this.state.interfaceMode === 'MOVE'
+                ? this.state.selectedUnit
+                : this.state.selectedSquare
+        );
+    }
+
+    centerOnSelection() {
+        return this.centerWindowOn(
+            this.state.interfaceMode === 'MOVE'
+                ? this.state.selectedUnit
+                : this.state.selectedSquare
+        );
+    }
+
+    centerWindowOn(target) {
+        if (!target) { return false }
+        const { x } = target
+        const { mapZoomLevel, mapGrid } = this.state
+        const mapWidth = mapGrid[0].length
+
+        const tileSize = (4 * 16 * mapZoomLevel)
+        const windowWidthInTiles = Math.floor(window.innerWidth / tileSize)
+
+        let newOffsetValue = x - Math.floor(windowWidthInTiles / 2)
+        newOffsetValue -= Math.floor((mapWidth - windowWidthInTiles) / 2)
+        while (newOffsetValue < 0) { newOffsetValue += mapWidth }
+        while (newOffsetValue >= mapWidth) { newOffsetValue -= mapWidth }
+
+
+        asyncSetState(this, {
+            mapXOffset: newOffsetValue,
+            mapShiftInProgress: true,
+        })
+            .then(() => {
+                this.scrollToSquare(target)
+                this.endMapShift()
+            })
+    }
+
+    scrollToSquare(target) {
+        if (!target) { return false }
+        const { x, y } = target
+        const { mapZoomLevel, mapXOffset, mapGrid } = this.state
+        const { gameHolderElement, upperWindowElement } = this
+
+        if (!gameHolderElement.current) { return }
+
+        const mapWidth = mapGrid[0].length
+
+        //to do - support left aligned interface window
+        const tileSize = (4 * 16 * mapZoomLevel)
+        const leftBorderSize = (1 * 16)
+        const topBorderSize = upperWindowElement.current
+            ? upperWindowElement.current.offsetHeight
+            : (12 * 16);
+
+        let shiftedX = x - mapXOffset
+        if (shiftedX < 0) { shiftedX += mapWidth }
+
+        let pixelX = (shiftedX * tileSize) - window.innerWidth / 2 + leftBorderSize + tileSize / 2
+        let pixelY = (y * tileSize) - window.innerHeight / 2 + topBorderSize + tileSize / 2
+
+        gameHolderElement.current.scrollTo(pixelX, pixelY)
+    }
+
+    endMapShift(delay = 500) {
+        const that = this
+        return async function () {
+            await sleep(delay)
+            await asyncSetState(that, { mapShiftInProgress: false })
+        }()
+    }
+
+
     get mapWidth() {
         return this.state.mapGrid && this.state.mapGrid[0]
             ? this.state.mapGrid[0].length
@@ -325,48 +402,6 @@ export default class GameContainer extends React.Component {
         })
     }
 
-    scrollToSelection() {
-        return this.scrollToSquare(
-            this.state.interfaceMode === 'MOVE'
-                ? this.state.selectedUnit
-                : this.state.selectedSquare
-        );
-    }
-
-
-    centerOnSelection() {
-        return this.centerWindowOn(
-            this.state.interfaceMode === 'MOVE'
-                ? this.state.selectedUnit
-                : this.state.selectedSquare
-        );
-    }
-
-    centerWindowOn(target) {
-        if (!target) { return false }
-        const { x } = target
-        const { mapZoomLevel, mapGrid } = this.state
-        const mapWidth = mapGrid[0].length
-
-        const tileSize = (4 * 16 * mapZoomLevel)
-        const windowWidthInTiles = Math.floor(window.innerWidth / tileSize)
-
-        let newOffsetValue = x - Math.floor(windowWidthInTiles / 2)
-        newOffsetValue -= Math.floor((mapWidth - windowWidthInTiles) / 2)
-        while (newOffsetValue < 0) { newOffsetValue += mapWidth }
-        while (newOffsetValue >= mapWidth) { newOffsetValue -= mapWidth }
-
-
-        asyncSetState(this, {
-            mapXOffset: newOffsetValue,
-            mapShiftInProgress: true,
-        })
-            .then(() => {
-                this.scrollToSquare(target)
-                this.endMapShift()
-            })
-    }
-
     activateUnit(unit) {
         asyncSetState(this, {
             factionWindowIsOpen: false,
@@ -374,40 +409,6 @@ export default class GameContainer extends React.Component {
             selectedUnit: unit,
         })
             .then(this.centerOnSelection)
-    }
-
-    endMapShift(delay = 500) {
-        const that = this
-        return async function () {
-            await sleep(delay)
-            await asyncSetState(that, { mapShiftInProgress: false })
-        }()
-    }
-
-    scrollToSquare(target) {
-        if (!target) { return false }
-        const { x, y } = target
-        const { mapZoomLevel, mapXOffset, mapGrid } = this.state
-        const { gameHolderElement, upperWindowElement } = this
-
-        if (!gameHolderElement.current) { return }
-
-        const mapWidth = mapGrid[0].length
-
-        //to do - support left aligned interface window
-        const tileSize = (4 * 16 * mapZoomLevel)
-        const leftBorderSize = (1 * 16)
-        const topBorderSize = upperWindowElement.current
-            ? upperWindowElement.current.offsetHeight
-            : (12 * 16);
-
-        let shiftedX = x - mapXOffset
-        if (shiftedX < 0) { shiftedX += mapWidth }
-
-        let pixelX = (shiftedX * tileSize) - window.innerWidth / 2 + leftBorderSize + tileSize / 2
-        let pixelY = (y * tileSize) - window.innerHeight / 2 + topBorderSize + tileSize / 2
-
-        gameHolderElement.current.scrollTo(pixelX, pixelY)
     }
 
     renderDialogue() {

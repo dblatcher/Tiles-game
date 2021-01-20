@@ -17,13 +17,15 @@ export default function handleStorageAction(command, input) {
             Object.assign({ mainMenuOpen: false }, input.makeStateFunction()),
             () => {
 
-                this.setState(
+                this.setStateUpdateTutorialEvents(
                     state => {
                         startOfTurn()(state)
-                        this.state.interfaceMode = 'MOVE'
+                        state.interfaceMode = 'MOVE'
                         return state
                     },
-                    this.scrollToSelection
+                    () => {
+                        this.scrollToSelection()
+                    }
                 )
             }
         )

@@ -27,6 +27,16 @@ export default class NewGameOptions extends React.Component {
                     ))
                 }}>new game</button>
 
+                <button className={dialogueStyles.button} onClick={() => {
+                    newGame(makeGameStateFunction.randomWorld(
+                        {
+                            width: 40,
+                            height: 15,
+                            treeChance: .3,
+                        }, true
+                    ))
+                }}>tutorial</button>
+
             </section>
         )
     }

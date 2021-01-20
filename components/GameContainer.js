@@ -19,6 +19,9 @@ import BattleDialogue from './dialogue/BattleDialogue'
 import MessageDialogue from './dialogue/MessageDialogue'
 import QuestionDialogue from './dialogue/QuestionDialogue'
 
+import TutorialDialogue from './dialogue/TutorialDialogue'
+import tutorialSystem from './gameContainer.tutorialSystem'
+
 import processMapClick from '../lib/game-logic/processMapClick'
 import gameActions from '../lib/game-logic/gameActions'
 import townActions from '../lib/game-logic/townActions'
@@ -92,6 +95,8 @@ export default class GameContainer extends React.Component {
 
         this.handleStorageAction = handleStorageAction.bind(this)
         this.letComputerTakeItsTurn = letComputerTakeItsTurn.bind(this)
+        this.handleTutorialClick = tutorialSystem.handleTutorialClick.bind(this)
+        this.setStateUpdateTutorialEvents = tutorialSystem.setStateUpdateTutorialEvents.bind(this)
     }
 
     componentDidMount() {
@@ -291,7 +296,7 @@ export default class GameContainer extends React.Component {
     }
 
     toggleFactionWindow() {
-        this.setState(state => {
+        this.setStateUpdateTutorialEvents(state => {
             return {
                 factionWindowIsOpen: !state.factionWindowIsOpen,
                 fallenUnits: []
@@ -300,14 +305,14 @@ export default class GameContainer extends React.Component {
     }
 
     openFactionWindow() {
-        this.setState({
+        this.setStateUpdateTutorialEvents({
             factionWindowIsOpen: true,
             openTown: null
         })
     }
 
     openTownView(town) {
-        this.setState({
+        this.setStateUpdateTutorialEvents({
             factionWindowIsOpen: false,
             fallenUnits: [],
             openTown: town
@@ -315,7 +320,7 @@ export default class GameContainer extends React.Component {
     }
 
     closeTownView() {
-        this.setState(
+        this.setStateUpdateTutorialEvents(
             { openTown: null, fallenUnits: [] },
             this.centerOnSelection
         )
@@ -356,8 +361,8 @@ export default class GameContainer extends React.Component {
             console.warn(`unknown order button command ${command}`, input)
             return false
         }
-        return this.setState(
-            gameActions[command](input),
+        return this.setStateUpdateTutorialEvents(gameActions[command](input),
+
             () => {
                 if (this.isComputerPlayersTurn && !this.state.gameOver) {
                     this.letComputerTakeItsTurn()
@@ -371,14 +376,14 @@ export default class GameContainer extends React.Component {
 
     handleDialogueButton(command, input = {}) {
         if (command === 'EXECUTE_STATE_FUNCTION') {
-            return this.setState(input)
+            return this.setStateUpdateTutorialEvents(input)
         }
 
         if (!gameActions[command]) {
             console.warn(`unknown dialogue button command ${command}`, input)
             return false
         }
-        return this.setState(gameActions[command](input))
+        return this.setStateUpdateTutorialEvents(gameActions[command](input))
     }
 
     handleTownAction(command, input = {}) {
@@ -461,7 +466,7 @@ export default class GameContainer extends React.Component {
         } = this.state
 
         if (openTown && !gameOver) {
-            return (
+            return (<>
                 <TownView
                     stateOfPlay={this.stateOfPlay}
                     closeTownView={this.closeTownView}
@@ -469,11 +474,15 @@ export default class GameContainer extends React.Component {
                     activateUnit={this.activateUnit}
                     openTownView={this.openTownView}
                     openFactionWindow={this.openFactionWindow} />
-            )
+                <TutorialDialogue
+                    tutorialState={this.state.tutorial}
+                    stateOfPlay={this.stateOfPlay}
+                    handleTutorialClick={this.handleTutorialClick} />
+            </>)
         }
 
         if (factionWindowIsOpen && !gameOver) {
-            return (
+            return (<>
                 <FactionWindow
                     faction={activeFaction}
                     stateOfPlay={this.stateOfPlay}
@@ -481,7 +490,11 @@ export default class GameContainer extends React.Component {
                     handleFactionAction={this.handleFactionAction}
                     handleTownAction={this.handleTownAction}
                     closeWindow={this.toggleFactionWindow} />
-            )
+                <TutorialDialogue
+                    tutorialState={this.state.tutorial}
+                    stateOfPlay={this.stateOfPlay}
+                    handleTutorialClick={this.handleTutorialClick} />
+            </>)
         }
 
         return (
@@ -496,6 +509,11 @@ export default class GameContainer extends React.Component {
                 }
 
                 {(pendingDialogues.length > 0 && !gameOver) && this.renderDialogue()}
+
+                <TutorialDialogue
+                    tutorialState={this.state.tutorial}
+                    stateOfPlay={this.stateOfPlay}
+                    handleTutorialClick={this.handleTutorialClick} />
 
                 {(unitPickDialogueChoices.length > 0 && !gameOver) &&
                     <PickUnitDialogue

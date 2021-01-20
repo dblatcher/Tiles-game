@@ -1,11 +1,32 @@
 @import './design.scss';
 
 .dialogueHolder {
-    @include dialogueHolder();  
+    @include dialogueHolder();
+}
+
+.nonBlockingDialogueHolder {
+    position: fixed;
+    z-index: 100;
+    right: $windowPadding *2;
+    top: $interfaceWindowHeight + $windowPadding*2;
+    margin: 0;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    max-width: 50%;
+
+    padding: $windowPadding;
 }
 
 .dialogueFrame {
     @include dialogueBox();
+
+    &.tutorial {
+        background-color: $tutorial-background;
+        opacity: .9;
+        max-width: unset;
+    }
 }
 
 .pickUnitsDialogue {

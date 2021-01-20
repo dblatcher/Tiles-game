@@ -33,8 +33,8 @@ const tutuorialContent = {
 
 class TutorialEvent {
     eventKeyName: string
-    testToStart: (state: GameState, humanPlayer: Faction) => boolean
-    testToFinish: (state: GameState, humanPlayer: Faction) => boolean
+    testToStart: (state: GameState) => boolean
+    testToFinish: (state: GameState) => boolean
     hasStarted: boolean
     hasFinished: boolean
     prerequisteEvents: string[]
@@ -55,31 +55,33 @@ class TutorialState {
     enabled: boolean
     showing: boolean
     events: TutorialEvent[]
-    constructor(enabled) {
+    playerFaction: Faction
+    constructor(enabled:boolean, playerFaction:Faction) {
         this.enabled = enabled
+        this.playerFaction = playerFaction
         this.showing = true
 
         this.events = [
             new TutorialEvent('firstMove',
-                (state: GameState, humanPlayer: Faction) => true,
-                (state: GameState, humanPlayer: Faction) => state.units.some(unit => unit.faction === humanPlayer && (unit.remainingMoves < unit.type.moves)),
+                (state: GameState) => true,
+                (state: GameState) => state.units.some(unit => unit.faction === this.playerFaction && (unit.remainingMoves < unit.type.moves)),
             ),
             new TutorialEvent('nextMove',
-                (state: GameState, humanPlayer: Faction) => state.units.some(unit => unit.faction === humanPlayer && !unit.canMakeNoMoreMoves(state.mapGrid, state.towns, state.units)),
-                (state: GameState, humanPlayer: Faction) => true,
+                (state: GameState) => state.units.some(unit => unit.faction === this.playerFaction && !unit.canMakeNoMoreMoves(state.mapGrid, state.towns, state.units)),
+                (state: GameState) => true,
                 ['firstMove']
             ),
             new TutorialEvent('townWindow',
-                (state: GameState, humanPlayer: Faction) => !!state.openTown,
-                (state: GameState, humanPlayer: Faction) => !state.openTown,
+                (state: GameState) => !!state.openTown,
+                (state: GameState) => !state.openTown,
             ),
             new TutorialEvent('factionWindow',
-                (state: GameState, humanPlayer: Faction) => !!state.factionWindowIsOpen,
-                (state: GameState, humanPlayer: Faction) => !state.factionWindowIsOpen,
+                (state: GameState) => !!state.factionWindowIsOpen,
+                (state: GameState) => !state.factionWindowIsOpen,
             ),
             new TutorialEvent('endOfTurn',
-                (state: GameState, humanPlayer: Faction) => !state.units.some(unit => unit.faction === humanPlayer && !unit.canMakeNoMoreMoves(state.mapGrid, state.towns, state.units)),
-                (state: GameState, humanPlayer: Faction) => state.units.some(unit => unit.faction === humanPlayer && !unit.canMakeNoMoreMoves(state.mapGrid, state.towns, state.units)),
+                (state: GameState) => !state.units.some(unit => unit.faction === this.playerFaction && !unit.canMakeNoMoreMoves(state.mapGrid, state.towns, state.units)),
+                (state: GameState) => state.units.some(unit => unit.faction === this.playerFaction && !unit.canMakeNoMoreMoves(state.mapGrid, state.towns, state.units)),
             ),
         ]
     }
@@ -91,10 +93,6 @@ class TutorialState {
     }
 
     updateEvents(state: GameState) {
-        // TO DO: duplicates logic in GameContainer property - not good
-        const humanPlayers = state.factions.filter(faction => !faction.isComputerPlayer)
-        const humanPlayer = humanPlayers[0] || null
-
 
         const prerequisteEventNotFinished = (eventKeyName) => {
             const event = this.events.filter(event => event.eventKeyName === eventKeyName)[0]
@@ -108,7 +106,7 @@ class TutorialState {
             if (event.hasFinished) { return }
 
             if (!event.hasStarted) {
-                event.hasStarted = !event.prerequisteEvents.some(prerequisteEventNotFinished) && event.testToStart(state, humanPlayer)
+                event.hasStarted = !event.prerequisteEvents.some(prerequisteEventNotFinished) && event.testToStart(state)
                 if (event.hasStarted) {
                     this.showing = true
                     return
@@ -116,7 +114,7 @@ class TutorialState {
             }
 
             if (event.hasStarted) {
-                event.hasFinished = event.testToFinish(state, humanPlayer)
+                event.hasFinished = event.testToFinish(state)
             }
         })
     }

@@ -14,9 +14,11 @@ export default class TutorialDialogue extends React.Component {
 
     render() {
         if (!this.props.tutorialState) { return null }
-        const { handleTutorialClick } = this.props
-        const { enabled, showing, message } = this.props.tutorialState
+        const { handleTutorialClick, stateOfPlay } = this.props
+        const { enabled, showing, message, playerFaction } = this.props.tutorialState
+
         if (!enabled || !message) { return null }
+        if (stateOfPlay.activeFaction !== playerFaction) { return null }
 
         if (!showing) {
             return (

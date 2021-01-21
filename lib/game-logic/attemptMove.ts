@@ -108,7 +108,7 @@ if (!unit.canMoveToOrAttack(mapSquare, unitSquare, townInMapSquare, unitsInMapSq
         unit.faction.updateWorldMap(state)
         unit.faction.updatePlacesInSightThisTurn(state)
 
-        if (unit.canMakeNoMoreMoves(state.mapGrid, state.towns, state.units)) {
+        if (unit.canMakeNoMoreMoves(state)) {
             unit.remainingMoves = 0
         }
         if (unit.remainingMoves === 0) {

@@ -92,8 +92,9 @@ class Unit {
         return this.remainingMoves >= movementCost || this.remainingMoves === this.type.moves
     }
 
-    canMakeNoMoreMoves(mapGrid, towns, units) {
+    canMakeNoMoreMoves(state: GameState) {
         const { x, y } = this
+        const {mapGrid, towns, units} = state
         let surroundingArea = getAreaSurrounding(this, mapGrid);
 
         return !surroundingArea.some(mapSquare => {

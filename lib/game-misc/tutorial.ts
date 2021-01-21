@@ -67,21 +67,23 @@ class TutorialState {
                 (state: GameState) => state.units.some(unit => unit.faction === this.playerFaction && (unit.remainingMoves < unit.type.moves)),
             ),
             new TutorialEvent('nextMove',
-                (state: GameState) => state.units.some(unit => unit.faction === this.playerFaction && !unit.canMakeNoMoreMoves(state.mapGrid, state.towns, state.units)),
+                (state: GameState) => state.units.some(unit => unit.faction === this.playerFaction && !unit.canMakeNoMoreMoves(state)),
                 (state: GameState) => true,
                 ['firstMove']
             ),
             new TutorialEvent('townWindow',
                 (state: GameState) => !!state.openTown,
                 (state: GameState) => !state.openTown,
+                ['firstMove', 'nextMove', 'endOfTurn']
             ),
             new TutorialEvent('factionWindow',
                 (state: GameState) => !!state.factionWindowIsOpen,
                 (state: GameState) => !state.factionWindowIsOpen,
+                ['firstMove', 'nextMove', 'endOfTurn']
             ),
             new TutorialEvent('endOfTurn',
-                (state: GameState) => !state.units.some(unit => unit.faction === this.playerFaction && !unit.canMakeNoMoreMoves(state.mapGrid, state.towns, state.units)),
-                (state: GameState) => state.units.some(unit => unit.faction === this.playerFaction && !unit.canMakeNoMoreMoves(state.mapGrid, state.towns, state.units)),
+                (state: GameState) => !state.units.some(unit => unit.faction === this.playerFaction && !unit.canMakeNoMoreMoves(state)),
+                (state: GameState) => state.units.some(unit => unit.faction === this.playerFaction && !unit.canMakeNoMoreMoves(state)),
             ),
         ]
     }

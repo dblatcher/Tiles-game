@@ -3,7 +3,6 @@
 .contextMenu {
     @include dialogueBox();
     position: absolute;
-    display: flex;
     z-index: 20; 
     max-width: unset;
     opacity: .8;
@@ -47,6 +46,34 @@
     @include boxTailUp(white, 1em, 3em, 1em);
 }
 
+.infoBlock {
+    font-size: 1rem;
+    p {
+        margin: 0;
+    }
+
+    margin-bottom: .25rem;
+}
+
+.statRow {
+    display: flex;
+    justify-content: space-between;
+}
+
+.nameRow {
+    display: flex;
+    justify-content: space-between;
+
+    span {
+        white-space: nowrap;
+        margin-right: 2em;
+    }
+}
+
+.buttonHolder {
+    display: flex;
+    justify-content: space-between;
+}
 
 .button {
     @include letterButton;

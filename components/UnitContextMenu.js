@@ -1,4 +1,6 @@
 import { onGoingOrderTypes } from '../lib/game-entities/OngoingOrder'
+import InfoLink from './InfoLink';
+import SvgIcon from './SvgIcon';
 
 import styles from './unitContextMenu.module.scss'
 
@@ -53,16 +55,41 @@ export default function UnitContextMenu(props) {
 
 
     return <nav className={navClassList.join(" ")}>
-        {availableOrders.map(availableOrder => (
-            <button className={availableOrder.buttonStyles.join(" ")}
-                key={"order-" + availableOrder.orderType.name}
-                title={availableOrder.orderType.name}
-                onClick={availableOrder.onClickFunction}>
-                {availableOrder.orderType.materialIcon
-                    ? <i className={"material-icons md-24"}>{availableOrder.orderType.materialIcon}</i>
-                    : <>{availableOrder.orderType.letterCode}</>
-                }
-            </button>
-        ))}
+        <div className={styles.infoBlock}>
+            <p className={styles.nameRow}>
+                <span>{selectedUnit.description}</span>
+                <InfoLink subject={selectedUnit.type} />
+            </p>
+
+            <p className={styles.statRow}>
+                <span>
+                    <SvgIcon iconName="fistRaised" />
+                    {selectedUnit.type.attack}
+                </span>
+                <span>
+                    <SvgIcon iconName="shield" color="black" />
+                    {selectedUnit.type.defend}
+                </span>
+                <span>
+                    <SvgIcon iconName="shoePrints" />
+                    {selectedUnit.remainingMoves}/{selectedUnit.type.moves}
+                </span>
+            </p>
+        </div>
+
+
+        <div className={styles.buttonHolder}>
+            {availableOrders.map(availableOrder => (
+                <button className={availableOrder.buttonStyles.join(" ")}
+                    key={"order-" + availableOrder.orderType.name}
+                    title={availableOrder.orderType.name}
+                    onClick={availableOrder.onClickFunction}>
+                    {availableOrder.orderType.materialIcon
+                        ? <i className={"material-icons md-24"}>{availableOrder.orderType.materialIcon}</i>
+                        : <>{availableOrder.orderType.letterCode}</>
+                    }
+                </button>
+            ))}
+        </div>
     </nav>
 }

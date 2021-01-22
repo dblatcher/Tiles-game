@@ -541,8 +541,10 @@ export default class GameContainer extends React.Component {
                 {!this.noActiveGame && !this.isComputerPlayersTurn && (
                     <aside className={styles.upperInterfaceWindow} ref={this.upperWindowElement} >
                         <ControlBar
+                            interfaceMode={interfaceMode}
                             setMapZoomLevel={this.setMapZoomLevel}
                             setMainMenuOpen={this.setMainMenuOpen}
+                            centerOnSelection={this.centerOnSelection}
                             mainMenuOpen={mainMenuOpen}>
                             <FactionButton
                                 stateOfPlay={this.stateOfPlay}

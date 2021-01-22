@@ -5,10 +5,12 @@ export default function ControlBar(props: {
     mainMenuOpen: boolean
     setMainMenuOpen: Function
     setMapZoomLevel: Function
+    centerOnSelection: Function
     children: React.ReactChildren
+    interfaceMode: "MOVE" | "VIEW"
 }) {
 
-    const { children, setMainMenuOpen, mainMenuOpen, setMapZoomLevel } = props
+    const { children, setMainMenuOpen, mainMenuOpen, setMapZoomLevel, centerOnSelection, interfaceMode } = props
 
 
     return <nav className={styles.bar}>
@@ -16,6 +18,11 @@ export default function ControlBar(props: {
 
 
         <div className={styles.menu}>
+            {interfaceMode == "MOVE" && (
+                <i className={["material-icons", "md-36", styles.menuButton].join(" ")}
+                    onClick={() => { centerOnSelection() }}
+                >filter_center_focus</i>
+            )}
             <i className={["material-icons", "md-36", styles.menuButton].join(" ")}
                 onClick={() => { setMapZoomLevel('OUT') }}
             >zoom_out</i>

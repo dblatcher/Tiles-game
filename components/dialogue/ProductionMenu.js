@@ -22,7 +22,7 @@ export default class ProductionMenu extends React.Component {
         this.hurryProduction = this.hurryProduction.bind(this)
     }
 
-    openList()  { return this.setState({ listIsOpen: true  }) }
+    openList() { return this.setState({ listIsOpen: true }) }
     closeList() { return this.setState({ listIsOpen: false }) }
 
     openHurryButtonIfAllowed() {
@@ -49,9 +49,32 @@ export default class ProductionMenu extends React.Component {
                                 style={unitType.spriteStyle}></i>
                         </figure>
 
-                        <span>{`${unitType.displayName}(${unitType.productionCost})`}</span>
-                        <span>{displayTurnsToComplete(turnsToComplete)}</span>
-                        <InfoLink subject={unitType}/>
+                        <div className={styles.productionItemText}>
+                            <p className={styles.unitStatSet}>
+                                <span>{unitType.displayName}</span>
+                                <span>{displayTurnsToComplete(turnsToComplete)}</span>
+                            </p>
+                            <p className={styles.unitStatSet}>
+                                <span className={[styles.unitStat, styles.production].join(" ")}>
+                                    <SvgIcon iconName="production" />
+                                    {unitType.productionCost}
+                                </span>
+                                <span className={styles.unitStat}>
+                                    <SvgIcon iconName="fistRaised" />
+                                    {unitType.attack}
+                                </span>
+                                <span className={styles.unitStat}>
+                                    <SvgIcon iconName="shield" color="black" />
+                                    {unitType.defend}
+                                </span>
+                                <span className={styles.unitStat}>
+                                    <SvgIcon iconName="shoePrints" />
+                                    {unitType.moves}
+                                </span>
+                            </p>
+                        </div>
+
+                        <InfoLink subject={unitType} />
                     </li>
                 )
             })
@@ -71,9 +94,19 @@ export default class ProductionMenu extends React.Component {
                         className={styles.productionItem}
                         onClick={() => { this.handleProductionItemPick(buildingType) }}>
 
-                        <span>{`${buildingType.displayName}(${buildingType.productionCost})`}</span>
-                        <span>{displayTurnsToComplete(turnsToComplete)}</span>
-                        <InfoLink subject={buildingType}/>
+                        <div className={styles.productionItemText}>
+                            <p className={styles.unitStatSet}>
+                                <span>{buildingType.displayName}</span>
+                                <span>{displayTurnsToComplete(turnsToComplete)}</span>
+                            </p>
+                            <p className={styles.unitStatSet}>
+                            <span className={[styles.unitStat, styles.production].join(" ")}>
+                                    <SvgIcon iconName="production" />
+                                    {buildingType.productionCost}
+                                </span>
+                            </p>
+                        </div>
+                        <InfoLink subject={buildingType} />
                     </li>
                 )
             })
@@ -118,7 +151,7 @@ export default class ProductionMenu extends React.Component {
             {listIsOpen ?
                 <aside className={dialogueStyles.dialogueHolder}>
 
-                    <nav className={dialogueStyles.dialogueFrame}>
+                    <nav className={[dialogueStyles.dialogueFrame, styles.productionDialogueFrame].join(" ")}>
                         <ul className={styles.productionItemList}>
                             {this.renderUnitTypeOptions()}
                             {this.renderBuildingTypeOptions()}
@@ -136,8 +169,8 @@ export default class ProductionMenu extends React.Component {
 
                     <nav className={dialogueStyles.dialogueFrame}>
                         <p>
-                            Spend {town.costToHurryProduction}<SvgIcon iconName='coins'/>&nbsp;
-                            of {town.faction.treasury}<SvgIcon iconName='coins'/>&nbsp;
+                            Spend {town.costToHurryProduction}<SvgIcon iconName='coins' />&nbsp;
+                            of {town.faction.treasury}<SvgIcon iconName='coins' />&nbsp;
                             to hurry production of {town.productionItemName}?
                         </p>
 

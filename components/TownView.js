@@ -3,7 +3,7 @@ import ProductionMenu from "./dialogue/ProductionMenu.tsx";
 import Window from "./Window";
 import UnitListBox from "./interface/UnitListBox.tsx";
 import TradeReport from "./TradeReport";
-import ProgressBox from "./ProgressBox";
+import ProgressBox from "./ProgressBox.tsx";
 import CitizenRow from "./CitizenRow";
 import TownBuildingList from "./TownBuildingList";
 
@@ -115,6 +115,7 @@ export default class TownView extends React.Component {
                                     <ProgressBox
                                         current={town.productionStore}
                                         target={town.isProducing ? town.isProducing.productionCost : 0}
+                                        showTurnsToComplete turnsToComplete={town.turnsToCompleteProduction}
                                         unit="production" />
                                     <p className={styles.caption}>{this.productionCaption}</p>
                                     <ProductionMenu handleTownAction={handleTownAction} town={town} />

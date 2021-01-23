@@ -1,14 +1,14 @@
 import Window from "./Window";
 import SvgIcon from "./SvgIcon"
 import TradeReport from "./TradeReport"
-import ProgressBox from "./ProgressBox"
+import ProgressBox from "./ProgressBox.tsx"
 import ProductionMenu from "./dialogue/ProductionMenu.tsx"
 import TechTree from "./TechTree";
 import { displayTurnsToComplete, getTurnsToComplete } from '../lib/utility'
 import CitizenRow from "./CitizenRow";
 
 import styles from './factionWindow.module.scss'
-import ProgressBar from "./interface/ProgressBar";
+
 
 export default class FactionWindow extends React.Component {
 
@@ -128,17 +128,14 @@ export default class FactionWindow extends React.Component {
 
                 <h2 className={styles.reportHeading}>Researching {faction.researchGoal ? faction.researchGoal.description : 'nothing'}</h2>
                 <section style={{ display: "flex", justifyContent: "space-between", marginBottom: '1em' }}>
-                    <p style={{ margin: "0" }}>
-                        {faction.researchGoal && (
-                            <span>({displayTurnsToComplete(turnsToNextBreakthrough)})</span>
-                        )}
-                    </p>
+
 
                     {faction.researchGoal ? (<>
-                        <ProgressBox
+                        <ProgressBox fullWidth
                             current={faction.research}
                             target={faction.researchGoal.researchCost}
                             unit={'lightBulb'}
+                            showTurnsToComplete turnsToComplete={turnsToNextBreakthrough}
                         />
                     </>) : null}
                 </section>

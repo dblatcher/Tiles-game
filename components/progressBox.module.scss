@@ -1,5 +1,22 @@
 @import '../styles/design.scss';
 
+
+.fullWidthBox {
+    @include box();
+    width: 100%;
+
+    .innerBox {
+        max-width: 20rem;
+        box-sizing: content-box;
+        margin: 0 auto;
+
+        .row {
+            margin: .2rem 0;
+        }
+    }
+}
+
+
 .box {
     @include box();
     align-self: start;
@@ -9,8 +26,9 @@
 
 .row {
     min-height: 1rem;
-    display: flex;
+    display: block;
     flex-wrap: nowrap;
+    position: relative;
 }
 
 .label {
@@ -18,5 +36,12 @@
     bottom: 0;
     right: 0;
     background-color: rgba($color: #fff, $alpha: .5);
-    padding: 0 .2em .2em 0;
+    padding: .2em;
+
+    &.top {
+        bottom: unset;
+        right: unset;
+        top: 0;
+        left: 0;
+    }
 }

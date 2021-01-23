@@ -121,6 +121,11 @@ class Town {
         return cost
     }
 
+    get turnsToCompleteProduction() {
+        if (!this.isProducing) {return Infinity}
+        return getTurnsToComplete(this.isProducing.productionCost - this.productionStore, this.output.productionYield)
+    }
+
     get costToHurryProduction() {
         if (!this.isProducing) { return false }
         if (this.productionStore >= this.isProducing.productionCost) { return false }

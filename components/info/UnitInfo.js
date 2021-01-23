@@ -29,9 +29,9 @@ export default class UnitInfo extends React.Component {
 
                 <table>
                     <tbody>
-                        <tr><td>attack</td><td>{unitType.attack}</td></tr>
-                        <tr><td>defend</td><td>{unitType.defend}</td></tr>
-                        <tr><td>moves</td><td>{unitType.moves}</td></tr>
+                        <tr><td>attack</td><td><SvgIcon iconName="fistRaised"/>{unitType.attack}</td></tr>
+                        <tr><td>defend</td><td><SvgIcon iconName="shield"/>{unitType.defend}</td></tr>
+                        <tr><td>moves</td><td><SvgIcon iconName="shoePrints"/>{unitType.moves}</td></tr>
                         <tr><td>cost</td><td>{unitType.productionCost}<SvgIcon iconName="production" /></td></tr>
                         <tr><td>requires</td><td>{prerequisite
                             ? <InfoLink sameWindow useDescription subject={prerequisite} />

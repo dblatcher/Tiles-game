@@ -1,6 +1,7 @@
 import TileBoard from '../TileBoard'
 import { MapSquare } from '../../lib/game-entities/MapSquare'
 import styles from './info.module.scss'
+import SvgIcon from '../SvgIcon'
 
 export default class TerrainInfo extends React.Component {
 
@@ -36,8 +37,13 @@ export default class TerrainInfo extends React.Component {
 
                 <table>
                     <tbody>
-                        <tr><td>move cost</td><td>{terrainType.movementCost}</td></tr>
-                        <tr><td>defense bonus</td><td>{`${terrainType.defenseBonus * 100}%`}</td></tr>
+                        <tr>
+                            <td>move cost</td>
+                            <td><SvgIcon iconName="shoePrints"/>{terrainType.movementCost}</td></tr>
+                        <tr>
+                            <td>defense bonus</td>
+                            <td><SvgIcon iconName="shield"/>{`${terrainType.defenseBonus * 100}%`}</td>
+                        </tr>
                     </tbody>
                 </table>
 

@@ -6,22 +6,22 @@ export default function CitizenRow(props) {
     const { population, happiness } = town
 
     const unhappiness = town.getUnhappiness(units)
-
+    const rowClassList = [styles.citizenRow]
     let bunchUp = 0 // fits 10
-    if (population > 10) {
+    if (onFactionWindow) {
+        rowClassList.push(styles.rowInFactionWindow)
+        bunchUp = 0
+    }
+    else if (population > 10) {
         bunchUp = 2.4 + ((population - 10) * 0.3)
     }
-    if (population > 20) {
+    else if (population > 20) {
         bunchUp = 5.4 + ((population - 20) * 0.2)
     }
-    if (population > 30) {
+    else if (population > 30) {
         bunchUp = 7.4 + ((population - 30) * 0.05)
     }
 
-    const rowClassList = [styles.citizenRow]
-    if (onFactionWindow) {
-        rowClassList.push(styles.rowInFactionWindow)
-    }
 
     return (
         <article className={rowClassList.join(" ")}>

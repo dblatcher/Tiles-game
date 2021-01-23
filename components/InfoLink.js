@@ -1,7 +1,7 @@
 import SvgIcon from './SvgIcon'
 import Link from 'next/link'
 
-export default function InfoLink({ subject, sameWindow, useName, useDescription, text }) {
+export default function InfoLink({ subject, sameWindow=false, useName=false, useDescription=false, text="" }) {
 
     if (!subject || !subject.infoPageUrl) { return null }
 

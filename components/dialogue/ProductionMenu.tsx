@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { unitTypes } from '../../lib/game-entities/UnitType'
 import { buildingTypes } from '../../lib/game-entities/BuildingType'
 import styles from './productionMenu.module.scss'
@@ -5,9 +7,22 @@ import dialogueStyles from '../../styles/dialogue.module.scss'
 import SvgIcon from '../SvgIcon'
 import InfoLink from '../InfoLink'
 import { displayTurnsToComplete } from '../../lib/utility'
+import { Town } from '../../lib/game-entities/Town';
+import ProgressBar from '../interface/ProgressBar';
+
+class ProductionMenuProps {
+    town: Town
+    handleTownAction: Function
+    showProgressBar: boolean
+}
 
 export default class ProductionMenu extends React.Component {
-    constructor(props) {
+    props:ProductionMenuProps
+    state: {
+        listIsOpen: boolean,
+        hurryDialogueIsOpen: boolean,
+    }
+    constructor(props:ProductionMenuProps) {
         super(props)
 
         this.state = {
@@ -135,17 +150,24 @@ export default class ProductionMenu extends React.Component {
 
 
         return (<>
-            <article>
-                <button className={styles.button} onClick={this.openList}>change</button>
+            <article className={styles.productionMenu}>
 
-                <button className={hurryButtonStyles.join(" ")}
-                    onClick={this.openHurryButtonIfAllowed}>
-                    <span>Hurry</span>
-                    {town.costToHurryProduction !== false ? (
-                        <span style={{ display: 'inline-flex' }}>&nbsp;({town.costToHurryProduction} <SvgIcon iconName="coins" />)</span>
-                    )
-                        : null}
-                </button>
+                {(this.props.showProgressBar) && 
+                    <ProgressBar subject={town} topic={'PRODUCTION'} showAmount showTurnsToComplete ={!!town.isProducing}/>
+                }
+
+                <div className={styles.buttonHolder}>
+                    <button className={styles.button} onClick={this.openList}>change</button>
+
+                    <button className={hurryButtonStyles.join(" ")}
+                        onClick={this.openHurryButtonIfAllowed}>
+                        <span>Hurry</span>
+                        {town.costToHurryProduction !== false ? (
+                            <span style={{ display: 'inline-flex' }}>&nbsp;({town.costToHurryProduction} <SvgIcon iconName="coins" />)</span>
+                        )
+                            : null}
+                    </button>
+                </div>
             </article>
 
             {listIsOpen ?

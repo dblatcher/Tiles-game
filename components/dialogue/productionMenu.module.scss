@@ -1,9 +1,25 @@
 @import '../../styles/design.scss';
 
+.productionMenu {
+
+    @media (min-width: $layout-breakpoint) {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+.buttonHolder {
+    display: flex;
+    padding: .25rem 0;
+    flex: 1;
+}
+
 .button {
     @include input();
-    margin-right: .5rem;
-    margin-top: .25rem;
+    flex: 1;
+    margin: 0 2%;
+    min-height: 2.5em;
 }
 
 .productionDialogueFrame {

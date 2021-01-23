@@ -1,5 +1,5 @@
 import MapSection from "./MapSection";
-import ProductionMenu from "./dialogue/ProductionMenu";
+import ProductionMenu from "./dialogue/ProductionMenu.tsx";
 import Window from "./Window";
 import UnitListBox from "./interface/UnitListBox.tsx";
 import TradeReport from "./TradeReport";

@@ -52,7 +52,7 @@ class Town {
         this.supportedUnits = config.supportedUnits || []
         this.buildings = config.buildings || []
     }
-
+    get classIs() {return "Town"}
     get x() { return this.mapSquare.x }
     get y() { return this.mapSquare.y }
     get population() { return this.citizens.length }

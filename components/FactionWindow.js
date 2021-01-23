@@ -2,12 +2,13 @@ import Window from "./Window";
 import SvgIcon from "./SvgIcon"
 import TradeReport from "./TradeReport"
 import ProgressBox from "./ProgressBox"
-import ProductionMenu from "./dialogue/ProductionMenu"
+import ProductionMenu from "./dialogue/ProductionMenu.tsx"
 import TechTree from "./TechTree";
 import { displayTurnsToComplete, getTurnsToComplete } from '../lib/utility'
 import CitizenRow from "./CitizenRow";
 
 import styles from './factionWindow.module.scss'
+import ProgressBar from "./interface/ProgressBar";
 
 export default class FactionWindow extends React.Component {
 
@@ -81,14 +82,14 @@ export default class FactionWindow extends React.Component {
             <Window title={faction.name} buttons={[{ text: 'close', clickFunction: closeWindow }]}>
                 <h2 className={styles.reportHeading}>Budget</h2>
 
-                <article className={styles.reportTable}>
-                    <section>
-                    <span>{allocatedBudget.totalTrade}<SvgIcon iconName="trade" /> total trade</span>
-                    <span>{totalMaintenanceCosts}<SvgIcon iconName="coins" color="red" /> maintenance costs</span>
+                <article className={[styles.reportTable, styles.budget].join(" ")}>
+                    <section className={styles.budget}>
+                        <span>{allocatedBudget.totalTrade}<SvgIcon iconName="trade" /> total trade</span>
+                        <span>{totalMaintenanceCosts}<SvgIcon iconName="coins" color="red" /> maintenance costs</span>
                     </section>
                     {budgetKeys.map(category => (
-                        <section key={`reportTable-${category}`}>
-                            <h3>{category}</h3>
+                        <section className={styles.budget} key={`reportTable-${category}`}>
+                            <h3 className={styles.budget}>{category}</h3>
                             <div>
                                 <span style={{ width: '3rem', display: 'inline-block' }}>
                                     {faction.budget.displayPercentage[category]}
@@ -113,22 +114,13 @@ export default class FactionWindow extends React.Component {
 
                 <h2 className={styles.reportHeading}>Towns</h2>
 
-                <article className={styles.reportTable}>
+                <article className={[styles.reportTable, styles.town].join(" ")}>
                     {factionTowns.map(town => (
                         <section key={`townReport-${town.indexNumber}`}>
                             <h3 style={{ cursor: 'pointer' }} onClick={() => { openTownView(town) }}>{town.name}</h3>
-                            <div>
-                                <CitizenRow town={town} onFactionWindow={true} stateOfPlay={stateOfPlay} />
-                                <TradeReport town={town} inRevolt={factionTownsNotInRevolt.indexOf(town) === -1} />
-
-                                <span>
-                                    <span>
-                                        {town.isProducing ? town.isProducing.displayName : 'no production'}
-                                        {town.isProducing ? `(${displayTurnsToComplete(town.turnsToCompleteCurrentProduction)})` : ''}
-                                    </span>
-                                    <ProductionMenu handleTownAction={handleTownAction} town={town} />
-                                </span>
-                            </div>
+                            <CitizenRow town={town} onFactionWindow={true} stateOfPlay={stateOfPlay} />
+                            <TradeReport town={town} inRevolt={factionTownsNotInRevolt.indexOf(town) === -1} />
+                            <ProductionMenu town={town} handleTownAction={handleTownAction}  showProgressBar/>
                         </section>
                     ))}
                 </article>

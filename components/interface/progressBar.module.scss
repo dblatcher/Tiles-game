@@ -1,0 +1,40 @@
+@import '../../styles/design.scss';
+
+.progressBar {
+
+    display: flex;
+    align-items: center;
+
+    span {
+        flex-shrink: 0;
+    }
+
+    figure {
+        border: 1px solid black;
+        padding: .25em;
+        flex-basis: 100%;
+        flex-shrink: 1;
+        height: 1em;
+        margin: 0 .5em;
+        position: relative;
+
+        @media (min-width: $layout-breakpoint) {
+            min-width: 10em;
+        }
+
+
+        &>div {
+            background-color: rgba($color: black, $alpha: .25);
+            width: 100%;
+            position: relative;
+            height: 100%;
+
+                &>div {
+                    background-color: black;
+                    height: 100%;
+                    max-width: 100%;
+                }
+            }
+        }
+
+}

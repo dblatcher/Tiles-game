@@ -73,9 +73,12 @@
 
 .unitRow {
     display: flex;
-    justify-content: center;
-    min-width: 24rem;
+    justify-content: space-between;
     margin: .5rem 0;
+
+    @media (min-width: $layout-breakpoint) {
+        min-width: 24rem;
+    }
 }
 
 .unitBlock {
@@ -107,6 +110,17 @@
 }
 
 .scoreSummary {
+
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-self: stretch;
+
+    @media (min-width: $layout-breakpoint) {
+        margin: 0 .5em;
+    }
+
 
     p {
         margin: 0;

@@ -166,7 +166,7 @@ export default class TownView extends React.Component {
                             )
                         },
                         {
-                            label: <SvgIcon style={svgStyle} iconName={'shield'}/>,
+                            label: <SvgIcon style={svgStyle} iconName={'shield'} color="white"/>,
                             content: (
                                 <section className={styles.section}>
                                     <h2>{`${town.getUnitsHere(units).length} units here`}</h2>

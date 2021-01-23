@@ -23,7 +23,7 @@ class Battle {
     get defence () {
         const defenderType = this.defenders[0].type;
         let score = defenderType.defend
-        let breakdown = [`${defenderType.defend} defense`]
+        let breakdown = []
 
         if (this.defenders[0].vetran) { 
             breakdown.push(`vetran: +50%`) 
@@ -74,7 +74,7 @@ class Battle {
 
     get attack() {
         let score = this.attacker.type.attack
-        let breakdown = [`${this.attacker.type.attack} attack`]
+        let breakdown = []
         if (this.attacker.vetran) { 
             score += this.attacker.type.attack / 2 
             breakdown.push(`vetran: +50%`)

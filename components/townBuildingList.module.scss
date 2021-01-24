@@ -2,8 +2,8 @@
 
 .box {
     @include box();
-    width: 10rem;
-    box-sizing: content-box;
+    // width: 10rem;
+    // box-sizing: content-box;
     min-height: 4rem;
 }
 

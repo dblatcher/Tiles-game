@@ -118,12 +118,12 @@ export default class TownView extends React.Component {
                             content: (
                                 <section className={styles.section}>
                                     <h2>Production<span>{displayGain(town.output.productionYield)}</span></h2>
-                                    <ProgressBox
+                                    <p className={styles.caption}>{this.productionCaption}</p>
+                                    <ProgressBox fullWidth
                                         current={town.productionStore}
                                         target={town.isProducing ? town.isProducing.productionCost : 0}
                                         showTurnsToComplete turnsToComplete={town.turnsToCompleteProduction}
                                         unit="production" />
-                                    <p className={styles.caption}>{this.productionCaption}</p>
                                     <ProductionMenu handleTownAction={handleTownAction} town={town} />
                                 </section>
                             )
@@ -133,11 +133,11 @@ export default class TownView extends React.Component {
                             content: (
                                 <section className={styles.section}>
                                     <h2>Food <span>{displayGain(town.output.foodYield)}</span> </h2>
-                                    <ProgressBox
+                                    <p className={styles.caption}>{this.foodStoreCaption}</p>
+                                    <ProgressBox fullWidth
                                         current={town.foodStore}
                                         target={town.foodStoreRequiredForGrowth}
                                         unit="food" />
-                                    <p className={styles.caption}>{this.foodStoreCaption}</p>
                                 </section>
                             )
                         },

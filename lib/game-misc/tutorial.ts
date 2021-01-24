@@ -1,5 +1,6 @@
 import { Faction } from "../game-entities/Faction"
 import { GameState } from "../game-entities/GameState"
+import { unitTypes } from "../game-entities/UnitType"
 
 const tutuorialContent = {
 
@@ -10,7 +11,7 @@ const tutuorialContent = {
     },
     nextMove: {
         text: {
-            english: "When a unit has used all its moves for a turn, the next unit will become active. You can also choose which unit to move next by using the arrow button in the most right of the screen, or clicking the mode button to change from 'move units' to 'examine map', then clicking the unit you want to select."
+            english: "When a unit has used all its moves for a turn, the next unit will become active. You can also choose which unit to move next by using the arrow button in the bottom right of the screen."
         }
     },
     townWindow: {
@@ -27,7 +28,17 @@ const tutuorialContent = {
         text: {
             english: "When you have finished moving your units, press the 'end turn' button."
         }
-    }
+    },
+    secondTurn: {
+        text: {
+            english: "Now the other factions have moved too, so it's your turn again. Let's build your first town! Try clicking the mode button to change from 'move units' to 'examine map', then clicking on the square with your settler in it."
+        }
+    },
+    settler: {
+        text: {
+            english: "Move your settler to a good spot to build your first town. When your settler is where you want, press the 'build town' button - it will need to have at least one move left. It may take a few turns to get there, so use 'end turn' if you have to."
+        }
+    },
 
 }
 
@@ -84,6 +95,15 @@ class TutorialState {
             new TutorialEvent('endOfTurn',
                 (state: GameState) => !state.units.some(unit => unit.faction === this.playerFaction && !unit.canMakeNoMoreMoves(state)),
                 (state: GameState) => state.units.some(unit => unit.faction === this.playerFaction && !unit.canMakeNoMoreMoves(state)),
+            ),
+            new TutorialEvent('secondTurn',
+                (state: GameState) => state.turnNumber === 2,
+                (state: GameState) => true,
+            ),
+            new TutorialEvent('settler',
+                (state: GameState) => state.selectedUnit.type == unitTypes.settler,
+                (state: GameState) => state.towns.some(town => town.faction == this.playerFaction),
+                ['secondTurn']
             ),
         ]
     }

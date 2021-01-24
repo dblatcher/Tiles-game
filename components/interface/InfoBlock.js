@@ -1,6 +1,5 @@
 import React from 'react'
 import Tile from '../Tile'
-import UnitFigure from '../UnitFigure'
 import styles from './infoBlock.module.scss'
 import InfoLink from '../InfoLink'
 
@@ -19,8 +18,13 @@ export default class InfoBlock extends React.Component {
                 : null
             : null;
 
-        if (visibleSelectedSquare && interfaceMode == 'VIEW') {
-            return <article className={styles.infoBlock}>
+        return <article className={styles.infoBlock}>
+
+            <section className={styles.calendar}>
+                <span>turn {stateOfPlay.turnNumber}</span>
+            </section>
+
+            {(visibleSelectedSquare && interfaceMode == 'VIEW') && <>
                 <Tile mapSquare={visibleSelectedSquare} inInfoRow showYields />
                 <ul className={styles.infoList}>
                     {visibleSelectedSquare.infoList.map((infoPoint, index) => (
@@ -30,10 +34,9 @@ export default class InfoBlock extends React.Component {
                         </li>
                     ))}
                 </ul>
+            </>}
+        </article>
 
-            </article>
-        }
 
-        return null
     }
 }

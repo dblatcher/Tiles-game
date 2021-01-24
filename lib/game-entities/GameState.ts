@@ -23,6 +23,7 @@ class GameState {
     factionWindowIsOpen: boolean
     interfaceMode: string
     gameOver: boolean
+    turnNumber:number
 }
 
 export { GameState }

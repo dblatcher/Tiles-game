@@ -70,6 +70,8 @@ export default class GameContainer extends React.Component {
             startingInterfaceState
         );
 
+        if (!this.state.turnNumber) {this.state.turnNumber = 1}
+
         this.gameHolderElement = React.createRef()
         this.upperWindowElement = React.createRef()
 
@@ -115,7 +117,7 @@ export default class GameContainer extends React.Component {
             selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
             pendingDialogues, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
             mapZoomLevel, mapXOffset, mapShiftInProgress,
-            browserSupportsLocalStorage, debug, gameOver
+            browserSupportsLocalStorage, debug, gameOver, turnNumber,
         } = this.state
 
         return {
@@ -124,7 +126,7 @@ export default class GameContainer extends React.Component {
             selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
             pendingDialogues, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
             mapZoomLevel, mapXOffset, mapShiftInProgress,
-            browserSupportsLocalStorage, debug, gameOver
+            browserSupportsLocalStorage, debug, gameOver, turnNumber
         }
     }
 

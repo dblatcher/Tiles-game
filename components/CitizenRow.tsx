@@ -1,27 +1,24 @@
+import { GameState } from "../lib/game-entities/GameState";
+import { Town } from "../lib/game-entities/Town";
 import styles from "./citizenRow.module.scss";
 
-export default function CitizenRow(props) {
-    const { town, handleCitizenClick, onFactionWindow, stateOfPlay } = props
+interface CitizenRowProps {
+    town: Town
+    handleCitizenClick: Function
+    onFactionWindow?: boolean
+    stateOfPlay: GameState
+}
+
+export default function CitizenRow(props: CitizenRowProps) {
+    const { town, handleCitizenClick, onFactionWindow = false, stateOfPlay } = props
     const { units } = stateOfPlay
     const { population, happiness } = town
 
+    const isInRevolt = town.getIsInRevolt(units)
     const unhappiness = town.getUnhappiness(units)
     const rowClassList = [styles.citizenRow]
-    let bunchUp = 0 // fits 10
-    if (onFactionWindow) {
-        rowClassList.push(styles.rowInFactionWindow)
-        bunchUp = 0
-    }
-    else if (population > 10) {
-        bunchUp = 2.4 + ((population - 10) * 0.3)
-    }
-    else if (population > 20) {
-        bunchUp = 5.4 + ((population - 20) * 0.2)
-    }
-    else if (population > 30) {
-        bunchUp = 7.4 + ((population - 30) * 0.05)
-    }
-
+    if (onFactionWindow) { rowClassList.push(styles.rowInFactionWindow) }
+    if (isInRevolt) { rowClassList.push(styles.inRevolt) }
 
     return (
         <article className={rowClassList.join(" ")}>
@@ -32,10 +29,8 @@ export default function CitizenRow(props) {
                 if (index < happiness) { classList.push(styles.happy) }
 
                 const styleObject = Object.assign({
-                    marginLeft: index === 0
-                        ? 0
-                        : `-${bunchUp}%`,
-                    fontSize: '100%',
+                    left: `${(index + .5) * (100 / town.citizens.length)}%`,
+                    zIndex: '1'
                 }, citizen.job.spriteStyle)
 
                 return (

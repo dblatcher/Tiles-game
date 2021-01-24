@@ -1,35 +1,48 @@
+@import '../styles/animations.scss';
+
 
 .citizenFigure {
     display: inline-block;
     width: 2em;
     height: 2em;
-    position: relative;
+    position: absolute;
+    transform: translateX(-50%);
 
     &.unhappy {
-        background-color: rgba($color: #f00, $alpha: .5);
+        filter: invert(0.9) hue-rotate(45deg);
     }
     &.happy {
-        background-color: rgba($color: #0f0, $alpha: .5);
+        filter: brightness(1.5) drop-shadow(0px 0px 4px gold);
     }
     &.happy.unhappy {
-        background-color: rgba($color: #ff0, $alpha: .5);
+        filter:none;
     }
 }
 
 
 .citizenRow {
-    text-align: center;
     max-width: 100%;
-    background-image: linear-gradient( black 25%, transparent);
-    padding: .2rem;
-    margin: -.2rem -.2rem 0 -.2rem;
-    box-sizing: content-box;
+    position: relative;
+    height: 2em;
+    margin: 0 1em;
 
-    &.rowInFactionWindow {
-        background: none;
-        text-align: left;
-        margin: 0;
-        padding: 0;
-        display: flex;
+    &.inRevolt .citizenFigure:not(.happy) {
+
+        animation-name: revolt;
+        animation-direction: alternate;
+        animation-duration: .4s;
+        animation-iteration-count: infinite;
+
+        &:nth-of-type(2n) {
+            animation-duration: .3s;
+        }
+
+        &:nth-of-type(3n) {
+            animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+        }
+
+        &:nth-of-type(4n-1) {
+            animation-delay: .01s;
+        }
     }
 }

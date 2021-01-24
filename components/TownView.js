@@ -4,7 +4,7 @@ import Window from "./Window";
 import UnitListBox from "./interface/UnitListBox.tsx";
 import TradeReport from "./TradeReport";
 import ProgressBox from "./ProgressBox.tsx";
-import CitizenRow from "./CitizenRow";
+import CitizenRow from "./CitizenRow.tsx";
 import TownBuildingList from "./TownBuildingList";
 
 import TabMenu from './interface/TabMenu'
@@ -85,8 +85,14 @@ export default class TownView extends React.Component {
             }
         }
 
+        const inRevolt = town.getIsInRevolt(stateOfPlay.units)
+        const subTitle = inRevolt
+            ? `pop.${town.population},000 - in revolt`
+            : `pop.${town.population},000`
+
+
         const svgStyle = {
-            backgroundColor:'black',
+            backgroundColor: 'black',
             height: '2em',
             width: '2em',
             borderRadius: '25%',
@@ -94,7 +100,7 @@ export default class TownView extends React.Component {
         }
 
         return (
-            <Window title={town.name} subtitle={`pop.${town.population},000`} buttons={buttonList}>
+            <Window title={town.name} subtitle={subTitle} buttons={buttonList}>
                 <div className={styles.frame}>
 
                     <section className={[styles.section, styles.mapSection].join(" ")}>
@@ -108,7 +114,7 @@ export default class TownView extends React.Component {
 
                     <TabMenu mobileOnly tabs={[
                         {
-                            label: <SvgIcon style={svgStyle} iconName={'production'}/>,
+                            label: <SvgIcon style={svgStyle} iconName={'production'} />,
                             content: (
                                 <section className={styles.section}>
                                     <h2>Production<span>{displayGain(town.output.productionYield)}</span></h2>
@@ -123,7 +129,7 @@ export default class TownView extends React.Component {
                             )
                         },
                         {
-                            label: <SvgIcon style={svgStyle} iconName={'food'}/>,
+                            label: <SvgIcon style={svgStyle} iconName={'food'} />,
                             content: (
                                 <section className={styles.section}>
                                     <h2>Food <span>{displayGain(town.output.foodYield)}</span> </h2>
@@ -136,7 +142,7 @@ export default class TownView extends React.Component {
                             )
                         },
                         {
-                            label: <SvgIcon style={svgStyle} color={'goldenrod'} iconName={'trade'}/>,
+                            label: <SvgIcon style={svgStyle} color={'goldenrod'} iconName={'trade'} />,
                             content: (
                                 <section className={styles.section}>
                                     <h2>Trade<span>{displayGain(town.output.tradeYield)}</span></h2>
@@ -144,12 +150,12 @@ export default class TownView extends React.Component {
                                         town={town}
                                         townView={true}
                                         separateLines={true}
-                                        inRevolt={town.getIsInRevolt(stateOfPlay.units)} />
+                                        inRevolt={inRevolt} />
                                 </section>
                             )
                         },
                         {
-                            label: <SvgIcon style={svgStyle} iconName={'building'}/>,
+                            label: <SvgIcon style={svgStyle} iconName={'building'} />,
                             content: (
                                 <section className={styles.section}>
                                     <h2>{`Buildings`}</h2>
@@ -158,7 +164,7 @@ export default class TownView extends React.Component {
                             )
                         },
                         {
-                            label: <SvgIcon style={svgStyle} iconName={'shieldPerson'}/>,
+                            label: <SvgIcon style={svgStyle} iconName={'shieldPerson'} />,
                             content: (
                                 <section className={styles.section}>
                                     <h2>{`${town.supportedUnits.length} units supported`}</h2>
@@ -167,7 +173,7 @@ export default class TownView extends React.Component {
                             )
                         },
                         {
-                            label: <SvgIcon style={svgStyle} iconName={'shield'} color="white"/>,
+                            label: <SvgIcon style={svgStyle} iconName={'shield'} color="white" />,
                             content: (
                                 <section className={styles.section}>
                                     <h2>{`${town.getUnitsHere(units).length} units here`}</h2>

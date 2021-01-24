@@ -1,4 +1,5 @@
 @import '../styles/design.scss';
+@import '../styles/animations.scss';
 
 .figure {
     @include figure();
@@ -14,17 +15,6 @@
     position: relative;
 }
 
-@keyframes shake {
-    0% {
-        transform: rotate(-10deg) translateY(5%) translatex(-5%);
-    }
-    50% {
-        transform: translateY(-5%);
-    }
-    100% {
-        transform: rotate(10deg) translateY(5%) translateX(5%);
-    }
-  }
 
 .sprite {
     @include sprite();

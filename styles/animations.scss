@@ -1,0 +1,23 @@
+@keyframes shake {
+    0% {
+        transform: rotate(-10deg) translateY(5%) translatex(-5%);
+    }
+    50% {
+        transform: translateY(-5%);
+    }
+    100% {
+        transform: rotate(10deg) translateY(5%) translateX(5%);
+    }
+}
+
+@keyframes revolt {
+    0% {
+        transform: translateX(-50%) rotate(-10deg) translateY(5%) translatex(-5%);
+    }
+    50% {
+        transform: translateX(-50%) translateY(-5%);
+    }
+    100% {
+        transform: translateX(-50%) rotate(10deg) translateY(5%) translateX(5%);
+    }
+}

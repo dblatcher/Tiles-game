@@ -5,7 +5,7 @@ import ProgressBox from "./ProgressBox.tsx"
 import ProductionMenu from "./dialogue/ProductionMenu.tsx"
 import TechTree from "./TechTree";
 import { displayTurnsToComplete, getTurnsToComplete } from '../lib/utility'
-import CitizenRow from "./CitizenRow";
+import CitizenRow from "./CitizenRow.tsx";
 
 import styles from './factionWindow.module.scss'
 

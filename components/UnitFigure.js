@@ -106,7 +106,17 @@ export default class UnitFigure extends React.Component {
                 <i
                     style={unit.type.spriteStyle}
                     className={spriteClassList.join(" ")}
-                    onClick={handleClick || function () { }}
+                    onClick={handleClick
+                        ? () => { return handleClick(false) }
+                        : null
+                    }
+                    onContextMenu={handleClick
+                        ? (event) => { 
+                            event.preventDefault()
+                            return handleClick(true) 
+                        }
+                        : null
+                    }
                 ></i>
 
                 { unit.onGoingOrder && !unit.onGoingOrder.type.noFlag

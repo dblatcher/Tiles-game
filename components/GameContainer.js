@@ -70,7 +70,7 @@ export default class GameContainer extends React.Component {
             startingInterfaceState
         );
 
-        if (!this.state.turnNumber) {this.state.turnNumber = 1}
+        if (!this.state.turnNumber) { this.state.turnNumber = 1 }
 
         this.gameHolderElement = React.createRef()
         this.upperWindowElement = React.createRef()
@@ -328,19 +328,22 @@ export default class GameContainer extends React.Component {
         )
     }
 
-    handleMapSquareClick(input) {
+    handleMapSquareClick(input, wasRightClick = false) {
+        
         const { mapSquare } = input
         const { selectedUnit, interfaceMode, mapGrid } = this.state
 
         if (this.hasOpenDialogue || this.isComputerPlayersTurn) { return false }
 
-        if (selectedUnit && interfaceMode === 'MOVE' && !selectedUnit.isAdjacentTo(mapSquare, mapGrid[0].length)) {
+        let effectiveMode = wasRightClick ? 'VIEW' : interfaceMode;
+
+        if (selectedUnit && effectiveMode === 'MOVE' && !selectedUnit.isAdjacentTo(mapSquare, mapGrid[0].length)) {
             return this.centerWindowOn(mapSquare)
         }
 
-        return asyncSetState(this, processMapClick(input))
+        return asyncSetState(this, processMapClick(input,effectiveMode))
             .then(async () => {
-                if (interfaceMode === 'MOVE' && selectedUnit !== this.state.selectedUnit) {
+                if (effectiveMode === 'MOVE' && selectedUnit !== this.state.selectedUnit) {
 
                     if (this.getDistanceFromEdge(this.state.selectedUnit) < 6) {
                         await sleep(225)
@@ -350,7 +353,7 @@ export default class GameContainer extends React.Component {
                     await sleep(250)
                     return this.scrollToSquare(this.state.selectedUnit)
                 }
-                if (interfaceMode === 'VIEW') {
+                if (effectiveMode === 'VIEW') {
                     return this.centerWindowOn(mapSquare)
                 }
             })

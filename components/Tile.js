@@ -72,8 +72,8 @@ export default class Tile extends React.Component {
             mapGridWidth
         } = this.props
 
-        const selectedUnitCanMoveTo = selectedUnit && !selectedUnit.onGoingOrder && 
-        selectedUnit.canMoveToOrAttack(mapSquare, squareSelectedUnitIsIn, town, unitsInMapSquare, mapGridWidth);
+        const selectedUnitCanMoveTo = selectedUnit && !selectedUnit.onGoingOrder &&
+            selectedUnit.canMoveToOrAttack(mapSquare, squareSelectedUnitIsIn, town, unitsInMapSquare, mapGridWidth);
 
         let figureClassList = [styles.tile]
         let bgSpriteClassList = [styles.spriteHolder]
@@ -100,7 +100,17 @@ export default class Tile extends React.Component {
         return (
             <figure
                 className={figureClassList.join(" ")}
-                onClick={handleClick || function () { }}
+                onClick={handleClick
+                    ? () => { return handleClick(false) }
+                    : null
+                }
+                onContextMenu={handleClick
+                    ? (event) => { 
+                        event.preventDefault()
+                        return handleClick(true) 
+                    }
+                    : null
+                }
             >
                 {showVoid
                     ? this.renderVoid(bgClasses)
@@ -118,7 +128,7 @@ export default class Tile extends React.Component {
 
                         {viewerVersionOfMapSquare.road ? this.renderDirectionedSprite(spriteSheets.roads, bgClasses) : (null)}
 
-                        { town ? <TownFigure town={town} onMapSection={onMapSection} units={unitsInMapSquare}/> : null}
+                        { town ? <TownFigure town={town} onMapSection={onMapSection} units={unitsInMapSquare} /> : null}
 
                         {viewerVersionOfMapSquare.tree ? this.renderDirectionedSprite(spriteSheets.trees, bgClasses) : (null)}
 

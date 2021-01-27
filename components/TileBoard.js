@@ -87,7 +87,7 @@ export default class TileBoard extends React.Component {
         return (
             <Tile key={`${mapSquare.x},${mapSquare.y}`}
                 handleClick={handleMapSquareClick
-                    ? () => { handleMapSquareClick({ mapSquare, source: 'tile' }) }
+                    ? (wasRightClick) => { handleMapSquareClick({ mapSquare, source: 'tile' }, wasRightClick) }
                     : null
                 }
                 interfaceMode={interfaceMode}
@@ -139,9 +139,10 @@ export default class TileBoard extends React.Component {
         })
 
         return (<UnitFigure
-            handleClick={() => {
-                handleMapSquareClick({ mapSquare: squareUnitIsOn, source: 'unit' })
-            }}
+            handleClick={handleMapSquareClick
+                ? (wasRightClick) => { handleMapSquareClick({ mapSquare: squareUnitIsOn, source: 'unit'  }, wasRightClick) }
+                : null
+            }
             squareUnitIsOn={squareUnitIsOn}
             interfaceMode={interfaceMode}
             unit={unit}

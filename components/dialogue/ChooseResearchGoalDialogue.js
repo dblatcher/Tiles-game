@@ -9,6 +9,19 @@ export default class ChooseResearchGoalDialogue extends React.Component {
     render() {
         const { activeFaction, handleDialogueButton } = this.props
 
+        if (!activeFaction) {
+            return (
+
+                <aside className={styles.dialogueHolder}>
+                    <div className={styles.dialogueFrame}>ERROR = no activeFaction</div>
+                    <button onClick={
+                        () => { handleDialogueButton(CHOOSE_RESEARCH_GOAL,{})}
+                    }>try clicking this</button>
+                </aside>
+
+            )
+        };
+
         return (
             <aside className={styles.dialogueHolder}>
                 <div className={styles.dialogueFrame}>

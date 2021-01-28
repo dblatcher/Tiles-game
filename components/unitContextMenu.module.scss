@@ -57,7 +57,10 @@
 
 .statRow {
     display: flex;
-    justify-content: space-between;
+
+    span {
+        margin-right: .75rem;
+    }
 }
 
 .nameRow {

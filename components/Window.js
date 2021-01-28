@@ -8,14 +8,6 @@ export default function Window(props) {
         <main className={styles.window}>
 
             <header className={styles.header}>
-                <div>
-                    <h1>{title}</h1>
-                    {!!subtitle && (
-                        <p>
-                            <em>{subtitle}</em>
-                        </p>
-                    )}
-                </div>
                 <nav className={styles.buttonHolder}>
                     {buttons.map((button, index) => {
                         return <button key={`window-header-button-${button.text}`}
@@ -25,6 +17,14 @@ export default function Window(props) {
                         </button>
                     })}
                 </nav>
+                <div>
+                    <h1>{title}</h1>
+                    {!!subtitle && (
+                        <p>
+                            <em>{subtitle}</em>
+                        </p>
+                    )}
+                </div>
             </header>
             {props.children}
         </main>

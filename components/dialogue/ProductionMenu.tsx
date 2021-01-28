@@ -8,7 +8,7 @@ import SvgIcon from '../SvgIcon'
 import InfoLink from '../InfoLink'
 import { displayTurnsToComplete } from '../../lib/utility'
 import { Town } from '../../lib/game-entities/Town';
-import ProgressBar from '../interface/ProgressBar';
+import ProgressBox from '../ProgressBox';
 
 class ProductionMenuProps {
     town: Town
@@ -17,12 +17,12 @@ class ProductionMenuProps {
 }
 
 export default class ProductionMenu extends React.Component {
-    props:ProductionMenuProps
+    props: ProductionMenuProps
     state: {
         listIsOpen: boolean,
         hurryDialogueIsOpen: boolean,
     }
-    constructor(props:ProductionMenuProps) {
+    constructor(props: ProductionMenuProps) {
         super(props)
 
         this.state = {
@@ -115,7 +115,7 @@ export default class ProductionMenu extends React.Component {
                                 <span>{displayTurnsToComplete(turnsToComplete)}</span>
                             </p>
                             <p className={styles.unitStatSet}>
-                            <span className={[styles.unitStat, styles.production].join(" ")}>
+                                <span className={[styles.unitStat, styles.production].join(" ")}>
                                     <SvgIcon iconName="production" />
                                     {buildingType.productionCost}
                                 </span>
@@ -152,8 +152,17 @@ export default class ProductionMenu extends React.Component {
         return (<>
             <article className={styles.productionMenu}>
 
-                {(this.props.showProgressBar) && 
-                    <ProgressBar subject={town} topic={'PRODUCTION'} showAmount showTurnsToComplete ={!!town.isProducing}/>
+                {(this.props.showProgressBar) &&
+                    <span style={{ display: 'flex', alignItems: 'center', flex: 1, justifyContent: 'space-between' }}>
+                        <ProgressBox oneRow useBlankSymbols noFrame
+                            showNumbers={!!town.isProducing}
+                            showTurnsToComplete={!!town.isProducing}
+                            turnsToComplete={town.turnsToCompleteProduction}
+                            target={town.isProducing ? town.isProducing.productionCost : 0}
+                            unit="production"
+                            current={town.productionStore} />
+                        <span><b>{town.isProducing ? town.isProducing.displayName : 'no production'}</b></span>
+                    </span>
                 }
 
                 <div className={styles.buttonHolder}>

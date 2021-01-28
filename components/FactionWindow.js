@@ -131,7 +131,7 @@ export default class FactionWindow extends React.Component {
 
 
                     {faction.researchGoal ? (<>
-                        <ProgressBox fullWidth
+                        <ProgressBox fullWidth useBlankSymbols
                             current={faction.research}
                             target={faction.researchGoal.researchCost}
                             unit={'lightBulb'}

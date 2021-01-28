@@ -1,5 +1,5 @@
 tutorial system!
-fix citizen row spacing for large towns on faction view
+trade report wrapping
 
 AI
 - learn to use naval units...
@@ -12,17 +12,16 @@ map
 
 towns
 ? trade routes
-? corruption rate
-
-Buildings
-? court house and corruption rule
-? Palace (limit one per faction)
 
 informational text
 - more content
 - support HTML / markdown instead of json?
 - internationalisation suport
 - building effect descriptions
+
+
+features for v2
+---------------
 
 ?Diplomacy
 
@@ -41,3 +40,7 @@ informational text
 - view options - shade squarea out of view
 - game option - show battle breakdown
 
+? corruption
+- calculate corruption rate
+- court house 
+- Palace (limit one per faction)

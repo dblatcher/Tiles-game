@@ -119,7 +119,7 @@ export default class TownView extends React.Component {
                                 <section className={styles.section}>
                                     <h2>Production<span>{displayGain(town.output.productionYield)}</span></h2>
                                     <p className={styles.caption}>{this.productionCaption}</p>
-                                    <ProgressBox fullWidth
+                                    <ProgressBox fullWidth useBlankSymbols showNumbers
                                         current={town.productionStore}
                                         target={town.isProducing ? town.isProducing.productionCost : 0}
                                         showTurnsToComplete turnsToComplete={town.turnsToCompleteProduction}

@@ -24,6 +24,14 @@
     box-sizing: content-box;
 }
 
+.noFrameBox {
+    position: relative;
+    align-self: start;
+    width: 10rem;
+    box-sizing: content-box;
+    padding: 0 1rem;
+}
+
 .row {
     min-height: 1rem;
     display: block;
@@ -36,12 +44,24 @@
     bottom: 0;
     right: 0;
     background-color: rgba($color: #fff, $alpha: .5);
+    border-radius: 1em;
     padding: .2em;
+    color: black;
+    //text-shadow: 1px 1px 1px white;
+    // filter: drop-shadow(1px 1px white) drop-shadow(-1px 1px white);
 
     &.top {
         bottom: unset;
         right: unset;
         top: 0;
         left: 0;
+    }
+}
+
+.noFrameBox {
+    .label {
+        position: absolute;
+        bottom: 0;
+        padding: 0;
     }
 }

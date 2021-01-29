@@ -12,7 +12,7 @@ class ProgressBoxProps {
     showTurnsToComplete?: boolean
     turnsToComplete?: number
     useBlankSymbols?: boolean
-    oneRow?: boolean
+    maxRows?: number
     noFrame?: boolean
     showNumbers?: boolean
 }
@@ -21,11 +21,9 @@ export default class ProgressBox extends React.Component {
     props: ProgressBoxProps
 
     getSymbolBreakdown(rowWidth) {
-        const { current, target, oneRow } = this.props
+        const { current, target, maxRows } = this.props
 
-        if (oneRow) {
-            return [current]
-        }
+        if (maxRows == 1) { return [current] }
 
         const rowsNeeded = Math.ceil(target / rowWidth)
         const numberToShow = Math.min(current, rowWidth * (rowsNeeded + 2));
@@ -108,7 +106,7 @@ export default class ProgressBox extends React.Component {
 
     render() {
         const { current, target, turnsToComplete, 
-            showTurnsToComplete, fullWidth, useBlankSymbols, oneRow,
+            showTurnsToComplete, fullWidth, useBlankSymbols, maxRows,
             noFrame, showNumbers
         } = this.props
 
@@ -117,7 +115,11 @@ export default class ProgressBox extends React.Component {
         if (target > 160) { rowWidth = 30 }
         if (target > 240) { rowWidth = 40 }
 
-        if (oneRow) { rowWidth = target }
+        if (maxRows == 1) { rowWidth = target }
+        else if (maxRows > 1) {
+            rowWidth = Math.max(rowWidth, Math.ceil(target/maxRows))
+        }
+
 
         const breakdown = this.getSymbolBreakdown(rowWidth)
 

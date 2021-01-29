@@ -154,12 +154,12 @@ export default class ProductionMenu extends React.Component {
 
                 {(this.props.showProgressBox) &&
                     <span style={{ display: 'flex', alignItems: 'center', flex: 1, justifyContent: 'space-between' }}>
-                        <ProgressBox oneRow useBlankSymbols noFrame
+                        <ProgressBox unit="production"
+                            useBlankSymbols noFrame maxRows={1}
                             showNumbers={!!town.isProducing}
                             showTurnsToComplete={!!town.isProducing}
                             turnsToComplete={town.turnsToCompleteProduction}
                             target={town.isProducing ? town.isProducing.productionCost : 0}
-                            unit="production"
                             current={town.productionStore} />
                         <span><b>{town.isProducing ? town.isProducing.displayName : 'nothing'}</b></span>
                     </span>

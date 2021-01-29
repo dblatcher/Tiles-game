@@ -125,11 +125,12 @@ export default class TownView extends React.Component {
                                 <section className={styles.section}>
                                     <h2>Production<span>{displayGain(town.output.productionYield)}</span></h2>
                                     {this.productionCaptionParagraph}
-                                    <ProgressBox fullWidth useBlankSymbols showNumbers
+                                    <ProgressBox unit="production" maxRows={4}
+                                        fullWidth useBlankSymbols showNumbers
                                         current={town.productionStore}
                                         target={town.isProducing ? town.isProducing.productionCost : 0}
-                                        showTurnsToComplete turnsToComplete={town.turnsToCompleteProduction}
-                                        unit="production" />
+                                        showTurnsToComplete 
+                                        turnsToComplete={town.turnsToCompleteProduction} />
                                     <ProductionMenu handleTownAction={handleTownAction} town={town} />
                                 </section>
                             )
@@ -141,10 +142,10 @@ export default class TownView extends React.Component {
                                     <h2>Food <span>{displayGain(town.output.foodYield)}</span> </h2>
                                     {this.foodStoreCaptionParagraph}
                                     
-                                    <ProgressBox fullWidth showNumbers
+                                    <ProgressBox unit="food" maxRows={5}
+                                        fullWidth showNumbers
                                         current={town.foodStore}
-                                        target={town.foodStoreRequiredForGrowth}
-                                        unit="food" />
+                                        target={town.foodStoreRequiredForGrowth} />
                                 </section>
                             )
                         },

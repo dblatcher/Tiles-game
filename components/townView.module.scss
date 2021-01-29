@@ -21,9 +21,12 @@
     }
 
     @media (min-width: $layout-breakpoint) {
-        min-height: 9rem;
         max-width: 20rem;
         min-width: 10rem;
+    }
+
+    @media (min-width: $wide-breakpoint) {
+        min-height: 11rem;
     }
 }
 

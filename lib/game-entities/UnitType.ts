@@ -272,13 +272,13 @@ const unitTypes = {
         spriteSheetName: 'units2',
         prerequisite: 'gunpowder',
     }),
-    caravan: new UnitType('caravan', {
-        defend: 0, attack: 0,
-        productionCost: 50,
-        isTrader: true,
-        spriteSheetName: 'units2',
-        prerequisite: 'trade',
-    }),
+    // caravan: new UnitType('caravan', {
+    //     defend: 0, attack: 0,
+    //     productionCost: 50,
+    //     isTrader: true,
+    //     spriteSheetName: 'units2',
+    //     prerequisite: 'trade',
+    // }),
     trireme: new NavalUnitType('trireme', {
         defend: 1, attack: 2,
         moves: 18,

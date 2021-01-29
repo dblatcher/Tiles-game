@@ -134,15 +134,15 @@ const buildingTypes = {
             return town.population >= 2
         }
     }),
-    courtHouse: new BuildingType('courtHouse', {
-        productionCost: 30,
-        maintenanceCost: 1,
-        prerequisite: 'codeOfLaws',
-        // TO DO : corruption rule
-        specialCaseIsUsefulFunction(town, state) {
-            return false
-        }
-    }),
+    //     TO DO : corruption rule
+    // courtHouse: new BuildingType('courtHouse', {
+    //     productionCost: 30,
+    //     maintenanceCost: 1,
+    //     prerequisite: 'codeOfLaws',
+    //     specialCaseIsUsefulFunction(town, state) {
+    //         return false
+    //     }
+    // }),
     aqueduct: new BuildingType('aqueduct', {
         productionCost: 50,
         maintenanceCost: 1,

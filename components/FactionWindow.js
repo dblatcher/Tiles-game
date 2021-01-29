@@ -120,7 +120,7 @@ export default class FactionWindow extends React.Component {
                             <h3 style={{ cursor: 'pointer' }} onClick={() => { openTownView(town) }}>{town.name}</h3>
                             <TradeReport town={town} inRevolt={factionTownsNotInRevolt.indexOf(town) === -1} />
                             <CitizenRow town={town} onFactionWindow={true} stateOfPlay={stateOfPlay} />
-                            <ProductionMenu town={town} handleTownAction={handleTownAction}  showProgressBar/>
+                            <ProductionMenu town={town} handleTownAction={handleTownAction} showProgressBox/>
                         </section>
                     ))}
                 </article>

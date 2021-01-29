@@ -13,7 +13,7 @@ import ProgressBox from '../ProgressBox';
 class ProductionMenuProps {
     town: Town
     handleTownAction: Function
-    showProgressBar: boolean
+    showProgressBox: boolean
 }
 
 export default class ProductionMenu extends React.Component {
@@ -152,7 +152,7 @@ export default class ProductionMenu extends React.Component {
         return (<>
             <article className={styles.productionMenu}>
 
-                {(this.props.showProgressBar) &&
+                {(this.props.showProgressBox) &&
                     <span style={{ display: 'flex', alignItems: 'center', flex: 1, justifyContent: 'space-between' }}>
                         <ProgressBox oneRow useBlankSymbols noFrame
                             showNumbers={!!town.isProducing}

@@ -1,6 +1,7 @@
 import InfoLink from '../InfoLink'
 
 
+import { buildingTypes } from '../../lib/game-entities/BuildingType'
 import { techDiscoveries } from '../../lib/game-entities/TechDiscovery'
 import styles from './info.module.scss'
 import SvgIcon from '../SvgIcon'
@@ -8,16 +9,12 @@ import { BASE_POPULATION_LIMIT } from '../../lib/game-logic/constants'
 
 export default class BuildingInfo extends React.Component {
 
-    render() {
-        const { subject, content } = this.props
-
-        if (!subject) { return null }
-        const buildingType = subject
-        const { prerequisite, reduceUnhappiness, revenueMultiplierBonus, allowExtraPopulation } = buildingType
-
-        const prerequisiteTech = techDiscoveries[prerequisite]
-
+    get bonusDescription() {
+        const { subject } = this.props
+        if (!subject) { return [] }
+        const { reduceUnhappiness, revenueMultiplierBonus, allowExtraPopulation } = subject
         let bonusDescriptionItems = []
+
         if (reduceUnhappiness) {
             bonusDescriptionItems.push(`reduces unhappiness by ${reduceUnhappiness}`)
         }
@@ -29,7 +26,30 @@ export default class BuildingInfo extends React.Component {
                 bonusDescriptionItems.push(`${item}: ${revenueMultiplierBonus[item] * 100}%`)
             }
         }
-        const bonusDescription = bonusDescriptionItems.join(", ")
+
+        if (subject == buildingTypes.granary) {
+            bonusDescriptionItems.push('Keep 50% of food store after population growth')
+        }
+
+        if (subject == buildingTypes.barracks) {
+            bonusDescriptionItems.push('Land units start as veteran')
+        }
+
+        if (subject == buildingTypes.harbour) {
+            bonusDescriptionItems.push('Naval units start as veteran')
+            bonusDescriptionItems.push('+1 food in ocean squares')
+        }
+
+        return bonusDescriptionItems
+    }
+
+    render() {
+        const { subject, content } = this.props
+        if (!subject) { return null }
+
+        const buildingType = subject
+        const prerequisiteTech = techDiscoveries[buildingType.prerequisite]
+        const bonusDescription = this.bonusDescription.join(", ")
 
 
         return (
@@ -39,7 +59,6 @@ export default class BuildingInfo extends React.Component {
                 {content && content.description
                     ? <p>{content.description}</p>
                     : <p>{buildingType.name} is a type of building.</p>}
-
 
                 <table>
                     <tbody>

@@ -110,7 +110,10 @@ export default class TownView extends React.Component {
                 <div className={styles.frame}>
 
                     <section className={[styles.section, styles.mapSection].join(" ")}>
-                        <CitizenRow stateOfPlay={stateOfPlay} town={town} handleCitizenClick={this.handleCitizenClick} />
+                        <CitizenRow splitSpecialists
+                            stateOfPlay={stateOfPlay}
+                            town={town}
+                            handleCitizenClick={this.handleCitizenClick} />
                         <MapSection
                             handleMapSectionClick={this.handleMapSectionClick}
                             radius={2}
@@ -129,7 +132,7 @@ export default class TownView extends React.Component {
                                         fullWidth useBlankSymbols showNumbers
                                         current={town.productionStore}
                                         target={town.isProducing ? town.isProducing.productionCost : 0}
-                                        showTurnsToComplete 
+                                        showTurnsToComplete
                                         turnsToComplete={town.turnsToCompleteProduction} />
                                     <ProductionMenu handleTownAction={handleTownAction} town={town} />
                                 </section>
@@ -141,7 +144,7 @@ export default class TownView extends React.Component {
                                 <section className={styles.section}>
                                     <h2>Food <span>{displayGain(town.output.foodYield)}</span> </h2>
                                     {this.foodStoreCaptionParagraph}
-                                    
+
                                     <ProgressBox unit="food" maxRows={5}
                                         fullWidth showNumbers
                                         current={town.foodStore}

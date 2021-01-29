@@ -20,11 +20,22 @@
 }
 
 
+.splitRowContainer {
+    display: flex;
+
+    .citizenRow {
+        position: relative;
+    }
+}
+
 .citizenRow {
     max-width: 100%;
     position: relative;
     height: 2em;
-    margin: 0 1em;
+
+    &:not(:empty) {
+        margin: 0 1em;
+    }
 
     &.rowInFactionWindow {
         font-size: 75%;

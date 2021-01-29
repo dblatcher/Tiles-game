@@ -52,7 +52,7 @@ class Town {
         this.supportedUnits = config.supportedUnits || []
         this.buildings = config.buildings || []
     }
-    get classIs() {return "Town"}
+    get classIs() { return "Town" }
     get x() { return this.mapSquare.x }
     get y() { return this.mapSquare.y }
     get population() { return this.citizens.length }
@@ -122,7 +122,7 @@ class Town {
     }
 
     get turnsToCompleteProduction() {
-        if (!this.isProducing) {return Infinity}
+        if (!this.isProducing) { return Infinity }
         return getTurnsToComplete(this.isProducing.productionCost - this.productionStore, this.output.productionYield)
     }
 
@@ -297,10 +297,15 @@ class Town {
                 notices.push(`${this.name} has finished building ${this.productionItemName}`)
 
                 if (this.isProducing.classIs === 'UnitType') {
-                    const newUnit = new Unit(this.isProducing as UnitType, this.faction, {
+
+                    const newUnitType = this.isProducing as UnitType
+                    const vetran = (this.buildings.includes(buildingTypes.barracks) && !newUnitType.isNaval) ||
+                        (this.buildings.includes(buildingTypes.harbour) && newUnitType.isNaval)
+
+                    const newUnit = new Unit(newUnitType, this.faction, {
                         x: this.x,
                         y: this.y,
-                        vetran: this.buildings.includes(buildingTypes.barracks)
+                        vetran
                     })
                     if (newUnit.type.townBuilding > 0 && this.population > 1) { this.citizens.pop() }
 

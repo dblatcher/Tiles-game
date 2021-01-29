@@ -1,29 +1,27 @@
-tutorial system!
-trade report wrapping
+finish tutorial system
+
+informational text
+- more content
+
+
+features for v2
+---------------
+
+informational text
+- support HTML / markdown instead of json?
+- internationalisation suport
 
 AI
 - learn to use naval units...
 - use AI config to prioritise citizen jobs
 - debug component to reveal AI priorities / goals
 
+?Diplomacy
+
+?trade routes
+
 map
  - special resources
-
-
-towns
-? trade routes
-
-informational text
-- more content
-- support HTML / markdown instead of json?
-- internationalisation suport
-- building effect descriptions
-
-
-features for v2
----------------
-
-?Diplomacy
 
 ?GovermentTypes
 - corruption rates

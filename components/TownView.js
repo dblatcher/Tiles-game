@@ -2,7 +2,7 @@ import MapSection from "./MapSection";
 import ProductionMenu from "./dialogue/ProductionMenu.tsx";
 import Window from "./Window";
 import UnitListBox from "./interface/UnitListBox.tsx";
-import TradeReport from "./interface/TradeReport.tsx";
+import OutputReport from "./interface/OutputReport.tsx";
 import ProgressBox from "./ProgressBox.tsx";
 import CitizenRow from "./CitizenRow.tsx";
 import TownBuildingList from "./TownBuildingList";
@@ -154,7 +154,7 @@ export default class TownView extends React.Component {
                             content: (
                                 <section className={styles.section}>
                                     <h2>Trade<span>{displayGain(town.output.tradeYield)}</span></h2>
-                                    <TradeReport
+                                    <OutputReport topic={"TRADE"}
                                         town={town}
                                         townView={true}
                                         separateLines={true}

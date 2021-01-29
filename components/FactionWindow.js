@@ -1,6 +1,6 @@
 import Window from "./Window";
 import SvgIcon from "./SvgIcon"
-import TradeReport from "./interface/TradeReport.tsx"
+import OutputReport from "./interface/OutputReport.tsx"
 import ProgressBox from "./ProgressBox.tsx"
 import ProductionMenu from "./dialogue/ProductionMenu.tsx"
 import TechTree from "./TechTree";
@@ -118,9 +118,17 @@ export default class FactionWindow extends React.Component {
                     {factionTowns.map(town => (
                         <section key={`townReport-${town.indexNumber}`}>
                             <h3 style={{ cursor: 'pointer' }} onClick={() => { openTownView(town) }}>{town.name}</h3>
-                            <TradeReport town={town} inRevolt={factionTownsNotInRevolt.indexOf(town) === -1} />
-                            <CitizenRow town={town} onFactionWindow={true} stateOfPlay={stateOfPlay} />
-                            <ProductionMenu town={town} handleTownAction={handleTownAction} showProgressBox/>
+
+                            <OutputReport town={town}
+                                topic={"BOTH"}
+                                inRevolt={factionTownsNotInRevolt.indexOf(town) === -1} />
+
+                            <CitizenRow town={town}
+                                onFactionWindow={true}
+                                stateOfPlay={stateOfPlay} />
+
+                            <ProductionMenu town={town} showProgressBox
+                                handleTownAction={handleTownAction} />
                         </section>
                     ))}
                 </article>

@@ -1,25 +1,36 @@
 import { Town } from "../../lib/game-entities/Town"
-import IconRow from "../IconRow.tsx"
+import SvgIcon from "../SvgIcon"
 import styles from "./tradeReport.module.scss"
 
 
+function renderRowOrNumberOf(maxForRow: number, number: number, iconName: string, color: string | undefined = undefined) {
+    if (number <= maxForRow && number > 0) { 
+        let keyArray: string[] = []
+        for (let i = 0; i < number; i++) {
+            keyArray.push(`icon-${i}`)
+        }
+        return keyArray.map(key => <SvgIcon key={key} iconName={iconName} color={color} />)
+    }
+    return <span className={styles.iconAndNumber}>
+        <SvgIcon iconName={iconName} color={color} />
+        &times; {number}
+    </span>
+}
 
 export default function TradeReport(props: {
     town: Town
-    townView: boolean 
-    includeName:boolean 
+    townView: boolean
     separateLines: boolean
     inRevolt: boolean
 }) {
 
-    const { town, townView, includeName, separateLines, inRevolt } = props
+    const { town, townView, separateLines, inRevolt } = props
     const allocatedBudget = town.faction.allocateTownRevenue(town)
 
     const articleClassList = [townView ? styles.articleTownView : styles.articleOneLine]
 
 
     return <article className={articleClassList.join(" ")}>
-        {includeName ? (<p className={styles.name}>{town.name}:&nbsp;</p>) : null}
 
         {inRevolt && (
             <span className={styles.revoltMessage}>in revolt</span>
@@ -29,32 +40,24 @@ export default function TradeReport(props: {
             ? <>
                 <p>
                     {allocatedBudget.treasury >= town.buildingMaintenanceCost
-                        ? <>
-                            <IconRow iconName={'coins'} number={allocatedBudget.treasury - town.buildingMaintenanceCost} />
-                            <IconRow iconName={'coins'} color="gray" number={town.buildingMaintenanceCost} />
-                        </>
-                        : <>
-                            <IconRow iconName={'coins'} color="red" number={town.buildingMaintenanceCost - allocatedBudget.treasury} />
-                        </>}
+                        ? renderRowOrNumberOf(20, allocatedBudget.treasury - town.buildingMaintenanceCost, 'coins')
+                        : renderRowOrNumberOf(20, town.buildingMaintenanceCost - allocatedBudget.treasury, 'coins', 'red')
+                    }
                 </p>
                 <p>
-                    <IconRow iconName={'lightBulb'} number={allocatedBudget.research} />
+                    {renderRowOrNumberOf(20, allocatedBudget.research, 'lightBulb')}
                 </p>
                 <p>
-                    <IconRow iconName={'cocktail'} number={allocatedBudget.entertainment} />
+                    {renderRowOrNumberOf(20, allocatedBudget.entertainment, 'cocktail')}
                 </p>
             </>
             : <>
                 {allocatedBudget.treasury >= town.buildingMaintenanceCost
-                    ? <>
-                        <IconRow iconName={'coins'} number={allocatedBudget.treasury - town.buildingMaintenanceCost} />
-                        <IconRow iconName={'coins'} color="gray" number={town.buildingMaintenanceCost} />
-                    </>
-                    : <>
-                        <IconRow iconName={'coins'} color="red" number={town.buildingMaintenanceCost - allocatedBudget.treasury} />
-                    </>}
-                <IconRow iconName={'lightBulb'} number={allocatedBudget.research} />
-                <IconRow iconName={'cocktail'} number={allocatedBudget.entertainment} />
+                    ? renderRowOrNumberOf(0, allocatedBudget.treasury - town.buildingMaintenanceCost, 'coins')
+                    : renderRowOrNumberOf(0, town.buildingMaintenanceCost - allocatedBudget.treasury, 'coins', 'red')
+                }
+                {renderRowOrNumberOf(0, allocatedBudget.research, 'lightBulb')}
+                {renderRowOrNumberOf(0, allocatedBudget.entertainment, 'cocktail')}
             </>
         }
 

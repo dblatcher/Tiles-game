@@ -3,16 +3,21 @@
 .articleTownView {
     @include box();
     align-self: start;
-    width: 10rem;
-    box-sizing: content-box;
+    width: 100%;
     min-height: 4rem;
 
     p {
         margin: 0 0 .2em 0;
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         justify-content: flex-start;
         max-width: 100%;
+        min-height: 2rem;
+
+        svg {
+            flex-shrink: 0;
+        }
     }
 
     .revoltMessage {
@@ -24,6 +29,10 @@
         font-size: 125%;
         white-space: nowrap;
         font-variant: small-caps;
+    }
+
+    @media (min-width: $layout-breakpoint) {
+        max-width: 11rem;
     }
 }
 
@@ -47,9 +56,14 @@
         font-variant: small-caps;
         background-color: rgba($color: white, $alpha: 0.75);
     }
-}
 
-.name {
-    font-weight: bold;
-    min-width: 8em;
+    .iconAndNumber {
+        display: inline-block;
+        padding-right: .4em;
+        margin-right: .4em;
+
+        &:not(:last-child) {
+            border-right: 1px solid black;
+        }
+    }
 }

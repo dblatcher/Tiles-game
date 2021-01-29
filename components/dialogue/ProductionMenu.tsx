@@ -161,7 +161,7 @@ export default class ProductionMenu extends React.Component {
                             target={town.isProducing ? town.isProducing.productionCost : 0}
                             unit="production"
                             current={town.productionStore} />
-                        <span><b>{town.isProducing ? town.isProducing.displayName : 'no production'}</b></span>
+                        <span><b>{town.isProducing ? town.isProducing.displayName : 'nothing'}</b></span>
                     </span>
                 }
 

@@ -118,8 +118,8 @@ export default class FactionWindow extends React.Component {
                     {factionTowns.map(town => (
                         <section key={`townReport-${town.indexNumber}`}>
                             <h3 style={{ cursor: 'pointer' }} onClick={() => { openTownView(town) }}>{town.name}</h3>
-                            <CitizenRow town={town} onFactionWindow={true} stateOfPlay={stateOfPlay} />
                             <TradeReport town={town} inRevolt={factionTownsNotInRevolt.indexOf(town) === -1} />
+                            <CitizenRow town={town} onFactionWindow={true} stateOfPlay={stateOfPlay} />
                             <ProductionMenu town={town} handleTownAction={handleTownAction}  showProgressBar/>
                         </section>
                     ))}

@@ -1,6 +1,6 @@
 import { Town } from "../../lib/game-entities/Town"
 import SvgIcon from "../SvgIcon"
-import styles from "./OutputReport.module.scss"
+import styles from "./outputReport.module.scss"
 
 interface YieldReportProps {
     town: Town

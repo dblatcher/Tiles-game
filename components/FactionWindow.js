@@ -1,6 +1,6 @@
 import Window from "./Window";
 import SvgIcon from "./SvgIcon"
-import TradeReport from "./TradeReport"
+import TradeReport from "./interface/TradeReport.tsx"
 import ProgressBox from "./ProgressBox.tsx"
 import ProductionMenu from "./dialogue/ProductionMenu.tsx"
 import TechTree from "./TechTree";

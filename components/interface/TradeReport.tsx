@@ -1,7 +1,16 @@
-import IconRow from "./IconRow"
+import { Town } from "../../lib/game-entities/Town"
+import IconRow from "../IconRow.tsx"
 import styles from "./tradeReport.module.scss"
 
-export default function TradeReport(props) {
+
+
+export default function TradeReport(props: {
+    town: Town
+    townView: boolean 
+    includeName:boolean 
+    separateLines: boolean
+    inRevolt: boolean
+}) {
 
     const { town, townView, includeName, separateLines, inRevolt } = props
     const allocatedBudget = town.faction.allocateTownRevenue(town)

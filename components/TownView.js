@@ -2,7 +2,7 @@ import MapSection from "./MapSection";
 import ProductionMenu from "./dialogue/ProductionMenu.tsx";
 import Window from "./Window";
 import UnitListBox from "./interface/UnitListBox.tsx";
-import TradeReport from "./TradeReport";
+import TradeReport from "./interface/TradeReport.tsx";
 import ProgressBox from "./ProgressBox.tsx";
 import CitizenRow from "./CitizenRow.tsx";
 import TownBuildingList from "./TownBuildingList";
@@ -31,29 +31,35 @@ export default class TownView extends React.Component {
         return handleTownAction('MAP_CLICK', { mapSquare, town: stateOfPlay.openTown })
     }
 
-    get productionCaption() {
+    get productionCaptionParagraph() {
         const { isProducing } = this.props.stateOfPlay.openTown
-        return isProducing
-            ? `Producing: ${isProducing.displayName}`
-            : `Producing: nothing`
+        return (
+            <p className={styles.caption}>
+                Producing:
+                <b>{isProducing ? isProducing.displayName : 'nothing'}</b>
+            </p>
+        )
+
     }
 
-    get foodStoreCaption() {
+    get foodStoreCaptionParagraph() {
         const { foodStoreRequiredForGrowth, foodStore, population, populationLimit } = this.props.stateOfPlay.openTown
         const { foodYield } = this.props.stateOfPlay.openTown.output
-        let figure
+        let figure, text
 
         if (foodYield > 0 && population < populationLimit) {
             figure = getTurnsToComplete(foodStoreRequiredForGrowth - foodStore, foodYield)
-            return `growth in ${figure} ${pluralise('turn', figure)}`
+            text = `growth in ${figure} ${pluralise('turn', figure)}`
         } else if (foodYield < 0) {
             figure = getTurnsToComplete(foodStore, -foodYield)
-            return `starvation in ${figure} ${pluralise('turn', figure)}`
+            text = `starvation in ${figure} ${pluralise('turn', figure)}`
         } else if (population >= populationLimit) {
-            return 'max population'
+            text = 'max population'
         } else {
-            return 'no growth'
+            text = 'no growth'
         }
+
+        return <p className={styles.caption}>{text}</p>
     }
 
     render() {
@@ -118,7 +124,7 @@ export default class TownView extends React.Component {
                             content: (
                                 <section className={styles.section}>
                                     <h2>Production<span>{displayGain(town.output.productionYield)}</span></h2>
-                                    <p className={styles.caption}>{this.productionCaption}</p>
+                                    {this.productionCaptionParagraph}
                                     <ProgressBox fullWidth useBlankSymbols showNumbers
                                         current={town.productionStore}
                                         target={town.isProducing ? town.isProducing.productionCost : 0}
@@ -133,8 +139,9 @@ export default class TownView extends React.Component {
                             content: (
                                 <section className={styles.section}>
                                     <h2>Food <span>{displayGain(town.output.foodYield)}</span> </h2>
-                                    <p className={styles.caption}>{this.foodStoreCaption}</p>
-                                    <ProgressBox fullWidth
+                                    {this.foodStoreCaptionParagraph}
+                                    
+                                    <ProgressBox fullWidth showNumbers
                                         current={town.foodStore}
                                         target={town.foodStoreRequiredForGrowth}
                                         unit="food" />

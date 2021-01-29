@@ -1,6 +1,11 @@
 import SvgIcon from "./SvgIcon"
 
-export default function IconRow(props) {
+export default function IconRow(props: {
+    iconName: string
+    color: string | false
+    number: number
+    useTens: boolean
+}) {
     const { iconName, color = false, number = 1, useTens = true } = props
     const onesKeyArray = [], tensKeyArray = []
 
@@ -31,6 +36,8 @@ export default function IconRow(props) {
     for (let i = 1; i < numberOfOnes + 1; i++) {
         onesKeyArray.push(`Icon-${i}`)
     }
+
+
 
     return <span style={spanStyle}>
         {tensKeyArray.map((key, index) => <SvgIcon

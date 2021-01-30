@@ -2,7 +2,7 @@ import Link from 'next/link'
 import dialogueStyles from '../../styles/dialogue.module.scss'
 import styles from './mainMenu.module.scss'
 
-import makeGameStateFunction from '../../lib/makeGameState'
+import makeGameStateFunction from '../../lib/game-creation/makeGameState'
 import * as Storage from '../../lib/storage'
 
 import DecorativeMap from '../DecorativeMap'

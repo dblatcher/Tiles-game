@@ -1,6 +1,7 @@
 import React from 'react'
 import dialogueStyles from '../../styles/dialogue.module.scss'
-import makeGameStateFunction from '../../lib/makeGameState'
+import makeGameStateFunction from '../../lib/game-creation/makeGameState'
+import { landFormOptions } from '../../lib/game-maps/MapConfig'
 
 
 export default class NewGameOptions extends React.Component {
@@ -23,6 +24,10 @@ export default class NewGameOptions extends React.Component {
                             width: 50,
                             height: 20,
                             treeChance: .3,
+                        },
+                        {
+                            tutorialEnabled: false,
+                            numberOfFactions: 4,
                         }
                     ))
                 }}>new game</button>
@@ -33,7 +38,12 @@ export default class NewGameOptions extends React.Component {
                             width: 40,
                             height: 15,
                             treeChance: .3,
-                        }, true
+                            landFormOption: landFormOptions[1]
+                        }, 
+                        {
+                            tutorialEnabled: true,
+                            numberOfFactions: 2,
+                        }
                     ))
                 }}>tutorial</button>
 

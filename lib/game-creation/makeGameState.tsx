@@ -1,20 +1,27 @@
-import { MapSquare } from './game-entities/MapSquare'
-import { TerrainType, terrainTypes } from './game-entities/TerrainType'
-import { unitTypes } from './game-entities/UnitType'
-import { Unit } from './game-entities/Unit'
-import { Faction, ComputerFaction } from './game-entities/Faction'
-import { OnGoingOrder, orderTypesMap } from './game-entities/OngoingOrder'
-import { Town } from './game-entities/Town'
-import { buildingTypes } from './game-entities/BuildingType'
-import { techDiscoveries } from './game-entities/TechDiscovery'
+import { MapSquare } from '../game-entities/MapSquare'
+import { TerrainType, terrainTypes } from '../game-entities/TerrainType'
+import { unitTypes } from '../game-entities/UnitType'
+import { Unit } from '../game-entities/Unit'
+import { Faction, ComputerFaction } from '../game-entities/Faction'
+import { OnGoingOrder, orderTypesMap } from '../game-entities/OngoingOrder'
+import { Town } from '../game-entities/Town'
+import { buildingTypes } from '../game-entities/BuildingType'
+import { techDiscoveries } from '../game-entities/TechDiscovery'
 
-import townNames from './game-entities/townNames'
-import { makeMap } from './game-maps/makeMap.ts'
-import { MapConfig } from './game-maps/MapConfig.ts'
-import { UnitMission } from './game-ai/UnitMission'
+import townNames from './townNames'
+import { makeMap } from '../game-maps/makeMap'
+import { MapConfig } from '../game-maps/MapConfig'
+import { UnitMission } from '../game-ai/UnitMission'
 
-import {TutorialState} from './game-misc/tutorial'
+import { TutorialState } from '../game-misc/tutorial'
 
+import { makeStandardFactions } from './factionFactory'
+import { assignStartingPoints, findStartingPoints } from './findStartingPoints'
+
+class WorldConfig {
+    numberOfFactions?: number
+    tutorialEnabled?: boolean
+}
 
 const makeGameStateFunction = {
 
@@ -92,7 +99,6 @@ const makeGameStateFunction = {
                 knownTech: [techDiscoveries.alphabet, techDiscoveries.bronzeWorking, techDiscoveries.masonry],
             },
                 {
-                    foo: 'bar'
                 }),
         ]
 
@@ -185,9 +191,9 @@ const makeGameStateFunction = {
         mapGrid[4][4].mine = true
         mapGrid[5][4].mine = true
 
-        for (let i=0; i<mapGrid[0].length; i++) {
-            mapGrid[4][i].road=true;
-            mapGrid[3][i].road=true;
+        for (let i = 0; i < mapGrid[0].length; i++) {
+            mapGrid[4][i].road = true;
+            mapGrid[3][i].road = true;
         }
 
         const factions = [
@@ -206,10 +212,9 @@ const makeGameStateFunction = {
                 knownTech: [techDiscoveries.ironWorking, techDiscoveries.bronzeWorking, techDiscoveries.alphabet, techDiscoveries.horsebackRiding],
             },
                 {
-                    foo: 'bar',
                     minimumTownLocationScore: 30,
                     defendersPerTown: 1,
-                    conquerPriority:4,
+                    conquerPriority: 4,
                     expandPriority: 1,
                     developPriority: 1,
                     discoverPriority: 1,
@@ -242,20 +247,20 @@ const makeGameStateFunction = {
             }),
             new Town(factions[0], mapGrid[2][5], {
                 population: 2,
-                productionStore:10,
+                productionStore: 10,
                 foodStore: 22,
             }),
             new Town(factions[0], mapGrid[1][10], {
                 population: 10,
-                productionStore:17,
+                productionStore: 17,
             }),
             new Town(factions[0], mapGrid[6][10], {
                 population: 10,
-                productionStore:17,
+                productionStore: 17,
             }),
             new Town(factions[0], mapGrid[9][9], {
                 population: 4,
-                productionStore:17,
+                productionStore: 17,
             }),
         ]
 
@@ -271,55 +276,24 @@ const makeGameStateFunction = {
     },
 
 
-    randomWorld: (mapConfigInput, tutorialEnabled=false) => () => {
+    randomWorld: (mapConfigInput: MapConfig, worldConfig: WorldConfig = {}) => () => {
+        const { numberOfFactions = 2 } = worldConfig
 
+        const factions = makeStandardFactions(numberOfFactions)
+        const units: Unit[] = []
         const mapGrid = makeMap(new MapConfig(mapConfigInput));
 
-        let possibleStartingPoints = []
-        mapGrid.forEach(row => {
-            possibleStartingPoints.push(...row.filter(mapSquare => {
-                return !mapSquare.isWater &&
-                    mapSquare.terrain !== terrainTypes.arctic &&
-                    mapSquare.terrain !== terrainTypes.tundra &&
-                    mapSquare.terrain !== terrainTypes.mountains
-            }))
-        })
+        let possibleStartingPoints = findStartingPoints(mapGrid)
+        let startingPoints = assignStartingPoints(factions, possibleStartingPoints)
 
-        let startingPointsAwayFromOtherPlayers = [].concat(possibleStartingPoints)
-
-        const factions = [
-            new Faction('Montenegro', { color: 'crimson', townNames: townNames.montenegro }),
-            new ComputerFaction('Cambodia', { color: 'blue', townNames: townNames.cambodia }, {}),
-            new ComputerFaction('Wisconsin', { color: 'green', townNames: townNames.wisconsin }, {}),
-            new ComputerFaction('Peru', { color: 'purple', townNames: townNames.peru }, {}),
-        ]
-
-        const units = [
-        ]
-
-        const findDistance = (squareA, squareB) => Math.abs(squareA.x - squareB.x) + Math.abs(squareA.y - squareB.y)
-
-        factions.forEach(faction => {
-            let startingPoint
-            if (possibleStartingPoints.length < 1) {
-                console.warn('NO STARTING possible POINT FOR:', faction)
-                return false
-            } else if (startingPointsAwayFromOtherPlayers.length < 1) {
-                console.warn('NO STARTING POINT AWAY FROM OTHER PLAYER FOR:', faction)
-                startingPoint = possibleStartingPoints[Math.floor(Math.random() * possibleStartingPoints.length)]
-            } else {
-                startingPoint = startingPointsAwayFromOtherPlayers[Math.floor(Math.random() * startingPointsAwayFromOtherPlayers.length)]
-            }
-
-            possibleStartingPoints.splice(possibleStartingPoints.indexOf(startingPoint, 1))
-            startingPointsAwayFromOtherPlayers = startingPointsAwayFromOtherPlayers
-                .filter(square => findDistance(square, startingPoint) > 8)
+        factions.forEach((faction, index) => {
+            const startingPoint = startingPoints[index]
+            if (!startingPoint) { return }
 
             units.push(new Unit(unitTypes.warrior, faction, { x: startingPoint.x, y: startingPoint.y }))
             units.push(new Unit(unitTypes.settler, faction, { x: startingPoint.x, y: startingPoint.y }))
             units.push(new Unit(unitTypes.worker, faction, { x: startingPoint.x, y: startingPoint.y }))
         })
-
 
         return {
             mapGrid,
@@ -329,11 +303,9 @@ const makeGameStateFunction = {
             activeFaction: factions[0],
             selectedUnit: units.filter(unit => unit.faction === factions[0])[0],
             turnNumber: 1,
-            tutorial: new TutorialState(tutorialEnabled, factions[0]),
+            tutorial: worldConfig.tutorialEnabled ? new TutorialState(true, factions[0]) : null
         }
-
     }
-
 }
 
 export default makeGameStateFunction

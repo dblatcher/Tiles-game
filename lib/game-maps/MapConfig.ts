@@ -29,7 +29,7 @@ class MapConfig {
     width: number
     height: number
     treeChance: number
-    landFormOption: LandFormOption
+    landFormOption?: LandFormOption
 
     constructor(input) {
         this.width = input.width;

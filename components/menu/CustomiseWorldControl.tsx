@@ -1,7 +1,7 @@
 import React from 'react'
 import dialogueStyles from '../../styles/dialogue.module.scss'
 
-import makeGameStateFunction from '../../lib/makeGameState'
+import makeGameStateFunction from '../../lib/game-creation/makeGameState'
 import { MapConfig, landFormOptions, LandFormOption } from '../../lib/game-maps/MapConfig'
 
 export default class CustomiseWorldControl extends React.Component {
@@ -96,7 +96,10 @@ export default class CustomiseWorldControl extends React.Component {
             </table>
 
             <button className={dialogueStyles.button} onClick={() => {
-                newGame(makeGameStateFunction.randomWorld(this.state))
+                newGame(makeGameStateFunction.randomWorld(
+                    this.state,
+                    {tutorialEnabled:false, numberOfFactions:4}
+                ))
             }}>new game</button>
 
             {children}

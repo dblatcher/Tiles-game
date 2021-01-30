@@ -7,16 +7,21 @@
 .nonBlockingDialogueHolder {
     position: fixed;
     z-index: 100;
-    right: $windowPadding *2;
-    top: $interfaceWindowHeight + $windowPadding*2;
+    right: $windowPadding;
+    top: $interfaceWindowHeight + $windowPadding;
     margin: 0;
 
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    max-width: 50%;
-
+    max-width: 75%;
     padding: $windowPadding;
+
+    @media (min-width: $layout-breakpoint) {
+        max-width: 50%;
+        right: $windowPadding*2 ;
+        top: $interfaceWindowHeight + $windowPadding;
+    }
 }
 
 .dialogueFrame {
@@ -48,6 +53,10 @@
     display: flex;
     justify-content: space-around;
     margin: .5rem 0;
+
+    &.short {
+        margin: 0;
+    }
 }
 
 .buttonRowLabel {
@@ -57,6 +66,15 @@
 .button {
     @include input;
     font-size: large;
+
+    &.rightAligned {
+        float: right;
+    }
+
+    &.topRightSpaced {
+        margin-left: .2em;
+        margin-bottom: .2em;
+    }
 }
 
 .headerRow {

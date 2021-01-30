@@ -2,7 +2,8 @@ import React from 'react'
 import { GameState } from '../../lib/game-entities/GameState'
 import { TutorialState } from '../../lib/game-misc/tutorial'
 
-import styles from '../../styles/dialogue.module.scss'
+import styles from './tutorialDialogue.module.scss'
+import dialogueStyles from '../../styles/dialogue.module.scss'
 
 export default class TutorialDialogue extends React.Component {
     props: {
@@ -20,28 +21,32 @@ export default class TutorialDialogue extends React.Component {
         if (!enabled || !message) { return null }
         if (stateOfPlay.activeFaction !== playerFaction) { return null }
 
-        if (!showing) {
-            return (
-                <aside className={styles.nonBlockingDialogueHolder}>
-                    <div className={[styles.dialogueFrame, styles.tutorial].join(" ")}>
-                        <button onClick={() => { handleTutorialClick('SHOW') }}>TUTORIAL</button>
-                    </div>
-                </aside>
-            )
+
+        const buttonClassList = [dialogueStyles.button, dialogueStyles.rightAligned]
+        const messageClassList = [styles.message]
+        if (showing) {
+            buttonClassList.push(dialogueStyles.topRightSpaced)
+        } else {
+            messageClassList.push(styles.folded)
         }
+
+        const messageContent = (message && message.text && message.text.english)
+            ? message.text.english
+            : "[MISSING CONTENT]"
 
         return (
 
-            <aside className={styles.nonBlockingDialogueHolder}>
-                <div className={[styles.dialogueFrame, styles.tutorial].join(" ")}>
+            <aside className={dialogueStyles.nonBlockingDialogueHolder}>
+                <div className={[dialogueStyles.dialogueFrame, dialogueStyles.tutorial].join(" ")}>
 
-                    {message && (
-                        <p>{message.text.english}</p>
-                    )}
+                    <button onClick={() => { handleTutorialClick(showing ? 'DISMISS' : 'SHOW') }}
+                        className={buttonClassList.join(" ")}
+                    >
+                        <i className={"material-icons md-18"}>{showing ? 'expand_less' : 'school'}</i>
+                    </button>
 
-                    <button onClick={() => { handleTutorialClick('DISMISS') }}>DISMISS</button>
+                    <p className={messageClassList.join(" ")}>{messageContent}</p>
                 </div>
-
             </aside>
 
         )

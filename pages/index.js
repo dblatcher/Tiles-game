@@ -18,6 +18,9 @@ export default function Home() {
         <p className={styles.description}>
           <Link href="/info">info index</Link>
         </p>
+        <p className={styles.description}>
+          <Link href="/about">about</Link>
+        </p>
         
         <DecorativeMap scale={.5}/>
       </main>

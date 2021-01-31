@@ -1,7 +1,8 @@
 import startOfTurn from './startOfTurn'
-import endOfGame from './endOfGame.ts'
+import endOfGame from './endOfGame'
+import { GameState } from '../game-entities/GameState';
 
-const endOfTurn = input => state => {
+const endOfTurn = input => (state:GameState) => {
     const { factions } = state;
 
     const oldFaction = state.activeFaction
@@ -9,7 +10,9 @@ const endOfTurn = input => state => {
     const notDeadHumanFactions = notDeadFactions.filter(faction => !faction.isComputerPlayer)
 
 
-    if (notDeadFactions.length === 1) {
+    const tutorialInProgress = state.tutorial && state.tutorial.enabled
+    
+    if (notDeadFactions.length === 1 && !tutorialInProgress) {
         return endOfGame({ winner: notDeadFactions[0] })(state)
     }
 

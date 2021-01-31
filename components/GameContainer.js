@@ -117,7 +117,7 @@ export default class GameContainer extends React.Component {
             selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
             pendingDialogues, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
             mapZoomLevel, mapXOffset, mapShiftInProgress,
-            browserSupportsLocalStorage, debug, gameOver, turnNumber,
+            browserSupportsLocalStorage, debug, gameOver, turnNumber, tutorial
         } = this.state
 
         return {
@@ -126,7 +126,7 @@ export default class GameContainer extends React.Component {
             selectedUnit, interfaceMode, interfaceModeOptions, fallenUnits,
             pendingDialogues, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
             mapZoomLevel, mapXOffset, mapShiftInProgress,
-            browserSupportsLocalStorage, debug, gameOver, turnNumber
+            browserSupportsLocalStorage, debug, gameOver, turnNumber, tutorial
         }
     }
 
@@ -342,6 +342,10 @@ export default class GameContainer extends React.Component {
         }
 
         return asyncSetState(this, processMapClick(input,effectiveMode))
+            .then( asyncSetState(this, state => {
+                if (state.tutorial) { state.tutorial.updateEvents(state) }
+                return state
+            }))
             .then(async () => {
                 if (effectiveMode === 'MOVE' && selectedUnit !== this.state.selectedUnit) {
 

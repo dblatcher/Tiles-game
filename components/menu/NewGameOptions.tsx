@@ -42,7 +42,7 @@ export default class NewGameOptions extends React.Component {
                         }, 
                         {
                             tutorialEnabled: true,
-                            numberOfFactions: 2,
+                            numberOfFactions: 1,
                         }
                     ))
                 }}>tutorial</button>

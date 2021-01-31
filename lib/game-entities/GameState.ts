@@ -4,6 +4,7 @@ import { Unit } from '../game-entities/Unit';
 import { MapSquare } from '../game-entities/MapSquare';
 import { Message, TechDiscoveryChoice } from '../game-entities/Message';
 import { TextQuestion, OptionsQuestion, TechStealQuestion } from './Questions';
+import { TutorialState } from '../game-misc/tutorial';
 
 class GameState {
     towns: Array<Town>
@@ -24,6 +25,7 @@ class GameState {
     interfaceMode: string
     gameOver: boolean
     turnNumber:number
+    tutorial: TutorialState
 }
 
 export { GameState }

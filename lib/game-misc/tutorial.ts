@@ -1,6 +1,10 @@
+import { UnitMission } from "../game-ai/UnitMission"
+import { makeStandardFactions } from "../game-creation/factionFactory"
 import { Faction } from "../game-entities/Faction"
 import { GameState } from "../game-entities/GameState"
-import { unitTypes } from "../game-entities/UnitType"
+import { Unit } from "../game-entities/Unit"
+import { UnitType, unitTypes } from "../game-entities/UnitType"
+import { areSamePlace, pickAtRandom } from "../utility"
 
 const tutuorialContent = {
 
@@ -41,12 +45,12 @@ const tutuorialContent = {
     },
     openingTownWindow: {
         text: {
-            english: "You can view your towns by clicking on them with the mode set to 'Examine Map'. Open the town window for your new town again."
+            english: "You can view your towns by clicking on them with the mode set to 'Examine Map', or by right clicking if you have a mouse. Open the town window for your new town again."
         }
     },
     townWindowAgain: {
         text: {
-            english: "Great! close the town window again to get back to the map."
+            english: "Great! close the town window again to get back to the map. Use your units to explore the map for a while..."
         }
     },
     chooseFirstTech: {
@@ -59,7 +63,14 @@ const tutuorialContent = {
             english: "Great! It can take several turn to research a new technology. You can check progress on the faction window."
         }
     },
+    firstEnemy: {
+        text: {
+            english: "An enemy! Rival factions are a threat - attack this settler with your warrior by moving onto its square."
+        }
+    },
 }
+
+interface StateModificationFunction { (state: GameState): void }
 
 class TutorialEvent {
     eventKeyName: string
@@ -68,8 +79,9 @@ class TutorialEvent {
     hasStarted: boolean
     hasFinished: boolean
     prerequisteEvents: string[]
+    triggeredStateChange: StateModificationFunction
 
-    constructor(eventKeyName, testToStart, testToFinish, prerequisteEvents = []) {
+    constructor(eventKeyName, testToStart, testToFinish, prerequisteEvents = [], triggeredStateChange = null) {
 
         this.eventKeyName = eventKeyName
         this.testToFinish = testToFinish
@@ -77,6 +89,38 @@ class TutorialEvent {
         this.hasStarted = false
         this.hasFinished = false
         this.prerequisteEvents = prerequisteEvents || []
+        this.triggeredStateChange = triggeredStateChange
+    }
+
+    static addFirstComputerFactionIfMissing() {
+        return (state: GameState) => {
+            if (state.factions.some(faction => faction.isComputerPlayer)) { return }
+            const newFaction = makeStandardFactions(2)[1]
+            state.factions.push(newFaction)
+        }
+    }
+
+    static addNewUnitToGame(place, unitType: UnitType, faction: Faction, mission:UnitMission = null) {
+        return (state: GameState) => {
+            const enemyUnit = new Unit(unitType, faction, {
+                x: place.x,
+                y: place.y,
+                missions: mission ? [mission] : []
+            })
+            state.units.push(enemyUnit)
+        }
+    }
+
+    static checkNoUnitCanMove(playerFaction: Faction) {
+        return (state: GameState) => { return !state.units.some(unit => unit.faction === playerFaction && !unit.canMakeNoMoreMoves(state)) }
+    }
+
+    static checkSomeUnitCanMove(playerFaction: Faction) {
+        return (state: GameState) => { return state.units.some(unit => unit.faction === playerFaction && !unit.canMakeNoMoreMoves(state)) }
+    }
+
+    static checkPlayerHasATown(playerFaction: Faction) {
+        return (state: GameState) => state.towns.some(town => town.faction == playerFaction)
     }
 }
 
@@ -86,55 +130,55 @@ class TutorialState {
     showing: boolean
     events: TutorialEvent[]
     playerFaction: Faction
-    constructor(enabled:boolean, playerFaction:Faction) {
+    constructor(enabled: boolean, playerFaction: Faction) {
         this.enabled = enabled
         this.playerFaction = playerFaction
         this.showing = true
 
         this.events = [
-            // new TutorialEvent('firstMove',
-            //     (state: GameState) => true,
-            //     (state: GameState) => state.units.some(unit => unit.faction === this.playerFaction && (unit.remainingMoves < unit.type.moves)),
-            // ),
-            // new TutorialEvent('nextMove',
-            //     (state: GameState) => state.units.some(unit => unit.faction === this.playerFaction && !unit.canMakeNoMoreMoves(state)),
-            //     (state: GameState) => true,
-            //     ['firstMove']
-            // ),
+            new TutorialEvent('firstMove',
+                (state: GameState) => true,
+                (state: GameState) => state.units.some(unit => unit.faction === this.playerFaction && (unit.remainingMoves < unit.type.moves)),
+            ),
+            new TutorialEvent('nextMove',
+                (state: GameState) => state.units.some(unit => unit.faction === this.playerFaction && !unit.canMakeNoMoreMoves(state)),
+                (state: GameState) => true,
+                ['firstMove']
+            ),
 
-            // new TutorialEvent('factionWindow',
-            //     (state: GameState) => !!state.factionWindowIsOpen,
-            //     (state: GameState) => !state.factionWindowIsOpen,
-            //     ['firstMove', 'nextMove', 'endOfTurn']
-            // ),
-            // new TutorialEvent('endOfTurn',
-            //     (state: GameState) => !state.units.some(unit => unit.faction === this.playerFaction && !unit.canMakeNoMoreMoves(state)),
-            //     (state: GameState) => state.units.some(unit => unit.faction === this.playerFaction && !unit.canMakeNoMoreMoves(state)),
-            // ),
-            // new TutorialEvent('secondTurn',
-            //     (state: GameState) => state.turnNumber === 2,
-            //     (state: GameState) => true,
-            // ),
-            // new TutorialEvent('settler',
-            //     (state: GameState) => state.selectedUnit.type == unitTypes.settler,
-            //     (state: GameState) => state.towns.some(town => town.faction == this.playerFaction),
-            //     ['secondTurn']
-            // ),
-            // new TutorialEvent('townWindow',
-            //     (state: GameState) => !!state.openTown,
-            //     (state: GameState) => !state.openTown,
-            //     ['settler']
-            // ),
-            // new TutorialEvent('openingTownWindow',
-            //     (state: GameState) => !state.openTown,
-            //     (state: GameState) => !!state.openTown,
-            //     ['townWindow']
-            // ),
-            // new TutorialEvent('townWindowAgain',
-            //     (state: GameState) => !!state.openTown,
-            //     (state: GameState) => !state.openTown,
-            //     ['openingTownWindow']
-            // ),
+            new TutorialEvent('factionWindow',
+                (state: GameState) => !!state.factionWindowIsOpen,
+                (state: GameState) => !state.factionWindowIsOpen,
+                ['firstMove', 'nextMove', 'endOfTurn']
+            ),
+            new TutorialEvent('endOfTurn',
+                TutorialEvent.checkNoUnitCanMove(this.playerFaction),
+                TutorialEvent.checkSomeUnitCanMove(this.playerFaction),
+            ),
+            new TutorialEvent('secondTurn',
+                (state: GameState) => state.turnNumber === 2,
+                (state: GameState) => state.selectedUnit.type == unitTypes.settler,
+            ),
+            new TutorialEvent('settler',
+                (state: GameState) => state.selectedUnit.type == unitTypes.settler,
+                (state: GameState) => TutorialEvent.checkPlayerHasATown(this.playerFaction),
+                ['secondTurn']
+            ),
+            new TutorialEvent('townWindow',
+                (state: GameState) => !!state.openTown,
+                (state: GameState) => !state.openTown,
+                ['settler']
+            ),
+            new TutorialEvent('openingTownWindow',
+                (state: GameState) => !state.openTown,
+                (state: GameState) => !!state.openTown,
+                ['townWindow']
+            ),
+            new TutorialEvent('townWindowAgain',
+                (state: GameState) => !!state.openTown,
+                (state: GameState) => !state.openTown,
+                ['openingTownWindow']
+            ),
             new TutorialEvent('chooseFirstTech',
                 (state: GameState) => !!state.pendingDialogues.some(dialogue => dialogue.type === "TechDiscoveryChoice"),
                 (state: GameState) => !state.pendingDialogues.some(dialogue => dialogue.type === "TechDiscoveryChoice"),
@@ -144,6 +188,26 @@ class TutorialState {
                 (state: GameState) => !state.pendingDialogues.some(dialogue => dialogue.type === "TechDiscoveryChoice"),
                 (state: GameState) => true,
                 ['chooseFirstTech']
+            ),
+            new TutorialEvent('firstEnemy',
+                (state: GameState) => state.turnNumber >= 4,
+                (state: GameState) => false,
+                ['townWindowAgain'],
+                (state: GameState) => {
+
+                    const emptySquareInView = this.playerFaction.getPlacesInSight(state.towns, state.units, state.mapGrid[0].length)
+                        .filter(place => !state.mapGrid[place.y][place.x].isWater)
+                        .filter(place => !state.towns.some(town => areSamePlace(town, place)))
+                        .filter(place => !state.units.some(unit => areSamePlace(unit, place)))
+
+                    console.log(emptySquareInView)
+
+                    const place = pickAtRandom(emptySquareInView)
+
+                    TutorialEvent.addFirstComputerFactionIfMissing()(state)
+                    TutorialEvent.addNewUnitToGame(place, unitTypes.worker, state.factions[1], new UnitMission('WAIT'))(state)
+                    this.playerFaction.updatePlacesInSightThisTurn(state)
+                }
             ),
         ]
     }
@@ -158,7 +222,7 @@ class TutorialState {
 
         const prerequisteEventNotFinished = (eventKeyName) => {
             const event = this.events.filter(event => event.eventKeyName === eventKeyName)[0]
-            if (!event) {return false}
+            if (!event) { return false }
             return !event.hasFinished
         }
 
@@ -170,6 +234,8 @@ class TutorialState {
             if (!event.hasStarted) {
                 event.hasStarted = !event.prerequisteEvents.some(prerequisteEventNotFinished) && event.testToStart(state)
                 if (event.hasStarted) {
+
+                    if (event.triggeredStateChange) { event.triggeredStateChange(state) }
                     this.showing = true
                     return
                 }

@@ -33,8 +33,10 @@ export default {
 
             component.setState(state => {
                 const tutorial = state.tutorial as TutorialState
-                tutorial.updateEvents(state)
-                return { tutorial }
+                if (tutorial) {
+                    tutorial.updateEvents(state)
+                }
+                return state
             })
         })
     },

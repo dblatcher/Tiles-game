@@ -1,0 +1,29 @@
+@import '../../styles/design.scss';
+
+.indexSection {
+    @include box();
+    display: block;
+    margin-bottom: 2rem;
+    padding: .5rem;
+}
+
+.indexTitle {
+    margin: 0;
+    padding: .2rem 0;
+    border-bottom: 1px solid black;
+}
+
+.indexList {
+    column-count: 2;
+    list-style: none;
+    padding: 0;
+    text-align: center;
+
+    @media (min-width: $layout-breakpoint) {
+        column-count: 3;
+    }
+}
+
+.indexItem {
+    margin-bottom: .4rem;
+}

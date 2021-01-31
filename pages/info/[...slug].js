@@ -67,7 +67,7 @@ const InfoPage = ({ content, params }) => {
                 pageContent = <NotFound params={params} />
             }
         } else if (params.type && folderNameMap[params.type]) { // have valid type
-            pageContent = <IndexList title="index" listObject={folderNameMap[params.type].target}/>
+            pageContent = <IndexList title={folderNameMap[params.type].listTitle} listObject={folderNameMap[params.type].target}/>
         } else {
             pageContent = <NotFound params={params} badType />
         }

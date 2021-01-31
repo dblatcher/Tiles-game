@@ -1,0 +1,15 @@
+.container {
+    position: absolute;
+    max-height: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    z-index: -1;
+    filter: opacity(.5);
+
+    &.fixed {
+        position: fixed;
+        top:0;
+        left:0;
+        filter: opacity(.4);
+    }
+}

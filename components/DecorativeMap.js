@@ -1,5 +1,5 @@
 import TileBoard from './TileBoard'
-import styles from './decorativeMap.module.css'
+import styles from './decorativeMap.module.scss'
 import { MapSquare } from '../lib/game-entities/MapSquare';
 
 export default class DecorativeMap extends React.Component {
@@ -22,8 +22,14 @@ export default class DecorativeMap extends React.Component {
 
     render() {
         const { mapGrid } = this.state
-        const { scale = 1 } = this.props
-        return <aside className={styles.container}>
+        const { scale = 1, fixed = false } = this.props
+
+        const asideClassList = [styles.container]
+        if (fixed) {
+            asideClassList.push(styles.fixed)
+        }
+
+        return <aside className={asideClassList.join(" ")}>
             <TileBoard mapGrid={mapGrid} decorative mapZoomLevel={scale} />
         </aside>
     }

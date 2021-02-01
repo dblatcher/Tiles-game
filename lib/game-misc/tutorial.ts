@@ -2,6 +2,7 @@ import { UnitMission } from "../game-ai/UnitMission"
 import { makeStandardFactions } from "../game-creation/factionFactory"
 import { Faction } from "../game-entities/Faction"
 import { GameState } from "../game-entities/GameState"
+import { Town } from "../game-entities/Town"
 import { Unit } from "../game-entities/Unit"
 import { UnitType, unitTypes } from "../game-entities/UnitType"
 import { areSamePlace, pickAtRandom } from "../utility"
@@ -10,12 +11,12 @@ const tutuorialContent = {
 
     firstMove: {
         text: {
-            english: "Welcome to conquest. To move your units, click on one of the tiles next to them. Give it a try!"
+            english: "Welcome to conquest - your goal is found an empire and conquer the world, but first, lests explore a little! You start with three units - a settler, a worker and a warrior. To move your units, click on one of the tiles next to them. Give it a try!"
         }
     },
     nextMove: {
         text: {
-            english: "When a unit has used all its moves for a turn, the next unit will become active. You can also choose which unit to move next by using the arrow button in the bottom right of the screen."
+            english: "Well done! Keep moving your units until they have all gone as far as they can go. When a unit has used all its moves for a turn, the next unit will become active. You can also switch units using the arrow buttons in the bottom right of the screen."
         }
     },
     factionWindow: {
@@ -25,17 +26,17 @@ const tutuorialContent = {
     },
     endOfTurn: {
         text: {
-            english: "When you have finished moving your units, press the 'end turn' button."
+            english: "Now you have finished moving your all units, press the 'end turn' button. The other factions will move their units, then it will be your turn again."
         }
     },
-    secondTurn: {
+    buildTown: {
         text: {
-            english: "Now the other factions have moved too, so it's your turn again. Let's build your first town! Try clicking the mode button to change from 'move units' to 'examine map', then clicking on the square with your settler in it."
+            english: "Let's build your first town with the settler! To select the settler, click the mode button to change from 'move units' to 'examine map', then clicking on the square with your settler in it to select your settler"
         }
     },
     settler: {
         text: {
-            english: "Move your settler to a good spot to build your first town. When your settler is where you want, press the 'build town' button - it will need to have at least one move left. It may take a few turns to get there, so use 'end turn' if you have to."
+            english: "Click the 'Move Units' mode button then press the 'build town' button above your settler. A unit needs at least one move left to take an action like building a town."
         }
     },
     townWindow: {
@@ -65,7 +66,17 @@ const tutuorialContent = {
     },
     firstEnemy: {
         text: {
-            english: "An enemy! Rival factions are a threat - attack this settler with your warrior by moving onto its square."
+            english: "An enemy! Rival factions are a threat - attack this worker with your warrior by moving onto its square. It may take more than one turn to get there, so use 'end turn' when you have to."
+        }
+    },
+    killedFirstEnemy: {
+        text: {
+            english: "You got him! Settlers and workers are non-combat units - they cannot attack and always loose when defending. When your warrior can move again, try to conquer the enemy town by moving him in to it."
+        }
+    },
+    finished: {
+        text: {
+            english: "Congratulations - you've finished the tutorial! When you're ready, you should start a new game against real enemies..."
         }
     },
 }
@@ -100,14 +111,22 @@ class TutorialEvent {
         }
     }
 
-    static addNewUnitToGame(place, unitType: UnitType, faction: Faction, mission:UnitMission = null) {
+    static addNewUnitToGame(place, unitType: UnitType, faction: Faction, mission: UnitMission = null) {
         return (state: GameState) => {
-            const enemyUnit = new Unit(unitType, faction, {
+            const newUnit = new Unit(unitType, faction, {
                 x: place.x,
                 y: place.y,
                 missions: mission ? [mission] : []
             })
-            state.units.push(enemyUnit)
+            state.units.push(newUnit)
+        }
+    }
+
+    static addNewTownToGame(place, faction: Faction, townConfig: Object = {}) {
+        return (state: GameState) => {
+            const mapSquare = state.mapGrid[place.y][place.x]
+            const newTown = new Town(faction, mapSquare, townConfig)
+            state.towns.push(newTown)
         }
     }
 
@@ -142,8 +161,13 @@ class TutorialState {
             ),
             new TutorialEvent('nextMove',
                 (state: GameState) => state.units.some(unit => unit.faction === this.playerFaction && !unit.canMakeNoMoreMoves(state)),
-                (state: GameState) => true,
+                TutorialEvent.checkNoUnitCanMove(this.playerFaction),
                 ['firstMove']
+            ),
+
+            new TutorialEvent('endOfTurn',
+                TutorialEvent.checkNoUnitCanMove(this.playerFaction),
+                TutorialEvent.checkSomeUnitCanMove(this.playerFaction),
             ),
 
             new TutorialEvent('factionWindow',
@@ -151,18 +175,16 @@ class TutorialState {
                 (state: GameState) => !state.factionWindowIsOpen,
                 ['firstMove', 'nextMove', 'endOfTurn']
             ),
-            new TutorialEvent('endOfTurn',
-                TutorialEvent.checkNoUnitCanMove(this.playerFaction),
+
+            new TutorialEvent('buildTown',
                 TutorialEvent.checkSomeUnitCanMove(this.playerFaction),
-            ),
-            new TutorialEvent('secondTurn',
-                (state: GameState) => state.turnNumber === 2,
                 (state: GameState) => state.selectedUnit.type == unitTypes.settler,
+                ['endOfTurn']
             ),
             new TutorialEvent('settler',
                 (state: GameState) => state.selectedUnit.type == unitTypes.settler,
                 (state: GameState) => TutorialEvent.checkPlayerHasATown(this.playerFaction),
-                ['secondTurn']
+                ['buildTown']
             ),
             new TutorialEvent('townWindow',
                 (state: GameState) => !!state.openTown,
@@ -190,8 +212,8 @@ class TutorialState {
                 ['chooseFirstTech']
             ),
             new TutorialEvent('firstEnemy',
-                (state: GameState) => state.turnNumber >= 4,
-                (state: GameState) => false,
+                (state: GameState) => true,
+                (state: GameState) => !state.units.some(unit => unit.faction !== this.playerFaction),
                 ['townWindowAgain'],
                 (state: GameState) => {
 
@@ -200,14 +222,24 @@ class TutorialState {
                         .filter(place => !state.towns.some(town => areSamePlace(town, place)))
                         .filter(place => !state.units.some(unit => areSamePlace(unit, place)))
 
-                    console.log(emptySquareInView)
-
                     const place = pickAtRandom(emptySquareInView)
 
                     TutorialEvent.addFirstComputerFactionIfMissing()(state)
                     TutorialEvent.addNewUnitToGame(place, unitTypes.worker, state.factions[1], new UnitMission('WAIT'))(state)
+                    TutorialEvent.addNewTownToGame(place, state.factions[1], { population: 3 })(state)
+
                     this.playerFaction.updatePlacesInSightThisTurn(state)
                 }
+            ),
+            new TutorialEvent('killedFirstEnemy',
+                (state: GameState) => state.fallenUnits.some(unit => unit.faction !== this.playerFaction),
+                (state: GameState) => !state.towns.some(town => town.faction !== this.playerFaction),
+                ['firstEnemy']
+            ),
+            new TutorialEvent('finished',
+                (state: GameState) => !state.towns.some(town => town.faction !== this.playerFaction),
+                (state: GameState) => false,
+                ['killedFirstEnemy']
             ),
         ]
     }

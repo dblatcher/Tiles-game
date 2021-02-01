@@ -4,13 +4,19 @@
     @include input;
     font-size: medium;
     text-align: center;
-    padding: .5rem;
-    min-width: 8rem;
+    padding: .2rem;
+    width: 4rem;
     font-variant: small-caps;
-    
+    font-size: 75%;
+    line-height: .9;
+
+    &.current {
+        background-color: red;
+    }
 }
 
 .holder {
     margin-right: 1rem;
     padding-right: .5rem;
+    display: flex;
 }

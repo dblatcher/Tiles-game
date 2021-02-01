@@ -1,7 +1,7 @@
 import React from 'react'
 
 import TileBoard from './TileBoard'
-import ModeButtons from './ModeButtons'
+import ModeButtons from './ModeButtons.tsx'
 import TurnButtons from './TurnButtons'
 import TownView from './TownView'
 import MainMenu from './menu/MainMenu'

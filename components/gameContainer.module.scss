@@ -1,8 +1,5 @@
 @import '../styles/design.scss';
 
-
-
-
 @mixin interfaceWindow {
     position: fixed;
     background-color: rgba(white, .5);
@@ -35,9 +32,9 @@
     @include interfaceWindow();
     display: flex;
     align-items: center;
-    bottom: 0;
-    right: 0;
-    padding:  $windowPadding;
+    bottom: $windowPadding*2;
+    right: $windowPadding;
+    padding: $windowPadding;
     height: $lowerWindowHeight;
 }
 

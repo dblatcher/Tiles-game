@@ -474,6 +474,8 @@ export default class GameContainer extends React.Component {
             browserSupportsLocalStorage, debug, gameOver
         } = this.state
 
+        const allUnitsMoved = !this.state.units.some(unit => unit.faction === this.primaryPlayerFaction && !unit.canMakeNoMoreMoves(this.state))
+
         if (openTown && !gameOver) {
             return (<>
                 <TownView
@@ -575,8 +577,7 @@ export default class GameContainer extends React.Component {
                             interfaceModeOptions={interfaceModeOptions}
                         />
                         <TurnButtons
-                            selectedUnit={selectedUnit}
-                            squareSelectedUnitIsIn={selectedUnit ? mapGrid[selectedUnit.y][selectedUnit.x] : null}
+                            allUnitsMoved = {allUnitsMoved}
                             handleOrderButton={this.handleOrderButton}
                         />
                     </aside>

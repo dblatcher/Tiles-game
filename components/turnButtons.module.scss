@@ -17,3 +17,20 @@
     font-variant: small-caps;
     font-size: large;
 }
+
+
+@keyframes highlight {
+    0% {
+        background-color: white;
+    }
+    100% {
+        background-color: red;
+    }
+}
+
+.highlight {
+    animation-name: highlight;
+    animation-direction: normal;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}

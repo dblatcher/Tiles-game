@@ -2,8 +2,12 @@
 import styles from './turnButtons.module.scss'
 
 export default function TurnButtons(props) {
-    const { handleOrderButton } = props;
+    const { handleOrderButton, allUnitsMoved } = props;
 
+    const endOfTurnButtonClassList = [styles.button, styles.endButton]
+    if (allUnitsMoved) {
+        endOfTurnButtonClassList.push(styles.highlight)
+    }
 
     return (
         <section className={styles.turnButtonsMenu}>
@@ -22,10 +26,10 @@ export default function TurnButtons(props) {
             </button>
 
             <button
-                className={[styles.button, styles.endButton].join(" ")}
+                className={endOfTurnButtonClassList.join(" ")}
                 title={`End of turn`}
                 onClick={() => { handleOrderButton('END_OF_TURN') }}>
-                end
+                end turn
             </button>
         </section>
     )

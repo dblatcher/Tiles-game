@@ -3,7 +3,10 @@ import styles from './layout.module.css'
 
 import Link from 'next/link'
 
+export const siteRoot = 'https://tiles-game.vercel.app'
 export const siteTitle = 'Conquest'
+export const siteDescription = 'Conquest is a free browser game inspired by the classic 4x strategy games.'
+
 
 export function StandardHead({gamePage, infoPageSubject, infoPageCategory}) {
     return (
@@ -18,10 +21,13 @@ export function StandardHead({gamePage, infoPageSubject, infoPageCategory}) {
             </title>
             <meta
                 name="description"
-                content={siteTitle}
+                content={siteDescription}
             />
             <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
             <meta name="og:title" content={siteTitle} />
+            <meta name="og:description" content={siteDescription} />
+            <meta name="og:image" content={siteRoot+"/favicon.ico"}/>
+            <meta name="og:url" content={siteRoot}/>
         </Head>
     )
 }

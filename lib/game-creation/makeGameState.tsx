@@ -17,6 +17,7 @@ import { TutorialState } from '../game-misc/tutorial'
 
 import { makeStandardFactions } from './factionFactory'
 import { assignStartingPoints, findStartingPoints } from './findStartingPoints'
+import { InitialGameState } from '../game-entities/GameState'
 
 class WorldConfig {
     numberOfFactions?: number
@@ -26,21 +27,7 @@ class WorldConfig {
 const makeGameStateFunction = {
 
     blank: () => () => {
-        const mapGrid = MapSquare.makeGrid(0, 0, (x, y) => null)
-        const factions = []
-        const units = []
-        const towns = []
-
-        return {
-            mapGrid,
-            factions,
-            units,
-            towns,
-            activeFaction: null,
-            selectedUnit: null,
-            turnNumber: 1,
-        }
-
+        return new InitialGameState()
     },
 
     test: () => () => {
@@ -153,16 +140,17 @@ const makeGameStateFunction = {
             }),
         ]
 
-        return {
-            mapGrid,
-            factions,
-            units,
-            towns,
-            activeFaction: factions[0],
-            selectedUnit: units.filter(unit => unit.faction === factions[0])[0],
-            turnNumber: 213,
-            tutorial: new TutorialState(true, factions[0])
-        }
+        const initialState = new InitialGameState()
+        initialState.mapGrid = mapGrid;
+        initialState.factions = factions;
+        initialState.units = units;
+        initialState.towns = towns;
+        initialState.activeFaction = factions[0];
+        initialState.selectedUnit = units.find(unit => unit.faction === factions[0]);
+        initialState.turnNumber = 142;
+        initialState.tutorial = new TutorialState(true, factions[0])
+
+        return initialState
     },
 
     test2: () => () => {
@@ -264,15 +252,16 @@ const makeGameStateFunction = {
             }),
         ]
 
-        return {
-            mapGrid,
-            factions,
-            units,
-            towns,
-            activeFaction: factions[0],
-            selectedUnit: units.filter(unit => unit.faction === factions[0])[0],
-            turnNumber: 33,
-        }
+        const initialState = new InitialGameState()
+        initialState.mapGrid = mapGrid;
+        initialState.factions = factions;
+        initialState.units = units;
+        initialState.towns = towns;
+        initialState.activeFaction = factions[0];
+        initialState.selectedUnit = units.find(unit => unit.faction === factions[0]);
+        initialState.turnNumber = 33;
+
+        return initialState
     },
 
 
@@ -295,16 +284,17 @@ const makeGameStateFunction = {
             units.push(new Unit(unitTypes.worker, faction, { x: startingPoint.x, y: startingPoint.y }))
         })
 
-        return {
-            mapGrid,
-            factions,
-            units,
-            towns: [],
-            activeFaction: factions[0],
-            selectedUnit: units.filter(unit => unit.faction === factions[0])[0],
-            turnNumber: 1,
-            tutorial: worldConfig.tutorialEnabled ? new TutorialState(true, factions[0]) : null
-        }
+        const initialState = new InitialGameState()
+        initialState.mapGrid = mapGrid;
+        initialState.factions = factions;
+        initialState.units = units;
+        initialState.towns = [];
+        initialState.activeFaction = factions[0];
+        initialState.selectedUnit = units.find(unit => unit.faction === factions[0]);
+        initialState.turnNumber = 1;
+        initialState.tutorial = worldConfig.tutorialEnabled ? new TutorialState(true, factions[0]) : null
+
+        return initialState
     }
 }
 

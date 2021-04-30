@@ -63,7 +63,7 @@ class SerialisedGame {
 
         state.activeFaction = state.factions.find(faction => faction.name === activeFaction)
 
-        state.activeUnit = state.units
+        state.selectedUnit = state.units
             .filter(unit => unit.faction === state.activeFaction )
             .find(unit => !unit.canMakeNoMoreMoves) || null
 

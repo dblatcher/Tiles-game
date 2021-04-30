@@ -6,14 +6,29 @@ import { Message, TechDiscoveryChoice } from '../game-entities/Message';
 import { TextQuestion, OptionsQuestion, TechStealQuestion } from './Questions';
 import { TutorialState } from '../game-misc/tutorial';
 
-class GameState {
-    towns: Array<Town>
-    factions: Array<Faction>
-    units: Array<Unit>
-    selectedUnit: Unit | null
-    mapGrid: Array<Array<MapSquare | null> | null>
+
+class InitialGameState {
+    mapGrid: MapSquare[][]
+    factions: Faction[]
+    units: Unit[]
+    towns: Town[]
     activeFaction: Faction
-    activeUnit: Unit
+    selectedUnit: Unit
+    turnNumber: number
+    tutorial?: TutorialState
+
+    constructor() {
+        this.mapGrid = MapSquare.makeGrid(0, 0, (x, y) => null)
+        this.factions = []
+        this.units = []
+        this.towns = []
+        this.activeFaction = null
+        this.selectedUnit = null
+        this.turnNumber = 1
+    }
+}
+
+class GameState extends InitialGameState {
     pendingDialogues: Array<Message | TextQuestion | OptionsQuestion | TechDiscoveryChoice | TechStealQuestion>
     mapZoomLevel: number
     mapXOffset: number
@@ -25,8 +40,7 @@ class GameState {
     factionWindowIsOpen: boolean
     interfaceMode: "VIEW" | "MOVE"
     gameOver: boolean
-    turnNumber: number
-    tutorial: TutorialState
+
 }
 
-export { GameState }
+export { GameState, InitialGameState }

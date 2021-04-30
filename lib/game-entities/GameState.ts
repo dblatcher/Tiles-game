@@ -13,6 +13,7 @@ class GameState {
     selectedUnit: Unit | null
     mapGrid: Array<Array<MapSquare | null> | null>
     activeFaction: Faction
+    activeUnit: Unit
     pendingDialogues: Array<Message | TextQuestion | OptionsQuestion | TechDiscoveryChoice | TechStealQuestion>
     mapZoomLevel: number
     mapXOffset: number
@@ -22,9 +23,9 @@ class GameState {
     openTown: Town
     mainMenuOpen: boolean
     factionWindowIsOpen: boolean
-    interfaceMode: string
+    interfaceMode: "VIEW" | "MOVE"
     gameOver: boolean
-    turnNumber:number
+    turnNumber: number
     tutorial: TutorialState
 }
 

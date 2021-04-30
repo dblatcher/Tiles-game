@@ -1,5 +1,5 @@
 import { areSamePlace, sleep, asyncSetState } from '../lib/utility'
-import gameActions from '../lib/game-logic/gameActions'
+import gameActions from '../lib/game-logic/gameActions.ts'
 import { debugLogAtLevel } from '../lib/logging'
 
 export default function letComputerTakeItsTurn() {

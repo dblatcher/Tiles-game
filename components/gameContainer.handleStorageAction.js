@@ -1,4 +1,4 @@
-import { SerialisedGame } from '../lib/serialiseGame'
+import { SerialisedGame } from '../lib/serialiseGame.ts'
 import * as Storage from '../lib/storage'
 import { Message } from '../lib/game-entities/Message'
 import { Unit } from '../lib/game-entities/Unit'

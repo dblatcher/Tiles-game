@@ -23,9 +23,9 @@ import TutorialDialogue from './dialogue/TutorialDialogue'
 import tutorialSystem from './gameContainer.tutorialSystem'
 
 import processMapClick from '../lib/game-logic/processMapClick'
-import gameActions from '../lib/game-logic/gameActions'
+import gameActions from '../lib/game-logic/gameActions.ts'
 import townActions from '../lib/game-logic/townActions'
-import factionActions from '../lib/game-logic/factionActions'
+import factionActions from '../lib/game-logic/factionActions.ts'
 import { browserHasLocalStorage } from '../lib/storage'
 
 import handleStorageAction from './gameContainer.handleStorageAction'

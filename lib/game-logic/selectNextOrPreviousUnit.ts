@@ -1,9 +1,12 @@
-const selectNextOrPreviousUnit = (state, isPrevious = false) => {
+import { GameState } from "../game-entities/GameState";
+import { Unit } from "../game-entities/Unit";
+
+const selectNextOrPreviousUnit = (state: GameState, isPrevious = false) => {
     // assumption - selectedUnit is in activeFaction
     const { units, activeFaction } = state;
-    const hasMoves = unit => unit.remainingMoves > 0 && !unit.onGoingOrder
+    const hasMoves = (unit: Unit) => unit.remainingMoves > 0 && !unit.onGoingOrder
 
-    let indexOfSelectedUnit, indexOfNextUnit, nextUnit = null;
+    let indexOfSelectedUnit: number, indexOfNextUnit: number, nextUnit: Unit = null;
     const activeFactionsUnits = units.filter(unit => unit.faction === activeFaction);
     const activeFactionsUnitsWithMoves = activeFactionsUnits.filter(hasMoves);
 

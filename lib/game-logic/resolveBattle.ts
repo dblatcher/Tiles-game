@@ -1,9 +1,11 @@
-import killUnit from './killUnit.ts'
+import { Battle } from '../game-entities/Battle'
+import { GameState } from '../game-entities/GameState'
+import killUnit from './killUnit'
 import selectNextOrPreviousUnit from './selectNextOrPreviousUnit'
 
-const resolveBattle = input => state => {
-    const {battle} = input
-    if (state.pendingDialogues[0] === battle) {state.pendingDialogues.shift()}
+const resolveBattle = (input: { battle: Battle }) => (state: GameState) => {
+    const { battle } = input
+    if (state.pendingDialogues[0] === battle) { state.pendingDialogues.shift() }
     battle.attacker.remainingMoves = 0;
     let outcome = battle.resolve()
     killUnit(state, outcome.loser)

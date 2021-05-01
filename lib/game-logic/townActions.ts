@@ -1,9 +1,15 @@
 
+import { BuildingType } from '../game-entities/BuildingType'
+import { Citizen } from '../game-entities/Citizen'
 import { citizenJobs } from '../game-entities/CitizenJob'
+import { GameState } from '../game-entities/GameState'
+import { MapSquare } from '../game-entities/MapSquare'
+import { Town } from '../game-entities/Town'
+import { UnitType } from '../game-entities/UnitType'
 
 const townActions = {
 
-    MAP_CLICK: input => state => {
+    MAP_CLICK: (input: { town: Town, mapSquare: MapSquare }) => (state: GameState) => {
         const { town, mapSquare } = input
 
         const freeSquares = town.getSquaresAndObstacles(state.mapGrid, state.towns, state.units).freeSquares
@@ -30,29 +36,26 @@ const townActions = {
         return state
     },
 
-    CITIZEN_CLICK: input => state => {
-        const {town, citizen} = input;
+    CITIZEN_CLICK: (input: { town: Town, citizen: Citizen }) => (state: GameState) => {
+        const { town, citizen } = input;
         citizen.changeJob()
         return state
     },
 
-    PRODUCTION_PICK: input => state => {
+    PRODUCTION_PICK: (input: { town: Town, item: UnitType | BuildingType }) => (state: GameState) => {
         const { town, item } = input
         town.isProducing = item
         return state
     },
 
-    HURRY_PRODUCTION: input => state => {
-        const {town} = input
-        if (!town.canHurryProduction) {return {}}
+    HURRY_PRODUCTION: (input:{town:Town}) => (state: GameState) => {
+        const { town } = input
+        if (!town.canHurryProduction) { return {} }
 
-        town.faction.treasury -= town.costToHurryProduction
+        town.faction.treasury -= (town.costToHurryProduction as number);
         town.productionStore = town.isProducing.productionCost
 
-        return {
-            towns: state.towns,
-            factions: state.factions
-        }
+        return state
     },
 }
 

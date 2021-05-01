@@ -252,7 +252,7 @@ class Town {
     }
 
     processTurn(state) {
-        let notices = []
+        let notices: string[] = []
 
         if (this.getIsInRevolt(state.units)) {
             notices.push(`Unrest in ${this.name}!`)

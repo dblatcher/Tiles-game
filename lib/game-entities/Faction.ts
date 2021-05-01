@@ -22,7 +22,7 @@ class Faction {
     worldMap: Array<Array<MapSquare | null> | null>;
     computerPersonality: ComputerPersonality;
     placesInSightThisTurn: Array<object>;
-    townNames: Array<String>;
+    townNames: Array<string>;
     constructor(name: string, config: any = {}) {
         this.name = name;
         this.color = config.color || "#FFF";
@@ -151,6 +151,7 @@ class Faction {
         this.placesInSightThisTurn = this.placesInSightThisTurn.concat(newPlaces)
     }
 
+    //TO DO - use GameState as argument
     getPlacesInSight(towns: Array<Town>, units: Array<Unit>, mapWidth: number) {
         const myTowns = towns.filter(town => town.faction === this)
         const myUnits = units.filter(unit => unit.faction === this)

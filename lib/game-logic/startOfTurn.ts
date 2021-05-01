@@ -1,11 +1,14 @@
+import { GameState } from '../game-entities/GameState';
 import { Message, TechDiscoveryChoice } from '../game-entities/Message'
+import { Town } from '../game-entities/Town';
+import { Unit } from '../game-entities/Unit';
 import selectNextOrPreviousUnit from './selectNextOrPreviousUnit'
 
-const startOfTurn = input => state => {
+const startOfTurn = input => (state: GameState) => {
     const { units, activeFaction, towns } = state;
 
-    let notices = []
-    const activeFactionOnly = item => { return item.faction === activeFaction }
+    let notices: string[] = []
+    const activeFactionOnly = (item: Town | Unit) => { return item.faction === activeFaction }
 
     units.filter(activeFactionOnly)
         .forEach(unit => {
@@ -35,7 +38,7 @@ const startOfTurn = input => state => {
         }
     }
 
-    activeFaction.placesInSightThisTurn = activeFaction.getPlacesInSight(state.towns, state.units, state.mapGrid ? state.mapGrid[0].length:0)
+    activeFaction.placesInSightThisTurn = activeFaction.getPlacesInSight(state.towns, state.units, state.mapGrid ? state.mapGrid[0].length : 0)
 
     selectNextOrPreviousUnit(state)
     return state

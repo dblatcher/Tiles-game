@@ -130,7 +130,7 @@ class Unit {
     processTurn(state: GameState) {
         this.remainingMoves = this.type.moves
         const { onGoingOrder } = this
-        let notices = []
+        let notices:string[] = []
 
         if (onGoingOrder) {
             onGoingOrder.reduceTime(this)

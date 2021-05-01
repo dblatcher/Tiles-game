@@ -1,6 +1,8 @@
-import attemptMove from './attemptMove.ts'
+import { GameState } from '../game-entities/GameState'
+import { MapSquare } from '../game-entities/MapSquare'
+import attemptMove from './attemptMove'
 
-const processMapClick = (input, effectiveMode) => state => {
+const processMapClick = (input:{mapSquare:MapSquare}, effectiveMode: "MOVE" | "VIEW") => (state: GameState) => {
 
     const { mapSquare } = input
 

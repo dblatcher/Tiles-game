@@ -1,20 +1,22 @@
-import { OnGoingOrder } from '../game-entities/OngoingOrder'
+import { OnGoingOrder, OnGoingOrderType } from '../game-entities/OngoingOrder'
 import { TextQuestion, OptionsQuestion } from '../game-entities/Questions'
 import { Town } from '../game-entities/Town'
 import { Message } from '../game-entities/Message'
-import killUnit from './killUnit.ts'
+import killUnit from './killUnit'
 
 import selectNextOrPreviousUnit from './selectNextOrPreviousUnit'
 import { MINIMUM_DISTANCE_BETWEEN_TOWNS } from '../game-logic/constants'
 import { getDistanceBetween } from '../utility'
+import { GameState } from '../game-entities/GameState'
+import { Unit } from '../game-entities/Unit'
 
 const specialCaseOrders = {
-    'Build Town': (state, unit) => {
+    'Build Town': (state: GameState, unit: Unit) => {
 
         const squareUnitIsOn = state.mapGrid[unit.y][unit.x]
 
         // TO DO - use this logic to check if the build button should be enabled
-        let i, distance, tooCloseTown = null;
+        let i: number, distance: number, tooCloseTown: Town = null;
         for (i = 0; i < state.towns.length; i++) {
             distance = getDistanceBetween(state.towns[i], squareUnitIsOn)
             if (distance < MINIMUM_DISTANCE_BETWEEN_TOWNS) {
@@ -41,10 +43,10 @@ const specialCaseOrders = {
 
         let townNameQuestion
 
-        const buildTown = (name) => state => {
+        const buildTown = (name: string) => (state: GameState) => {
             const { towns, units } = state
 
-            const nameIsTaken = state.towns.map(town=>town.name).includes(name)
+            const nameIsTaken = state.towns.map(town => town.name).includes(name)
             if (nameIsTaken) {
                 if (humanPlayersTurn) {
                     townNameQuestion.errorText = `There is already a town called ${name}.`
@@ -74,15 +76,15 @@ const specialCaseOrders = {
             unit.faction.updateWorldMap(state)
             unit.faction.updatePlacesInSightThisTurn(state)
 
-            if (humanPlayersTurn) { 
-                state.pendingDialogues.shift() 
+            if (humanPlayersTurn) {
+                state.pendingDialogues.shift()
                 state.openTown = newTown
                 newTown.isProducing = newTown.faction.bestDefensiveLandUnit
             }
             return state
         }
 
-        const cancelBuild = state => {
+        const cancelBuild = (state: GameState) => {
             state.pendingDialogues.shift()
             state.activeFaction.townNames.unshift(suggestedName)
             return state
@@ -96,18 +98,18 @@ const specialCaseOrders = {
         )
     },
 
-    "Disband"(state, unit) {
+    "Disband"(state: GameState, unit: Unit) {
 
         const humanPlayersTurn = !state.activeFaction.isComputerPlayer
 
-        const confirmFunction = (state) => {
+        const confirmFunction = (state: GameState) => {
             killUnit(state, unit)
             selectNextOrPreviousUnit(state)
             if (humanPlayersTurn) { state.pendingDialogues.shift() }
             return state
         }
 
-        const cancelFunction = (state) => {
+        const cancelFunction = (state: GameState) => {
             state.pendingDialogues.shift()
             return state
         }
@@ -127,7 +129,7 @@ const specialCaseOrders = {
     }
 }
 
-const startOrder = input => state => {
+const startOrder = (input: { unit: Unit, orderType: OnGoingOrderType }) => (state: GameState) => {
     const { unit, orderType } = input
 
     if (orderType.specialCase) {

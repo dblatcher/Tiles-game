@@ -60,10 +60,12 @@ export default class TileBoard extends React.Component {
             debug = {}
         } = this.props;
 
-        const { towns = [], units = [], selectedSquare, selectedUnit, interfaceMode, isComputerPlayersTurn } = stateOfPlay
+        const { towns = [], units = [], villages=[], selectedSquare, selectedUnit, interfaceMode, isComputerPlayersTurn } = stateOfPlay
         const { mapGrid, mapGridWidth } = this
 
-        const town = towns.filter(town => town.mapSquare === mapSquare)[0]
+        const town = towns.find(town => town.mapSquare === mapSquare)
+        const village = villages.find(village => village.mapSquare === mapSquare)
+        
         const unitsInMapSquare = units.filter(unit => areSamePlace(unit, mapSquare));
 
         const notInSight = infoPage || decorative
@@ -93,6 +95,7 @@ export default class TileBoard extends React.Component {
                 interfaceMode={interfaceMode}
                 mapSquare={mapSquare}
                 town={town}
+                village={village}
                 isComputerPlayersTurn={isComputerPlayersTurn}
                 unitsInMapSquare={unitsInMapSquare}
                 selectedUnit={selectedUnit}

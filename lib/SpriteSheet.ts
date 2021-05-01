@@ -257,7 +257,7 @@ const units2 = new SpriteSheet ('units2',{
 
 const misc = new SpriteSheet ('misc',{
     cols: 3,
-    rows: 3,
+    rows: 4,
     css: {
         backgroundImage: 'url(/misc.png)'
     },
@@ -271,6 +271,7 @@ const misc = new SpriteSheet ('misc',{
         'fish':[0,2],
         'cow':[1,2],
         'horse':[1,2],
+        'village':[0,3],
     }
 })
 

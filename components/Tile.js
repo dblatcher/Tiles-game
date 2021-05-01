@@ -3,6 +3,7 @@ import SvgIcon from './SvgIcon'
 import TownFigure from './TownFigure';
 import styles from './tile.module.scss'
 import { spriteSheets } from '../lib/SpriteSheet'
+import VillageFigure from './figures/VillageFigure';
 
 
 export default class Tile extends React.Component {
@@ -68,7 +69,7 @@ export default class Tile extends React.Component {
     render() {
         const { mapSquare, handleClick, isSelected, notInSight, isComputerPlayersTurn,
             selectedUnit, inInfoRow, squareSelectedUnitIsIn, interfaceMode, unitsInMapSquare,
-            gameHasOpenDialogue, showYields, town, onMapSection, occupier, showVoid, mapSquareOnFactionWorldMap,
+            gameHasOpenDialogue, showYields, town, village, onMapSection, occupier, showVoid, mapSquareOnFactionWorldMap,
             mapGridWidth
         } = this.props
 
@@ -129,6 +130,8 @@ export default class Tile extends React.Component {
                         {viewerVersionOfMapSquare.road ? this.renderDirectionedSprite(spriteSheets.roads, bgClasses) : (null)}
 
                         { town ? <TownFigure town={town} onMapSection={onMapSection} units={unitsInMapSquare} /> : null}
+
+                        {village ? <VillageFigure/> : (null)}
 
                         {viewerVersionOfMapSquare.tree ? this.renderDirectionedSprite(spriteSheets.trees, bgClasses) : (null)}
 

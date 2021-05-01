@@ -1,0 +1,26 @@
+@import '../../styles/design.scss';
+@import '../../styles/animations.scss';
+
+.figure {
+    @include figure();
+}
+
+.figureOnMapSection {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.figureOnTileBoard {
+    position: relative;
+}
+
+
+.sprite {
+    @include sprite();
+}
+
+
+.fallenSprite {
+    filter: brightness(.5);
+}

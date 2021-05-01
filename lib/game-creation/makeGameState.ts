@@ -18,6 +18,7 @@ import { TutorialState } from '../game-misc/tutorial'
 import { makeStandardFactions } from './factionFactory'
 import { assignStartingPoints, findStartingPoints } from './findStartingPoints'
 import { InitialGameState } from '../game-entities/GameState'
+import { Village } from '../game-entities/Village'
 
 class WorldConfig {
     numberOfFactions?: number
@@ -218,7 +219,7 @@ const makeGameStateFunction = {
                 ]
             }),
             new Unit(unitTypes.spearman, factions[1], {
-                x: 5, y: 2, vetran: true, onGoingOrder: new OnGoingOrder(orderTypesMap['Fortified'])
+                x: 6, y: 2, vetran: true, onGoingOrder: new OnGoingOrder(orderTypesMap['Fortified'])
             }),
             // new Unit(unitTypes.dragoon, factions[2], { x: 2, y: 5, vetran: true }),
         ]
@@ -252,11 +253,16 @@ const makeGameStateFunction = {
             }),
         ]
 
+        const villages = [
+            new Village(mapGrid[1][1],{})
+        ]
+
         const initialState = new InitialGameState()
         initialState.mapGrid = mapGrid;
         initialState.factions = factions;
         initialState.units = units;
         initialState.towns = towns;
+        initialState.villages = villages;
         initialState.activeFaction = factions[0];
         initialState.selectedUnit = units.find(unit => unit.faction === factions[0]);
         initialState.turnNumber = 33;

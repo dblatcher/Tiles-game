@@ -5,6 +5,7 @@ import { MapSquare } from '../game-entities/MapSquare';
 import { Message, TechDiscoveryChoice } from '../game-entities/Message';
 import { TextQuestion, OptionsQuestion, TechStealQuestion } from './Questions';
 import { TutorialState } from '../game-misc/tutorial';
+import { Village } from './Village';
 
 const startingInterfaceState = {
     selectedSquare: null,
@@ -28,6 +29,7 @@ class InitialGameState {
     factions: Faction[]
     units: Unit[]
     towns: Town[]
+    villages: Village[]
     activeFaction: Faction
     selectedUnit: Unit
     turnNumber: number
@@ -38,6 +40,7 @@ class InitialGameState {
         this.factions = []
         this.units = []
         this.towns = []
+        this.villages = []
         this.activeFaction = null
         this.selectedUnit = null
         this.turnNumber = 1
@@ -50,6 +53,7 @@ class GameState {
     factions: Faction[]
     units: Unit[]
     towns: Town[]
+    villages: Village[]
     activeFaction: Faction
     selectedUnit: Unit
     turnNumber: number

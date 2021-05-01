@@ -36,7 +36,7 @@ export default class MapSection extends React.Component {
 
     renderTile(mapSquare, excludeCorners, occupier) {
         const { handleMapSectionClick, town, stateOfPlay } = this.props;
-        const { units, selectedSquare } = stateOfPlay
+        const { units, selectedSquare, villages } = stateOfPlay
         const { span, mapXOffset, mapYOffset, } = this
 
         if (mapSquare.x < mapXOffset || mapSquare.x > mapXOffset + span - 1) { return null }
@@ -50,12 +50,15 @@ export default class MapSection extends React.Component {
             return this.renderEmptyTile(mapSquare.x, mapSquare.y)
         }
 
+        const village = villages.find(village => village.mapSquare === mapSquare) || null
+
         return (
             <Tile key={`${mapSquare.x},${mapSquare.y}`}
                 handleClick={handleMapSectionClick ? () => { handleMapSectionClick(mapSquare) } : null}
                 mapSquare={mapSquare}
                 onMapSection={true}
                 town={isTownTile ? town : null}
+                village={village}
                 isSelected={mapSquare === selectedSquare}
                 showYields={showYields}
                 occupier={occupier}
@@ -156,14 +159,14 @@ export default class MapSection extends React.Component {
             ))
 
         let occupyingUnitsOnMap = occupiersMap
-                .filter(entry => entry.obstacle.classIs === 'Unit')
-                .map(entry => entry.obstacle)
-                .map(unit => (
-                    <UnitFigure unit={unit} key={unit.indexNumber}
-                        mapXOffset={mapXOffset}
-                        mapYOffset={mapYOffset}
-                        isOccupier />
-                ))
+            .filter(entry => entry.obstacle.classIs === 'Unit')
+            .map(entry => entry.obstacle)
+            .map(unit => (
+                <UnitFigure unit={unit} key={unit.indexNumber}
+                    mapXOffset={mapXOffset}
+                    mapYOffset={mapYOffset}
+                    isOccupier />
+            ))
 
         return (
             <section className={styles.container}>

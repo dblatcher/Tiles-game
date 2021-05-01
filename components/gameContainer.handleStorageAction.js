@@ -5,6 +5,7 @@ import { Unit } from '../lib/game-entities/Unit'
 import { Town } from '../lib/game-entities/Town'
 
 import startOfTurn from '../lib/game-logic/startOfTurn'
+import { Village } from '../lib/game-entities/Village'
 
 export default function handleStorageAction(command, input) {
 
@@ -48,10 +49,12 @@ export default function handleStorageAction(command, input) {
             const loadedGameData = Storage.load(input.savedGameFolder, input.itemName)
             Unit.setIndexNumber();
             Town.setIndexNumber();
+            Village.setIndexNumber();
             let deserialisedLoadedState = new SerialisedGame(loadedGameData, true).deserialise()
 
             Unit.setIndexNumber(Math.max(...deserialisedLoadedState.units.map(unit => unit.indexNumber)) + 1);
             Town.setIndexNumber(Math.max(...deserialisedLoadedState.towns.map(town => town.indexNumber)) + 1);
+            Village.setIndexNumber(Math.max(...deserialisedLoadedState.villages.map(village => village.indexNumber)) + 1);
 
             this.setState(state => {
                 state.pendingDialogues.push(new Message(`GAME LOADED: ${input.itemName}`))

@@ -3,14 +3,19 @@ import styles from './modeButtons.module.scss'
 
 
 interface InterfaceModeOption {
-    value: string
+    value: "MOVE" | "VIEW"
     description: string
 }
 
+const interfaceModeOptions: InterfaceModeOption[] = [
+    { value: "MOVE", description: "move units" },
+    { value: "VIEW", description: "examine map" },
+]
+
+
 interface ModeButtonsProps {
-    interfaceMode: string
+    interfaceMode: "MOVE" | "VIEW"
     changeMode: Function
-    interfaceModeOptions: InterfaceModeOption[]
 }
 
 export default class ModeButtons extends react.Component {
@@ -28,7 +33,7 @@ export default class ModeButtons extends react.Component {
     }
 
     render() {
-        const { interfaceModeOptions, interfaceMode } = this.props
+        const { interfaceMode } = this.props
 
         const currentOption = interfaceModeOptions.filter(option => option.value == interfaceMode)[0]
         const currentOptionsClasses = [styles.button, styles.current].join(" ")

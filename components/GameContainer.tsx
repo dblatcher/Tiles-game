@@ -438,7 +438,7 @@ export default class GameContainer extends React.Component {
 
     render() {
         const { mapGrid, activeFaction,
-            selectedUnit, interfaceMode, interfaceModeOptions,
+            selectedUnit, interfaceMode,
             pendingDialogues, unitPickDialogueChoices, openTown, mainMenuOpen, factionWindowIsOpen,
             browserSupportsLocalStorage, debug, gameOver
         } = this.state
@@ -546,7 +546,6 @@ export default class GameContainer extends React.Component {
                         <ModeButtons
                             interfaceMode={interfaceMode}
                             changeMode={this.changeMode}
-                            interfaceModeOptions={interfaceModeOptions}
                         />
                         <TurnButtons
                             allUnitsMoved={allUnitsMoved}

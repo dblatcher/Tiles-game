@@ -6,16 +6,6 @@ import { Message, TechDiscoveryChoice } from '../game-entities/Message';
 import { TextQuestion, OptionsQuestion, TechStealQuestion } from './Questions';
 import { TutorialState } from '../game-misc/tutorial';
 
-interface InterfaceModeOption {
-    value: "MOVE" | "VIEW"
-    description: string
-}
-
-const interfaceModeOptions: InterfaceModeOption[] = [
-    { value: "MOVE", description: "move units" },
-    { value: "VIEW", description: "examine map" },
-]
-
 const startingInterfaceState = {
     selectedSquare: null,
     interfaceMode: "MOVE",
@@ -78,14 +68,13 @@ class GameState {
     gameOver: boolean
 
     selectedSquare?: MapSquare
-    interfaceModeOptions?: InterfaceModeOption[]
     browserSupportsLocalStorage?: boolean
     debug: {
         revealMap?: boolean
     }
 
     constructor(initialState: InitialGameState, isDebug: boolean) {
-        Object.assign(this, initialState, startingInterfaceState, { interfaceModeOptions })
+        Object.assign(this, initialState, startingInterfaceState)
         this.debug = isDebug ? { revealMap: true } : {}
     }
 
@@ -100,4 +89,4 @@ class GameState {
     }
 }
 
-export { GameState, InitialGameState, interfaceModeOptions, startingInterfaceState }
+export { GameState, InitialGameState, startingInterfaceState }

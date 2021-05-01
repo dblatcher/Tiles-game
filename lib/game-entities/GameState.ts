@@ -6,6 +6,32 @@ import { Message, TechDiscoveryChoice } from '../game-entities/Message';
 import { TextQuestion, OptionsQuestion, TechStealQuestion } from './Questions';
 import { TutorialState } from '../game-misc/tutorial';
 
+interface InterfaceModeOption {
+    value: "MOVE" | "VIEW"
+    description: string
+}
+
+const interfaceModeOptions: InterfaceModeOption[] = [
+    { value: "MOVE", description: "move units" },
+    { value: "VIEW", description: "examine map" },
+]
+
+const startingInterfaceState = {
+    selectedSquare: null,
+    interfaceMode: "MOVE",
+    fallenUnits: [],
+    unitPickDialogueChoices: [],
+    openTown: null,
+    factionWindowIsOpen: false,
+    pendingDialogues: [],
+    mainMenuOpen: false,
+    mapZoomLevel: 1,
+    mapXOffset: 0,
+    mapShiftInProgress: false,
+    gameOver: false,
+}
+
+
 
 class InitialGameState {
     mapGrid: MapSquare[][]
@@ -28,7 +54,17 @@ class InitialGameState {
     }
 }
 
-class GameState extends InitialGameState {
+class GameState {
+
+    mapGrid: MapSquare[][]
+    factions: Faction[]
+    units: Unit[]
+    towns: Town[]
+    activeFaction: Faction
+    selectedUnit: Unit
+    turnNumber: number
+    tutorial?: TutorialState
+
     pendingDialogues: Array<Message | TextQuestion | OptionsQuestion | TechDiscoveryChoice | TechStealQuestion>
     mapZoomLevel: number
     mapXOffset: number
@@ -41,6 +77,27 @@ class GameState extends InitialGameState {
     interfaceMode: "VIEW" | "MOVE"
     gameOver: boolean
 
+    selectedSquare?: MapSquare
+    interfaceModeOptions?: InterfaceModeOption[]
+    browserSupportsLocalStorage?: boolean
+    debug: {
+        revealMap?: boolean
+    }
+
+    constructor(initialState: InitialGameState, isDebug: boolean) {
+        Object.assign(this, initialState, startingInterfaceState, { interfaceModeOptions })
+        this.debug = isDebug ? { revealMap: true } : {}
+    }
+
+    get mapWidth() {
+        return this.mapGrid && this.mapGrid[0]
+            ? this.mapGrid[0].length
+            : 0
+    }
+
+    get isComputerPlayersTurn() {
+        return this.activeFaction && this.activeFaction.isComputerPlayer && !this.gameOver
+    }
 }
 
-export { GameState, InitialGameState }
+export { GameState, InitialGameState, interfaceModeOptions, startingInterfaceState }

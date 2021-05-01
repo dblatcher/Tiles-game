@@ -6,7 +6,7 @@ export default function ControlBar(props: {
     setMainMenuOpen: Function
     setMapZoomLevel: Function
     centerOnSelection: Function
-    children: React.ReactChildren
+    children: JSX.Element|JSX.Element[]
     interfaceMode: "MOVE" | "VIEW"
 }) {
 

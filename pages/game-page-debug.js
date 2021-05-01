@@ -1,6 +1,6 @@
 import React from 'react'
 import Layout from '../components/Layout'
-import GameContainer from '../components/GameContainer'
+import GameContainer from '../components/GameContainer.tsx'
 import makeGameStateFunction from '../lib/game-creation/makeGameState' 
 
 export default class GamePage extends React.Component {

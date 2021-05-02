@@ -5,38 +5,33 @@ import { Message } from '../game-entities/Message'
 import killUnit from './killUnit'
 
 import selectNextOrPreviousUnit from './selectNextOrPreviousUnit'
-import { MINIMUM_DISTANCE_BETWEEN_TOWNS } from '../game-logic/constants'
-import { getDistanceBetween } from '../utility'
+import { formatListOfProperties } from '../utility'
 import { GameState } from '../game-entities/GameState'
 import { Unit } from '../game-entities/Unit'
+import { debugLogAtLevel } from '../logging'
 
 const specialCaseOrders = {
     'Build Town': (state: GameState, unit: Unit) => {
 
         const squareUnitIsOn = state.mapGrid[unit.y][unit.x]
-
-        // TO DO - use this logic to check if the build button should be enabled
-        let i: number, distance: number, tooCloseTown: Town = null;
-        for (i = 0; i < state.towns.length; i++) {
-            distance = getDistanceBetween(state.towns[i], squareUnitIsOn)
-            if (distance < MINIMUM_DISTANCE_BETWEEN_TOWNS) {
-                tooCloseTown = state.towns[i]
-                break;
-            }
-        }
+        const townsTooClose = squareUnitIsOn.getTownsTooCloseToBuildHere(state);
 
         //to do - handle illegal or duplicate town names
         //to do - prepopulated default town names
         const humanPlayersTurn = !state.activeFaction.isComputerPlayer
-
         const suggestedName = state.activeFaction.townNames.shift()
 
+
         // TO DO - add tooCloseTown.mapSquare to activeFaction.worldMap
-        if (tooCloseTown) {
+        if (townsTooClose.length > 0) {
+
+            let nameList = formatListOfProperties(townsTooClose, 'name');
+
             if (humanPlayersTurn) {
-                state.pendingDialogues.push(new Message(`Cannot build a new town so close to ${tooCloseTown.name}.`))
+                state.pendingDialogues.push(new Message(`Cannot build a new town so close to ${nameList}.`))
             } else {
-                console.warn(`*** ${state.activeFaction.name} AI is trying to build a town too close to ${tooCloseTown.name}.`)
+                state.activeFaction.computerPersonality.failedOrderFlag = true
+                debugLogAtLevel(2)(`_${state.activeFaction.name} AI is trying to build a town too close to ${nameList}.`)
             }
             return state
         }

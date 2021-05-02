@@ -1,5 +1,9 @@
+import { MINIMUM_DISTANCE_BETWEEN_TOWNS } from '../game-logic/constants'
+import { getDistanceBetween } from '../utility'
+import { GameState } from './GameState'
 import { terrainTypes } from './TerrainType'
 import { TerrainType, randomTerrainType } from './TerrainType'
+import { Town } from './Town'
 
 class MapSquare {
     terrain: TerrainType
@@ -11,7 +15,7 @@ class MapSquare {
     y: number
     constructor(input, x, y) {
         this.terrain = input.terrain
-        this.road =  input.terrain.isWater ? false : !!input.road
+        this.road = input.terrain.isWater ? false : !!input.road
         this.tree = input.terrain.neverTrees ? false : !!input.tree
         this.mine = !input.terrain.canMine ? false : !!input.mine
         this.irrigation = !input.terrain.canIrrigate ? false : !!input.irrigation
@@ -20,7 +24,7 @@ class MapSquare {
         this.y = y
     }
 
-    get classIs() {return "MapSquare"}
+    get classIs() { return "MapSquare" }
 
     get css() {
         return this.terrain.css || {}
@@ -47,8 +51,8 @@ class MapSquare {
 
     get defenseBonus() {
         return this.tree
-        ? this.terrain.defenseBonus + .5
-        : this.terrain.defenseBonus
+            ? this.terrain.defenseBonus + .5
+            : this.terrain.defenseBonus
     }
 
     get isWater() {
@@ -65,9 +69,9 @@ class MapSquare {
         return Math.max(0, (this.terrain.tradeYield) + (this.road ? 1 : 0))
     }
 
-    getWorkableSquaresAround(mapGrid) {
+    getWorkableSquaresAround(mapGrid: MapSquare[][]) {
         const { x, y } = this
-        let row, col, workableSquares = []
+        let row: number, col: number, workableSquares: MapSquare[] = []
 
         for (row = y - 2; row <= y + 2; row++) {
             if (mapGrid[row]) {
@@ -82,20 +86,24 @@ class MapSquare {
         return workableSquares
     }
 
+    getTownsTooCloseToBuildHere(state: GameState) {
+        return state.towns.filter(town => getDistanceBetween(town, this) < MINIMUM_DISTANCE_BETWEEN_TOWNS) 
+    }
+
     duplicate() {
         return MapSquare.deserialise(this.serialised)
     }
 
-    static serialiseGrid(mapGrid:Array<Array<MapSquare|null>>|null) {
+    static serialiseGrid(mapGrid: Array<Array<MapSquare | null>> | null) {
         if (!mapGrid) return [[]];
         const serialisedMapGrid = []
 
         let row, col;
         for (row = 0; row < mapGrid.length; row++) {
             serialisedMapGrid[row] = []
-            if (!mapGrid[row]) {continue}
+            if (!mapGrid[row]) { continue }
 
-            for (col =0; col< mapGrid[row].length; col++) {
+            for (col = 0; col < mapGrid[row].length; col++) {
                 if (!mapGrid[row][col]) {
                     serialisedMapGrid[row][col] = null
                     continue
@@ -106,7 +114,7 @@ class MapSquare {
         return serialisedMapGrid
     }
 
-    static deserialiseGrid(serialisedMapGrid:Array<Array<object>>) {
+    static deserialiseGrid(serialisedMapGrid: Array<Array<object>>) {
         return serialisedMapGrid.map(row => {
             return row.map(data => MapSquare.deserialise(data))
         })
@@ -124,7 +132,7 @@ class MapSquare {
 
     static deserialise(data) {
 
-        if (data === null) {return null}
+        if (data === null) { return null }
 
         return new MapSquare(
             {

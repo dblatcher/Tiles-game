@@ -5,7 +5,7 @@ import attemptMove from '../game-logic/attemptMove'
 import gameActions from '../game-logic/gameActions'
 import townActions from '../game-logic/townActions'
 import { areSamePlace, pickAtRandom, sortByDistanceFrom, unsafelyCheckAreSamePlace, unsafelyGetDistanceBetween } from '../utility';
-import { MINIMUM_DISTANCE_BETWEEN_TOWNS } from '../game-logic/constants'
+import { AI_MAX_MOVES_FAILSAFE, MINIMUM_DISTANCE_BETWEEN_TOWNS } from '../game-logic/constants'
 
 import { GameState } from '../game-entities/GameState'
 import { ComputerFaction, Faction } from '../game-entities/Faction';
@@ -122,6 +122,7 @@ class ComputerPersonality {
     developPriority: number
     discoverPriority: number
     conquerPriority: number
+    failedOrderFlag: boolean
 
     constructor(faction: Faction, config: ComputerPersonalityConfig = {}) {
         this.faction = faction
@@ -131,6 +132,7 @@ class ComputerPersonality {
         this.developPriority = typeof config.developPriority === 'number' ? config.developPriority : 1
         this.discoverPriority = typeof config.discoverPriority === 'number' ? config.discoverPriority : 1
         this.conquerPriority = typeof config.conquerPriority === 'number' ? config.conquerPriority : 1
+        this.failedOrderFlag = false
     }
 
     manageTowns(state: GameState) {
@@ -182,7 +184,7 @@ class ComputerPersonality {
             item = this.faction.bestDefensiveLandUnit
         } else {
             const goalsInOrder = new PrioritySpend().setScoresForProduction(town, state).goalsInOrder
-            let usefulBuildingsForGoal = []; 
+            let usefulBuildingsForGoal = [];
 
             for (let i = 0; i < goalsInOrder.length; i++) {
                 usefulBuildingsForGoal = producableBuildings
@@ -194,7 +196,7 @@ class ComputerPersonality {
                     case "EXPAND":
                         if (!town.supportedUnits.some(unit => unit.role === 'SETTLER')) {
                             item = unitTypes.settler
-                        } else{
+                        } else {
                             item = pickAtRandom(usefulBuildingsForGoal)
                         }
                         break;
@@ -213,7 +215,7 @@ class ComputerPersonality {
                 if (item) { break }
                 debugLogAtLevel(3)(`****${town.name} could not choose a ${goalsInOrder[i]} item.`)
             }
-            
+
             if (!item) {
                 debugLogAtLevel(3)(`****${town.name} picking at random`)
                 item = pickAtRandom([...producableBuildings, ...producableUnits])
@@ -373,6 +375,7 @@ class ComputerPersonality {
 
     makeMove(state: GameState) {
         let moveSuceeded = false;
+        this.failedOrderFlag = false; // reset failed order flag
         const unit = state.selectedUnit;
 
 
@@ -391,16 +394,13 @@ class ComputerPersonality {
                 }
                 else if (choosenMove && choosenMove.classIs === 'OnGoingOrderType') {
                     gameActions.START_ORDER({ unit: state.selectedUnit, orderType: choosenMove })(state)
-                    moveSuceeded = true
+                    moveSuceeded = this.failedOrderFlag; // can be to true in the START_ORDER function (only in BuildTown so far)
                     break
                 }
             }
 
             if (!moveSuceeded) {
-                unit.remainingMoves = 0  // TO DO - don't like this - should be able to use 'Hold Unit' like a human player
-                // if (!unit.onGoingOrder) {
-                //     gameActions.START_ORDER({ unit: state.selectedUnit, orderType: orderTypesMap['Hold Unit'] })(state)
-                // }
+                unit.remainingMoves = 0
             }
         } else {
             gameActions.NEXT_UNIT({})(state)
@@ -415,7 +415,13 @@ class ComputerPersonality {
 
         result = myUnitsWithMovesLeft.length === 0
 
-        debugLogAtLevel(2)(`__${movesMade} MOVES MADE__`, result ? 'FINISHED' : '')
+        if (movesMade > AI_MAX_MOVES_FAILSAFE) {
+            debugLogAtLevel(1)(`__ FAILSAFE EXCEEDED!! __ more than ${AI_MAX_MOVES_FAILSAFE} MOVES MADE__`)
+            debugLogAtLevel(1)(`__ ending ${this.faction.name} turn early __`)
+            result = true
+        }
+
+        debugLogAtLevel(result ? 1 : 2)(`__${movesMade} MOVES MADE__`, result ? 'FINISHED' : '')
         return result
     }
 

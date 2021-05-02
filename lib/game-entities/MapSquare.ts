@@ -3,7 +3,7 @@ import { getDistanceBetween } from '../utility'
 import { GameState } from './GameState'
 import { terrainTypes } from './TerrainType'
 import { TerrainType, randomTerrainType } from './TerrainType'
-import { Town } from './Town'
+
 
 class MapSquare {
     terrain: TerrainType
@@ -84,6 +84,11 @@ class MapSquare {
             }
         }
         return workableSquares
+    }
+
+    couldBuildTownHere(state: GameState) {
+        if (this.terrain.isWater || this.terrain.neverTown) {return false}
+        return this.getTownsTooCloseToBuildHere(state).length === 0
     }
 
     getTownsTooCloseToBuildHere(state: GameState) {

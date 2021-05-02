@@ -235,7 +235,7 @@ const makeGameStateFunction = {
         ]
 
         const towns = [
-            new Town(factions[1], mapGrid[3][1], {
+            new Town(factions[1], mapGrid[9][1], {
                 name: "Jamestown",
                 population: 10,
                 supportedUnits: bunchOfEnemyWarriors,
@@ -264,6 +264,8 @@ const makeGameStateFunction = {
         const villages = [
             new Village(mapGrid[1][1],{})
         ]
+
+        mapGrid[1][1].terrain = terrainTypes.grass
 
         const initialState = new InitialGameState()
         initialState.mapGrid = mapGrid;

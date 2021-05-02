@@ -111,9 +111,6 @@ class Unit {
 
     removeFromGame(state: GameState) {
         const { units, towns } = state;
-        
-        console.log(`there are ${units.length} units`)
-        console.log(`removing ${this.description}:${this.indexNumber} - index = ${units.indexOf(this)}`)
 
         if (units.includes(this)) {
             units.splice(units.indexOf(this), 1)

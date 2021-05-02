@@ -16,14 +16,14 @@ export default class QuestionDialogue extends React.Component {
         const { question } = this.props
         if (this.inputRef.current) {
 
-            if (question.initialAnswer) {this.inputRef.current.value = question.initialAnswer}
+            if (question.initialAnswer) { this.inputRef.current.value = question.initialAnswer }
             this.inputRef.current.focus()
         }
     }
 
     render() {
         const { question, handleDialogueButton } = this.props
-        const { questionText, answerHandler, cancelHandler, options, type, errorText } = question
+        const { questionText, answerHandler, cancelHandler, options, type, errorText, canCancel } = question
 
 
         return (
@@ -37,13 +37,15 @@ export default class QuestionDialogue extends React.Component {
                             ref={this.inputRef} />
 
                         <div className={styles.buttonRow}>
-                            <button
-                                className={styles.button}
-                                onClick={() => {
-                                    handleDialogueButton("EXECUTE_STATE_FUNCTION", cancelHandler)
-                                }}>
-                                cancel
-                        </button>
+                            {canCancel &&
+                                <button
+                                    className={styles.button}
+                                    onClick={() => {
+                                        handleDialogueButton("EXECUTE_STATE_FUNCTION", cancelHandler)
+                                    }}>
+                                    cancel
+                                </button>
+                            }
                             <button
                                 className={styles.button}
                                 onClick={() => {

@@ -1,3 +1,4 @@
+import { GameState } from "./GameState";
 import { MapSquare } from "./MapSquare";
 
 let villageIndex = 0
@@ -21,6 +22,11 @@ class Village {
     get classIs() { return "Village" }
     get x() { return this.mapSquare.x }
     get y() { return this.mapSquare.y }
+
+    removeFromGame(state:GameState) {
+        const {villages} = state
+        villages.splice(villages.indexOf(this), 1);
+    }
 
     get serialised() {
         let output = {

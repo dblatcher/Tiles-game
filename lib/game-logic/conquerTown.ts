@@ -5,6 +5,7 @@ import { Town } from '../game-entities/Town'
 import { TechStealQuestion } from '../game-entities/Questions'
 import gameActions from './gameActions'
 import { ComputerPersonality } from '../game-ai/ComputerPersonality'
+import { Unit } from '../game-entities/Unit'
 
 
 function calculateSpoils(state: GameState, conqueredTown: Town) {
@@ -33,14 +34,11 @@ const conquerTown = (state: GameState, town: Town, conqueringFaction: Faction) =
     } else {
         town.citizens.pop()
         town.faction = conqueringFaction
-
-        town.supportedUnits.forEach(supportedUnit => {
-            if (!state.units.includes(supportedUnit)) { return } // should always be included, but just in case
-            state.units.splice(state.units.indexOf(supportedUnit), 1)
-        })
-        town.supportedUnits.splice(0, town.supportedUnits.length)
         messageList.push(`${town.name} conquered by ${conqueringFaction.name}! ${spoils} seized!`)
     }
+
+    // don't run town.supportedUnits.forEach directly as the array is modified by unit.removeFromGame
+    town.supportedUnits.concat([]).forEach(unit => {unit.removeFromGame(state)})
 
     if (oldOwner.checkIfAlive(state) === false) {
         messageList.push(`${oldOwner.name} was eradicated!`)

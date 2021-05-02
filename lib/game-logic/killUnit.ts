@@ -4,23 +4,15 @@ import { Unit } from '../game-entities/Unit'
 
 const killUnit = (state: GameState, casualty: Unit) => {
 
-    state.fallenUnits = [casualty]
-    if (state.units.includes(casualty)) {
-        state.units.splice(state.units.indexOf(casualty), 1)
-    }
+    state.fallenUnits = [casualty];
+    casualty.removeFromGame(state);
 
-    state.towns.forEach(town => {
-        if (town.supportedUnits.includes(casualty)) {
-            town.supportedUnits.splice(town.supportedUnits.indexOf(casualty), 1)
-        }
-    })
+    const passengers = state.units.filter(unit => unit.isPassengerOf === casualty)
+    passengers.forEach(passenger => passenger.removeFromGame(state))
 
     if (casualty.faction.checkIfAlive(state) === false) {
         state.pendingDialogues.push(new Message(`${casualty.faction.name} was eradicated!`))
     }
-
-    const passengers = state.units.filter(unit => unit.isPassengerOf === casualty)
-    passengers.forEach(passenger => killUnit(state, passenger))
 
     return state
 }

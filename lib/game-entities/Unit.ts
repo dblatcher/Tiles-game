@@ -6,6 +6,7 @@ import { getAreaSurrounding, areSamePlace, displayTurnsToComplete } from '../uti
 import { MapSquare } from './MapSquare'
 import { GameState } from "./GameState";
 import killUnit from "../game-logic/killUnit";
+import selectNextOrPreviousUnit from "../game-logic/selectNextOrPreviousUnit";
 
 let unitIndexNumber = 0
 
@@ -48,7 +49,7 @@ class Unit {
             `Att:${this.type.attack} Def:${this.type.defend}`,
             this.onGoingOrder
                 ? isFinite(this.onGoingOrder.timeRemaining)
-                    ?`${this.onGoingOrder.type.name}, ${displayTurnsToComplete(this.onGoingOrder.timeRemaining)} left`
+                    ? `${this.onGoingOrder.type.name}, ${displayTurnsToComplete(this.onGoingOrder.timeRemaining)} left`
                     : this.onGoingOrder.type.name
                 : `${this.remainingMoves}/${this.type.moves} moves`,
         ]
@@ -94,7 +95,7 @@ class Unit {
 
     canMakeNoMoreMoves(state: GameState) {
         const { x, y } = this
-        const {mapGrid, towns, units} = state
+        const { mapGrid, towns, units } = state
         let surroundingArea = getAreaSurrounding(this, mapGrid);
 
         return !surroundingArea.some(mapSquare => {
@@ -106,6 +107,26 @@ class Unit {
                 mapGrid[0].length
             )
         })
+    }
+
+    removeFromGame(state: GameState) {
+        const { units, towns } = state;
+        
+        console.log(`there are ${units.length} units`)
+        console.log(`removing ${this.description}:${this.indexNumber} - index = ${units.indexOf(this)}`)
+
+        if (units.includes(this)) {
+            units.splice(units.indexOf(this), 1)
+        }
+
+        // remove unit from the supportedUnits list of its home town
+        towns.forEach(town => {
+            if (town.supportedUnits.includes(this)) {
+                town.supportedUnits.splice(town.supportedUnits.indexOf(this), 1)
+            }
+        })
+
+        if (state.selectedUnit === this) { selectNextOrPreviousUnit(state) }
     }
 
     boardTransport(transport: Unit) {
@@ -130,7 +151,7 @@ class Unit {
     processTurn(state: GameState) {
         this.remainingMoves = this.type.moves
         const { onGoingOrder } = this
-        let notices:string[] = []
+        let notices: string[] = []
 
         if (onGoingOrder) {
             onGoingOrder.reduceTime(this)

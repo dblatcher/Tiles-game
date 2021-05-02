@@ -39,7 +39,6 @@ const specialCaseOrders = {
         let townNameQuestion
 
         const buildTown = (name: string) => (state: GameState) => {
-            const { towns, units } = state
 
             const nameIsTaken = state.towns.map(town => town.name).includes(name)
             if (nameIsTaken) {
@@ -50,26 +49,8 @@ const specialCaseOrders = {
                 name = ""
             }
 
-            // remove unit from main list
-            if (units.includes(unit)) {
-                units.splice(units.indexOf(unit), 1)
-            }
-
-            // remove unit from the supportedUnits list of its home town
-            towns.forEach(town => {
-                if (town.supportedUnits.includes(unit)) {
-                    town.supportedUnits.splice(town.supportedUnits.indexOf(unit), 1)
-                }
-            })
-
-            if (state.selectedUnit === unit) { selectNextOrPreviousUnit(state) }
-
-            // add new towns
-            const newTown = new Town(unit.faction, squareUnitIsOn, { name }).autoAssignFreeCitizens(state)
-            towns.push(newTown)
-            squareUnitIsOn.road = true
-            unit.faction.updateWorldMap(state)
-            unit.faction.updatePlacesInSightThisTurn(state)
+            unit.removeFromGame(state);
+            const newTown = Town.addNew(state, squareUnitIsOn, unit.faction, name);
 
             if (humanPlayersTurn) {
                 state.pendingDialogues.shift()

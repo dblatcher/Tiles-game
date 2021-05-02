@@ -9,6 +9,7 @@ import { BuildingType, buildingTypes } from './BuildingType'
 import { hurryCostPerUnit } from '../game-logic/constants'
 import { UNHAPPINESS_ALLOWANCE, UNHAPPINESS_RATE, BASE_POPULATION_LIMIT, MAX_UNHAPPINESS_REDUCTION_FROM_UNITS } from '../game-logic/constants'
 import { getTurnsToComplete, areSamePlace } from '../utility'
+import { GameState } from './GameState'
 
 let townIndex = 0
 
@@ -251,7 +252,7 @@ class Town {
         return this
     }
 
-    processTurn(state) {
+    processTurn(state: GameState) {
         let notices: string[] = []
 
         if (this.getIsInRevolt(state.units)) {
@@ -287,8 +288,7 @@ class Town {
 
                 while (shortFall > 0 && this.supportedUnits.length > 0) {
                     notices.push(`${this.name} cannot support  ${this.supportedUnits[0].type.name}. Unit disbanded`)
-                    state.units.splice(state.units.indexOf(this.supportedUnits[0]), 1)
-                    this.supportedUnits.shift()
+                    this.supportedUnits[0].removeFromGame(state)
                     shortFall--
                 }
             }
@@ -323,6 +323,15 @@ class Town {
         this.foodStore = Math.max(0, this.foodStore)
         this.productionStore = Math.max(0, this.productionStore)
         return notices
+    }
+
+    static addNew(state: GameState, mapSquare: MapSquare, faction: Faction, name: string) {
+        const newTown = new Town(faction, mapSquare, { name }).autoAssignFreeCitizens(state)
+        state.towns.push(newTown)
+        mapSquare.road = true
+        faction.updateWorldMap(state)
+        faction.updatePlacesInSightThisTurn(state)
+        return newTown;
     }
 
     get serialised() {

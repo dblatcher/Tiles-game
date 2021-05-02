@@ -211,14 +211,19 @@ const makeGameStateFunction = {
             ),
         ]
 
-        const units = [
-            new Unit(unitTypes.musketeer, factions[0], { x: 3, y: 3, vetran: true }),
-            new Unit(unitTypes.settler, factions[0], { x: 3, y: 3, vetran: true }),
-            new Unit(unitTypes.horseman, factions[0], { x: 8, y: 3, vetran: true }),
+
+        const bunchOfEnemyWarriors = [
             new Unit(unitTypes.warrior, factions[1], { x: 18, y: 3 }),
             new Unit(unitTypes.warrior, factions[1], { x: 18, y: 4 }),
             new Unit(unitTypes.warrior, factions[1], { x: 18, y: 5 }),
             new Unit(unitTypes.warrior, factions[1], { x: 18, y: 6 }),
+        ]
+
+        const units = [
+            new Unit(unitTypes.musketeer, factions[0], { x: 3, y: 3, vetran: true }),
+            new Unit(unitTypes.settler, factions[0], { x: 3, y: 3, vetran: true }),
+            new Unit(unitTypes.horseman, factions[0], { x: 8, y: 3, vetran: true }),
+            ...bunchOfEnemyWarriors,
             new Unit(unitTypes.settler, factions[1], {
                 x: 5, y: 4, vetran: true, missions: [
                 ]
@@ -230,12 +235,10 @@ const makeGameStateFunction = {
         ]
 
         const towns = [
-            new Town(factions[0], mapGrid[1][2], {
+            new Town(factions[1], mapGrid[3][1], {
                 name: "Jamestown",
-                population: 20,
-                supportedUnits: [
-                    units[1], units[0],
-                ],
+                population: 10,
+                supportedUnits: bunchOfEnemyWarriors,
                 buildings: [buildingTypes.granary],
                 foodStore: 60,
             }),

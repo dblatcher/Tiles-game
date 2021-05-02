@@ -7,14 +7,16 @@ import { areSamePlace } from '../utility'
 import { GameState } from '../game-entities/GameState'
 import { Unit } from '../game-entities/Unit'
 import { MapSquare } from '../game-entities/MapSquare'
-import { type } from 'os'
+import { exploreVillage } from './exploreVillage'
 
-const attemptMove = (state:GameState, unit:Unit, mapSquare:MapSquare) => {
+
+const attemptMove = (state: GameState, unit: Unit, mapSquare: MapSquare) => {
     if (unit.onGoingOrder) { return false }
-    if (!unit.isAdjacentTo(mapSquare, state.mapGrid[0].length ) || unit.remainingMoves <= 0) { return false }
+    if (!unit.isAdjacentTo(mapSquare, state.mapGrid[0].length) || unit.remainingMoves <= 0) { return false }
 
     const unitSquare = state.mapGrid[unit.y][unit.x];
-    const townInMapSquare = state.towns.filter(town => town.x == mapSquare.x && town.y === mapSquare.y)[0]
+    const townInMapSquare = state.towns.find(town => town.x == mapSquare.x && town.y === mapSquare.y)
+    const villageInMapSquare = state.villages.find(village => village.x == mapSquare.x && village.y === mapSquare.y)
     const unitsInMapSquare = state.units.filter(otherUnit => areSamePlace(otherUnit, mapSquare));
     const enemyUnitsInMapSquare = unitsInMapSquare.filter(otherUnit => (otherUnit.faction !== unit.faction))
 
@@ -35,7 +37,7 @@ const attemptMove = (state:GameState, unit:Unit, mapSquare:MapSquare) => {
 
         if (state.activeFaction.isComputerPlayer) {
             if (dialogueObject.type === 'Battle') {
-                resolveBattle({ battle: dialogueObject })(state)
+                resolveBattle({ battle: dialogueObject as Battle })(state)
                 return true
             } else {
                 return false // if computer player tried to attack with non-combat, need to return false
@@ -61,7 +63,7 @@ const attemptMove = (state:GameState, unit:Unit, mapSquare:MapSquare) => {
 
         executeMove()
         return true
-    } 
+    }
 
 
     if (!unit.type.isNaval && mapSquare.isWater) {
@@ -74,7 +76,7 @@ const attemptMove = (state:GameState, unit:Unit, mapSquare:MapSquare) => {
                 otherUnit.passengers.length < otherUnit.type.passengerCapacity
         )
 
-        if (transports.length === 0) {return false}
+        if (transports.length === 0) { return false }
 
         //TO DO - make unit board right transport...
         //use dialogue to pick if more than one transport (human player)
@@ -84,9 +86,9 @@ const attemptMove = (state:GameState, unit:Unit, mapSquare:MapSquare) => {
         executeMove()
         return true
 
-    } 
+    }
 
-if (!unit.canMoveToOrAttack(mapSquare, unitSquare, townInMapSquare, unitsInMapSquare, state.mapGrid[0].length)) { return false }
+    if (!unit.canMoveToOrAttack(mapSquare, unitSquare, townInMapSquare, unitsInMapSquare, state.mapGrid[0].length)) { return false }
     unit.leaveTransport()
     executeMove()
     return true
@@ -116,6 +118,9 @@ if (!unit.canMoveToOrAttack(mapSquare, unitSquare, townInMapSquare, unitsInMapSq
         }
         if (townInMapSquare && townInMapSquare.faction !== unit.faction) {
             conquerTown(state, townInMapSquare, unit.faction)
+        }
+        if (villageInMapSquare) {
+            exploreVillage(state, villageInMapSquare, unit)
         }
     }
 

@@ -18,6 +18,10 @@ class Village {
             : villageIndex++
     }
 
+    get classIs() { return "Village" }
+    get x() { return this.mapSquare.x }
+    get y() { return this.mapSquare.y }
+
     get serialised() {
         let output = {
             mapSquare: { x: this.mapSquare.x, y: this.mapSquare.y },

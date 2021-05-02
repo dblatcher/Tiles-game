@@ -25,7 +25,7 @@ const conquerTown = (state: GameState, town: Town, conqueringFaction: Faction) =
     conqueringFaction.treasury += spoils
     oldOwner.treasury -= spoils
 
-    let messageList = []
+    let messageList: string[] = []
 
     if (town.population === 1) {
         state.towns.splice(state.towns.indexOf(town), 1)
@@ -43,7 +43,7 @@ const conquerTown = (state: GameState, town: Town, conqueringFaction: Faction) =
     }
 
     if (oldOwner.checkIfAlive(state) === false) {
-       messageList.push(`${oldOwner.name} was eradicated!`)
+        messageList.push(`${oldOwner.name} was eradicated!`)
     }
 
     const techThatconqueringFactionCanTake = oldOwner.knownTech
@@ -59,7 +59,7 @@ const conquerTown = (state: GameState, town: Town, conqueringFaction: Faction) =
 
             let ai = conqueringFaction.computerPersonality as ComputerPersonality
             let pickedStolenTech = ai.pickStolenTech(techThatconqueringFactionCanTake, state)
-            gameActions.PICK_STOLEN_TECH({activeFaction:conqueringFaction, techDiscovery:pickedStolenTech, noDialogue:true})(state)
+            gameActions.PICK_STOLEN_TECH({ activeFaction: conqueringFaction, techDiscovery: pickedStolenTech, noDialogue: true })(state)
             messageList.push(`${conqueringFaction.name} took ${pickedStolenTech.description} from ${oldOwner.name}.`)
 
         } else {

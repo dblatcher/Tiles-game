@@ -213,7 +213,12 @@ const makeGameStateFunction = {
 
         const units = [
             new Unit(unitTypes.musketeer, factions[0], { x: 3, y: 3, vetran: true }),
+            new Unit(unitTypes.settler, factions[0], { x: 3, y: 3, vetran: true }),
             new Unit(unitTypes.horseman, factions[0], { x: 8, y: 3, vetran: true }),
+            new Unit(unitTypes.warrior, factions[1], { x: 18, y: 3 }),
+            new Unit(unitTypes.warrior, factions[1], { x: 18, y: 4 }),
+            new Unit(unitTypes.warrior, factions[1], { x: 18, y: 5 }),
+            new Unit(unitTypes.warrior, factions[1], { x: 18, y: 6 }),
             new Unit(unitTypes.settler, factions[1], {
                 x: 5, y: 4, vetran: true, missions: [
                 ]

@@ -37,7 +37,18 @@ class MapConfig {
         this.height = input.height;
         this.treeChance = input.treeChance;
         this.landFormOption = landFormOptions.includes(input.landFormOption) ? input.landFormOption : landFormOptions[0]
-        this.villageRate = typeof input.villageRate == 'number' ? input.villageRate : .1
+        this.villageRate = typeof input.villageRate == 'number'
+            ? input.villageRate
+            : .1
+    }
+
+    static get rangeValues() {
+        return {
+            villageRate: { min: 0, max: .25, step: .05 },
+            treeChance: { min: 0, max: 1, step: .05 },
+            width: { min: 20, max: 80 },
+            height: { min: 15, max: 50 },
+        }
     }
 }
 

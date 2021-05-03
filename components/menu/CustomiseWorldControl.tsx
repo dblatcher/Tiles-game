@@ -18,6 +18,7 @@ export default class CustomiseWorldControl extends React.Component {
             width: 40,
             height: 20,
             treeChance: .3,
+            villageRate: .1,
             landFormOption: landFormOptions[0]
         }
 
@@ -27,7 +28,7 @@ export default class CustomiseWorldControl extends React.Component {
 
     setRangeValue(property, inputElement) {
         let modification = {}
-        modification[property] = inputElement.value
+        modification[property] = Number(inputElement.value)
         this.setState(modification)
     }
 
@@ -41,9 +42,29 @@ export default class CustomiseWorldControl extends React.Component {
         this.setState(modification)
     }
 
+    get villageRateDescription() {
+        if (this.state.villageRate <= 0) { return "none" }
+        if (this.state.villageRate <= 0.1) { return "a few" }
+        if (this.state.villageRate <= 0.2) { return "quite a few" }
+        return "lots"
+    }
+
+    renderRange(properyName: "width" | "height" | "treeChance" | "villageRate") {
+        const value = this.state[properyName];
+        const rangeValue: { min: number, max: number, step?: number } = MapConfig.rangeValues[properyName]
+        return (
+            <input type="range"
+                value={value}
+                min={rangeValue.min} max={rangeValue.max} step={rangeValue.step || 1}
+                onChange={(event) => { this.setRangeValue(properyName, event.target) }}
+            />
+        )
+    }
+
     render() {
         const { children, newGame } = this.props
         const { width, height, treeChance, landFormOption } = this.state
+
 
         return <section>
             <h3>Customise World</h3>
@@ -52,34 +73,30 @@ export default class CustomiseWorldControl extends React.Component {
                 <tbody>
                     <tr>
                         <td><label>Width</label></td>
-                        <td>
-                            <input type="range" min="20" max="100" value={width}
-                                onChange={(event) => { this.setRangeValue('width', event.target) }} />
-                        </td>
-                        <td><span>{width}</span></td>
+                        <td>{this.renderRange('width')}</td>
+                        <td><span>{width} squares</span></td>
                     </tr>
                     <tr>
                         <td><label>Height</label></td>
-                        <td>
-                            <input type="range" min="15" max="50" value={height}
-                                onChange={(event) => { this.setRangeValue('height', event.target) }} />
-                        </td>
-                        <td><span>{height}</span></td>
+                        <td>{this.renderRange('height')}</td>
+                        <td><span>{height} squares</span></td>
                     </tr>
                     <tr>
                         <td><label>forestation</label></td>
-                        <td>
-                            <input type="range" min="0" max="1" step=".05" value={treeChance}
-                                onChange={(event) => { this.setRangeValue('treeChance', event.target) }} />
-                        </td>
+                        <td>{this.renderRange('treeChance')}</td>
                         <td><span>{(treeChance * 100).toFixed(0)}%</span></td>
+                    </tr>
+                    <tr>
+                        <td><label>Villages</label></td>
+                        <td>{this.renderRange('villageRate')}</td>
+                        <td><span>{this.villageRateDescription}</span></td>
                     </tr>
 
                     <tr>
                         <td><label>land form</label></td>
                         <td>
                             <select value={landFormOption.id}
-                            onChange={(event) => { this.setSelectValue('landFormOption', event.target) }}
+                                onChange={(event) => { this.setSelectValue('landFormOption', event.target) }}
                             >
                                 {landFormOptions.map(landFormChoice => (
                                     <option
@@ -98,7 +115,7 @@ export default class CustomiseWorldControl extends React.Component {
             <button className={dialogueStyles.button} onClick={() => {
                 newGame(makeGameStateFunction.randomWorld(
                     this.state,
-                    {tutorialEnabled:false, numberOfFactions:4}
+                    { tutorialEnabled: false, numberOfFactions: 4 }
                 ))
             }}>new game</button>
 

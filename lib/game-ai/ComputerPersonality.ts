@@ -256,6 +256,14 @@ class ComputerPersonality {
                 .some(mapSquare => mapSquare.x === town.mapSquare.x && mapSquare.y === town.mapSquare.y))
     }
 
+    getKnownVillages(state: GameState) {
+        return state.villages
+            .filter(village => this.faction.worldMap
+                .flat()
+                .filter(mapSquare => mapSquare !== null)
+                .some(mapSquare => mapSquare.x === village.mapSquare.x && mapSquare.y === village.mapSquare.y))
+    }
+
     getKnownEnemyUnits(state: GameState) {
         return state.units
             .filter(unit => unit.faction !== this.faction)

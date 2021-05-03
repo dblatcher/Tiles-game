@@ -298,6 +298,12 @@ const unitMissionTypes = {
 
         chooseTarget(ai: ComputerPersonality, unit: Unit, state: GameState) {
 
+            const knownVilages = ai.getKnownVillages(state).sort(sortByDistanceFrom(unit));
+
+            if (knownVilages.length > 0) {
+                return knownVilages[0].mapSquare;
+            }
+
             const map = ai.faction.worldMap
 
             function hasSpaceNearby(mapSquare) {

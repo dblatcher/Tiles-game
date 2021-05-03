@@ -19,6 +19,7 @@ import { makeStandardFactions } from './factionFactory'
 import { assignStartingPoints, findStartingPoints } from './findStartingPoints'
 import { InitialGameState } from '../game-entities/GameState'
 import { Village } from '../game-entities/Village'
+import {placeVillages} from './placeVillages'
 
 class WorldConfig {
     numberOfFactions?: number
@@ -268,7 +269,7 @@ const makeGameStateFunction = {
         ]
 
         const villages = [
-            new Village(mapGrid[1][1],{})
+            new Village(mapGrid[1][1], {})
         ]
 
         mapGrid[1][1].terrain = terrainTypes.grass
@@ -290,9 +291,11 @@ const makeGameStateFunction = {
     randomWorld: (mapConfigInput: MapConfig, worldConfig: WorldConfig = {}) => () => {
         const { numberOfFactions = 2 } = worldConfig
 
+        const mapConfig = new MapConfig(mapConfigInput);
+
         const factions = makeStandardFactions(numberOfFactions)
         const units: Unit[] = []
-        const mapGrid = makeMap(new MapConfig(mapConfigInput));
+        const mapGrid = makeMap(mapConfig);
 
         let possibleStartingPoints = findStartingPoints(mapGrid)
         let startingPoints = assignStartingPoints(factions, possibleStartingPoints)
@@ -311,6 +314,7 @@ const makeGameStateFunction = {
         initialState.factions = factions;
         initialState.units = units;
         initialState.towns = [];
+        initialState.villages = placeVillages(mapGrid, startingPoints, mapConfig)
         initialState.activeFaction = factions[0];
         initialState.selectedUnit = units.find(unit => unit.faction === factions[0]);
         initialState.turnNumber = 1;

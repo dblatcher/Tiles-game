@@ -63,6 +63,7 @@ function releaseBarbarians(state: GameState, village: Village, unit: Unit, human
 
 
     const freeSquaresInArea = areaAroundVillage.filter(mapSquare => {
+        if (mapSquare.isWater) {return false}
         if (state.units.find(unit => areSamePlace(unit, mapSquare))) { return false }
         if (state.towns.find(unit => areSamePlace(unit, mapSquare))) { return false }
         return true

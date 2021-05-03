@@ -1,10 +1,13 @@
+import { BarbarianFaction, Faction } from "../game-entities/Faction";
 import { GameState } from "../game-entities/GameState";
+import { MapSquare } from "../game-entities/MapSquare";
 import { Message } from "../game-entities/Message";
 import { TextQuestion } from "../game-entities/Questions";
 import { Town } from "../game-entities/Town";
 import { Unit } from "../game-entities/Unit";
+import { unitTypes } from "../game-entities/UnitType";
 import { Village } from "../game-entities/Village";
-import { randomInt } from "../utility";
+import { areSamePlace, getAreaSurrounding, pickAtRandom, randomInt } from "../utility";
 
 
 function absorbAsTown(state: GameState, village: Village, unit: Unit) {
@@ -43,20 +46,67 @@ function loot(state: GameState, village: Village, unit: Unit) {
     unit.faction.treasury += lootValue;
 }
 
+function addTroops(state: GameState, village: Village, unit: Unit) {
+    const unitType = unit.faction.bestCavalryUnit;
+    const newUnit = new Unit(unitType, unit.faction, { vetran: true, x: village.mapSquare.x, y: village.mapSquare.y })
+    state.pendingDialogues.push(new Message(`The village provides ${unit.faction.name} with a ${newUnit.description}.`))
+    state.units.push(newUnit);
+}
+
+function releaseBarbarians(state: GameState, village: Village, unit: Unit) {
+
+    const barbarianFaction = BarbarianFaction.getFaction(state)
+    const areaAroundVillage: MapSquare[] = getAreaSurrounding(village.mapSquare, state.mapGrid)
+
+
+    const freeSquaresInArea = areaAroundVillage.filter(mapSquare => {
+        if (state.units.find(unit => areSamePlace(unit, mapSquare))) { return false }
+        if (state.towns.find(unit => areSamePlace(unit, mapSquare))) { return false }
+        return true
+    })
+
+    if (freeSquaresInArea.length === 0) {
+        state.pendingDialogues.push(new Message(`The village is deserted`))
+        return
+    }
+
+    const numberOfbarbarians = randomInt(freeSquaresInArea.length) + 1;
+
+    const freeSquaresUsed: MapSquare[] = [];
+    let square: MapSquare;
+    const unitType = unitTypes.horseman
+
+    for (let i = 0; i < numberOfbarbarians; i++) {
+        square = pickAtRandom(freeSquaresInArea.filter(mapSquare => !freeSquaresUsed.includes(mapSquare)))
+        if (!square) { break }
+        state.units.push(new Unit(unitType, barbarianFaction, { x: square.x, y: square.y }))
+        freeSquaresUsed.push(square);
+    }
+
+    state.pendingDialogues.push(new Message(`A horde of barbarians emerges!`))
+}
+
 
 function exploreVillage(state: GameState, village: Village, unit: Unit) {
 
     const couldHaveTownHere = village.mapSquare.couldBuildTownHere(state);
-    const eventNumber = randomInt(2) + 1;
+    const eventNumber = randomInt(5) + 1;
 
     switch (eventNumber) {
         case 1:
+        case 5:
             if (couldHaveTownHere) { absorbAsTown(state, village, unit) }
             else { loot(state, village, unit) }
             break;
         case 2:
             loot(state, village, unit)
             break;
+        case 3:
+            addTroops(state, village, unit)
+            break
+        case 4:
+            releaseBarbarians(state, village, unit)
+            break
     }
 
 

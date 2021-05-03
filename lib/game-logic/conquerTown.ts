@@ -53,7 +53,7 @@ const conquerTown = (state: GameState, town: Town, conqueringFaction: Faction) =
     }
 
     if (techThatconqueringFactionCanTake.length > 0) {
-        if (conqueringFaction.isComputerPlayer) {
+        if (conqueringFaction.isComputerPlayer && !conqueringFaction.isBarbarianFaction) {
 
             let ai = conqueringFaction.computerPersonality as ComputerPersonality
             let pickedStolenTech = ai.pickStolenTech(techThatconqueringFactionCanTake, state)
@@ -61,7 +61,7 @@ const conquerTown = (state: GameState, town: Town, conqueringFaction: Faction) =
             messageList.push(`${conqueringFaction.name} took ${pickedStolenTech.description} from ${oldOwner.name}.`)
 
         } else {
-            state.pendingDialogues.push(new TechStealQuestion(`Choice a technology to steal from ${oldOwner.name}:`, techThatconqueringFactionCanTake))
+            state.pendingDialogues.push(new TechStealQuestion(`Choose a technology to steal from ${oldOwner.name}:`, techThatconqueringFactionCanTake))
         }
     }
 

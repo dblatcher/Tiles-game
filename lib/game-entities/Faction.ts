@@ -11,6 +11,23 @@ import { TOWN_SIGHT_RADIUS, UNIT_SIGHT_RADIUS } from '../game-logic/constants'
 import { areSamePlace } from '../utility.js'
 import { GameState } from './GameState'
 
+interface FactionConfig {
+    color?: string
+    treasury?:number
+    research?:number
+    researchGoal?: TechDiscovery
+    knownTech? :TechDiscovery[]
+    worldMap? : MapSquare[][]
+    budget?: {
+        treasury: number
+        research: number
+        entertainment:number
+    }
+    townNames?: string[]
+    placesInSightThisTurn?: object[]
+}
+
+
 class Faction {
     name: string;
     color: string;
@@ -23,7 +40,7 @@ class Faction {
     computerPersonality: ComputerPersonality;
     placesInSightThisTurn: Array<object>;
     townNames: Array<string>;
-    constructor(name: string, config: any = {}) {
+    constructor(name: string, config: FactionConfig = {}) {
         this.name = name;
         this.color = config.color || "#FFF";
         this.treasury = config.treasury || 0
@@ -33,7 +50,7 @@ class Faction {
         this.knownTech = config.knownTech || []
         this.worldMap = config.worldMap || [[]]
 
-        this.budget = new TradeBudget().setAll(config.buget || {
+        this.budget = new TradeBudget().setAll(config.budget || {
             treasury: 1 / 2,
             research: 1 / 2,
             entertainment: 0,
@@ -46,6 +63,7 @@ class Faction {
     }
 
     get isComputerPlayer() { return false }
+    get isBarbarianFaction() { return false }
 
     updateWorldMap(state) {
         const { towns, units, mapGrid } = state
@@ -286,6 +304,7 @@ class ComputerFaction extends Faction {
     }
 
     get isComputerPlayer() { return true }
+    get isBarbarianFaction() { return false }
 
     get serialised() {
 
@@ -310,4 +329,25 @@ class ComputerFaction extends Faction {
 
 }
 
-export { Faction, ComputerFaction }
+class BarbarianFaction extends ComputerFaction {
+    get isBarbarianFaction() { return true }
+
+    constructor() {
+        super('barbarian', {color:'#ddd'})
+        this.computerPersonality = new ComputerPersonality(this, {conquerPriority:10})
+    }
+
+    static getFaction(state:GameState) {
+        let barbarians:Faction;
+        if (state.factions.find(faction => faction.isBarbarianFaction)) {
+            barbarians = state.factions.find(faction => faction.isBarbarianFaction)
+        } else {
+            barbarians = new BarbarianFaction()
+            state.factions.push(barbarians)
+        }
+        return barbarians
+    }
+
+}
+
+export { Faction, ComputerFaction, BarbarianFaction }

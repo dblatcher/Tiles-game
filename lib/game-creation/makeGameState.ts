@@ -2,7 +2,7 @@ import { MapSquare } from '../game-entities/MapSquare'
 import { TerrainType, terrainTypes } from '../game-entities/TerrainType'
 import { unitTypes } from '../game-entities/UnitType'
 import { Unit } from '../game-entities/Unit'
-import { Faction, ComputerFaction } from '../game-entities/Faction'
+import { Faction, ComputerFaction, BarbarianFaction } from '../game-entities/Faction'
 import { OnGoingOrder, orderTypesMap } from '../game-entities/OngoingOrder'
 import { Town } from '../game-entities/Town'
 import { buildingTypes } from '../game-entities/BuildingType'
@@ -185,6 +185,8 @@ const makeGameStateFunction = {
             mapGrid[3][i].road = true;
         }
 
+        const barbarians = new BarbarianFaction();
+
         const factions = [
             new Faction('Crimsonia', {
                 color: 'crimson',
@@ -209,6 +211,7 @@ const makeGameStateFunction = {
                     discoverPriority: 1,
                 }
             ),
+            // barbarians
         ]
 
 
@@ -224,18 +227,21 @@ const makeGameStateFunction = {
             new Unit(unitTypes.settler, factions[0], { x: 3, y: 3, vetran: true }),
             new Unit(unitTypes.horseman, factions[0], { x: 8, y: 3, vetran: true }),
             ...bunchOfEnemyWarriors,
-            new Unit(unitTypes.settler, factions[1], {
-                x: 5, y: 4, vetran: true, missions: [
-                ]
-            }),
-            new Unit(unitTypes.spearman, factions[1], {
-                x: 6, y: 2, vetran: true, onGoingOrder: new OnGoingOrder(orderTypesMap['Fortified'])
-            }),
+            // new Unit(unitTypes.settler, factions[1], {
+            //     x: 5, y: 4, vetran: true, missions: [
+            //     ]
+            // }),
+            // new Unit(unitTypes.spearman, barbarians, {
+            //     x: 6, y: 2, vetran: true, onGoingOrder: new OnGoingOrder(orderTypesMap['Fortified'])
+            // }),
+            // new Unit(unitTypes.swordsman, barbarians, {
+            //     x: 7, y: 2
+            // }),
             // new Unit(unitTypes.dragoon, factions[2], { x: 2, y: 5, vetran: true }),
         ]
 
         const towns = [
-            new Town(factions[1], mapGrid[9][1], {
+            new Town(factions[1], mapGrid[4][1], {
                 name: "Jamestown",
                 population: 10,
                 supportedUnits: bunchOfEnemyWarriors,

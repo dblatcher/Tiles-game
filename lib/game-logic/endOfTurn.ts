@@ -7,13 +7,14 @@ const endOfTurn = input => (state:GameState) => {
 
     const oldFaction = state.activeFaction
     const notDeadFactions = factions.filter(faction => faction.checkIfAlive(state))
+    const notDeadFactionsExcludingBarbarians = notDeadFactions.filter(faction => !faction.isBarbarianFaction)
     const notDeadHumanFactions = notDeadFactions.filter(faction => !faction.isComputerPlayer)
 
 
     const tutorialInProgress = state.tutorial && state.tutorial.enabled
     
-    if (notDeadFactions.length === 1 && !tutorialInProgress) {
-        return endOfGame({ winner: notDeadFactions[0] })(state)
+    if (notDeadFactionsExcludingBarbarians.length === 1 && !tutorialInProgress) {
+        return endOfGame({ winner: notDeadFactionsExcludingBarbarians[0] })(state)
     }
 
     if (notDeadHumanFactions.length === 0) {
@@ -33,7 +34,7 @@ const endOfTurn = input => (state:GameState) => {
     state.activeFaction = nextNotDeadFaction
     if (startingNewRound) { state.turnNumber = state.turnNumber + 1 }
 
-    return startOfTurn()(state)
+    return startOfTurn({})(state)
 }
 
 export default endOfTurn

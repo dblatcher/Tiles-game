@@ -10,9 +10,8 @@ import { Village } from "../game-entities/Village";
 import { areSamePlace, getAreaSurrounding, pickAtRandom, randomInt } from "../utility";
 
 
-function absorbAsTown(state: GameState, village: Village, unit: Unit) {
+function absorbAsTown(state: GameState, village: Village, unit: Unit, humanPlayersTurn: boolean) {
 
-    const humanPlayersTurn = !state.activeFaction.isComputerPlayer
     const suggestedName = unit.faction.townNames.shift()
 
     if (!humanPlayersTurn) {
@@ -40,21 +39,25 @@ function absorbAsTown(state: GameState, village: Village, unit: Unit) {
     state.pendingDialogues.push(townNameQuestion)
 }
 
-function loot(state: GameState, village: Village, unit: Unit) {
+function loot(state: GameState, village: Village, unit: Unit, humanPlayersTurn: boolean) {
     const lootValue = randomInt(8, 2) * 10;
-    state.pendingDialogues.push(new Message(`The village pays ${unit.faction.name} a tribute of ${lootValue}!`))
     unit.faction.treasury += lootValue;
+    if (humanPlayersTurn) {
+        state.pendingDialogues.push(new Message(`The village pays ${unit.faction.name} a tribute of ${lootValue}!`))
+    }
 }
 
-function addTroops(state: GameState, village: Village, unit: Unit) {
-    const unitType = unit.faction.bestCavalryUnit;
+function addTroops(state: GameState, village: Village, unit: Unit, humanPlayersTurn: boolean) {
+    const unitType = unit.faction.bestCavalryUnit || unit.faction.bestLandAttacker || unit.faction.bestDefensiveLandUnit;
     const newUnit = new Unit(unitType, unit.faction, { vetran: true, x: village.mapSquare.x, y: village.mapSquare.y })
-    state.pendingDialogues.push(new Message(`The village provides ${unit.faction.name} with a ${newUnit.description}.`))
     state.units.push(newUnit);
+
+    if (humanPlayersTurn) {
+        state.pendingDialogues.push(new Message(`The village provides ${unit.faction.name} with a ${newUnit.description}.`))
+    }
 }
 
-function releaseBarbarians(state: GameState, village: Village, unit: Unit) {
-
+function releaseBarbarians(state: GameState, village: Village, unit: Unit, humanPlayersTurn: boolean) {
     const barbarianFaction = BarbarianFaction.getFaction(state)
     const areaAroundVillage: MapSquare[] = getAreaSurrounding(village.mapSquare, state.mapGrid)
 
@@ -66,7 +69,9 @@ function releaseBarbarians(state: GameState, village: Village, unit: Unit) {
     })
 
     if (freeSquaresInArea.length === 0) {
-        state.pendingDialogues.push(new Message(`The village is deserted`))
+        if (humanPlayersTurn) {
+            state.pendingDialogues.push(new Message(`The village is deserted`))
+        }
         return
     }
 
@@ -83,29 +88,35 @@ function releaseBarbarians(state: GameState, village: Village, unit: Unit) {
         freeSquaresUsed.push(square);
     }
 
-    state.pendingDialogues.push(new Message(`A horde of barbarians emerges!`))
+    if (humanPlayersTurn) {
+        state.pendingDialogues.push(new Message(`A horde of barbarians emerges!`))
+    }
 }
 
 
 function exploreVillage(state: GameState, village: Village, unit: Unit) {
 
+    const humanPlayersTurn = !state.activeFaction.isComputerPlayer
+    if (unit.faction.isBarbarianFaction) { return }
+
     const couldHaveTownHere = village.mapSquare.couldBuildTownHere(state);
     const eventNumber = randomInt(5) + 1;
 
+    console.log({ eventNumber })
     switch (eventNumber) {
         case 1:
         case 5:
-            if (couldHaveTownHere) { absorbAsTown(state, village, unit) }
-            else { loot(state, village, unit) }
+            if (couldHaveTownHere) { absorbAsTown(state, village, unit, humanPlayersTurn) }
+            else { loot(state, village, unit, humanPlayersTurn) }
             break;
         case 2:
-            loot(state, village, unit)
+            loot(state, village, unit, humanPlayersTurn)
             break;
         case 3:
-            addTroops(state, village, unit)
+            addTroops(state, village, unit,humanPlayersTurn)
             break
         case 4:
-            releaseBarbarians(state, village, unit)
+            releaseBarbarians(state, village, unit,humanPlayersTurn)
             break
     }
 

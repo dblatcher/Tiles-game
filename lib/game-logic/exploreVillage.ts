@@ -68,7 +68,10 @@ function releaseBarbarians(state: GameState, village: Village, unit: Unit, human
         return true
     })
 
-    if (freeSquaresInArea.length === 0) {
+    const numberOfTownsTheFactionHas = state.towns.filter(town => town.faction === unit.faction).length;
+
+    // so players aren't wiped out right away, only release a horde if they have at least 3 towns.
+    if (freeSquaresInArea.length === 0 || numberOfTownsTheFactionHas < 3) {
         if (humanPlayersTurn) {
             state.pendingDialogues.push(new Message(`The village is deserted`))
         }
@@ -102,7 +105,6 @@ function exploreVillage(state: GameState, village: Village, unit: Unit) {
     const couldHaveTownHere = village.mapSquare.couldBuildTownHere(state);
     const eventNumber = randomInt(5) + 1;
 
-    console.log({ eventNumber })
     switch (eventNumber) {
         case 1:
         case 5:

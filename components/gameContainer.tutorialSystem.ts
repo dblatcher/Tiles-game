@@ -1,3 +1,4 @@
+import { GameState } from '../lib/game-entities/GameState'
 import { TutorialState } from '../lib/game-misc/tutorial'
 import GameContainer from './GameContainer'
 
@@ -7,14 +8,14 @@ export default {
 
         switch (input) {
             case "DISMISS":
-                component.setState(state => {
+                component.setState((state: GameState) => {
                     const tutorial = state.tutorial as TutorialState
                     tutorial.showing = false
                     return { tutorial }
                 })
                 break;
             case "SHOW":
-                component.setState(state => {
+                component.setState((state: GameState) => {
                     const tutorial = state.tutorial as TutorialState
                     tutorial.showing = true
                     return { tutorial }
@@ -31,7 +32,7 @@ export default {
             if (callback) { callback() }
             if (!component.state.tutorial) { return false }
 
-            component.setState(state => {
+            component.setState((state: GameState) => {
                 const tutorial = state.tutorial as TutorialState
                 if (tutorial) {
                     tutorial.updateEvents(state)
